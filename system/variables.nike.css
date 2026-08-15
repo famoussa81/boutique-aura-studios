@@ -1,0 +1,249 @@
+/* ==========================================================================
+   Design System Inspired by Nike — MEASURED LAYER (Podium CDS)
+   --------------------------------------------------------------------------
+   Operative token layer for the Nike retail system. Values are MEASURED from
+   nike.com / Podium CDS evidence (context/input-DESIGN.md), re-checked live
+   on https://nike.com/. Items suffixed "inferred" are derived where the live
+   site does not expose an exact value (dark theme mapping).
+
+   Usage: <link rel="stylesheet" href="system/variables.nike.css">
+   This file is self-contained (light + .dark). Load it alongside (or instead
+   of) the generative antd layer in system/variables.css.
+   ========================================================================== */
+
+:root {
+  /* ----- Core neutrals (measured) ----- */
+  --nike-black:    #111111; /* primary text, nav, button bg, hero overlay */
+  --nike-white:    #ffffff; /* page canvas, text on dark */
+  --nike-snow:     #fafafa; /* lightest surface (grey-50) */
+  --nike-light-grey: #f5f5f5; /* search/input fill, placeholder, skeleton (grey-100) */
+  --nike-hover-grey: #e5e5e5; /* hover bg, disabled button fill (grey-200) */
+  --nike-border:   #cacacb; /* subtle borders, dividers (grey-300) */
+  --nike-text-secondary: #707072; /* secondary text, border-primary */
+  --nike-text-disabled: #9e9ea0;  /* inactive elements (grey-400) */
+  --nike-text-disabled-inverse: #4b4b4d; /* disabled on dark */
+  --nike-dark-hover: #39393b; /* hover on dark surfaces (grey-700) */
+  --nike-dark-surface: #28282a; /* dark panels (grey-800) */
+  --nike-deep-charcoal: #1f1f21; /* inverse primary bg (grey-900) */
+
+  /* ----- Semantic & accent (measured) ----- */
+  --nike-red:          #d30005; /* critical errors, sale badges (red-600) */
+  --nike-red-bright:   #ee0005; /* red-500 emphasis */
+  --nike-badge:        #d33918; /* badge text / promotions */
+  --nike-orange-flash: #ff5000; /* expressive orange (orange-400) */
+  --nike-success:      #007d48; /* confirmation, availability (green-600) */
+  --nike-success-inverse: #1eaa52; /* success on dark (green-500) */
+  --nike-link:         #1151ff; /* text links (blue-500) */
+--nike-info-inverse: #1190ff; /* links on dark (blue-400) */
+  --nike-warning:      #fedf35; /* warning banners (yellow-200) */
+  --nike-focus:        rgba(39, 93, 197, 1); /* keyboard focus ring */
+
+  /* ----- Extended ramps (50->900) — expressed as one per hue (measured anchor
+         hexes; intermediate steps available in system/tokens.nike.json) ----- */
+  --nike-ramp-red:     #ffe5e5 #ff8a8a #ee0005 #a30003 #530300;
+  --nike-ramp-orange:  #ffe2d6 #ffb280 #ff5000 #d33918 #3e1009;
+  --nike-ramp-yellow:  #fef087 #fed957 #fca600 #99470a;
+  --nike-ramp-green:   #dfffb9 #8fe06a #1eaa52 #007d48 #003c2a;
+  --nike-ramp-teal:    #d4fffb #66e2ec #008e98 #043441;
+  --nike-ramp-blue:    #d6eeff #6fa8ff #1151ff #020664;
+  --nike-ramp-purple:  #e4e1fc #af9bfb #6e0ff6 #1c0060;
+  --nike-ramp-pink:    #ffe1f3 #ff9fd9 #ed1aa0 #4c012d;
+
+  /* ----- Typography (measured scale; faces proprietary -> fallbacks) ----- */
+  --nike-font-display: "Nike Futura ND", "Helvetica Now Display Medium", "Helvetica Neue", Inter, system-ui, -apple-system, Arial, sans-serif;
+  --nike-font-body: "Helvetica Now Text", "Helvetica Now Text Medium", "Helvetica Neue", Inter, system-ui, -apple-system, Arial, sans-serif;
+  --nike-font-weight-display: 500;
+  --nike-font-weight-medium: 500;
+  --nike-font-weight-regular: 400;
+
+  --nike-type-display-size: 96px; --nike-type-display-lh: 0.90; /* uppercase only */
+  --nike-type-h1-size: 32px;      --nike-type-h1-lh: 1.20;
+  --nike-type-h2-size: 24px;      --nike-type-h2-lh: 1.20;
+  --nike-type-h3-size: 16px;      --nike-type-h3-lh: 1.50;
+  --nike-type-body-size: 16px;    --nike-type-body-lh: 1.75;
+  --nike-type-body-medium-size: 16px; --nike-type-body-medium-lh: 1.75;
+  --nike-type-link-size: 16px;    --nike-type-link-lh: 1.75;
+  --nike-type-link-sm-size: 14px; --nike-type-link-sm-lh: 1.86;
+  --nike-type-button-size: 16px;  --nike-type-button-sm-size: 14px; --nike-type-button-lh: 1.50;
+  --nike-type-caption-size: 14px; --nike-type-small-size: 12px; --nike-type-tiny-size: 12px;
+
+  /* ----- Radius scale (measured) ----- */
+  --nike-radius-0: 0px;   /* product / hero imagery */
+  --nike-radius-8: 8px;   /* form inputs (non-search) */
+  --nike-radius-18: 18px; /* small interactive elements */
+  --nike-radius-20: 20px; /* UI containers / cards with content */
+  --nike-radius-24: 24px; /* search inputs, medium pills */
+  --nike-radius-30: 30px; /* buttons, tags, filters (full pill) */
+
+  /* ----- Spacing scale (base 4px, grid 8px; measured) ----- */
+  --nike-space-1: 4px;  --nike-space-2: 8px;  --nike-space-3: 12px;
+  --nike-space-4: 16px; --nike-space-5: 20px; --nike-space-6: 24px;
+  --nike-space-7: 32px; --nike-space-8: 48px; --nike-space-9: 64px;
+  --nike-space-10: 80px;
+
+  /* ----- Layout (measured) ----- */
+  --nike-container-max: 1920px;
+  --nike-container-content: 1440px;
+  --nike-pad-desktop: 48px;
+  --nike-pad-tablet: 24px;
+  --nike-pad-mobile: 16px;
+  --nike-grid-gap: 4px;       /* product grid (dense) */
+  --nike-grid-gap-card: 12px; /* card internal metadata gap */
+  --nike-nav-height: 60px;    /* desktop sticky nav */
+
+  /* ----- Elevation (measured: flat, shadow-free) ----- */
+  --nike-shadow: none;
+  --nike-divider: inset 0 -1px 0 0 var(--nike-hover-grey);
+  --nike-focus-ring: 0 0 0 2px var(--nike-focus);
+
+  /* ----- Motion (measured) ----- */
+  --nike-motion-bg: 200ms ease;
+  --nike-motion-border: 200ms ease;
+  --nike-motion-opacity: 200ms ease;
+}
+
+/* ----- Dark theme (inferred from grey ramp mapping, not directly measured) ----- */
+.dark {
+  --nike-white: #1f1f21;
+  --nike-snow: #28282a;
+  --nike-light-grey: #39393b;
+  --nike-hover-grey: #4b4b4d;
+  --nike-border: #39393b;
+  --nike-text-secondary: #cacacb;
+  --nike-text-disabled: #707072;
+  --nike-text-disabled-inverse: #9e9ea0;
+  --nike-dark-hover: #4b4b4d;
+  --nike-dark-surface: #28282a;
+  --nike-deep-charcoal: #111111;
+  --nike-black: #ffffff;
+  --nike-bg: #1f1f21;
+}
+
+:root {
+  --nike-bg: var(--nike-white);
+}
+
+/* ==========================================================================
+   COMPONENT PRIMITIVES (measured behaviour)
+   ========================================================================== */
+
+.nike-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--nike-font-body);
+  font-size: var(--nike-type-button-size); font-weight: var(--nike-font-weight-medium);
+  line-height: var(--nike-type-button-lh);
+  padding: 12px 24px; border-radius: var(--nike-radius-30); border: none;
+  background: var(--nike-black); color: var(--nike-white);
+  cursor: pointer; transition: background var(--nike-motion-bg);
+  text-decoration: none; min-height: 48px;
+}
+.nike-btn:hover { background: var(--nike-text-secondary); }
+.nike-btn:focus-visible { outline: none; box-shadow: var(--nike-focus-ring); }
+.nike-btn--sm { font-size: var(--nike-type-button-sm-size); padding: 10px 16px; min-height: 44px; }
+.nike-btn--white { background: var(--nike-white); color: var(--nike-black); }
+.nike-btn--white:hover { background: var(--nike-border); }
+.nike-btn--outline { background: transparent; color: var(--nike-black); border: 1.5px solid var(--nike-border); }
+.nike-btn--outline:hover { border-color: var(--nike-text-secondary); background: var(--nike-hover-grey); }
+.nike-btn[disabled], .nike-btn--disabled { background: var(--nike-hover-grey); color: var(--nike-text-disabled); cursor: not-allowed; }
+.nike-btn--icon { padding: 6px; border-radius: 50%; background: var(--nike-light-grey); }
+.nike-btn--icon:hover { background: var(--nike-text-secondary); }
+
+.nike-btn-pill-lg { border-radius: var(--nike-radius-30); padding: 14px 28px; font-size: 16px; font-weight: var(--nike-font-weight-medium); }
+
+.nike-input {
+  font-family: var(--nike-font-body);
+  font-size: var(--nike-type-body-size); font-weight: var(--nike-font-weight-regular);
+  background: var(--nike-light-grey); border: 1px solid var(--nike-border);
+  border-radius: var(--nike-radius-8); padding: 12px 16px; color: var(--nike-black);
+  transition: border-color var(--nike-motion-border); min-height: 48px; width: 100%;
+}
+.nike-input::placeholder { color: var(--nike-text-secondary); }
+.nike-input:focus { outline: none; border-color: var(--nike-black); box-shadow: var(--nike-focus-ring); }
+.nike-input--search { border-radius: var(--nike-radius-24); border: none; }
+.nike-input--error { border-color: var(--nike-red); }
+.nike-field { display: grid; gap: var(--nike-space-2); }
+.nike-field label { font-size: var(--nike-type-caption-size); font-weight: var(--nike-font-weight-medium); color: var(--nike-black); }
+
+.nike-banner {
+  background: var(--nike-black); color: var(--nike-white);
+  text-align: center; padding: 8px 12px;
+  font-family: var(--nike-font-body); font-size: 12px; font-weight: var(--nike-font-weight-medium);
+  line-height: 1.5;
+}
+
+.nike-nav {
+  display: flex; align-items: center; gap: var(--nike-space-6);
+  background: var(--nike-white); height: var(--nike-nav-height);
+  padding: 0 var(--nike-pad-desktop); position: sticky; top: 0; z-index: 50;
+  border-bottom: 1px solid var(--nike-border-secondary);
+}
+.nike-nav a {
+  font-family: var(--nike-font-body); font-size: var(--nike-type-link-size);
+  font-weight: var(--nike-font-weight-medium); text-decoration: none; color: var(--nike-black);
+  transition: color var(--nike-motion-opacity);
+}
+.nike-nav a:hover { color: var(--nike-text-secondary); }
+
+.nike-display {
+  font-family: var(--nike-font-display);
+  font-size: var(--nike-type-display-size); line-height: var(--nike-type-display-lh);
+  font-weight: var(--nike-font-weight-display); text-transform: uppercase;
+  letter-spacing: -0.02em; color: var(--nike-black); margin: 0;
+}
+.nike-h1 { font-family: var(--nike-font-body); font-size: var(--nike-type-h1-size); line-height: var(--nike-type-h1-lh); font-weight: var(--nike-font-weight-medium); }
+.nike-h2 { font-family: var(--nike-font-body); font-size: var(--nike-type-h2-size); line-height: var(--nike-type-h2-lh); font-weight: var(--nike-font-weight-medium); }
+.nike-h3 { font-family: var(--nike-font-body); font-size: var(--nike-type-h3-size); line-height: var(--nike-type-h3-lh); font-weight: var(--nike-font-weight-medium); }
+.nike-body { font-family: var(--nike-font-body); font-size: var(--nike-type-body-size); line-height: var(--nike-type-body-lh); font-weight: var(--nike-font-weight-regular); }
+.nike-body--medium { font-weight: var(--nike-font-weight-medium); }
+.nike-link { font-family: var(--nike-font-body); font-size: var(--nike-type-link-size); font-weight: var(--nike-font-weight-medium); text-decoration: underline; color: var(--nike-link); }
+.nike-link--sm { font-size: var(--nike-type-link-sm-size); line-height: var(--nike-type-link-sm-lh); }
+.nike-caption { font-family: var(--nike-font-body); font-size: var(--nike-type-caption-size); font-weight: var(--nike-font-weight-medium); line-height: 1.5; }
+.nike-price { font-family: var(--nike-font-body); font-size: var(--nike-type-caption-size); font-weight: var(--nike-font-weight-medium); color: var(--nike-black); }
+.nike-price--sale { color: var(--nike-badge); }
+.nike-meta { font-family: var(--nike-font-body); font-size: var(--nike-type-small-size); font-weight: var(--nike-font-weight-medium); line-height: 1.5; color: var(--nike-text-secondary); }
+
+.nike-card {
+  background: var(--nike-white); border-radius: var(--nike-radius-0);
+  box-shadow: var(--nike-shadow); overflow: hidden;
+}
+.nike-card img { width: 100%; display: block; aspect-ratio: 1/1; object-fit: cover; background: var(--nike-light-grey); }
+.nike-card__body { padding: var(--nike-space-3) var(--nike-space-2) var(--nike-space-2); display: grid; gap: var(--nike-grid-gap-card); }
+.nike-card--ui { border-radius: var(--nike-radius-20); border: 1px solid var(--nike-border-secondary); }
+
+.nike-badge {
+  display: inline-block; font-family: var(--nike-font-body);
+  font-size: 12px; font-weight: var(--nike-font-weight-medium); line-height: 1;
+  padding: 6px 10px; border-radius: var(--nike-radius-30);
+  background: var(--nike-light-grey); color: var(--nike-black);
+}
+.nike-badge--sale { background: var(--nike-red); color: var(--nike-white); }
+.nike-badge--promo { background: var(--nike-warning); color: var(--nike-black); }
+
+.nike-tag {
+  font-family: var(--nike-font-body); font-size: var(--nike-type-button-sm-size);
+  font-weight: var(--nike-font-weight-medium); line-height: 1;
+  padding: 12px 18px; border-radius: var(--nike-radius-30);
+  border: 1px solid var(--nike-border); background: var(--nike-white); color: var(--nike-black);
+  cursor: pointer; min-height: 36px;
+}
+.nike-tag:hover { border-color: var(--nike-black); }
+
+.nike-hero {
+  position: relative; background: var(--nike-light-grey);
+}
+.nike-hero img { width: 100%; display: block; object-fit: cover; }
+.nike-hero__scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(17,17,17,0.05) 0%, rgba(17,17,17,0.55) 100%); }
+.nike-hero__content { position: absolute; left: var(--nike-pad-desktop); bottom: var(--nike-space-8); color: var(--nike-white); display: grid; gap: var(--nike-space-4); justify-items: start; }
+.nike-hero__content .nike-display, .nike-hero__content .nike-body { color: var(--nike-white); }
+.nike-hero__btn { background: var(--nike-white); color: var(--nike-black); }
+.nike-hero__btn:hover { background: var(--nike-border); }
+
+@media (max-width: 640px) {
+  .nike-display { font-size: 48px; }
+  .nike-hero__content { left: var(--nike-pad-mobile); bottom: var(--nike-space-6); }
+  .nike-nav { padding: 0 var(--nike-pad-mobile); }
+}
+@media (min-width: 641px) and (max-width: 960px) {
+  .nike-display { font-size: 64px; }
+  .nike-nav { padding: 0 var(--nike-pad-tablet); }
+}

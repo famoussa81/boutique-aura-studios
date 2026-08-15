@@ -1,0 +1,20 @@
+# Documentation du système de design et sources internes :
+# utiles à l'équipe, hors périmètre du site livré au client.
+system/
+brand.html
+brand.json
+plugin-source/
+context/
+DESIGN.md
+DESIGN-HANDOFF.md
+DESIGN-MANIFEST.json
+SKILL.md
+guide.md
+AUDIT-LIVRAISON.md
+GUIDE-VERCEL-SUPABASE.md
+RECETTE.md
+
+# Secrets et fichiers de travail
+.pexels-key
+assets-originaux/
+assets-candidats/

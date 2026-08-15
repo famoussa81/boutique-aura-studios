@@ -1,0 +1,19 @@
+{
+  "candidateId": "1ae0d243-643a-4558-88e9-e8bee34d571c",
+  "projectId": "brand-nike-325034",
+  "runId": "663b3f0f-488e-4324-ba5d-7c07f909a555",
+  "conversationId": "01d8335f-eede-4dff-8759-7e0dc97e3589",
+  "provenance": {
+    "summary": "Detected from SKILL.md after a successful run.",
+    "detectedAt": 1786671497536
+  },
+  "sourceRefs": [
+    {
+      "kind": "file",
+      "value": "SKILL.md",
+      "label": "SKILL.md",
+      "size": 3220,
+      "copied": true
+    }
+  ]
+}

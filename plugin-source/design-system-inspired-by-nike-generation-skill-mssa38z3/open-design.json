@@ -1,0 +1,22 @@
+{
+  "$schema": "https://open-design.ai/schemas/plugin.v1.json",
+  "specVersion": "1.0.0",
+  "name": "design-system-inspired-by-nike-generation-skill-mssa38z3",
+  "title": "Design System Inspired by Nike — generation skill",
+  "version": "0.1.0",
+  "description": "--- name: design-system-nike description: Generate Nike-inspired (Podium CDS) retail pages for URA STUDIOS using the measured design-language bundle. ---",
+  "od": {
+    "kind": "skill",
+    "taskKind": "new-generation",
+    "context": {
+      "skills": [
+        {
+          "path": "./SKILL.md"
+        }
+      ]
+    },
+    "capabilities": [
+      "prompt:inject"
+    ]
+  }
+}

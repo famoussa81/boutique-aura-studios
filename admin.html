@@ -1,0 +1,1620 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>AURA STUDIOS — Administration</title>
+<link rel="preconnect" href="https://vgzvavlmmqbxtuhanaqj.supabase.co" crossorigin />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap"
+      media="print" onload="this.media='all';this.onload=null" />
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" /></noscript>
+<link rel="icon" href="logos/favicon.ico" sizes="any" />
+<style>
+  :root{
+    --bg:#ffffff;--ink:#111111;--accent:#000000;--surface:#28282a;--gray:#f5f5f5;--line:#cacacb;--muted:#707072;
+    --radius:8px;--font:Inter, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--gray);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer}
+  ul{list-style:none}
+  input,select,textarea{font-family:inherit}
+
+  .top{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line)}
+  .top-inner{max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;justify-content:space-between;flex-wrap:wrap}
+  .brand{font-weight:900;font-size:18px;letter-spacing:.14em;text-transform:uppercase;line-height:1}
+  .brand small{display:block;font-size:9px;letter-spacing:.4em;color:var(--muted);font-weight:700;margin-top:2px}
+  .nav-admin{display:flex;gap:6px;flex-wrap:wrap}
+  .tab{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:10px 15px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;transition:all .15s ease}
+  .tab:hover{border-color:var(--ink)}
+  .tab.active{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+  .top-actions{display:flex;gap:6px;align-items:center}
+  .icon-link{color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:8px 10px;border-radius:8px}
+  .icon-link:hover{color:var(--ink);background:var(--gray)}
+
+  .main{max-width:1200px;margin:0 auto;padding:28px 20px 90px}
+  .view{display:none}
+  .view.active{display:block}
+  .view-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+  .view-head h1{font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:-.01em}
+  .view-head p{color:var(--muted);font-size:13px}
+
+  .card{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:20px}
+  .card h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px}
+
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+  .stat .num{font-size:26px;font-weight:900;letter-spacing:-.01em}
+  .stat .lbl{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+  .stat .sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+  .chart{display:flex;align-items:flex-end;gap:12px;height:150px;padding-top:10px}
+  .chart .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;min-width:0}
+  .chart .bar{width:100%;max-width:42px;background:var(--ink);border-radius:8px 8px 0 0;min-height:3px;transition:height .3s ease}
+  .chart .dv{font-size:11px;color:var(--muted)}
+  .chart .vc{font-size:10px;font-weight:800;color:var(--muted)}
+
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);font-size:13.5px;vertical-align:middle}
+  th{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800}
+  tbody tr:hover{background:var(--gray)}
+  .ref{font-weight:800}
+  .mono{font-variant-numeric:tabular-nums}
+  .status{font-family:inherit;font-size:12.5px;font-weight:700;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);cursor:pointer;min-height:38px}
+  .status:focus{outline:none;border-color:var(--ink)}
+  .no-orders{color:var(--muted);text-align:center;padding:36px 8px}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:8px;font-weight:800;font-size:13px;letter-spacing:.07em;text-transform:uppercase;padding:13px 22px;min-height:44px;border:1px solid transparent;transition:all .15s ease}
+  .btn:active{transform:scale(.98)}
+  .btn-primary{background:var(--ink);color:var(--bg)}
+  .btn-primary:hover{background:var(--surface)}
+  .btn-ghost{background:var(--bg);color:var(--ink);border-color:var(--line)}
+  .btn-ghost:hover{border-color:var(--ink)}
+  .btn-full{width:100%}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+
+  .sbtn{padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;transition:all .15s ease;color:var(--ink)}
+  .sbtn:hover{border-color:var(--ink)}
+  .sbtn.danger:hover{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+  .sbtn.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+  .row-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+  .chip{display:inline-block;border-radius:8px;padding:4px 9px;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:var(--gray);color:var(--muted);border:1px solid var(--line);margin-left:6px}
+  .chip.dark{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .thumb{width:44px;height:56px;object-fit:cover;border-radius:8px;background:var(--gray)}
+
+  .prod-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start}
+  .prod-item{display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+  .prod-item:last-child{border-bottom:none}
+  .pi-info{flex:1;min-width:0}
+  .pi-name{font-size:14px;font-weight:800}
+  .pi-meta{font-size:12px;color:var(--muted);margin-top:2px}
+  .pi-stock{font-size:12px;font-weight:700;margin-top:2px}
+
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+  .field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;font-size:14px;background:var(--bg);color:var(--ink);min-height:44px}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--ink)}
+  .field textarea{min-height:74px;resize:vertical}
+  .field .hint{font-size:11.5px;color:var(--muted);margin-top:5px}
+  .pass-wrap{position:relative}
+  .pass-wrap input{padding-right:48px}
+  .pass-toggle{position:absolute;top:50%;right:6px;transform:translateY(-50%);width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--muted)}
+  .pass-toggle:hover{color:var(--ink)}
+  .pass-toggle svg{width:20px;height:20px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px}
+  .chk{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:13px;font-weight:700;background:var(--bg);cursor:pointer}
+  .chk input{width:16px;height:16px;accent-color:#111111}
+  .chk.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+  .chk input{accent-color:#111111}
+  .chk.on input{accent-color:#ffffff}
+  .stock-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .stock-cell{border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;background:var(--bg)}
+  .stock-cell b{font-size:12px;min-width:20px;text-align:center}
+  .stock-cell input{width:64px;min-height:34px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px;text-align:center}
+  .toggle{display:flex;align-items:center;gap:10px;margin-top:4px}
+  .toggle input{width:17px;height:17px;accent-color:#111111}
+  .toggle span{font-size:13px;font-weight:700}
+  .img-preview{width:100%;height:150px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--gray);margin-top:8px}
+
+  .gate{position:fixed;inset:0;background:var(--gray);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px}
+  .gate-card{width:min(400px,100%);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:32px;text-align:center}
+  .gate-card .logo{font-weight:900;font-size:20px;letter-spacing:.16em;text-transform:uppercase}
+  .gate-card .logo small{display:block;font-size:9px;letter-spacing:.4em;color:var(--muted);margin-top:2px}
+  .gate-card p{color:var(--muted);font-size:13px;margin:14px 0 20px}
+  .gate-hint{display:none;font-size:11.5px;background:var(--gray);border:1px dashed var(--line);border-radius:8px;padding:9px 12px;margin-top:14px;color:var(--muted)}
+  .gate-hint[data-show="true"]{display:block}
+  .err{display:none;font-size:12.5px;font-weight:700;color:var(--ink);margin-top:10px}
+  .err[data-show="true"]{display:block}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--ink);color:var(--bg);border-radius:8px;padding:14px 22px;font-size:13.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;z-index:400;opacity:0;pointer-events:none;transition:all .25s ease;box-shadow:0 8px 26px color-mix(in srgb,#111111 35%,transparent);max-width:calc(100vw - 32px);text-align:center}
+  .toast[data-visible="true"]{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (max-width:920px){
+    .grid4{grid-template-columns:repeat(2,1fr)}
+    .prod-grid{grid-template-columns:1fr}
+    .grid2{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){
+    .main{padding:20px 14px 80px}
+    .grid4{grid-template-columns:1fr 1fr}
+    th,td{padding:10px 10px;font-size:13px}
+  }
+
+  /* Envoi d'image */
+  .drop{border:1px dashed var(--line);border-radius:var(--radius);padding:18px;text-align:center;
+    cursor:pointer;background:var(--gray);transition:border-color .15s ease}
+  .drop:hover,.drop[data-over="true"]{border-color:var(--ink)}
+  .drop b{display:block;font-size:13px;font-weight:700}
+  .drop span{display:block;font-size:12px;color:var(--muted);margin-top:4px}
+  .drop input{display:none}
+  .or{display:flex;align-items:center;gap:10px;margin:12px 0;font-size:11px;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.1em}
+  .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* Categories */
+  .cat-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+  .cat-row input{height:40px;border:1px solid var(--line);border-radius:var(--radius);padding:0 10px;
+    font:inherit;font-size:13px;background:var(--bg);color:var(--ink)}
+  .cat-row .key{font-family:ui-monospace,monospace;font-size:12px;color:var(--muted)}
+  .cat-count{font-size:11px;color:var(--muted);margin-top:2px}
+
+  /* Edition de commande */
+  .ord-edit{background:var(--gray);padding:16px;border-radius:var(--radius);margin-top:10px}
+  .ord-edit .grid2{margin-bottom:0}
+  .ord-items{margin:14px 0 0}
+  .ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:8px 0;border-top:1px solid var(--line);font-size:13px}
+</style>
+</head>
+<body>
+
+  <div class="gate" id="gate">
+    <div class="gate-card">
+      <div class="logo">AURA<small>ADMINISTRATION</small></div>
+      <p>Espace réservé au propriétaire de la boutique.</p>
+      <form id="loginForm" novalidate>
+        <div class="field" style="text-align:left">
+          <label for="emailInput">Nom d'utilisateur</label>
+          <input type="text" id="emailInput" autocomplete="username" placeholder="admin" spellcheck="false" autocapitalize="none" />
+        </div>
+        <div class="field" style="text-align:left">
+          <label for="passInput">Mot de passe</label>
+          <div class="pass-wrap">
+            <input type="password" id="passInput" autocomplete="current-password" />
+            <button type="button" class="pass-toggle" id="passToggle" aria-label="Afficher le mot de passe">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="loginSubmit">Se connecter</button>
+        <p class="err" id="loginErr" role="alert">Identifiants incorrects.</p>
+      </form>
+      <p class="gate-hint" id="gateHint" data-show="true"></p>
+    </div>
+  </div>
+
+  <header class="top">
+    <div class="top-inner">
+      <div class="brand">AURA STUDIOS<small>PANEL ADMINISTRATION</small></div>
+      <nav class="nav-admin">
+        <button class="tab active" data-view="dashboard">Tableau de bord</button>
+        <button class="tab" data-view="orders">Commandes</button>
+        <button class="tab" data-view="products">Produits</button>
+        <button class="tab" data-view="settings">Réglages</button>
+        <button class="tab" data-view="news">Newsletter</button>
+        <button class="tab" data-view="wait">Liste d'attente</button>
+        <button class="tab" data-view="reviews">Avis</button>
+      </nav>
+      <div class="top-actions">
+        <a class="icon-link" href="index.html">Voir la boutique</a>
+        <button class="icon-link" id="logoutBtn">Déconnexion</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <section class="view active" id="view-dashboard">
+      <div class="view-head">
+        <div><h1>Tableau de bord</h1><p id="dashDate"></p></div>
+        <a class="btn btn-primary" href="index.html">Aperçu de la boutique</a>
+      </div>
+      <div class="grid4" id="stats"></div>
+      <div class="card">
+        <h2>Activité des 7 derniers jours (FCFA)</h2>
+        <div class="chart" id="chart"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-orders">
+      <div class="view-head">
+        <div><h1>Commandes</h1><p>Passez une commande en attente à « Confirmée » pour décrémenter réellement le stock. Annulée libère la réservation.</p></div>
+        <button type="button" class="btn btn-primary" id="exportOrders">Exporter en CSV</button>
+      </div>
+      <div class="card" style="margin-bottom:14px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+        <div class="field" style="margin:0;flex:1;min-width:200px">
+          <label for="ordSearch">Rechercher</label>
+          <input type="search" id="ordSearch" placeholder="Référence, client, téléphone, quartier…" />
+        </div>
+        <div class="field" style="margin:0;min-width:180px">
+          <label for="ordStatus">Statut</label>
+          <select id="ordStatus">
+            <option value="">Tous les statuts</option>
+            <option value="PENDING">🟡 En attente</option>
+            <option value="CONFIRMED">🟢 Confirmée</option>
+            <option value="SHIPPING">🔵 En cours de livraison</option>
+            <option value="DELIVERED">⚪ Livrée &amp; Payée</option>
+            <option value="CANCELLED">🔴 Annulée</option>
+          </select>
+        </div>
+        <p class="hint" id="ordCount" style="margin:0 0 10px"></p>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Référence</th><th>Date</th><th>Client</th><th>Numéro</th><th>Quartier</th><th>Total</th><th>Statut</th><th>Contact</th><th>Gérer</th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="view" id="view-products">
+      <div class="view-head">
+        <div><h1>Catalogue produits</h1><p>Ajoutez, modifiez, masquez ou supprimez vos produits. Les changements sont visibles immédiatement en boutique.</p></div>
+      </div>
+      <div class="prod-grid">
+        <div class="card" id="productCardList">
+          <h2>Produits en boutique</h2>
+          <div id="prodList"></div>
+        </div>
+        <div class="card">
+          <h2 id="formTitle">Ajouter un produit</h2>
+          <form id="prodForm" novalidate>
+            <input type="hidden" id="fId" />
+            <div class="grid2">
+              <div class="field">
+                <label for="fName">Nom du produit</label>
+                <input type="text" id="fName" placeholder="Hoodie Aura Tech" />
+              </div>
+              <div class="field">
+                <label for="fCat">Catégorie</label>
+                <select id="fCat">
+                  <option value="hoodies">Hoodies</option>
+                  <option value="tees">T-shirts</option>
+                  <option value="pants">Cargos</option>
+                  <option value="accessoires">Accessoires</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid2">
+              <div class="field">
+                <label for="fPrice">Prix (FCFA)</label>
+                <input type="number" id="fPrice" min="0" step="100" placeholder="25000" />
+              </div>
+              <div class="field">
+                <label for="fOld">Ancien prix (promo)</label>
+                <input type="number" id="fOld" min="0" step="100" placeholder="Optionnel" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="fBadge">Badge</label>
+              <select id="fBadge">
+                <option value="">Aucun</option>
+                <option value="Nouveau">Nouveau</option>
+                <option value="Bestseller">Bestseller</option>
+                <option value="-20 %">-20 %</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Tailles disponibles</label>
+              <div class="checks" id="fSizes">
+                <label class="chk"><input type="checkbox" value="S"/> S</label>
+                <label class="chk"><input type="checkbox" value="M"/> M</label>
+                <label class="chk"><input type="checkbox" value="L"/> L</label>
+                <label class="chk"><input type="checkbox" value="XL"/> XL</label>
+                <label class="chk"><input type="checkbox" value="XXL"/> XXL</label>
+                <label class="chk"><input type="checkbox" value="TU"/> TU</label>
+              </div>
+              <div class="stock-grid" id="fStockGrid"></div>
+            </div>
+            <div class="field">
+              <label>Image du produit</label>
+              <label class="drop" id="imgDrop">
+                <b>Choisir une photo</b>
+                <span>Depuis votre téléphone ou votre ordinateur — JPG ou PNG</span>
+                <input type="file" id="fFile" accept="image/*" />
+              </label>
+              <p class="hint" id="imgStatus" style="margin-top:8px"></p>
+              <div class="or">ou</div>
+            </div>
+            <div class="field">
+              <label for="fImg">Adresse d'une image en ligne</label>
+              <input type="text" id="fImg" placeholder="assets/hoodie-noir.webp ou https://…" />
+              <img class="img-preview" id="fImgPrev" alt="" />
+              <p class="hint">Collez une URL web ou un chemin du dossier assets/.</p>
+            </div>
+            <div class="field">
+              <label for="fDesc">Description</label>
+              <textarea id="fDesc" placeholder="Décrivez la pièce, ses matières, sa coupe…"></textarea>
+            </div>
+            <div class="grid2">
+              <div class="toggle"><input type="checkbox" id="fActive" checked /><span>Visible en boutique</span></div>
+              <div class="toggle"><input type="checkbox" id="fOut" /><span>Marquer en rupture de stock</span></div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:18px">
+              <button type="submit" class="btn btn-primary" style="flex:1">Enregistrer le produit</button>
+              <button type="button" class="btn btn-ghost" id="prodReset">Annuler</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-news">
+      <div class="view-head">
+        <div><h1>Newsletter</h1><p>Adresses collectées par le formulaire de la boutique.</p></div>
+        <button type="button" class="btn btn-primary" id="exportNews">Exporter en CSV</button>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Adresse e-mail</th><th>Inscription</th></tr></thead>
+          <tbody id="newsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="view" id="view-wait">
+      <div class="view-head">
+        <div><h1>Liste d'attente</h1><p>Clients qui ont demandé à être prévenus du retour d'une taille épuisée. Ce sont des ventes déjà acquises : contactez-les dès le réassort.</p></div>
+        <button type="button" class="btn btn-primary" id="exportWait">Exporter en CSV</button>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Produit</th><th>Taille</th><th>Numéro</th><th>Demande</th><th>Contact</th></tr></thead>
+          <tbody id="waitBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="view" id="view-reviews">
+      <div class="view-head">
+        <div><h1>Avis clients</h1><p>Les trois premiers avis s'affichent en boutique. Tant que la liste est vide, la section reste invisible sur le site — aucun faux avis n'est généré.</p></div>
+      </div>
+      <div class="prod-grid">
+        <div class="card">
+          <h2>Avis publiés</h2>
+          <div id="revList"></div>
+        </div>
+        <div class="card">
+          <h2>Ajouter un avis</h2>
+          <form id="revForm" novalidate>
+            <div class="grid2">
+              <div class="field">
+                <label for="rName">Prénom et nom</label>
+                <input type="text" id="rName" placeholder="Awa D." />
+              </div>
+              <div class="field">
+                <label for="rQuartier">Quartier</label>
+                <input type="text" id="rQuartier" placeholder="ACI 2000" />
+              </div>
+            </div>
+            <div class="grid2">
+              <div class="field">
+                <label for="rProduct">Produit concerné (facultatif)</label>
+                <input type="text" id="rProduct" placeholder="Hoodie Urban Flow" />
+              </div>
+              <div class="field">
+                <label for="rRating">Note</label>
+                <select id="rRating">
+                  <option value="5">5 / 5</option>
+                  <option value="4">4 / 5</option>
+                  <option value="3">3 / 5</option>
+                  <option value="2">2 / 5</option>
+                  <option value="1">1 / 5</option>
+                  <option value="0">Sans note</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="rText">Témoignage</label>
+              <textarea id="rText" placeholder="Reprenez les mots exacts du client."></textarea>
+              <p class="hint">N'inventez jamais un témoignage : un faux avis se repère et détruit la confiance. Demandez l'accord du client avant publication.</p>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Publier l'avis</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-settings">
+      <div class="view-head">
+        <div><h1>Réglages de la boutique</h1><p>Modifiez ces réglages sans toucher au code — ils s'appliquent instantanément à la boutique.</p></div>
+      </div>
+      <div class="card" style="max-width:640px">
+        <form id="settingsForm" novalidate>
+          <div class="field">
+            <label for="sWhats">Numéro WhatsApp du commerçant</label>
+            <input type="tel" id="sWhats" placeholder="22376123456" />
+            <p class="hint">Format international sans le + : 223 (Mali) puis le numéro.</p>
+          </div>
+          <div class="field">
+            <label for="sName">Nom de la boutique</label>
+            <input type="text" id="sName" />
+          </div>
+          <div class="field">
+            <label for="sFee">Frais de livraison à Bamako (FCFA)</label>
+            <input type="number" id="sFee" min="0" step="100" />
+          </div>
+          <div class="field">
+            <label for="sAnn">Bannière d'annonce (haut de site)</label>
+            <input type="text" id="sAnn" />
+            <p class="hint">Si vous y annoncez un seuil de livraison offerte, vérifiez qu'il correspond au champ ci-dessus.</p>
+          </div>
+          <div class="field">
+            <label for="sFree">Livraison offerte à partir de (FCFA)</label>
+            <input type="number" id="sFree" min="0" step="1000" placeholder="50000" />
+            <p class="hint">0 = pas de livraison offerte. Ce seuil est appliqué au calcul du panier.</p>
+          </div>
+          <div class="field">
+            <label for="sIG">Lien Instagram</label>
+            <input type="url" id="sIG" placeholder="https://instagram.com/votre-compte" />
+            <p class="hint">Laisser vide masque l'icône dans le pied de page de la boutique.</p>
+          </div>
+          <div class="field">
+            <label for="sTT">Lien TikTok</label>
+            <input type="url" id="sTT" placeholder="https://tiktok.com/@votre-compte" />
+          </div>
+          <div class="field">
+            <label for="sYT">Lien YouTube</label>
+            <input type="url" id="sYT" placeholder="https://youtube.com/@votre-chaine" />
+          </div>
+          <p class="hint" style="margin-bottom:14px">Le mot de passe d'administration se change dans Supabase → Authentication → Users. Il n'est jamais stocké dans ce site.</p>
+          <button type="submit" class="btn btn-primary btn-full">Enregistrer les réglages</button>
+        </form>
+      </div>
+
+      <div class="card" style="max-width:640px;margin-top:20px">
+        <h2>Catégories de la boutique</h2>
+        <p class="hint" style="margin-bottom:16px">Elles alimentent les onglets, la navigation et le pied de page. Une catégorie utilisée par des produits ne peut pas être supprimée.</p>
+        <div id="catList"></div>
+        <div class="or">Ajouter</div>
+        <form id="catForm" novalidate>
+          <div class="cat-row">
+            <input type="text" id="catLabel" placeholder="Nom affiché (ex. Vestes)" />
+            <input type="text" id="catKey" placeholder="Identifiant (ex. vestes)" />
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+<script src="supabase.config.js"></script>
+<script src="supabase-client.js"></script>
+<script src="catalog.js"></script>
+<script>
+(function(){
+  var KEY = "aura_store_v3";
+
+  /* Catalogue et réglages : définition unique partagée avec la boutique
+     (catalog.js). Aucune commande de démonstration n'est injectée. */
+  function SEED(){ return window.AURA_CATALOG.seed(); }
+
+  function readStore(){
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw){ var s = JSON.parse(raw); if (s && s.products && s.settings) return s; }
+    } catch(e){}
+    var s = SEED();
+    saveStoreWith(s);
+    return s;
+  }
+  /* Sauvegarde locale + synchronisation ciblée : on n'envoie que ce qui
+     a changé, jamais tout l'historique des commandes à chaque clic. */
+  function saveStore(){ saveStoreWith(store); }
+  function saveStoreWith(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
+
+  var store = readStore();
+
+  /* ---------------- Supabase (admin) ---------------- */
+  var dbSession = false;
+  function dbAvailable(){ return typeof window.AURA_DB !== "undefined" && window.AURA_DB.ready(); }
+  function online(){ return dbAvailable() && dbSession; }
+
+  function dbLoadAll(cb){
+    cb = cb || function(){};
+    if (!online()) return cb();
+    var pending = 3;
+    function step(){ if (--pending === 0){ saveStore(); renderAll(); cb(); } }
+    window.AURA_DB.loadProducts(function(ep, rows){
+      if (!ep && rows && rows.length) store.products = rows;
+      step();
+    });
+    window.AURA_DB.loadSettings(function(es, s){
+      if (!es && s) for (var k in s) store.settings[k] = s[k];
+      step();
+    });
+    window.AURA_DB.loadOrders(function(eo, ords){
+      if (!eo && ords) store.orders = ords;
+      step();
+    });
+  }
+  function syncProducts(){
+    if (!online()) return;
+    window.AURA_DB.saveProducts(store.products, function(er){
+      if (er) toast("Synchronisation produits : " + er.message);
+    });
+  }
+  function syncSettings(){
+    if (!online()) return;
+    window.AURA_DB.saveSettings(store.settings, function(er){
+      if (er) toast("Synchronisation réglages : " + er.message);
+    });
+  }
+  function syncOrder(order){
+    if (!online()) return;
+    window.AURA_DB.updateOrder(order, function(er){
+      if (er) toast("Synchronisation commande : " + er.message);
+    });
+  }
+  function syncDeleteProduct(id){
+    if (!online()) return;
+    window.AURA_DB.deleteProduct(id, function(er){
+      if (er) toast("Suppression non synchronisée : " + er.message);
+    });
+  }
+
+  var STATUS = {
+    PENDING:   {label:"En attente",          emoji:"🟡"},
+    CONFIRMED: {label:"Confirmée",           emoji:"🟢"},
+    SHIPPING:  {label:"En cours de livraison",emoji:"🔵"},
+    DELIVERED: {label:"Livrée & Payée",       emoji:"⚪"},
+    CANCELLED: {label:"Annulée",              emoji:"🔴"}
+  };
+  var SIZES = ["S","M","L","XL","XXL","TU"];
+  var SLABEL = {S:"S",M:"M",L:"L",XL:"XL",XXL:"XXL",TU:"TU"};
+  /* Categories : la liste vit dans les reglages, partagee avec la boutique. */
+  var CATS = {};
+  function catList(){
+    var c = store.settings.categories;
+    if (!Array.isArray(c) || !c.length) c = window.AURA_CATALOG.CATEGORIES;
+    return c.filter(function(x){ return x && x.key && x.label; });
+  }
+  function rebuildCats(){
+    CATS = {};
+    catList().forEach(function(c){ CATS[c.key] = c.label; });
+  }
+  function catUsage(key){
+    return store.products.filter(function(p){ return p.cat === key; }).length;
+  }
+  function fillCatSelect(){
+    var sel = $("#fCat");
+    if (!sel) return;
+    var cur = sel.value;
+    sel.innerHTML = catList().map(function(c){
+      return '<option value="' + esc(c.key) + '">' + esc(c.label) + '</option>';
+    }).join("");
+    if (cur && CATS[cur]) sel.value = cur;
+  }
+  function renderCatSettings(){
+    rebuildCats();
+    fillCatSelect();
+    var host = $("#catList");
+    if (!host) return;
+    var list = catList();
+    host.innerHTML = list.map(function(c, i){
+      var used = catUsage(c.key);
+      return '<div class="cat-row">' +
+        '<div><input type="text" data-catlabel="' + i + '" value="' + esc(c.label) + '" aria-label="Nom de la catégorie" />' +
+          '<div class="cat-count">' + used + ' produit' + (used > 1 ? 's' : '') + '</div></div>' +
+        '<div class="key">' + esc(c.key) + '</div>' +
+        '<button type="button" class="sbtn danger" data-catdel="' + i + '"' +
+          (used ? ' disabled title="Catégorie utilisée par ' + used + ' produit(s)"' : '') + '>Supprimer</button>' +
+      '</div>';
+    }).join("");
+  }
+
+  function $(s){ return document.querySelector(s); }
+  function $$(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function fmt(n){ return (Math.round(Number(n)||0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g," ") + " FCFA"; }
+  function digits(s){ return String(s||"").replace(/\D/g,""); }
+  function localPhone(d){
+    d = digits(d);
+    if (d.length === 11 && d.slice(0,3) === "223") d = d.slice(3);
+    d = d.slice(0,8);
+    return "+223 " + d.slice(0,2) + " " + d.slice(2,4) + " " + d.slice(4,6) + " " + d.slice(6,8);
+  }
+  function findProduct(id){ for (var i=0;i<store.products.length;i++) if (store.products[i].id === id) return store.products[i]; return null; }
+  function availFor(p, sz){ var s = p.sizes[sz]; return s ? s.s - s.r : 0; }
+  function totalFor(p){ var t = 0; for (var k in p.sizes) t += p.sizes[k].s; return t; }
+  function isOut(p){ if (p.stockout) return true; return totalFor(p) <= 0; }
+  function waLink(phone, text){ return "https://wa.me/" + digits(phone) + "?text=" + encodeURIComponent(text); }
+
+  var toastTimer;
+  function toast(msg){
+    var t = $("#toast");
+    t.textContent = msg;
+    t.setAttribute("data-visible","true");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.setAttribute("data-visible","false"); }, 2400);
+  }
+
+  /* ---------------- Authentification ----------------
+     La seule barrière valable est Supabase Auth : le mot de passe est
+     vérifié par le serveur, jamais par le navigateur. Tant qu'aucune
+     session n'est ouverte, l'interface d'administration n'est pas
+     construite et aucune donnée serveur n'est accessible (les politiques
+     RLS refusent toute lecture des commandes sans session). */
+  var unlocked = false;
+
+  function setGate(open){
+    $("#gate").style.display = open ? "flex" : "none";
+    document.body.style.overflow = open ? "hidden" : "";
+  }
+  function unlock(){
+    unlocked = true;
+    setGate(false);
+    renderAll();
+  }
+  function lock(){
+    unlocked = false;
+    dbSession = false;
+    if (dbAvailable()) window.AURA_DB.signOut();
+    setGate(true);
+    $("#passInput").value = "";
+    $("#emailInput").focus();
+  }
+
+  /* Domaine de connexion : sert uniquement à composer l'e-mail technique
+     attendu par Supabase Auth. Modifiable dans supabase.config.js. */
+  function loginDomain(){
+    var d = (window.AURA_SUPA && window.AURA_SUPA.loginDomain) || "aura-studios.app";
+    return String(d).toLowerCase().replace(/^@/, "");
+  }
+
+  /* Message d'accueil adapté à la configuration réelle du projet. */
+  (function initGate(){
+    var hint = $("#gateHint");
+    var emailField = $("#emailInput").closest(".field");
+    if (dbAvailable()){
+      hint.innerHTML = "Identifiants remis par votre prestataire. En cas d'oubli, " +
+        "le mot de passe se réinitialise depuis le tableau de bord Supabase.";
+    } else if (window.AURA_DB && window.AURA_DB.misconfigured()){
+      hint.innerHTML = "Supabase est activé mais l'URL du projet n'est pas renseignée dans <code>supabase.config.js</code>. Corrigez-la pour activer la boutique en ligne.";
+      emailField.style.display = "none";
+      $("#passInput").closest(".field").style.display = "none";
+      $("#loginSubmit").textContent = "Ouvrir en mode local";
+    } else {
+      hint.innerHTML = "Mode local : les données restent dans ce navigateur et <strong>cet espace n'est pas protégé</strong>. Configurez Supabase (<code>supabase.config.js</code>) avant d'ouvrir l'administration sur Internet.";
+      emailField.style.display = "none";
+      $("#passInput").closest(".field").style.display = "none";
+      $("#loginSubmit").textContent = "Ouvrir en mode local";
+    }
+  })();
+
+  function tryLogin(){
+    var errEl = $("#loginErr");
+    errEl.setAttribute("data-show","false");
+
+    /* Sans Supabase, il n'existe aucun moyen de vérifier un mot de passe
+       côté client : afficher un formulaire donnerait une fausse sécurité. */
+    if (!dbAvailable()){
+      unlock();
+      loadNews();
+      loadWait();
+      toast("Mode local — données de ce navigateur uniquement");
+      return;
+    }
+
+    var saisi = $("#emailInput").value.trim();
+    var pass = $("#passInput").value;
+    if (!saisi || !pass){
+      errEl.textContent = "Renseignez le nom d'utilisateur et le mot de passe.";
+      errEl.setAttribute("data-show","true");
+      (saisi ? $("#passInput") : $("#emailInput")).focus();
+      return;
+    }
+    /* Supabase Auth s'identifie par e-mail. Le commercant ne saisit qu'un
+       nom : on lui accole le domaine de connexion. Une adresse complete
+       reste acceptee, pour les comptes deja crees autrement. */
+    var email = saisi.indexOf("@") >= 0
+      ? saisi.toLowerCase()
+      : saisi.toLowerCase().replace(/[^a-z0-9._-]/g, "") + "@" + loginDomain();
+    var btn = $("#loginSubmit");
+    btn.disabled = true;
+    btn.textContent = "Connexion…";
+    window.AURA_DB.signIn(email, pass, function(er){
+      btn.disabled = false;
+      btn.textContent = "Se connecter";
+      if (er){
+        errEl.textContent = /invalid/i.test(er.message || "")
+          ? "Nom d'utilisateur ou mot de passe incorrect."
+          : ("Connexion impossible : " + er.message);
+        errEl.setAttribute("data-show","true");
+        $("#passInput").focus();
+        return;
+      }
+      dbSession = true;
+      $("#passInput").value = "";
+      unlock();
+      toast("Bienvenue");
+      dbLoadAll(loadNews);
+    });
+  }
+
+  $("#loginForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    tryLogin();
+  });
+  $("#passToggle").addEventListener("click", function(){
+    var inp = $("#passInput");
+    var show = inp.type === "password";
+    inp.type = show ? "text" : "password";
+    this.setAttribute("aria-label", show ? "Masquer le mot de passe" : "Afficher le mot de passe");
+  });
+
+  /* ---------------- Navigation ---------------- */
+  function showView(name){
+    $$(".view").forEach(function(v){ v.classList.toggle("active", v.id === "view-" + name); });
+    $$(".tab").forEach(function(t){ t.classList.toggle("active", t.getAttribute("data-view") === name); });
+  }
+  $$(".tab").forEach(function(t){
+    t.addEventListener("click", function(){
+      var v = t.getAttribute("data-view");
+      showView(v);
+      if (v === "news") loadNews();
+      if (v === "wait") loadWait();
+    });
+  });
+  $("#logoutBtn").addEventListener("click", function(){
+    lock();
+    toast("Déconnecté");
+  });
+
+  /* ---------------- Dashboard ---------------- */
+  function renderDash(){
+    var ca = 0, pending = 0;
+    store.orders.forEach(function(o){
+      if (o.status === "CONFIRMED" || o.status === "SHIPPING" || o.status === "DELIVERED") ca += o.total;
+      if (o.status === "PENDING") pending += 1;
+    });
+    var out = store.products.filter(isOut).length;
+    var active = store.products.filter(function(p){ return p.active; }).length;
+    var pd = 0;
+    store.orders.forEach(function(o){
+      if (o.status === "PENDING") pd += (o.total || 0);
+    });
+    $("#stats").innerHTML =
+      '<div class="card stat"><div class="num">' + fmt(ca) + '</div><div class="lbl">Chiffre d\'affaires estimé</div><div class="sub">Commandes confirmées, en cours et livrées</div></div>' +
+      '<div class="card stat"><div class="num">' + pending + '</div><div class="lbl">Commandes en attente WhatsApp</div><div class="sub">' + fmt(pd) + ' réservés</div></div>' +
+      '<div class="card stat"><div class="num">' + out + '</div><div class="lbl">Produits en rupture</div><div class="sub">' + active + ' produits visibles</div></div>' +
+      '<div class="card stat"><div class="num">' + store.products.length + '</div><div class="lbl">Produits au catalogue</div><div class="sub">Total toutes catégories</div></div>';
+    $("#dashDate").textContent = new Date().toLocaleDateString("fr-FR", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+
+    var days = [], now = new Date();
+    for (var i=6;i>=0;i--){
+      var d = new Date(now); d.setDate(now.getDate() - i);
+      var key = d.toDateString();
+      var sum = 0;
+      store.orders.forEach(function(o){
+        if (o.status === "CANCELLED") return;
+        var od = new Date(o.date);
+        if (od.toDateString() === key) sum += (o.total || 0);
+      });
+      days.push({ label: d.toLocaleDateString("fr-FR", { weekday:"short" }), sum: sum });
+    }
+    var max = 1;
+    days.forEach(function(x){ if (x.sum > max) max = x.sum; });
+    $("#chart").innerHTML = days.map(function(x){
+      var h = Math.max(4, Math.round(x.sum / max * 100));
+      return '<div class="col"><span class="vc">' + (x.sum ? Math.round(x.sum/1000) + "k" : "0") + '</span><div class="bar" style="height:' + h + 'px"></div><span class="dv">' + x.label + '</span></div>';
+    }).join("");
+  }
+
+  /* ---------------- Commandes ---------------- */
+  function orderStatusHTML(o){
+    var opts = ["PENDING","CONFIRMED","SHIPPING","DELIVERED","CANCELLED"].map(function(s){
+      var sel = s === o.status ? " selected" : "";
+      return '<option value="' + s + '"' + sel + '>' + STATUS[s].emoji + " " + STATUS[s].label + '</option>';
+    }).join("");
+    return '<select class="status" data-status="' + esc(o.ref) + '">' + opts + '</select>';
+  }
+  var ordQuery = "", ordStatus = "";
+  function filteredOrders(){
+    var q = ordQuery.trim().toLowerCase();
+    return store.orders.filter(function(o){
+      if (ordStatus && o.status !== ordStatus) return false;
+      if (!q) return true;
+      var hay = [o.ref, o.client, o.phone, o.quartier].join(" ").toLowerCase();
+      return hay.indexOf(q) >= 0;
+    });
+  }
+  function renderOrders(){
+    var body = $("#ordersBody");
+    var list = filteredOrders();
+    var counter = $("#ordCount");
+    if (counter){
+      counter.textContent = store.orders.length
+        ? list.length + " commande" + (list.length > 1 ? "s" : "") + " sur " + store.orders.length
+        : "";
+    }
+    if (!store.orders.length){
+      body.innerHTML = '<tr><td colspan="9" class="no-orders">Aucune commande pour le moment.</td></tr>';
+      return;
+    }
+    if (!list.length){
+      body.innerHTML = '<tr><td colspan="9" class="no-orders">Aucune commande ne correspond à ce filtre.</td></tr>';
+      return;
+    }
+    body.innerHTML = list.map(function(o){
+      var st = STATUS[o.status] || STATUS.PENDING;
+      var date = "—";
+      try { date = new Date(o.date).toLocaleDateString("fr-FR", { day:"2-digit", month:"2-digit", year:"2-digit" }) + " " + new Date(o.date).toLocaleTimeString("fr-FR", { hour:"2-digit", minute:"2-digit" }); } catch(e){}
+      var shop = store.settings.shopName || "AURA STUDIOS";
+      var msg = "Bonjour " + o.client + " 👋\n\nVotre commande *" + o.ref + "* (" + st.label + ") est enregistrée chez *" + shop + "*.\nLivraison prévue à *Bamako, " + o.quartier + "*.\nMerci de confirmer votre disponibilité. 🙏";
+      var href = waLink("223" + digits(o.phone), msg);
+      var items = o.items.map(function(it){ return it.qty + " × " + it.name + " (" + (SLABEL[it.size] || it.size) + ")"; }).join(" · ");
+      return '<tr data-row="' + esc(o.ref) + '">' +
+        '<td><span class="ref">' + esc(o.ref) + '</span><div style="font-size:11.5px;color:var(--muted);margin-top:3px">' + esc(items) + '</div></td>' +
+        '<td class="mono">' + esc(date) + '</td>' +
+        '<td>' + esc(o.client) + '</td>' +
+        '<td class="mono">' + esc(localPhone(o.phone)) + '</td>' +
+        '<td>' + esc(o.quartier) + '</td>' +
+        '<td class="mono" style="font-weight:800">' + fmt(o.total) + '</td>' +
+        '<td>' + orderStatusHTML(o) + '</td>' +
+        '<td><a class="sbtn" href="' + esc(href) + '" target="_blank" rel="noopener">WhatsApp</a></td>' +
+        '<td><button class="sbtn" data-ordedit="' + esc(o.ref) + '">Modifier</button></td>' +
+      '</tr>' +
+      (editingOrder === o.ref ? orderEditHTML(o) : "");
+    }).join("");
+  }
+  $("#ordSearch").addEventListener("input", function(){ ordQuery = this.value; renderOrders(); });
+  $("#ordStatus").addEventListener("change", function(){ ordStatus = this.value; renderOrders(); });
+
+  /* ---------------- Export CSV ----------------
+     Séparateur point-virgule et BOM UTF-8 : Excel en français ouvre le
+     fichier correctement, accents compris. */
+  function csvCell(v){
+    var s = String(v == null ? "" : v).replace(/"/g, '""');
+    return '"' + s + '"';
+  }
+  function downloadCSV(filename, rows){
+    var text = "\ufeff" + rows.map(function(r){ return r.map(csvCell).join(";"); }).join("\r\n");
+    var blob = new Blob([text], { type: "text/csv;charset=utf-8;" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }
+  $("#exportOrders").addEventListener("click", function(){
+    var list = filteredOrders();
+    if (!list.length){ toast("Aucune commande à exporter"); return; }
+    var rows = [["Référence","Date","Client","Téléphone","Quartier","Articles","Sous-total","Livraison","Total","Statut"]];
+    list.forEach(function(o){
+      var d = "";
+      try { d = new Date(o.date).toLocaleString("fr-FR"); } catch(e){}
+      rows.push([
+        o.ref, d, o.client, localPhone(o.phone), o.quartier,
+        o.items.map(function(it){ return it.qty + " x " + it.name + " (" + (SLABEL[it.size] || it.size) + ")"; }).join(" | "),
+        o.subtotal, o.delivery, o.total,
+        (STATUS[o.status] || {}).label || o.status
+      ]);
+    });
+    downloadCSV("commandes-" + new Date().toISOString().slice(0,10) + ".csv", rows);
+    toast(list.length + " commande" + (list.length > 1 ? "s" : "") + " exportée" + (list.length > 1 ? "s" : ""));
+  });
+
+  /* ---------------- Newsletter ---------------- */
+  var subscribers = [];
+  function renderNews(){
+    var body = $("#newsBody");
+    if (!subscribers.length){
+      body.innerHTML = '<tr><td colspan="2" class="no-orders">Aucune inscription pour le moment.</td></tr>';
+      return;
+    }
+    body.innerHTML = subscribers.map(function(s){
+      var d = "—";
+      if (s.created_at){ try { d = new Date(s.created_at).toLocaleString("fr-FR"); } catch(e){} }
+      return '<tr><td>' + esc(s.email) + '</td><td class="mono">' + esc(d) + '</td></tr>';
+    }).join("");
+  }
+  function loadNews(){
+    if (online()){
+      window.AURA_DB.loadSubscribers(function(er, rows){
+        if (!er && rows) subscribers = rows;
+        renderNews();
+      });
+      return;
+    }
+    /* Mode local : les inscriptions sont conservées par la boutique
+       dans le même navigateur. */
+    try {
+      subscribers = JSON.parse(localStorage.getItem("aura_news_v1") || "[]")
+        .map(function(e){ return { email: e, created_at: null }; });
+    } catch(e){ subscribers = []; }
+    renderNews();
+  }
+  $("#exportNews").addEventListener("click", function(){
+    if (!subscribers.length){ toast("Aucune adresse à exporter"); return; }
+    var rows = [["Adresse e-mail","Inscription"]];
+    subscribers.forEach(function(s){
+      var d = "";
+      if (s.created_at){ try { d = new Date(s.created_at).toLocaleString("fr-FR"); } catch(e){} }
+      rows.push([s.email, d]);
+    });
+    downloadCSV("newsletter-" + new Date().toISOString().slice(0,10) + ".csv", rows);
+    toast(subscribers.length + " adresse" + (subscribers.length > 1 ? "s" : "") + " exportée" + (subscribers.length > 1 ? "s" : ""));
+  });
+  /* ---------------- Categories ---------------- */
+  $("#catList").addEventListener("change", function(e){
+    var inp = e.target.closest("[data-catlabel]");
+    if (!inp) return;
+    var i = parseInt(inp.getAttribute("data-catlabel"), 10);
+    var label = inp.value.trim();
+    if (!label){ renderCatSettings(); return; }
+    store.settings.categories = catList();
+    store.settings.categories[i].label = label;
+    saveStore();
+    renderCatSettings(); renderProducts();
+    toast("Catégorie renommée");
+  });
+  $("#catList").addEventListener("click", function(e){
+    var del = e.target.closest("[data-catdel]");
+    if (!del || del.disabled) return;
+    var i = parseInt(del.getAttribute("data-catdel"), 10);
+    var list = catList();
+    var c = list[i];
+    if (!c) return;
+    if (catUsage(c.key)){ toast("Catégorie utilisée par des produits"); return; }
+    if (!confirm("Supprimer la catégorie « " + c.label + " » ?")) return;
+    list.splice(i, 1);
+    store.settings.categories = list;
+    saveStore();
+    renderCatSettings();
+    toast("Catégorie supprimée");
+  });
+  $("#catForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var label = $("#catLabel").value.trim();
+    var key = $("#catKey").value.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
+    if (!label){ toast("Nom de la catégorie requis"); return; }
+    if (!key) key = label.toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    if (!key){ toast("Identifiant invalide"); return; }
+    var list = catList();
+    if (list.some(function(c){ return c.key === key; })){ toast("Cet identifiant existe déjà"); return; }
+    list.push({ key: key, label: label });
+    store.settings.categories = list;
+    saveStore();
+    $("#catForm").reset();
+    renderCatSettings();
+    toast("Catégorie « " + label + " » ajoutée");
+  });
+
+  /* ---------------- Avis clients ---------------- */
+  function renderReviews(){
+    var el = $("#revList");
+    var list = store.settings.reviews || [];
+    if (!list.length){
+      el.innerHTML = '<p class="no-orders">Aucun avis publié. La section reste masquée en boutique.</p>';
+      return;
+    }
+    el.innerHTML = list.map(function(r, i){
+      var note = parseInt(r.rating, 10) || 0;
+      var meta = [r.quartier, r.product].filter(Boolean).join(" · ");
+      return '<div class="prod-item">' +
+        '<div class="pi-info">' +
+          '<div class="pi-name">' + esc(r.name) + (note ? '<span class="chip dark">' + note + '/5</span>' : '') +
+            (i < 3 ? '<span class="chip">En boutique</span>' : '') + '</div>' +
+          (meta ? '<div class="pi-meta">' + esc(meta) + '</div>' : '') +
+          '<div class="pi-stock">« ' + esc(r.text) + ' »</div>' +
+        '</div>' +
+        '<div class="row-actions">' +
+          (i > 0 ? '<button class="sbtn" data-revup="' + i + '">Monter</button>' : '') +
+          '<button class="sbtn danger" data-revdel="' + i + '">Supprimer</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+  $("#revList").addEventListener("click", function(e){
+    var up = e.target.closest("[data-revup]");
+    if (up){
+      var i = parseInt(up.getAttribute("data-revup"), 10);
+      var l = store.settings.reviews;
+      var tmp = l[i - 1]; l[i - 1] = l[i]; l[i] = tmp;
+      saveStore(); renderReviews(); toast("Avis remonté");
+      return;
+    }
+    var del = e.target.closest("[data-revdel]");
+    if (del){
+      var j = parseInt(del.getAttribute("data-revdel"), 10);
+      var r = store.settings.reviews[j];
+      if (r && confirm("Supprimer l'avis de « " + r.name + " » ?")){
+        store.settings.reviews.splice(j, 1);
+        saveStore(); renderReviews(); toast("Avis supprimé");
+      }
+    }
+  });
+  $("#revForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var name = $("#rName").value.trim();
+    var text = $("#rText").value.trim();
+    if (name.length < 2){ toast("Nom du client requis"); $("#rName").focus(); return; }
+    if (text.length < 10){ toast("Témoignage trop court"); $("#rText").focus(); return; }
+    if (!Array.isArray(store.settings.reviews)) store.settings.reviews = [];
+    store.settings.reviews.push({
+      name: name,
+      quartier: $("#rQuartier").value.trim(),
+      product: $("#rProduct").value.trim(),
+      rating: parseInt($("#rRating").value, 10) || 0,
+      text: text
+    });
+    saveStore();
+    $("#revForm").reset();
+    renderReviews();
+    toast("Avis publié");
+  });
+
+  /* ---------------- Liste d'attente ---------------- */
+  var waitlist = [];
+  function renderWait(){
+    var body = $("#waitBody");
+    if (!waitlist.length){
+      body.innerHTML = '<tr><td colspan="5" class="no-orders">Aucune demande pour le moment.</td></tr>';
+      return;
+    }
+    body.innerHTML = waitlist.map(function(w){
+      var d = "—";
+      if (w.created_at){ try { d = new Date(w.created_at).toLocaleString("fr-FR"); } catch(e){} }
+      var msg = "Bonjour 👋 Bonne nouvelle : « " + (w.product_name || "") +
+                " » est de nouveau disponible en taille " + (w.size || "") +
+                " chez " + (store.settings.shopName || "AURA STUDIOS") + ".";
+      var href = waLink("223" + digits(w.phone), msg);
+      return '<tr>' +
+        '<td>' + esc(w.product_name || w.product_id || "—") + '</td>' +
+        '<td class="mono">' + esc(w.size || "—") + '</td>' +
+        '<td class="mono">' + esc(localPhone(w.phone)) + '</td>' +
+        '<td class="mono">' + esc(d) + '</td>' +
+        '<td><a class="sbtn" href="' + esc(href) + '" target="_blank" rel="noopener">Prévenir</a></td>' +
+      '</tr>';
+    }).join("");
+  }
+  function loadWait(){
+    if (online()){
+      window.AURA_DB.loadWaitlist(function(er, rows){
+        if (!er && rows) waitlist = rows;
+        renderWait();
+      });
+      return;
+    }
+    try { waitlist = JSON.parse(localStorage.getItem("aura_waitlist_v1") || "[]"); }
+    catch(e){ waitlist = []; }
+    renderWait();
+  }
+  $("#exportWait").addEventListener("click", function(){
+    if (!waitlist.length){ toast("Aucune demande à exporter"); return; }
+    var rows = [["Produit","Taille","Numéro","Demande"]];
+    waitlist.forEach(function(w){
+      var d = "";
+      if (w.created_at){ try { d = new Date(w.created_at).toLocaleString("fr-FR"); } catch(e){} }
+      rows.push([w.product_name || w.product_id || "", w.size || "", localPhone(w.phone), d]);
+    });
+    downloadCSV("liste-attente-" + new Date().toISOString().slice(0,10) + ".csv", rows);
+    toast(waitlist.length + " demande" + (waitlist.length > 1 ? "s" : "") + " exportée" + (waitlist.length > 1 ? "s" : ""));
+  });
+
+  /* ---------------- Edition d'une commande ----------------
+     Un numero mal saisi, un article a retirer, une commande de test :
+     tout cela arrive et doit se corriger sans toucher a la base. */
+  var editingOrder = null;
+
+  function orderEditHTML(o){
+    var items = o.items.map(function(it, i){
+      return '<div class="ord-item">' +
+        '<span>' + it.qty + ' × ' + esc(it.name) + ' <small>(' + esc(SLABEL[it.size] || it.size) + ')</small></span>' +
+        '<span>' + fmt(it.price * it.qty) +
+          (o.items.length > 1 ? ' <button class="sbtn danger" data-orditem="' + i + '">Retirer</button>' : '') +
+        '</span>' +
+      '</div>';
+    }).join("");
+    return '<tr class="ord-edit-row"><td colspan="9">' +
+      '<div class="ord-edit">' +
+        '<div class="grid2">' +
+          '<div class="field"><label for="oeName">Nom du client</label>' +
+            '<input type="text" id="oeName" value="' + esc(o.client) + '" /></div>' +
+          '<div class="field"><label for="oePhone">Numéro</label>' +
+            '<input type="tel" id="oePhone" value="' + esc(o.phone) + '" /></div>' +
+        '</div>' +
+        '<div class="field"><label for="oeQuartier">Quartier</label>' +
+          '<input type="text" id="oeQuartier" value="' + esc(o.quartier) + '" /></div>' +
+        '<div class="ord-items">' + items + '</div>' +
+        '<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">' +
+          '<button class="btn btn-primary" data-ordsave="' + esc(o.ref) + '">Enregistrer</button>' +
+          '<button class="btn btn-ghost" data-ordcancel>Fermer</button>' +
+          '<button class="btn btn-ghost" data-orddel="' + esc(o.ref) + '" style="margin-left:auto;color:var(--danger,#b00020)">Supprimer la commande</button>' +
+        '</div>' +
+      '</div>' +
+    '</td></tr>';
+  }
+
+  function findOrder(ref){
+    for (var i = 0; i < store.orders.length; i++) if (store.orders[i].ref === ref) return store.orders[i];
+    return null;
+  }
+
+  /* Restitue au stock ce qu'une ligne consommait, selon le statut courant :
+     une commande en attente reserve (r), une commande confirmee a deja
+     decremente (s). Sans cela, supprimer une commande fausserait le stock. */
+  function releaseItem(order, it){
+    var pr = findProduct(it.id);
+    if (!pr || !pr.sizes[it.size]) return;
+    if (order.status === "PENDING") pr.sizes[it.size].r -= it.qty;
+    else if (order.status !== "CANCELLED") pr.sizes[it.size].s += it.qty;
+  }
+
+  function recomputeTotals(o){
+    o.subtotal = o.items.reduce(function(a, it){ return a + it.price * it.qty; }, 0);
+    var free = Number(store.settings.freeFrom) || 0;
+    var fee = Number(store.settings.deliveryFee) || 0;
+    o.delivery = (free > 0 && o.subtotal >= free) ? 0 : fee;
+    o.total = o.subtotal + o.delivery;
+  }
+
+  $("#ordersBody").addEventListener("click", function(e){
+    var ed = e.target.closest("[data-ordedit]");
+    if (ed){
+      var ref = ed.getAttribute("data-ordedit");
+      editingOrder = (editingOrder === ref) ? null : ref;
+      renderOrders();
+      return;
+    }
+    if (e.target.closest("[data-ordcancel]")){ editingOrder = null; renderOrders(); return; }
+
+    var rm = e.target.closest("[data-orditem]");
+    if (rm){
+      var o1 = findOrder(editingOrder);
+      if (!o1) return;
+      var idx = parseInt(rm.getAttribute("data-orditem"), 10);
+      var it = o1.items[idx];
+      if (!it || o1.items.length < 2) return;
+      if (!confirm("Retirer « " + it.name + " » de la commande " + o1.ref + " ?")) return;
+      releaseItem(o1, it);
+      o1.items.splice(idx, 1);
+      recomputeTotals(o1);
+      saveStore(); syncOrder(o1); renderAll();
+      toast("Article retiré");
+      return;
+    }
+
+    var sv = e.target.closest("[data-ordsave]");
+    if (sv){
+      var o2 = findOrder(sv.getAttribute("data-ordsave"));
+      if (!o2) return;
+      var name = $("#oeName").value.trim();
+      var phone = digits($("#oePhone").value);
+      if (phone.length === 11 && phone.slice(0, 3) === "223") phone = phone.slice(3);
+      var quartier = $("#oeQuartier").value.trim();
+      if (name.length < 2){ toast("Nom du client requis"); $("#oeName").focus(); return; }
+      if (phone.length !== 8){ toast("Numéro invalide (8 chiffres)"); $("#oePhone").focus(); return; }
+      if (quartier.length < 2){ toast("Quartier requis"); $("#oeQuartier").focus(); return; }
+      o2.client = name; o2.phone = phone; o2.quartier = quartier;
+      saveStore(); syncOrder(o2);
+      editingOrder = null;
+      renderAll();
+      toast("Commande " + o2.ref + " mise à jour");
+      return;
+    }
+
+    var dl = e.target.closest("[data-orddel]");
+    if (dl){
+      var o3 = findOrder(dl.getAttribute("data-orddel"));
+      if (!o3) return;
+      if (!confirm("Supprimer définitivement la commande " + o3.ref + " ?\n\nLe stock qu'elle immobilise sera restitué.")) return;
+      o3.items.forEach(function(x){ releaseItem(o3, x); });
+      store.orders = store.orders.filter(function(x){ return x.ref !== o3.ref; });
+      editingOrder = null;
+      saveStore();
+      if (online()) window.AURA_DB.deleteOrder(o3.ref, function(er){
+        if (er) console.warn("Suppression non synchronisée", er);
+      });
+      renderAll();
+      toast("Commande supprimée");
+      return;
+    }
+  });
+
+  /* Envoi cible d'une seule commande. */
+  function syncOrder(o){
+    if (online()) window.AURA_DB.updateOrder(o, function(er){
+      if (er) console.warn("Commande non synchronisée", er);
+    });
+  }
+
+function applyStatus(order, ns){
+    var ps = order.status;
+    if (ns === ps) return;
+    order.items.forEach(function(it){
+      var p = findProduct(it.id);
+      if (!p || !p.sizes[it.size]) return;
+      var sz = p.sizes[it.size];
+      var hadRes = (ps === "PENDING");
+      var hadDec = (ps !== "PENDING" && ps !== "CANCELLED");
+      var willRes = (ns === "PENDING");
+      var willDec = (ns !== "PENDING" && ns !== "CANCELLED");
+      if (hadRes && !willRes) sz.r -= it.qty;
+      if (!hadRes && willRes) sz.r += it.qty;
+      if (hadDec && !willDec) sz.s += it.qty;
+      if (!hadDec && willDec) sz.s -= it.qty;
+    });
+    order.status = ns;
+    saveStore();
+    syncOrder(order);
+    syncProducts();
+    renderAll();
+    toast("Commandes " + order.ref + " : " + (STATUS[ns] || {}).label);
+  }
+  $("#ordersBody").addEventListener("change", function(e){
+    var sel = e.target.closest("[data-status]");
+    if (!sel) return;
+    var o = null;
+    for (var i=0;i<store.orders.length;i++) if (store.orders[i].ref === sel.getAttribute("data-status")) o = store.orders[i];
+    if (o) applyStatus(o, sel.value);
+  });
+
+  /* ---------------- Produits ---------------- */
+  function prodStockText(p){
+    var sizes = [];
+    for (var k in p.sizes){
+      var a = availFor(p, k);
+      sizes.push(SLABEL[k] + " : " + (a > 0 ? a : "0"));
+    }
+    if (!sizes.length) return "Aucun stock défini";
+    return sizes.join(" · ");
+  }
+  function renderProducts(){
+    var el = $("#prodList");
+    if (!store.products.length){ el.innerHTML = '<p class="no-orders">Aucun produit. Ajoutez-en un à droite.</p>'; return; }
+    el.innerHTML = store.products.map(function(p){
+      var chips = "";
+      if (!p.active) chips += '<span class="chip">Masqué</span>';
+      if (p.stockout || totalFor(p) <= 0) chips += '<span class="chip dark">Rupture</span>';
+      if (p.oldPrice > 0) chips += '<span class="chip dark">-20 %</span>';
+      var img = p.img ? '<img class="thumb" src="' + esc(p.img) + '" onerror="this.style.opacity=0" alt="" />' : '<span class="thumb" style="display:block"></span>';
+      return '<div class="prod-item">' +
+        img +
+        '<div class="pi-info">' +
+          '<div class="pi-name">' + esc(p.name) + chips + '</div>' +
+          '<div class="pi-meta">' + esc(CATS[p.cat]||p.cat) + ' · ' + fmt(p.price) + '</div>' +
+          '<div class="pi-stock">' + esc(prodStockText(p)) + '</div>' +
+        '</div>' +
+        '<div class="row-actions">' +
+          '<button class="sbtn" data-edit="' + esc(p.id) + '">Modifier</button>' +
+          '<button class="sbtn' + (p.active ? "" : " on") + '" data-toggle="' + esc(p.id) + '">' + (p.active ? "Masquer" : "Afficher") + '</button>' +
+          '<button class="sbtn danger" data-del="' + esc(p.id) + '">Supprimer</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+  function stockGridHtml(selected){
+    if (!selected.length) return "";
+    var out = "";
+    selected.forEach(function(sz){
+      out += '<div class="stock-cell"><b>' + sz + '</b><input type="number" data-sz="' + sz + '" min="0" value="0" aria-label="Stock taille ' + sz + '" /></div>';
+    });
+    return out;
+  }
+  function resetForm(){
+    $("#fId").value = "";
+    $("#fName").value = "";
+    $("#fCat").value = "hoodies";
+    $("#fPrice").value = "";
+    $("#fOld").value = "";
+    $("#fBadge").value = "";
+    $("#fDesc").value = "";
+    $("#fImg").value = "";
+    $("#fImgPrev").style.display = "none";
+    $("#fActive").checked = true;
+    $("#fOut").checked = false;
+    $$("#fSizes input").forEach(function(c){ c.checked = false; });
+    $("#fStockGrid").innerHTML = "";
+    $("#formTitle").textContent = "Ajouter un produit";
+  }
+  $("#fSizes").addEventListener("change", function(){
+    var sel = $$("#fSizes input:checked").map(function(c){ return c.value; });
+    $("#fStockGrid").innerHTML = stockGridHtml(sel);
+  });
+  /* Envoi d'image. Le fichier est redimensionne et recompresse dans le
+     navigateur avant tout envoi : une photo de telephone de 4 Mo devient
+     un WebP de quelques dizaines de Ko. En ligne, elle part dans Supabase
+     Storage ; hors ligne, elle est conservee en base64 dans ce navigateur. */
+  var MAX_SIDE = 1000, MAX_LOCAL = 400 * 1024;
+
+  function compressImage(file, cb){
+    var reader = new FileReader();
+    reader.onerror = function(){ cb(new Error("Lecture du fichier impossible")); };
+    reader.onload = function(){
+      var img = new Image();
+      img.onerror = function(){ cb(new Error("Fichier image invalide")); };
+      img.onload = function(){
+        var w = img.width, h = img.height;
+        var scale = Math.min(1, MAX_SIDE / Math.max(w, h));
+        var cw = Math.round(w * scale), ch = Math.round(h * scale);
+        var cv = document.createElement("canvas");
+        cv.width = cw; cv.height = ch;
+        cv.getContext("2d").drawImage(img, 0, 0, cw, ch);
+        cv.toBlob(function(blob){
+          if (!blob) return cb(new Error("Compression impossible"));
+          cb(null, blob, cw, ch);
+        }, "image/webp", 0.82);
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function blobToDataURL(blob, cb){
+    var fr = new FileReader();
+    fr.onload = function(){ cb(null, fr.result); };
+    fr.onerror = function(){ cb(new Error("Conversion impossible")); };
+    fr.readAsDataURL(blob);
+  }
+
+  function setImageStatus(msg, busy){
+    var el = $("#imgStatus");
+    if (el) el.textContent = msg || "";
+    var drop = $("#imgDrop");
+    if (drop) drop.setAttribute("data-busy", busy ? "true" : "false");
+  }
+
+  function handleImageFile(file){
+    if (!file) return;
+    if (!/^image\//.test(file.type)){ toast("Ce fichier n'est pas une image"); return; }
+    setImageStatus("Traitement de l'image…", true);
+    compressImage(file, function(er, blob, w, h){
+      if (er){ setImageStatus(""); toast(er.message); return; }
+      var ko = Math.round(blob.size / 1024);
+      if (online()){
+        window.AURA_DB.uploadImage(blob, function(er2, url){
+          if (er2 || !url){
+            setImageStatus("");
+            toast("Envoi impossible : " + ((er2 && er2.message) || "erreur inconnue"));
+            return;
+          }
+          applyImage(url, w, h, ko, "en ligne");
+        });
+        return;
+      }
+      if (blob.size > MAX_LOCAL){
+        setImageStatus("");
+        toast("Image trop lourde pour le mode local (" + ko + " Ko)");
+        return;
+      }
+      blobToDataURL(blob, function(er3, dataUrl){
+        if (er3){ setImageStatus(""); toast(er3.message); return; }
+        applyImage(dataUrl, w, h, ko, "dans ce navigateur");
+      });
+    });
+  }
+
+  function applyImage(url, w, h, ko, where){
+    $("#fImg").value = url;
+    var prev = $("#fImgPrev");
+    prev.src = url; prev.style.display = "block";
+    setImageStatus("Image prête — " + w + "×" + h + " px, " + ko + " Ko, enregistrée " + where + ".", false);
+    toast("Image ajoutée");
+  }
+
+  var fileInput = $("#fFile");
+  if (fileInput) fileInput.addEventListener("change", function(){
+    handleImageFile(this.files && this.files[0]);
+    this.value = "";
+  });
+  var drop = $("#imgDrop");
+  if (drop){
+    ["dragenter","dragover"].forEach(function(ev){
+      drop.addEventListener(ev, function(e){ e.preventDefault(); drop.setAttribute("data-over","true"); });
+    });
+    ["dragleave","drop"].forEach(function(ev){
+      drop.addEventListener(ev, function(e){ e.preventDefault(); drop.setAttribute("data-over","false"); });
+    });
+    drop.addEventListener("drop", function(e){
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      handleImageFile(f);
+    });
+  }
+
+  $("#fImg").addEventListener("input", function(){
+    var url = $("#fImg").value.trim();
+    var prev = $("#fImgPrev");
+    if (url){ prev.src = url; prev.style.display = "block"; } else prev.style.display = "none";
+  });
+  $("#prodReset").addEventListener("click", function(){ resetForm(); });
+  $("#prodList").addEventListener("click", function(e){
+    var t = e.target;
+    var ed = t.closest("[data-edit]");
+    if (ed){
+      var p = findProduct(ed.getAttribute("data-edit"));
+      if (!p) return;
+      $("#fId").value = p.id;
+      $("#fName").value = p.name;
+      $("#fCat").value = p.cat;
+      $("#fPrice").value = p.price;
+      $("#fOld").value = p.oldPrice || "";
+      $("#fBadge").value = p.badge || "";
+      $("#fDesc").value = p.desc || "";
+      $("#fImg").value = p.img || "";
+      var prev = $("#fImgPrev");
+      if (p.img){ prev.src = p.img; prev.style.display = "block"; } else prev.style.display = "none";
+      $("#fActive").checked = p.active !== false;
+      $("#fOut").checked = !!p.stockout;
+      var sel = [];
+      for (var k in p.sizes) if (SIZES.indexOf(k) >= 0) sel.push(k);
+      $("#fSizes").querySelectorAll("input").forEach(function(c){ c.checked = sel.indexOf(c.value) >= 0; });
+      var st = "";
+      sel.forEach(function(sz){
+        var s = p.sizes[sz];
+        st += '<div class="stock-cell"><b>' + sz + '</b><input type="number" data-sz="' + sz + '" min="0" value="' + s.s + '" aria-label="Stock taille ' + sz + '" /></div>';
+      });
+      $("#fStockGrid").innerHTML = st;
+      $("#formTitle").textContent = "Modifier le produit";
+      window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
+      return;
+    }
+    var tg = t.closest("[data-toggle]");
+    if (tg){
+      var p2 = findProduct(tg.getAttribute("data-toggle"));
+      if (p2){ p2.active = p2.active === false ? true : false; saveStore(); syncProducts(); renderProducts(); toast(p2.active ? "Produit affiché" : "Produit masqué"); }
+      return;
+    }
+    var dl = t.closest("[data-del]");
+    if (dl){
+      var p3 = findProduct(dl.getAttribute("data-del"));
+      if (p3 && confirm("Supprimer « " + p3.name + " » définitivement ?")){
+        store.products = store.products.filter(function(x){ return x.id !== p3.id; });
+        saveStore(); syncDeleteProduct(p3.id); renderProducts(); renderDash();
+        toast("Produit supprimé");
+      }
+      return;
+    }
+  });
+  $("#prodForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var name = $("#fName").value.trim();
+    var price = parseInt($("#fPrice").value, 10);
+    var oldP = parseInt($("#fOld").value, 10) || 0;
+    var cat = $("#fCat").value;
+    var badge = $("#fBadge").value;
+    var img = $("#fImg").value.trim();
+    var desc = $("#fDesc").value.trim();
+    if (!name){ toast("Nom du produit requis"); return; }
+    if (!price || isNaN(price) || price <= 0){ toast("Prix invalide en FCFA"); return; }
+    if (!img){ toast("Image requise (URL)"); return; }
+    var selSizes = $$("#fSizes input:checked").map(function(c){ return c.value; });
+    if (!selSizes.length){ toast("Cochez au moins une taille"); return; }
+    var sizes = {}, ok = true;
+    selSizes.forEach(function(sz){
+      var inp = $("#fStockGrid").querySelector('input[data-sz="' + sz + '"]');
+      var v = inp ? parseInt(inp.value, 10) : 0;
+      if (isNaN(v) || v < 0){ ok = false; return; }
+      sizes[sz] = { s:v, r:0 };
+    });
+    if (!ok){ toast("Stock invalide"); return; }
+    var editing = $("#fId").value;
+    var pr;
+    if (editing){
+      pr = findProduct(editing);
+      if (!pr) return;
+      pr.name = name; pr.price = price; pr.oldPrice = oldP; pr.cat = cat; pr.badge = badge;
+      pr.img = img; pr.desc = desc; pr.active = $("#fActive").checked; pr.stockout = $("#fOut").checked;
+      var newSizes = {};
+      for (var sk in sizes){
+        var prior = pr.sizes[sk] || { s:0, r:0 };
+        newSizes[sk] = { s: sizes[sk].s, r: prior.r };
+      }
+      pr.sizes = newSizes;
+      saveStore();
+      syncProducts();
+      toast("Produit mis à jour");
+    } else {
+      store.products.push({ id:"p" + Date.now(), name:name, cat:cat, price:price, oldPrice:oldP, badge:badge, img:img, desc:desc, sizes:sizes, active:$("#fActive").checked, stockout:$("#fOut").checked });
+      saveStore();
+      syncProducts();
+      toast("Produit ajouté");
+    }
+    renderProducts(); renderDash();
+    resetForm();
+    window.scrollTo({ top: 0, behavior:"smooth" });
+  });
+
+  /* ---------------- Réglages ---------------- */
+  function fillSettings(){
+    var s = store.settings;
+    $("#sWhats").value = s.whatsapp || "";
+    $("#sName").value = s.shopName || "";
+    $("#sFee").value = s.deliveryFee != null ? s.deliveryFee : "";
+    $("#sFree").value = s.freeFrom != null ? s.freeFrom : 0;
+    $("#sAnn").value = s.announcement || "";
+    $("#sIG").value = s.instagram || "";
+    $("#sTT").value = s.tiktok || "";
+    $("#sYT").value = s.youtube || "";
+  }
+  function validUrl(v){
+    v = String(v || "").trim();
+    return v === "" || /^https?:\/\/[^\s]+$/i.test(v);
+  }
+  $("#settingsForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var wa = digits($("#sWhats").value);
+    if (wa.length !== 11 && wa.length !== 8){ toast("Numéro WhatsApp invalide (format 223xxxxxxxx)"); $("#sWhats").focus(); return; }
+    var fee = parseInt($("#sFee").value, 10);
+    if (isNaN(fee) || fee < 0){ toast("Frais de livraison invalides"); $("#sFee").focus(); return; }
+    var free = parseInt($("#sFree").value, 10);
+    if (isNaN(free) || free < 0){ free = 0; }
+    var links = [["#sIG","Instagram"],["#sTT","TikTok"],["#sYT","YouTube"]];
+    for (var i = 0; i < links.length; i++){
+      if (!validUrl($(links[i][0]).value)){
+        toast("Lien " + links[i][1] + " invalide (il doit commencer par https://)");
+        $(links[i][0]).focus();
+        return;
+      }
+    }
+    store.settings.whatsapp = wa;
+    store.settings.shopName = $("#sName").value.trim() || "AURA STUDIOS";
+    store.settings.deliveryFee = fee;
+    store.settings.freeFrom = free;
+    store.settings.announcement = $("#sAnn").value.trim();
+    store.settings.instagram = $("#sIG").value.trim();
+    store.settings.tiktok = $("#sTT").value.trim();
+    store.settings.youtube = $("#sYT").value.trim();
+    /* Aucun mot de passe n'est stocké ici : la table `settings` est
+       lisible publiquement par la boutique. */
+    delete store.settings.password;
+    saveStore();
+    syncSettings();
+    toast("Réglages enregistrés");
+  });
+
+  function renderAll(){
+    if (!unlocked) return;
+    renderDash();
+    renderOrders();
+    renderProducts();
+    renderCatSettings();
+    renderReviews();
+    fillSettings();
+    renderNews();
+  }
+
+  /* Au chargement : si une session Supabase a été restaurée, on la
+     vérifie auprès du serveur avant d'ouvrir l'interface. */
+  setGate(true);
+  if (dbAvailable() && window.AURA_DB.hasSession()){
+    window.AURA_DB.verifySession(function(er){
+      if (er) return;
+      dbSession = true;
+      unlock();
+      dbLoadAll(loadNews);
+    });
+  }
+})();
+</script>
+</body>
+</html>

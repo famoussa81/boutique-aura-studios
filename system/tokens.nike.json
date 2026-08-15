@@ -1,0 +1,107 @@
+{
+  "$schema": "tokens.nike.schema.json",
+  "name": "Design System Inspired by Nike — measured tokens (Podium CDS)",
+  "version": "1.0.0",
+  "source": "https://nike.com/ (live, re-checked)",
+  "provenance": "Values measured from nike.com / Podium CDS evidence in context/input-DESIGN.md. Faces Nike Futura ND and Helvetica Now are proprietary; shipped as fallback stacks (Inter/HHV substitutes). Dark theme values are inferred from the grey-ramp mapping, not directly measured.",
+  "color": {
+    "core": {
+      "nike-black": { "hex": "#111111", "role": "foreground/primary-cta", "usage": "primary text, nav text, button bg, hero overlays" },
+      "nike-white": { "hex": "#ffffff", "role": "background", "usage": "page canvas, button text on dark, card surfaces, nav bg" },
+      "snow": { "hex": "#fafafa", "role": "surface-lightest", "usage": "grey-50, near-white differentiation" },
+      "light-gray": { "hex": "#f5f5f5", "role": "surface", "usage": "grey-100, search/input fill, placeholder, skeleton" },
+      "hover-gray": { "hex": "#e5e5e5", "role": "surface-hover", "usage": "grey-200, hover bg, disabled button fill" },
+      "border-secondary": { "hex": "#cacacb", "role": "border", "usage": "grey-300, subtle borders, input borders, dividers" },
+      "text-secondary": { "hex": "#707072", "role": "text-secondary", "usage": "descriptive copy, metadata, price labels; border-primary" },
+      "text-disabled": { "hex": "#9e9ea0", "role": "text-disabled", "usage": "inactive elements" },
+      "text-disabled-inverse": { "hex": "#4b4b4d", "role": "text-disabled-inverse", "usage": "disabled text on dark" },
+      "dark-hover": { "hex": "#39393b", "role": "surface-dark-hover", "usage": "hover on dark backgrounds (grey-700)" },
+      "dark-surface": { "hex": "#28282a", "role": "surface-dark", "usage": "dark panels (grey-800)" },
+      "deep-charcoal": { "hex": "#1f1f21", "role": "surface-darkest", "usage": "inverse primary bg (grey-900)" }
+    },
+    "semantic": {
+      "red": { "hex": "#d30005", "usage": "critical errors, sale badges, urgent notifications" },
+      "red-bright": { "hex": "#ee0005", "usage": "red-500 emphasis" },
+      "badge": { "hex": "#d33918", "usage": "badge text, promotional callouts" },
+      "orange-flash": { "hex": "#ff5000", "usage": "expressive orange accent" },
+      "success": { "hex": "#007d48", "usage": "confirmation, availability, positive states" },
+      "success-inverse": { "hex": "#1eaa52", "usage": "success on dark backgrounds" },
+      "link": { "hex": "#1151ff", "usage": "text links, informational highlights" },
+      "info-inverse": { "hex": "#1190ff", "usage": "links on dark backgrounds" },
+      "warning": { "hex": "#fedf35", "usage": "warning backgrounds, attention banners" },
+      "focus-ring": { "hex": "rgba(39, 93, 197, 1)", "usage": "keyboard focus indicator ring" }
+    },
+    "ramps": {
+      "red": ["#ffe5e5", "#ff8a8a", "#ee0005", "#a30003", "#530300"],
+      "orange": ["#ffe2d6", "#ffb280", "#ff5000", "#d33918", "#3e1009"],
+      "yellow": ["#fef087", "#fed957", "#fca600", "#99470a"],
+      "green": ["#dfffb9", "#8fe06a", "#1eaa52", "#007d48", "#003c2a"],
+      "teal": ["#d4fffb", "#66e2ec", "#008e98", "#043441"],
+      "blue": ["#d6eeff", "#6fa8ff", "#1151ff", "#020664"],
+      "purple": ["#e4e1fc", "#af9bfb", "#6e0ff6", "#1c0060"],
+      "pink": ["#ffe1f3", "#ff9fd9", "#ed1aa0", "#4c012d"]
+    }
+  },
+  "typography": {
+    "display": { "family": "Nike Futura ND", "fallbacks": ["Helvetica Now Display Medium", "Helvetica Neue", "Inter", "system-ui", "Arial", "sans-serif"], "weight": 500, "transform": "uppercase", "note": "proprietary face; use fallback stack or Inter substitute in web" },
+    "heading": { "family": "Helvetica Now Display Medium", "fallbacks": ["Helvetica Neue", "Inter", "Arial"], "weight": 500 },
+    "body-medium": { "family": "Helvetica Now Text Medium", "fallbacks": ["Helvetica Neue", "Inter", "Arial"], "weight": 500 },
+    "body": { "family": "Helvetica Now Text", "fallbacks": ["Helvetica Neue", "Inter", "Arial"], "weight": 400 },
+    "scale": {
+      "display": { "size": 96, "weight": 500, "lineHeight": 0.9, "note": "uppercase, display only" },
+      "h1": { "size": 32, "weight": 500, "lineHeight": 1.2 },
+      "h2": { "size": 24, "weight": 500, "lineHeight": 1.2 },
+      "h3": { "size": 16, "weight": 500, "lineHeight": 1.5 },
+      "body": { "size": 16, "weight": 400, "lineHeight": 1.75 },
+      "body-medium": { "size": 16, "weight": 500, "lineHeight": 1.75 },
+      "link": { "size": 16, "weight": 500, "lineHeight": 1.75 },
+      "link-small": { "size": 14, "weight": 500, "lineHeight": 1.86 },
+      "button": { "size": 16, "weight": 500, "lineHeight": 1.5 },
+      "button-small": { "size": 14, "weight": 500, "lineHeight": 1.5 },
+      "caption": { "size": 14, "weight": 500, "lineHeight": 1.5 },
+      "small": { "size": 12, "weight": 500, "lineHeight": 1.5 },
+      "tiny": { "size": 12, "weight": 400, "lineHeight": 1.5 }
+    }
+  },
+  "radius": {
+    "0": { "value": 0, "context": "product images, hero photography" },
+    "8": { "value": 8, "context": "form inputs (non-search)" },
+    "18": { "value": 18, "context": "small interactive elements" },
+    "20": { "value": 20, "context": "containers, UI cards" },
+    "24": { "value": 24, "context": "search inputs, medium pills" },
+    "30": { "value": 30, "context": "buttons, tags, filters (full pill)" },
+    "50%": { "context": "circular icon buttons, avatars" }
+  },
+  "spacing": {
+    "base": 4,
+    "grid": 8,
+    "steps": { "1": 4, "2": 8, "3": 12, "4": 16, "5": 20, "6": 24, "7": 32, "8": 48, "9": 64, "10": 80 }
+  },
+  "layout": {
+    "containerMax": 1920,
+    "containerContent": 1440,
+    "padding": { "desktop": 48, "tablet": 24, "mobile": 16 },
+    "gridGap": { "product": 4, "cardMetadata": 12 },
+    "navHeight": 60,
+    "breakpoints": { "mobile": 640, "smallTablet": 768, "tablet": 960, "smallDesktop": 1024, "desktop": 1440 },
+    "posture": [
+      "Elevation is flat: no card shadows, no hover lifts. Depth via grey shifts only.",
+      "Product and hero imagery is edge-to-edge with 0px radius.",
+      "Uppercase display type reserved for hero headlines (96px+).",
+      "Color is functional only (error/success/link/warning) or product photography.",
+      "Interactive text is weight 500 (Medium); body stays 400.",
+      "Tight 4-12px product grid gaps for an abundant, dense feel."
+    ]
+  },
+  "motion": {
+    "background": "200ms ease",
+    "borderColor": "200ms ease",
+    "opacity": "200ms ease",
+    "note": "Nike Podium CDS uses short 200ms ease transitions; active press uses an opacity/scale ripple (0.5 opacity)"
+  },
+  "elevation": {
+    "flat": { "shadow": "none" },
+    "divider": { "shadow": "inset 0 -1px 0 0 #e5e5e5" },
+    "focus": { "shadow": "0 0 0 2px rgba(39, 93, 197, 1)" }
+  }
+}

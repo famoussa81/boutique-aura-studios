@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin
+
+Sitemap: https://aura-studios.vercel.app/sitemap.xml

@@ -1,0 +1,89 @@
+{
+  "name": "Design System Inspired by Nike",
+  "tagline": "> Category: E-Commerce & Retail > Athletic retail. Monochrome UI, massive uppercase type, full-bleed photography.",
+  "description": "URA STUDIOS est une marque de vêtement streetwear contemporain et techwear minimaliste, conçue pour un public urbain, jeune et passionné de pop culture.\n\nPositionnement & Style :\nUn mélange entre pièces streetwear haut de gamme et vêtements techniques fonctionnels. L'esthétique est sombre, futuriste et élégante, avec des lignes épurées et des détails contrastés.\n\nProduits proposés :\nHoodies oversized, t-shirts graphiques premium, pantalons cargo techniques, vestes imperméables et accessoires (casquettes, sacoches).\n\nTone of Voice (Voix de la marque) :\nAudacieux, moderne, minimaliste et direct.",
+  "sourceUrl": "https://nike.com/",
+  "provenance": "Mesure depuis nike.com / Podium CDS (context/input-DESIGN.md), re-vérifiée live. Faces Nike Futura ND / Helvetica Now propriétaires -> substitutions web Inter/Helvetica dans les fallbacks. Thème sombre inféré (mapage gris).",
+  "logo": {
+    "primary": "logos/favicon.ico",
+    "alternates": [],
+    "notes": "Aucun logo marque fourni dans le DESIGN.md d'origine; favicon extrait conservé tel quel."
+  },
+  "colors": [
+    { "role": "background", "hex": "#ffffff", "oklch": "", "name": "Nike White", "usage": "page canvas, cartes, fond de nav" },
+    { "role": "foreground", "hex": "#111111", "oklch": "", "name": "Nike Black", "usage": "texte primaire, CTA, nav, overlays hero" },
+    { "role": "surface", "hex": "#f5f5f5", "oklch": "", "name": "Light Gray", "usage": "fond recherche/input, placeholder, squelette" },
+    { "role": "surface-hover", "hex": "#e5e5e5", "oklch": "", "name": "Hover Gray", "usage": "hover bg, bouton disabled" },
+    { "role": "surface-lightest", "hex": "#fafafa", "oklch": "", "name": "Snow", "usage": "différenciation quasi-blanche" },
+    { "role": "border", "hex": "#cacacb", "oklch": "", "name": "Border Secondary", "usage": "bordures fines, inputs, diviseurs" },
+    { "role": "text-secondary", "hex": "#707072", "oklch": "", "name": "Secondary Text", "usage": "descriptif, prix, métadonnées" },
+    { "role": "text-disabled", "hex": "#9e9ea0", "oklch": "", "name": "Disabled Text", "usage": "éléments inactifs" },
+    { "role": "surface-dark", "hex": "#28282a", "oklch": "", "name": "Dark Surface", "usage": "panneaux sombres" },
+    { "role": "surface-darkest", "hex": "#1f1f21", "oklch": "", "name": "Deep Charcoal", "usage": "fond inverse principal" },
+    { "role": "surface-dark-hover", "hex": "#39393b", "oklch": "", "name": "Dark Hover", "usage": "hover sur fond sombre" },
+    { "role": "error", "hex": "#d30005", "oklch": "", "name": "Nike Red", "usage": "erreurs critiques, badges soldes" },
+    { "role": "error-bright", "hex": "#ee0005", "oklch": "", "name": "Bright Red", "usage": "emphase red-500" },
+    { "role": "badge", "hex": "#d33918", "oklch": "", "name": "Orange Badge", "usage": "badge texte, promotions" },
+    { "role": "accent-expressive", "hex": "#ff5000", "oklch": "", "name": "Orange Flash", "usage": "orange expressif (campagnes)" },
+    { "role": "success", "hex": "#007d48", "oklch": "", "name": "Success Green", "usage": "confirmation, disponibilité" },
+    { "role": "success-inverse", "hex": "#1eaa52", "oklch": "", "name": "Success Inverse", "usage": "succès sur fond sombre" },
+    { "role": "link", "hex": "#1151ff", "oklch": "", "name": "Link Blue", "usage": "liens texte" },
+    { "role": "info-inverse", "hex": "#1190ff", "oklch": "", "name": "Info Inverse", "usage": "liens sur fond sombre" },
+    { "role": "warning", "hex": "#fedf35", "oklch": "", "name": "Warning Yellow", "usage": "bandeaux d'attention" }
+  ],
+  "typography": {
+    "display": {
+      "family": "Nike Futura ND",
+      "fallbacks": ["Helvetica Now Display Medium", "Helvetica Neue", "Inter", "system-ui", "-apple-system", "Arial", "sans-serif"],
+      "weights": [500],
+      "transform": "uppercase",
+      "note": "faces propriétaires; substitution web Inter"
+    },
+    "body": {
+      "family": "Helvetica Now Text",
+      "fallbacks": ["Helvetica Neue", "Inter", "system-ui", "-apple-system", "Arial", "sans-serif"],
+      "weights": [400, 500]
+    }
+  },
+  "voice": {
+    "adjectives": ["audacieux", "moderne", "minimaliste", "direct"],
+    "tone": "URA STUDIOS est une marque de vêtement streetwear contemporain et techwear minimaliste, conçue pour un public urbain, jeune et passionné de pop culture.",
+    "messagingPillars": [
+      "URA STUDIOS est une marque de vêtement streetwear contemporain et techwear minimaliste, conçue pour un public urbain, jeune et passionné de pop culture.\n\nPositionnement & Style :\nUn mélange entre pièces streetwear haut de gamme et vêtements techniques fonctionnels. L'esthétique est sombre, futuriste et élégante, avec des lignes épurées et des détails contrastés.\n\nProduits proposés :\nHoodies oversized, t-shirts graphiques premium, pantalons cargo techniques, vestes imperméables et accessoires (casquettes, sacoches).\n\nTone of Voice (Voix de la marque) :\nAudacieux, moderne, minimaliste et direct.",
+      "> Category: E-Commerce & Retail > Athletic retail. Monochrome UI, massive uppercase type, full-bleed photography.",
+      "Principe directeur : l'UI reste monochrome, la couleur est fonctionnelle (erreur/succès/lien/alerte) ou portée par la photographie produit."
+    ],
+    "vocabulary": {
+      "use": ["Vocabulaire sportif et urbain, phrases courtes et affirmatives, ton impératif (Acheter, Just Do It)"],
+      "avoid": ["Fioritures, superlatifs génériques, ton éditorial mou"]
+    }
+  },
+  "imagery": {
+    "style": "Full-bleed éditorial sportif, sans radius, photographie = unique source de couleur.",
+    "subjects": ["athlètes en mouvement", "produits sur fond neutre", "détails de matière"],
+    "treatment": "full-bleed ; scrim dégradé sombre sur hero pour lisibilité ; lazy-loading placeholder #f5f5f5 ; hover : swap image secondaire en opacity 200ms",
+    "avoid": ["cadres", "ombres portées", "coins arrondis sur images"],
+    "samples": [
+      { "file": "imagery/cover-0.jpg", "kind": "cover", "caption": "Social cover image" },
+      { "file": "imagery/cover-1.jpg", "kind": "cover", "caption": "Social cover image" },
+      { "file": "imagery/cover-2.jpg", "kind": "cover", "caption": "Social cover image" },
+      { "file": "imagery/cover-3.jpg", "kind": "cover", "caption": "Social cover image" }
+    ]
+  },
+  "layout": {
+    "radius": { "images": "0px", "inputs": "8px", "containers": "20px", "search": "24px", "buttons": "30px pill" },
+    "borderWeight": "1px",
+    "spacing": "base 4px, grille 8px (4/8/12/16/20/24/32/48/64/80px)",
+    "containerMax": "1920px",
+    "containerContent": "1440px",
+    "postureRules": [
+      "Élévation plate : aucune ombre de carte, aucun hover-lift; profondeur par shifts de gris uniquement.",
+      "Hero et imagerie produit en full-bleed 0px radius.",
+      "Display uppercase réservé aux titres hero (jamais sous 24px).",
+      "Couleur fonctionnelle ou produit uniquement; pas de dégradés d'interface.",
+      "Texte interactif en poids 500; body en 400.",
+      "Grille produit dense : gaps 4-12px; sections espacées 48-80px.",
+      "Cibles tactiles >= 44x44px; transitions 200ms ease."
+    ]
+  }
+}
