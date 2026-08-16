@@ -344,12 +344,36 @@
     .pv-grid{grid-template-columns:1fr}
     .pv-media{min-height:240px}
   }
+  /* --- Allègement mobile ------------------------------------------------
+     Le hero et le bandeau de réassurance portaient les mêmes trois
+     promesses. Sur téléphone elles se suivaient immédiatement : le bandeau
+     garde le détail, le hero se tait. */
+  @media (max-width:760px){
+    /* Les catégories défilent au doigt au lieu d'empiler quatre pavés
+       pleine largeur avant d'atteindre les produits. */
+    .cats{
+      display:flex;
+      gap:12px;
+      overflow-x:auto;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+      margin:0 -16px;
+      padding:0 16px 4px;
+    }
+    .cats::-webkit-scrollbar{display:none}
+    .cat-card{
+      flex:0 0 68%;
+      scroll-snap-align:start;
+      aspect-ratio:3/4;
+    }
+  }
+
   @media (max-width:640px){
     .wrap{padding:0 16px}
     .nav-inner{padding:10px 16px}
     .section{padding:56px 0}
     .sec-head{margin-bottom:32px}
-    .cats{grid-template-columns:1fr;gap:12px}
     .pgrid{grid-template-columns:1fr 1fr;gap:12px}
     .hero{min-height:82vh}
     .hero-content{padding:44px 0 52px}
@@ -415,6 +439,14 @@
   @media (max-width:520px){
     .hero-points li + li{padding-left:0;border-left:0}
     .hero-points{gap:4px 12px}
+  }
+
+  /* Le hero et le bandeau de réassurance portaient les mêmes trois
+     promesses. Sur téléphone elles se suivaient immédiatement : le bandeau
+     garde le détail, le hero se tait. Règle placée après la définition de
+     base, sinon elle serait écrasée à spécificité égale. */
+  @media (max-width:760px){
+    .hero-points{display:none}
   }
 
   /* Stock reel, seuil bas (<= 3) pour rester credible et rare.
