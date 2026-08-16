@@ -114,6 +114,19 @@
   .chk input{accent-color:#111111}
   .chk.on input{accent-color:#ffffff}
   .stock-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  /* Un groupe de cases par axe, avec son intitulé. */
+  .axe-groupe + .axe-groupe{margin-top:14px}
+  .axe-groupe > b{display:block;font-size:12px;font-weight:800;letter-spacing:.1em;
+    text-transform:uppercase;margin-bottom:8px}
+  /* Deux axes : tableau lignes/colonnes, défilable plutôt que compressé. */
+  .stock-table{margin-top:12px;overflow-x:auto}
+  .stock-table table{width:auto;min-width:100%;border-collapse:collapse}
+  .stock-table th{font-size:11px;font-weight:800;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);padding:6px 8px;white-space:nowrap;text-align:center}
+  .stock-table tbody th{text-align:left;color:var(--ink)}
+  .stock-table td{padding:4px}
+  .stock-table input{width:64px;height:38px;text-align:center;border:1px solid var(--line);
+    border-radius:var(--radius);font:inherit;font-size:13px;background:var(--bg);color:var(--ink)}
   .stock-cell{border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;background:var(--bg)}
   .stock-cell b{font-size:12px;min-width:20px;text-align:center}
   .stock-cell input{width:64px;min-height:34px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px;text-align:center}
@@ -158,6 +171,28 @@
   .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
 
   /* Categories */
+  .cat-bloc{padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:14px}
+  .cat-bloc:last-child{border-bottom:0;margin-bottom:0}
+  .axes-editeur{margin-top:12px;padding:14px;background:var(--gray);border-radius:var(--radius)}
+  .axe-edit{padding:12px 0;border-top:1px solid var(--line)}
+  .axe-edit:first-of-type{border-top:0;padding-top:4px}
+  .axe-tete{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+  .axe-tete input{flex:1;height:38px;border:1px solid var(--line);border-radius:var(--radius);
+    padding:0 10px;font:inherit;font-size:13px;font-weight:700;background:var(--bg);color:var(--ink)}
+  .val-liste{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .val-chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg);
+    border:1px solid var(--line);border-radius:30px;padding:5px 6px 5px 10px;font-size:12.5px;font-weight:700}
+  .val-chip i{width:14px;height:14px;border-radius:50%;border:1px solid var(--line);display:inline-block}
+  .val-chip button{width:22px;height:22px;border:none;background:transparent;color:var(--muted);
+    font-size:15px;line-height:1;cursor:pointer;border-radius:50%}
+  .val-chip button:hover{background:var(--line);color:var(--ink)}
+  .val-ajout{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .val-ajout input[type=text]{flex:1;min-width:140px;height:38px;border:1px solid var(--line);
+    border-radius:var(--radius);padding:0 10px;font:inherit;font-size:13px;background:var(--bg);color:var(--ink)}
+  .val-ajout .teinte{display:inline-flex;align-items:center;gap:5px;font-size:12px;
+    color:var(--muted);white-space:nowrap}
+  .val-ajout input[type=color]{width:38px;height:38px;padding:2px;border:1px solid var(--line);
+    border-radius:var(--radius);background:var(--bg);cursor:pointer}
   .cat-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
   .cat-row input{height:40px;border:1px solid var(--line);border-radius:var(--radius);padding:0 10px;
     font:inherit;font-size:13px;background:var(--bg);color:var(--ink)}
@@ -314,17 +349,11 @@
                 <option value="-20 %">-20 %</option>
               </select>
             </div>
-            <div class="field">
-              <label>Tailles disponibles</label>
-              <div class="checks" id="fSizes">
-                <label class="chk"><input type="checkbox" value="S"/> S</label>
-                <label class="chk"><input type="checkbox" value="M"/> M</label>
-                <label class="chk"><input type="checkbox" value="L"/> L</label>
-                <label class="chk"><input type="checkbox" value="XL"/> XL</label>
-                <label class="chk"><input type="checkbox" value="XXL"/> XXL</label>
-                <label class="chk"><input type="checkbox" value="TU"/> TU</label>
-              </div>
-              <div class="stock-grid" id="fStockGrid"></div>
+            <div class="field" id="fAxesField">
+              <label>Déclinaisons</label>
+              <p class="hint" id="fAxesHint"></p>
+              <div id="fAxes"></div>
+              <div id="fStockGrid"></div>
             </div>
             <div class="field">
               <label>Image du produit</label>
@@ -525,7 +554,10 @@
   function readStore(){
     try {
       var raw = localStorage.getItem(KEY);
-      if (raw){ var s = JSON.parse(raw); if (s && s.products && s.settings) return s; }
+      if (raw){
+        var s = JSON.parse(raw);
+        if (s && s.products && s.settings){ s.products = normalizeProducts(s.products); return s; }
+      }
     } catch(e){}
     var s = SEED();
     saveStoreWith(s);
@@ -549,7 +581,7 @@
     var pending = 3;
     function step(){ if (--pending === 0){ saveStore(); renderAll(); cb(); } }
     window.AURA_DB.loadProducts(function(ep, rows){
-      if (!ep && rows && rows.length) store.products = rows;
+      if (!ep && rows && rows.length) store.products = normalizeProducts(rows);
       step();
     });
     window.AURA_DB.loadSettings(function(es, s){
@@ -593,8 +625,67 @@
     DELIVERED: {label:"Livrée & Payée",       emoji:"⚪"},
     CANCELLED: {label:"Annulée",              emoji:"🔴"}
   };
-  var SIZES = ["S","M","L","XL","XXL","TU"];
-  var SLABEL = {S:"S",M:"M",L:"L",XL:"XL",XXL:"XXL",TU:"TU"};
+  var VSEP = window.AURA_CATALOG.VSEP || "::";
+
+  /* Même conversion que la boutique : un produit resté au format « sizes »
+     est lu au format « axes + variants » sans être réécrit. La base sert les
+     deux modèles pendant la bascule. */
+  function trierValeurs(vals){
+    var ORDRE_TAILLES = ["XXS","XS","S","M","L","XL","XXL","XXXL","3XL","4XL"];
+    var v = (vals || []).slice();
+    if (v.every(function(x){ return /^\d+([.,]\d+)?$/.test(String(x).trim()); }))
+      return v.sort(function(a,b){ return parseFloat(String(a).replace(",",".")) - parseFloat(String(b).replace(",",".")); });
+    if (v.every(function(x){ return ORDRE_TAILLES.indexOf(String(x).toUpperCase()) >= 0; }))
+      return v.sort(function(a,b){ return ORDRE_TAILLES.indexOf(String(a).toUpperCase()) - ORDRE_TAILLES.indexOf(String(b).toUpperCase()); });
+    return v;
+  }
+  function normalizeProduct(p){
+    if (!p) return p;
+    if (p.variants){
+      if (Array.isArray(p.axes)) p.axes.forEach(function(ax){
+        if (Array.isArray(ax.values)) ax.values = trierValeurs(ax.values);
+      });
+      return p;
+    }
+    if (!p.sizes){ p.axes = p.axes || []; p.variants = { "": { s:0, r:0 } }; return p; }
+    var cles = Object.keys(p.sizes);
+    if (cles.length === 1 && cles[0] === "TU"){
+      p.axes = []; p.variants = { "": p.sizes.TU };
+    } else {
+      p.axes = [{ name: "Taille", values: trierValeurs(cles) }];
+      p.variants = {};
+      cles.forEach(function(k){ p.variants[k] = p.sizes[k]; });
+    }
+    return p;
+  }
+  function normalizeProducts(l){ return (l || []).map(normalizeProduct); }
+
+  function prodAxes(p){
+    return (p && Array.isArray(p.axes)) ? p.axes.filter(function(a){
+      return a && a.name && Array.isArray(a.values) && a.values.length;
+    }) : [];
+  }
+  function keyOf(vals){ return (vals || []).join(VSEP); }
+  function valuesOf(k){ return k === "" ? [] : String(k).split(VSEP); }
+  function variantLabel(key){ var v = valuesOf(key); return v.length ? v.join(" · ") : ""; }
+  function allKeys(p){
+    var axes = prodAxes(p);
+    if (!axes.length) return [""];
+    var out = [""];
+    axes.forEach(function(ax){
+      var suivant = [];
+      out.forEach(function(pre){
+        ax.values.forEach(function(v){ suivant.push(pre === "" ? v : pre + VSEP + v); });
+      });
+      out = suivant;
+    });
+    return out;
+  }
+  /* Axes déclarés par une catégorie, source des cases à cocher. */
+  function catAxes(catKey){
+    var c = catList().filter(function(x){ return x.key === catKey; })[0];
+    return (c && Array.isArray(c.axes)) ? c.axes : [];
+  }
   /* Categories : la liste vit dans les reglages, partagee avec la boutique. */
   var CATS = {};
   function catList(){
@@ -618,6 +709,53 @@
     }).join("");
     if (cur && CATS[cur]) sel.value = cur;
   }
+  /* Catégorie dont l'éditeur de déclinaisons est déplié. Une seule à la fois :
+     tout ouvrir d'un coup rendrait la page illisible. */
+  var catOuverte = null;
+
+  function axesEditorHTML(c, i){
+    var axes = Array.isArray(c.axes) ? c.axes : [];
+    var blocs = axes.map(function(ax, j){
+      var valeurs = (ax.values || []).map(function(v, k){
+        var val = v && v.v ? v.v : v;
+        var hex = (v && v.hex) || "";
+        return '<span class="val-chip">' +
+          (hex ? '<i style="background:' + esc(hex) + '"></i>' : '') +
+          esc(val) +
+          '<button type="button" data-valdel="' + i + '.' + j + '.' + k + '" aria-label="Retirer ' + esc(val) + '">×</button>' +
+        '</span>';
+      }).join("");
+      return '<div class="axe-edit">' +
+        '<div class="axe-tete">' +
+          '<input type="text" data-axname="' + i + '.' + j + '" value="' + esc(ax.name) + '" placeholder="Taille, Pointure, Couleur…" aria-label="Nom de la déclinaison" />' +
+          '<button type="button" class="sbtn danger" data-axdel="' + i + '.' + j + '">Retirer</button>' +
+        '</div>' +
+        '<div class="val-liste">' + (valeurs || '<span class="hint">Aucune valeur.</span>') + '</div>' +
+        '<div class="val-ajout">' +
+          '<input type="text" data-valnew="' + i + '.' + j + '" placeholder="Ajouter une valeur" aria-label="Nouvelle valeur" />' +
+          '<label class="chk teinte"><input type="checkbox" data-valuse="' + i + '.' + j + '" /> teinte</label>' +
+          '<input type="color" data-valhex="' + i + '.' + j + '" value="#111111" aria-label="Teinte" title="Teinte affichée en pastille" />' +
+          '<button type="button" class="sbtn" data-valadd="' + i + '.' + j + '">Ajouter</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+    return '<div class="axes-editeur">' +
+      '<p class="hint">Une déclinaison est ce qui fait varier un produit : taille, pointure, couleur, contenance. Deux au maximum — au-delà, le nombre de cases de stock à remplir devient ingérable.</p>' +
+      blocs +
+      (axes.length < 2
+        ? '<button type="button" class="btn btn-ghost" data-axadd="' + i + '">Ajouter une déclinaison</button>'
+        : '<p class="hint">Deux déclinaisons : c\'est le maximum.</p>') +
+    '</div>';
+  }
+
+  /* Enregistre la liste des catégories telle qu'affichée. */
+  function majCategories(list){
+    store.settings.categories = list;
+    saveStore();
+    renderCatSettings();
+    renderProducts();
+  }
+
   function renderCatSettings(){
     rebuildCats();
     fillCatSelect();
@@ -626,12 +764,21 @@
     var list = catList();
     host.innerHTML = list.map(function(c, i){
       var used = catUsage(c.key);
-      return '<div class="cat-row">' +
-        '<div><input type="text" data-catlabel="' + i + '" value="' + esc(c.label) + '" aria-label="Nom de la catégorie" />' +
-          '<div class="cat-count">' + used + ' produit' + (used > 1 ? 's' : '') + '</div></div>' +
-        '<div class="key">' + esc(c.key) + '</div>' +
-        '<button type="button" class="sbtn danger" data-catdel="' + i + '"' +
-          (used ? ' disabled title="Catégorie utilisée par ' + used + ' produit(s)"' : '') + '>Supprimer</button>' +
+      var axes = Array.isArray(c.axes) ? c.axes : [];
+      var resume = axes.length
+        ? axes.map(function(a){ return esc(a.name) + ' (' + (a.values || []).length + ')'; }).join(' · ')
+        : 'aucune déclinaison';
+      return '<div class="cat-bloc">' +
+        '<div class="cat-row">' +
+          '<div><input type="text" data-catlabel="' + i + '" value="' + esc(c.label) + '" aria-label="Nom de la catégorie" />' +
+            '<div class="cat-count">' + used + ' produit' + (used > 1 ? 's' : '') + ' · ' + resume + '</div></div>' +
+          '<div class="key">' + esc(c.key) + '</div>' +
+          '<button type="button" class="sbtn danger" data-catdel="' + i + '"' +
+            (used ? ' disabled title="Catégorie utilisée par ' + used + ' produit(s)"' : '') + '>Supprimer</button>' +
+        '</div>' +
+        '<button type="button" class="sbtn" data-axopen="' + i + '">' +
+          (catOuverte === i ? 'Masquer les déclinaisons' : 'Déclinaisons') + '</button>' +
+        (catOuverte === i ? axesEditorHTML(c, i) : '') +
       '</div>';
     }).join("");
   }
@@ -647,9 +794,23 @@
     d = d.slice(0,8);
     return "+223 " + d.slice(0,2) + " " + d.slice(2,4) + " " + d.slice(4,6) + " " + d.slice(6,8);
   }
+  /* Retrouve la variante d'une ligne de commande. Les commandes anciennes
+     ne portent qu'une taille : on la rattrape, y compris le cas « TU »
+     devenu clé vide. */
+  function itemKey(p, it){
+    if (!p || !p.variants) return null;
+    var candidats = [it.variant, it.size, ""];
+    for (var i=0;i<candidats.length;i++){
+      var c = candidats[i];
+      if (c !== undefined && c !== null && p.variants[c]) return c;
+    }
+    if (it.size === "TU" && p.variants[""]) return "";
+    return null;
+  }
+
   function findProduct(id){ for (var i=0;i<store.products.length;i++) if (store.products[i].id === id) return store.products[i]; return null; }
-  function availFor(p, sz){ var s = p.sizes[sz]; return s ? s.s - s.r : 0; }
-  function totalFor(p){ var t = 0; for (var k in p.sizes) t += p.sizes[k].s; return t; }
+  function availFor(p, key){ var v = p && p.variants ? p.variants[key] : null; return v ? v.s - v.r : 0; }
+  function totalFor(p){ var t = 0; if (p && p.variants) for (var k in p.variants) t += p.variants[k].s; return t; }
   function isOut(p){ if (p.stockout) return true; return totalFor(p) <= 0; }
   function waLink(phone, text){ return "https://wa.me/" + digits(phone) + "?text=" + encodeURIComponent(text); }
 
@@ -876,7 +1037,10 @@
       var shop = store.settings.shopName || "AURA STUDIOS";
       var msg = "Bonjour " + o.client + " 👋\n\nVotre commande *" + o.ref + "* (" + st.label + ") est enregistrée chez *" + shop + "*.\nLivraison prévue à *Bamako, " + o.quartier + "*.\nMerci de confirmer votre disponibilité. 🙏";
       var href = waLink("223" + digits(o.phone), msg);
-      var items = o.items.map(function(it){ return it.qty + " × " + it.name + " (" + (SLABEL[it.size] || it.size) + ")"; }).join(" · ");
+      var items = o.items.map(function(it){
+        var lib = it.variantLabel || it.size || "";
+        return it.qty + " × " + it.name + (lib ? " (" + lib + ")" : "");
+      }).join(" · ");
       return '<tr data-row="' + esc(o.ref) + '">' +
         '<td><span class="ref">' + esc(o.ref) + '</span><div style="font-size:11.5px;color:var(--muted);margin-top:3px">' + esc(items) + '</div></td>' +
         '<td class="mono">' + esc(date) + '</td>' +
@@ -922,7 +1086,10 @@
       try { d = new Date(o.date).toLocaleString("fr-FR"); } catch(e){}
       rows.push([
         o.ref, d, o.client, localPhone(o.phone), o.quartier,
-        o.items.map(function(it){ return it.qty + " x " + it.name + " (" + (SLABEL[it.size] || it.size) + ")"; }).join(" | "),
+        o.items.map(function(it){
+          var lib = it.variantLabel || it.size || "";
+          return it.qty + " x " + it.name + (lib ? " (" + lib + ")" : "");
+        }).join(" | "),
         o.subtotal, o.delivery, o.total,
         (STATUS[o.status] || {}).label || o.status
       ]);
@@ -974,6 +1141,16 @@
   });
   /* ---------------- Categories ---------------- */
   $("#catList").addEventListener("change", function(e){
+    var axn = e.target.closest("[data-axname]");
+    if (axn){
+      var r = axn.getAttribute("data-axname").split(".");
+      var nom = axn.value.trim();
+      if (!nom){ renderCatSettings(); return; }
+      var l = catList();
+      l[parseInt(r[0], 10)].axes[parseInt(r[1], 10)].name = nom;
+      majCategories(l);
+      return;
+    }
     var inp = e.target.closest("[data-catlabel]");
     if (!inp) return;
     var i = parseInt(inp.getAttribute("data-catlabel"), 10);
@@ -986,6 +1163,59 @@
     toast("Catégorie renommée");
   });
   $("#catList").addEventListener("click", function(e){
+    var ouvre = e.target.closest("[data-axopen]");
+    if (ouvre){
+      var idx = parseInt(ouvre.getAttribute("data-axopen"), 10);
+      catOuverte = (catOuverte === idx) ? null : idx;
+      renderCatSettings();
+      return;
+    }
+    var axAdd = e.target.closest("[data-axadd]");
+    if (axAdd){
+      var l1 = catList(), i1 = parseInt(axAdd.getAttribute("data-axadd"), 10);
+      l1[i1].axes = l1[i1].axes || [];
+      if (l1[i1].axes.length >= 2) return;
+      l1[i1].axes.push({ name: l1[i1].axes.length ? "Couleur" : "Taille", values: [] });
+      majCategories(l1);
+      return;
+    }
+    var axDel = e.target.closest("[data-axdel]");
+    if (axDel){
+      var r1 = axDel.getAttribute("data-axdel").split(".");
+      var l2 = catList(), c2 = l2[parseInt(r1[0], 10)];
+      if (!confirm("Retirer la déclinaison « " + c2.axes[parseInt(r1[1], 10)].name + " » ?\n\nLes produits déjà enregistrés gardent leur stock : seule la saisie des prochains changera.")) return;
+      c2.axes.splice(parseInt(r1[1], 10), 1);
+      majCategories(l2);
+      return;
+    }
+    var valAdd = e.target.closest("[data-valadd]");
+    if (valAdd){
+      var r2 = valAdd.getAttribute("data-valadd").split(".");
+      var champ = $('[data-valnew="' + r2[0] + '.' + r2[1] + '"]');
+      var teinte = $('[data-valhex="' + r2[0] + '.' + r2[1] + '"]');
+      var val = (champ.value || "").trim();
+      if (!val){ toast("Saisissez une valeur"); champ.focus(); return; }
+      if (val.indexOf(VSEP) >= 0){ toast("Les caractères « " + VSEP + " » sont interdits"); return; }
+      var l3 = catList(), ax3 = l3[parseInt(r2[0], 10)].axes[parseInt(r2[1], 10)];
+      ax3.values = ax3.values || [];
+      if (ax3.values.some(function(v){ return (v && v.v) === val; })){ toast("Cette valeur existe déjà"); return; }
+      var entree = { v: val };
+      /* La teinte n'est enregistrée que si la case est cochée : une taille ou
+         une pointure n'a pas de pastille, une couleur en a une. */
+      var coche = $('[data-valuse="' + r2[0] + '.' + r2[1] + '"]');
+      if (coche && coche.checked && teinte && teinte.value) entree.hex = teinte.value;
+      ax3.values.push(entree);
+      majCategories(l3);
+      return;
+    }
+    var valDel = e.target.closest("[data-valdel]");
+    if (valDel){
+      var r3 = valDel.getAttribute("data-valdel").split(".");
+      var l4 = catList();
+      l4[parseInt(r3[0], 10)].axes[parseInt(r3[1], 10)].values.splice(parseInt(r3[2], 10), 1);
+      majCategories(l4);
+      return;
+    }
     var del = e.target.closest("[data-catdel]");
     if (!del || del.disabled) return;
     var i = parseInt(del.getAttribute("data-catdel"), 10);
@@ -1139,7 +1369,8 @@
   function orderEditHTML(o){
     var items = o.items.map(function(it, i){
       return '<div class="ord-item">' +
-        '<span>' + it.qty + ' × ' + esc(it.name) + ' <small>(' + esc(SLABEL[it.size] || it.size) + ')</small></span>' +
+        '<span>' + it.qty + ' × ' + esc(it.name) +
+          (it.variantLabel || it.size ? ' <small>(' + esc(it.variantLabel || it.size) + ')</small>' : '') + '</span>' +
         '<span>' + fmt(it.price * it.qty) +
           (o.items.length > 1 ? ' <button class="sbtn danger" data-orditem="' + i + '">Retirer</button>' : '') +
         '</span>' +
@@ -1175,9 +1406,10 @@
      decremente (s). Sans cela, supprimer une commande fausserait le stock. */
   function releaseItem(order, it){
     var pr = findProduct(it.id);
-    if (!pr || !pr.sizes[it.size]) return;
-    if (order.status === "PENDING") pr.sizes[it.size].r -= it.qty;
-    else if (order.status !== "CANCELLED") pr.sizes[it.size].s += it.qty;
+    var cle = itemKey(pr, it);
+    if (cle === null) return;
+    if (order.status === "PENDING") pr.variants[cle].r -= it.qty;
+    else if (order.status !== "CANCELLED") pr.variants[cle].s += it.qty;
   }
 
   function recomputeTotals(o){
@@ -1263,8 +1495,9 @@ function applyStatus(order, ns){
     if (ns === ps) return;
     order.items.forEach(function(it){
       var p = findProduct(it.id);
-      if (!p || !p.sizes[it.size]) return;
-      var sz = p.sizes[it.size];
+      var cle = itemKey(p, it);
+      if (cle === null) return;
+      var sz = p.variants[cle];
       var hadRes = (ps === "PENDING");
       var hadDec = (ps !== "PENDING" && ps !== "CANCELLED");
       var willRes = (ns === "PENDING");
@@ -1292,9 +1525,10 @@ function applyStatus(order, ns){
   /* ---------------- Produits ---------------- */
   function prodStockText(p){
     var sizes = [];
-    for (var k in p.sizes){
+    for (var k in p.variants){
       var a = availFor(p, k);
-      sizes.push(SLABEL[k] + " : " + (a > 0 ? a : "0"));
+      var lib = variantLabel(k);
+      sizes.push((lib || "Stock") + " : " + (a > 0 ? a : "0"));
     }
     if (!sizes.length) return "Aucun stock défini";
     return sizes.join(" · ");
@@ -1323,13 +1557,71 @@ function applyStatus(order, ns){
       '</div>';
     }).join("");
   }
-  function stockGridHtml(selected){
-    if (!selected.length) return "";
-    var out = "";
-    selected.forEach(function(sz){
-      out += '<div class="stock-cell"><b>' + sz + '</b><input type="number" data-sz="' + sz + '" min="0" value="0" aria-label="Stock taille ' + sz + '" /></div>';
+  /* Cases à cocher construites depuis les axes de la catégorie choisie.
+     Aucune valeur n'est écrite dans le code : elles viennent des réglages. */
+  function renderAxeChecks(selection){
+    var axes = catAxes($("#fCat").value);
+    var hint = $("#fAxesHint"), host = $("#fAxes");
+    if (!axes.length){
+      hint.textContent = "Cette catégorie n'a pas de déclinaison : un seul stock à saisir.";
+      host.innerHTML = "";
+      return;
+    }
+    hint.textContent = "Cochez les valeurs de " +
+      axes.map(function(a){ return a.name; }).join(" et de ") +
+      " que ce produit possède réellement.";
+    host.innerHTML = axes.map(function(ax, i){
+      var choisies = (selection && selection[i]) || [];
+      return '<div class="axe-groupe">' +
+        '<b>' + esc(ax.name) + '</b>' +
+        '<div class="checks">' + ax.values.map(function(v){
+          var val = v && v.v ? v.v : v;
+          var coche = choisies.indexOf(val) >= 0 ? ' checked' : '';
+          return '<label class="chk"><input type="checkbox" data-axe="' + i + '" value="' + esc(val) + '"' + coche + '/> ' + esc(val) + '</label>';
+        }).join("") + '</div></div>';
+    }).join("");
+  }
+
+  /* Valeurs cochées, axe par axe. */
+  function selectionCourante(){
+    var axes = catAxes($("#fCat").value);
+    return axes.map(function(ax, i){
+      return $$('#fAxes input[data-axe="' + i + '"]:checked').map(function(c){ return c.value; });
     });
-    return out;
+  }
+
+  /* Tableau de stock : le premier axe en lignes, le second en colonnes.
+     Pas de matrice brute — une ligne par valeur, défilable si nécessaire. */
+  function renderStockGrid(valeursExistantes){
+    var sel = selectionCourante();
+    var host = $("#fStockGrid");
+    var lu = function(cle){
+      return valeursExistantes && valeursExistantes[cle] != null ? valeursExistantes[cle] : 0;
+    };
+    if (!sel.length){
+      host.innerHTML = '<div class="stock-cell"><b>Stock</b>' +
+        '<input type="number" data-cle="" min="0" value="' + lu("") + '" aria-label="Stock" /></div>';
+      return;
+    }
+    var a1 = sel[0] || [], a2 = sel[1] || null;
+    if (!a1.length){ host.innerHTML = '<p class="hint">Cochez au moins une valeur.</p>'; return; }
+    if (!a2 || !a2.length){
+      host.innerHTML = '<div class="stock-grid">' + a1.map(function(v){
+        return '<div class="stock-cell"><b>' + esc(v) + '</b>' +
+          '<input type="number" data-cle="' + esc(v) + '" min="0" value="' + lu(v) + '" aria-label="Stock ' + esc(v) + '" /></div>';
+      }).join("") + '</div>';
+      return;
+    }
+    host.innerHTML = '<div class="stock-table"><table><thead><tr><th></th>' +
+      a2.map(function(c){ return '<th>' + esc(c) + '</th>'; }).join("") +
+      '<th></th></tr></thead><tbody>' +
+      a1.map(function(l){
+        return '<tr><th>' + esc(l) + '</th>' + a2.map(function(c){
+          var cle = l + VSEP + c;
+          return '<td><input type="number" data-cle="' + esc(cle) + '" min="0" value="' + lu(cle) + '" aria-label="Stock ' + esc(l + " " + c) + '" /></td>';
+        }).join("") +
+        '<td><button type="button" class="sbtn" data-report="' + esc(l) + '" title="Reporter la première valeur sur toute la ligne">=</button></td></tr>';
+      }).join("") + '</tbody></table></div>';
   }
   function resetForm(){
     $("#fId").value = "";
@@ -1343,14 +1635,37 @@ function applyStatus(order, ns){
     $("#fImgPrev").style.display = "none";
     $("#fActive").checked = true;
     $("#fOut").checked = false;
-    $$("#fSizes input").forEach(function(c){ c.checked = false; });
-    $("#fStockGrid").innerHTML = "";
+    renderAxeChecks(null);
+    renderStockGrid(null);
     $("#formTitle").textContent = "Ajouter un produit";
   }
-  $("#fSizes").addEventListener("change", function(){
-    var sel = $$("#fSizes input:checked").map(function(c){ return c.value; });
-    $("#fStockGrid").innerHTML = stockGridHtml(sel);
+  $("#fAxes").addEventListener("change", function(){
+    renderStockGrid(stockActuel());
   });
+  $("#fCat").addEventListener("change", function(){
+    renderAxeChecks(null);
+    renderStockGrid(null);
+  });
+  /* Report d'une quantité sur toute la ligne : le stock est souvent le même
+     d'une couleur à l'autre, autant ne pas le saisir dix fois. */
+  $("#fStockGrid").addEventListener("click", function(e){
+    var b = e.target.closest("[data-report]");
+    if (!b) return;
+    var ligne = b.getAttribute("data-report");
+    var champs = $$('#fStockGrid input[data-cle^="' + ligne + VSEP + '"]');
+    if (!champs.length) return;
+    var v = champs[0].value;
+    champs.forEach(function(c){ c.value = v; });
+    toast("Quantité reportée sur la ligne");
+  });
+  /* Relit les quantités saisies pour ne pas les perdre à chaque redessin. */
+  function stockActuel(){
+    var out = {};
+    $$('#fStockGrid input[data-cle]').forEach(function(i){
+      out[i.getAttribute("data-cle")] = parseInt(i.value, 10) || 0;
+    });
+    return out;
+  }
   /* Envoi d'image. Le fichier est redimensionne et recompresse dans le
      navigateur avant tout envoi : une photo de telephone de 4 Mo devient
      un WebP de quelques dizaines de Ko. En ligne, elle part dans Supabase
@@ -1475,15 +1790,11 @@ function applyStatus(order, ns){
       if (p.img){ prev.src = p.img; prev.style.display = "block"; } else prev.style.display = "none";
       $("#fActive").checked = p.active !== false;
       $("#fOut").checked = !!p.stockout;
-      var sel = [];
-      for (var k in p.sizes) if (SIZES.indexOf(k) >= 0) sel.push(k);
-      $("#fSizes").querySelectorAll("input").forEach(function(c){ c.checked = sel.indexOf(c.value) >= 0; });
-      var st = "";
-      sel.forEach(function(sz){
-        var s = p.sizes[sz];
-        st += '<div class="stock-cell"><b>' + sz + '</b><input type="number" data-sz="' + sz + '" min="0" value="' + s.s + '" aria-label="Stock taille ' + sz + '" /></div>';
-      });
-      $("#fStockGrid").innerHTML = st;
+      var axesProd = prodAxes(p);
+      renderAxeChecks(axesProd.map(function(a){ return a.values; }));
+      var quantites = {};
+      for (var cle in p.variants) quantites[cle] = p.variants[cle].s;
+      renderStockGrid(quantites);
       $("#formTitle").textContent = "Modifier le produit";
       window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
       return;
@@ -1517,16 +1828,24 @@ function applyStatus(order, ns){
     if (!name){ toast("Nom du produit requis"); return; }
     if (!price || isNaN(price) || price <= 0){ toast("Prix invalide en FCFA"); return; }
     if (!img){ toast("Image requise (URL)"); return; }
-    var selSizes = $$("#fSizes input:checked").map(function(c){ return c.value; });
-    if (!selSizes.length){ toast("Cochez au moins une taille"); return; }
-    var sizes = {}, ok = true;
-    selSizes.forEach(function(sz){
-      var inp = $("#fStockGrid").querySelector('input[data-sz="' + sz + '"]');
-      var v = inp ? parseInt(inp.value, 10) : 0;
+    var axesCat = catAxes(cat);
+    var sel = selectionCourante();
+    for (var ia=0; ia<axesCat.length; ia++){
+      if (!sel[ia] || !sel[ia].length){
+        toast("Cochez au moins une valeur pour « " + axesCat[ia].name + " »");
+        return;
+      }
+    }
+    var axesProduit = axesCat.map(function(ax, i){ return { name: ax.name, values: sel[i] }; })
+                             .filter(function(a){ return a.values.length; });
+    var variants = {}, ok = true;
+    $$('#fStockGrid input[data-cle]').forEach(function(i){
+      var v = parseInt(i.value, 10);
       if (isNaN(v) || v < 0){ ok = false; return; }
-      sizes[sz] = { s:v, r:0 };
+      variants[i.getAttribute("data-cle")] = { s:v, r:0 };
     });
     if (!ok){ toast("Stock invalide"); return; }
+    if (!Object.keys(variants).length){ toast("Aucun stock à enregistrer"); return; }
     var editing = $("#fId").value;
     var pr;
     if (editing){
@@ -1534,17 +1853,24 @@ function applyStatus(order, ns){
       if (!pr) return;
       pr.name = name; pr.price = price; pr.oldPrice = oldP; pr.cat = cat; pr.badge = badge;
       pr.img = img; pr.desc = desc; pr.active = $("#fActive").checked; pr.stockout = $("#fOut").checked;
-      var newSizes = {};
-      for (var sk in sizes){
-        var prior = pr.sizes[sk] || { s:0, r:0 };
-        newSizes[sk] = { s: sizes[sk].s, r: prior.r };
+      /* Les réservations en cours sont conservées : modifier un stock ne doit
+         pas libérer une quantité déjà promise à une commande en attente. */
+      var neuf = {};
+      for (var sk in variants){
+        var avant = (pr.variants && pr.variants[sk]) || { s:0, r:0 };
+        neuf[sk] = { s: variants[sk].s, r: avant.r };
       }
-      pr.sizes = newSizes;
+      pr.axes = axesProduit;
+      pr.variants = neuf;
+      delete pr.sizes;
       saveStore();
       syncProducts();
       toast("Produit mis à jour");
     } else {
-      store.products.push({ id:"p" + Date.now(), name:name, cat:cat, price:price, oldPrice:oldP, badge:badge, img:img, desc:desc, sizes:sizes, active:$("#fActive").checked, stockout:$("#fOut").checked });
+      store.products.push({ id:"p" + Date.now(), name:name, cat:cat, price:price,
+        oldPrice:oldP, badge:badge, img:img, imgs:[img], desc:desc,
+        axes:axesProduit, variants:variants,
+        active:$("#fActive").checked, stockout:$("#fOut").checked });
       saveStore();
       syncProducts();
       toast("Produit ajouté");
@@ -1607,6 +1933,8 @@ function applyStatus(order, ns){
   });
 
   function renderAll(){
+    renderAxeChecks(null);
+    renderStockGrid(null);
     if (!unlocked) return;
     renderDash();
     renderOrders();
