@@ -197,7 +197,7 @@
   .pillar .idx{font-weight:900;font-size:14px;color:var(--muted);min-width:28px}
   .pillar h3{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
   .pillar p{color:var(--muted);font-size:14px;margin-top:4px}
-  .about-link{margin-top:28px;display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;background:none;border:none;color:var(--ink);padding:0}
+  .about-link{margin-top:28px;min-height:44px;display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;background:none;border:none;color:var(--ink);padding:0}
   .about-link svg{width:15px;height:15px;transition:transform .2s ease}
   .about-link:hover svg{transform:translateX(4px)}
 
@@ -222,12 +222,14 @@
   .social svg{width:18px;height:18px}
   .fcol h4{font-size:12px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--ink);margin-bottom:18px}
   .fcol li{margin-bottom:10px}
-  .fcol a{font-size:14px;color:var(--muted);transition:color .16s ease}
+  .fcol a{font-size:14px;color:var(--muted);transition:color .16s ease;
+    display:inline-flex;align-items:center;min-height:24px}
   .fcol a:hover{color:var(--ink)}
   .footer-bottom{border-top:var(--border-w) solid var(--line);padding:22px 0;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
   .footer-bottom p{font-size:13px;color:var(--muted)}
   .footer-bottom nav{display:flex;gap:22px;flex-wrap:wrap}
-  .footer-bottom a{font-size:13px;color:var(--muted);background:none;border:none;padding:0}
+  .footer-bottom a{font-size:13px;color:var(--muted);background:none;border:none;padding:0;
+    display:inline-flex;align-items:center;min-height:24px}
   .footer-bottom a:hover{color:var(--ink)}
 
   .overlay{position:fixed;inset:0;background:color-mix(in srgb,#111111 55%,transparent);z-index:90;opacity:0;pointer-events:none;transition:opacity .25s ease}
@@ -294,8 +296,8 @@
   .size-btn.soldout.selected{background:var(--muted);border-color:var(--muted);color:var(--bg)}
   .stock-line{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
   .stock-line strong{color:var(--ink)}
-  .qty-stepper{display:inline-flex;align-items:center;gap:14px;border:var(--border-w) solid var(--line);border-radius:var(--radius);padding:6px 10px;align-self:flex-start}
-  .qty-stepper button{width:30px;height:30px;border:none;background:transparent;font-size:18px;font-weight:800;color:var(--ink)}
+  .qty-stepper{display:inline-flex;align-items:center;gap:8px;border:var(--border-w) solid var(--line);border-radius:var(--radius);padding:2px 6px;align-self:flex-start}
+  .qty-stepper button{width:44px;height:44px;border:none;background:transparent;font-size:18px;font-weight:800;color:var(--ink)}
   .qty-stepper span{font-size:14px;font-weight:800;min-width:16px;text-align:center}
   .qty-stepper button:disabled{opacity:.4;cursor:not-allowed}
 
@@ -364,6 +366,10 @@
     /* « Choisir la taille » passait sur deux lignes dans la carte resserrée :
        l'interlettrage large du système coûte plus que la taille de police. */
     .padd .btn{padding:12px 8px;font-size:11px;letter-spacing:.04em}
+    /* Zone cliquable étendue autour des liens, sans toucher à la typographie. */
+    .fcol li{margin-bottom:4px}
+    .fcol a{min-height:44px}
+    .footer-bottom a{min-height:44px}
     .badge{font-size:10px;padding:5px 9px;letter-spacing:.1em}
     .wish{background:color-mix(in srgb,#ffffff 70%,transparent)}
   }
@@ -429,7 +435,7 @@
     .drawer-body{padding:16px}
     .drawer-foot{padding:16px}
     .size-btn{width:50px;height:44px;padding:0;font-size:12px}
-    .qty-stepper{padding:4px 8px}
+    .qty-stepper{padding:2px 6px}
     .announce{font-size:11px;padding:8px 12px;letter-spacing:.08em}
     .mobile-menu{padding:8px 16px 16px}
     .hero-badge{top:14px;right:14px;padding:8px 12px;font-size:10px}
