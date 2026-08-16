@@ -310,7 +310,7 @@
               <select id="fBadge">
                 <option value="">Aucun</option>
                 <option value="Nouveau">Nouveau</option>
-                <option value="Bestseller">Bestseller</option>
+                <option value="Top vente">Top vente</option>
                 <option value="-20 %">-20 %</option>
               </select>
             </div>
@@ -462,6 +462,16 @@
           <div class="field">
             <label for="sFree">Livraison offerte à partir de (FCFA)</label>
             <input type="number" id="sFree" min="0" step="1000" placeholder="50000" />
+          </div>
+          <div class="field">
+            <label for="sDelay">Délai de livraison annoncé</label>
+            <input type="text" id="sDelay" placeholder="24h" maxlength="40" />
+            <p class="hint">Exemples : <b>24h</b>, <b>48h</b>, <b>2 à 3 jours</b>, <b>1 semaine</b>. Cette mention apparaît sur chaque carte produit, dans le bandeau du haut et dans l'accroche : elle est écrite une seule fois ici pour ne jamais se contredire.</p>
+          </div>
+          <div class="field">
+            <label for="sExchange">Délai d'échange annoncé</label>
+            <input type="text" id="sExchange" placeholder="48h" maxlength="40" />
+            <p class="hint">Laissez vide si vous ne souhaitez pas annoncer de délai — la mention devient simplement « Échange possible ». N'annoncez que ce que vous pouvez tenir : une promesse non honorée sur les premières commandes se paie en bouche-à-oreille.</p>
             <p class="hint">0 = pas de livraison offerte. Ce seuil est appliqué au calcul du panier.</p>
           </div>
           <div class="field">
@@ -1551,6 +1561,8 @@ function applyStatus(order, ns){
     $("#sName").value = s.shopName || "";
     $("#sFee").value = s.deliveryFee != null ? s.deliveryFee : "";
     $("#sFree").value = s.freeFrom != null ? s.freeFrom : 0;
+    $("#sDelay").value = s.deliveryTime || "";
+    $("#sExchange").value = s.exchangeTime || "";
     $("#sAnn").value = s.announcement || "";
     $("#sIG").value = s.instagram || "";
     $("#sTT").value = s.tiktok || "";
@@ -1580,6 +1592,8 @@ function applyStatus(order, ns){
     store.settings.shopName = $("#sName").value.trim() || "AURA STUDIOS";
     store.settings.deliveryFee = fee;
     store.settings.freeFrom = free;
+    store.settings.deliveryTime = $("#sDelay").value.trim();
+    store.settings.exchangeTime = $("#sExchange").value.trim();
     store.settings.announcement = $("#sAnn").value.trim();
     store.settings.instagram = $("#sIG").value.trim();
     store.settings.tiktok = $("#sTT").value.trim();

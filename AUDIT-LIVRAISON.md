@@ -127,6 +127,74 @@ client modifiait son catalogue et les navigateurs continuaient de servir
 l'ancienne version. `vercel.json` impose maintenant `must-revalidate` sur les
 scripts.
 
+### Carte produit — refonte
+
+Défaut structurel corrigé : la grille était en dents de scie sur téléphone.
+
+| | Avant | Après |
+|---|---|---|
+| Hauteurs de carte sur mobile | 312 / 332 / 336 / 356 | **405** — une seule |
+
+Quatre causes empilées, toutes trouvées à la mesure :
+
+1. Les noms passaient sur une ou deux lignes selon leur longueur — deux lignes
+   sont désormais réservées en permanence.
+2. Sur les produits en promo, les deux montants ne tenaient pas sur une ligne.
+   L'ancien prix perd sa devise (« 42 000 » barré, puis « 34 000 FCFA ») et
+   rétrécit sur petit écran.
+3. `1fr` vaut `minmax(auto, 1fr)` : une colonne s'élargissait dès qu'une carte
+   avait un contenu insécable plus large que sa part, et la photo — qui suit un
+   aspect-ratio — grandissait avec elle. Remplacé par `minmax(0, 1fr)`, sur la
+   grille comme sur la colonne interne de la carte.
+4. La mention de stock passait sur deux lignes : elle est désormais tenue sur
+   une seule, et n'annonce qu'une taille.
+
+Autres corrections de la carte :
+
+- **Collision badge / favoris supprimée.** Le badge « Bestseller » (108 px)
+  mordait sur le cœur des trois cartes concernées. Renommé « Top vente »,
+  resserré sur mobile et borné par une largeur maximale : aucun libellé, même
+  long, ne peut plus l'atteindre. Vérifié sur les 20 cartes.
+- **Cœur porté à 44 × 44 px.** Agrandir seul l'aurait décalé vers la gauche et
+  aggravé la collision — d'où le resserrement du badge en même temps.
+- **La ligne de catégorie cède la place au délai de livraison.** « Accessoires »
+  sous « Bonnet AURA » n'apprenait rien à quelqu'un qui vient de filtrer.
+- **Sur écran tactile, le bouton quitte la photo** pour la rangée du dessous :
+  le bas du vêtement, où se lit la coupe, redevient visible. Sur ordinateur il
+  reste révélé au survol par-dessus l'image, inchangé.
+- **Contenant gris sur écran tactile.** Le bouton détaché de la photo ne se
+  rattachait plus visuellement à son produit. Un aplat `#f5f5f5` referme la
+  carte en un bloc — mécanisme prévu par la charte, qui bannit les ombres au
+  profit des décalages de gris.
+
+### Réglages pilotés depuis l'administration
+
+| Champ | Effet |
+|---|---|
+| **Délai de livraison** | Alimente les 20 cartes produit, le bandeau de réassurance et l'accroche. Une seule source : « 24h » ne peut plus cohabiter avec « 1 semaine ». Testé de bout en bout. |
+| **Délai d'échange** | Même principe. Laissé vide, la mention devient « Échange possible » — on n'annonce que ce qu'on tient. |
+
+### Corrections issues de l'audit externe
+
+Audit UX passé sur la version déployée. Deux alertes sur quatre étaient fausses,
+vérification faite dans le code et dans le navigateur.
+
+| Alerte | Verdict | Suite |
+|---|---|---|
+| Les liens du menu ne filtrent pas | **Faux** — « Hoodies » affiche bien 7 hoodies et active l'onglet. L'outil a lu le HTML statique et vu onze `href="#produits"` sans voir l'attribut `data-goto` | Le vrai manque, mal nommé, était l'absence d'adresse par catégorie — corrigé |
+| Cibles tactiles sous 44 px | **Vrai** | Onglets de filtre portés à 44 px, cœurs à 44 × 44 |
+| Le fond défile derrière la modale | **Vrai** | Verrou par `position:fixed` — seule méthode qui tienne sur iOS — avec restitution exacte de la position. Posé dans `pushLayer`/`popLayer`, les deux seuls points de passage de toutes les couches |
+| Fiche produit en `role="alertdialog"` | **Faux** — elle est en `role="dialog"`. La seule `alertdialog` est la modale de refus de commande, ce qui est l'usage exact prévu | Aucune |
+
+### Adresses par catégorie
+
+`?cat=hoodies` ouvre directement la catégorie, y compris après l'arrivée des
+réglages depuis Supabase. L'adresse suit le filtre courant sans empiler
+d'historique. Les quatre catégories sont déclarées au `sitemap.xml`.
+
+Deux gains concrets : un lien de catégorie devient partageable sur WhatsApp,
+et Google indexe cinq pages au lieu d'une.
+
 ### Conversion — leviers commerciaux
 
 Le design n'a pas été touché : registre monochrome, boutons pilule, mise à plat

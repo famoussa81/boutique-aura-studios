@@ -14,13 +14,13 @@
   function products() {
     return [
       { id: "hoodie-noir", name: "Hoodie Oversized « Noir Absolu »", cat: "hoodies", price: 25000, oldPrice: 0, badge: "Nouveau", img: "assets/hoodie-noir.webp", imgs: ["assets/hoodie-noir.webp"], desc: "Coupe oversize, tissu molletonné premium, capuche doublée et cordon contrasté. La pièce signature de la saison.", sizes: { S: sz(6), M: sz(9), L: sz(12), XL: sz(7), XXL: sz(4) }, active: true, stockout: false },
-      { id: "hoodie-blanc", name: "Hoodie Studio Blanc", cat: "hoodies", price: 25000, oldPrice: 0, badge: "Bestseller", img: "assets/hoodie-blanc.webp", imgs: ["assets/hoodie-blanc.webp"], desc: "Édition studio en molleton lourd, silhouette épurée et finitions contrastées. Polyvalence totale.", sizes: { S: sz(5), M: sz(8), L: sz(10), XL: sz(6), XXL: sz(3) }, active: true, stockout: false },
+      { id: "hoodie-blanc", name: "Hoodie Studio Blanc", cat: "hoodies", price: 25000, oldPrice: 0, badge: "Top vente", img: "assets/hoodie-blanc.webp", imgs: ["assets/hoodie-blanc.webp"], desc: "Édition studio en molleton lourd, silhouette épurée et finitions contrastées. Polyvalence totale.", sizes: { S: sz(5), M: sz(8), L: sz(10), XL: sz(6), XXL: sz(3) }, active: true, stockout: false },
       { id: "hoodie-tech", name: "Hoodie Aura Tech", cat: "hoodies", price: 28000, oldPrice: 0, badge: "", img: "assets/hoodie-tech.webp", imgs: ["assets/hoodie-tech.webp"], desc: "Version technique hydrofuge : zip intégral, coutures scellées et poches étanches.", sizes: { S: sz(4), M: sz(6), L: sz(8), XL: sz(4), XXL: sz(2) }, active: true, stockout: false },
       { id: "hoodie-urbain", name: "Hoodie Urban Flow", cat: "hoodies", price: 27000, oldPrice: 0, badge: "Nouveau", img: "assets/hoodie-urbain.webp", imgs: ["assets/hoodie-urbain.webp"], desc: "Silhouette streetwear engagée : capuche classique, poche kangourou et grammage lourd.", sizes: { S: sz(6), M: sz(8), L: sz(11), XL: sz(6), XXL: sz(3) }, active: true, stockout: false },
       { id: "hoodie-trench", name: "Hoodie Trench Noir", cat: "hoodies", price: 30000, oldPrice: 0, badge: "", img: "assets/hoodie-trench.webp", imgs: ["assets/hoodie-trench.webp"], desc: "Trench technique oversize : patte boutonnée, tissu coupe-vent et finitions contrastées.", sizes: { S: sz(4), M: sz(6), L: sz(8), XL: sz(5), XXL: sz(2) }, active: true, stockout: false },
-      { id: "tee-graphique", name: "T-shirt Graphique AURA", cat: "tees", price: 15000, oldPrice: 0, badge: "Bestseller", img: "assets/tee-graphique.webp", imgs: ["assets/tee-graphique.webp"], desc: "Coton premium 220 g/m², graphisme AURA imprimé, coupe régulière droite.", sizes: { S: sz(8), M: sz(12), L: sz(14), XL: sz(8), XXL: sz(5) }, active: true, stockout: false },
+      { id: "tee-graphique", name: "T-shirt Graphique AURA", cat: "tees", price: 15000, oldPrice: 0, badge: "Top vente", img: "assets/tee-graphique.webp", imgs: ["assets/tee-graphique.webp"], desc: "Coton premium 220 g/m², graphisme AURA imprimé, coupe régulière droite.", sizes: { S: sz(8), M: sz(12), L: sz(14), XL: sz(8), XXL: sz(5) }, active: true, stockout: false },
       { id: "tee-core", name: "T-shirt Essential Core", cat: "tees", price: 12000, oldPrice: 15000, badge: "-20 %", img: "assets/tee-core.webp", imgs: ["assets/tee-core.webp"], desc: "Le basique absolu du dressing urbain : coton épais, col renforcé, tombé impeccable.", sizes: { S: sz(10), M: sz(15), L: sz(16), XL: sz(9), XXL: sz(5) }, active: true, stockout: false },
-      { id: "tee-oversized", name: "T-shirt Oversized Blanc", cat: "tees", price: 14000, oldPrice: 0, badge: "Bestseller", img: "assets/tee-oversized.webp", imgs: ["assets/tee-oversized.webp"], desc: "Coupe oversized confortable, manches tombantes et coton épais au toucher premium.", sizes: { S: sz(7), M: sz(10), L: sz(12), XL: sz(7), XXL: sz(4) }, active: true, stockout: false },
+      { id: "tee-oversized", name: "T-shirt Oversized Blanc", cat: "tees", price: 14000, oldPrice: 0, badge: "Top vente", img: "assets/tee-oversized.webp", imgs: ["assets/tee-oversized.webp"], desc: "Coupe oversized confortable, manches tombantes et coton épais au toucher premium.", sizes: { S: sz(7), M: sz(10), L: sz(12), XL: sz(7), XXL: sz(4) }, active: true, stockout: false },
       { id: "tee-print", name: "T-shirt Print Studio", cat: "tees", price: 16000, oldPrice: 0, badge: "Nouveau", img: "assets/tee-print.webp", imgs: ["assets/tee-print.webp"], desc: "Sérigraphie éditoriale en face avant et arrière, coton peigné à séchage rapide.", sizes: { S: sz(6), M: sz(9), L: sz(11), XL: sz(6), XXL: sz(3) }, active: true, stockout: false },
       { id: "cargo-technique", name: "Pantalon Cargo Technique", cat: "pants", price: 36000, oldPrice: 45000, badge: "-20 %", img: "assets/cargo-technique.webp", imgs: ["assets/cargo-technique.webp"], desc: "Série technique : tissu anti-déchirure, coupe ample, poches cargo zippées et cordon cheville.", sizes: { S: sz(6), M: sz(9), L: sz(10), XL: sz(5), XXL: sz(3) }, active: true, stockout: false },
       { id: "cargo-noir", name: "Cargo Noir Slim", cat: "pants", price: 34000, oldPrice: 42000, badge: "-20 %", img: "assets/cargo-noir.webp", imgs: ["assets/cargo-noir.webp"], desc: "Cargo ajusté aux chevilles, toile épaisse et six poches utilitaires.", sizes: { S: sz(6), M: sz(8), L: sz(10), XL: sz(5), XXL: sz(3) }, active: true, stockout: false },
@@ -42,6 +42,15 @@
       shopName: "AURA STUDIOS",
       deliveryFee: 1500,
       freeFrom: 35000,
+      /* Délai de livraison annoncé. Modifiable depuis l'administration :
+         il alimente à la fois les cartes produit, le bandeau de réassurance
+         et les mentions du hero, pour qu'ils ne puissent jamais diverger.
+         Exemples : "24h", "48h", "2 à 3 jours", "1 semaine". */
+      deliveryTime: "24h",
+      /* Délai d'échange annoncé. Comme le délai de livraison, il est écrit
+         une seule fois ici : une promesse figée dans le HTML ne peut plus
+         être ajustée quand la réalité du terrain change. */
+      exchangeTime: "48h",
       /* Avis clients : rempli depuis l'administration, jamais pre-rempli.
          Section masquee en boutique tant que la liste est vide. */
       reviews: [],
