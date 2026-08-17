@@ -104,8 +104,8 @@
       /* Categories de la boutique. Modifiables depuis l'administration :
          ajouter « Vestes » ou « Chaussures » ne demande aucune ligne de code. */
       categories: [
-        { key: "claquettes", label: "Claquettes", cover: "assets/cat-claquettes.webp", axes: [{ name: "Pointure", values: [{ v: "39" }, { v: "40" }, { v: "41" }, { v: "42" }, { v: "43" }, { v: "44" }, { v: "45" }] }] },
-        { key: "mules", label: "Mules & sabots", cover: "assets/cat-mules.webp", axes: [{ name: "Pointure", values: [{ v: "39" }, { v: "40" }, { v: "41" }, { v: "42" }, { v: "43" }, { v: "44" }, { v: "45" }] }] }
+        { key: "claquettes", label: "Claquettes", cover: "assets/cat-claquettes.webp", axes: [{ name: "Pointure", values: [{ v: "39" }, { v: "40" }, { v: "41" }, { v: "42" }, { v: "43" }, { v: "44" }, { v: "45" }] }, { name: "Coloris", values: [{ v: "Noir", hex: "#111111" }, { v: "Blanc", hex: "#f2f2f2" }, { v: "Blanc cassé", hex: "#e8e2d5" }, { v: "Beige", hex: "#c8b79b" }, { v: "Tan", hex: "#b08a5e" }, { v: "Marron", hex: "#6b4a2f" }, { v: "Bleu", hex: "#2b4f8e" }, { v: "Bleu ciel", hex: "#8fb8d8" }, { v: "Bleu marine", hex: "#1c2b4a" }, { v: "Vert", hex: "#5a6b4f" }, { v: "Noir et rouge", hex: "#a3262b" }, { v: "Blanc et bleu", hex: "#dbe4f0" }, { v: "Bleu et blanc", hex: "#3d6ea8" }, { v: "Tricolore", hex: "#8c2f39" }] }] },
+        { key: "mules", label: "Mules & sabots", cover: "assets/cat-mules.webp", axes: [{ name: "Pointure", values: [{ v: "39" }, { v: "40" }, { v: "41" }, { v: "42" }, { v: "43" }, { v: "44" }, { v: "45" }] }, { name: "Coloris", values: [{ v: "Noir", hex: "#111111" }, { v: "Blanc", hex: "#f2f2f2" }, { v: "Blanc cassé", hex: "#e8e2d5" }, { v: "Beige", hex: "#c8b79b" }, { v: "Tan", hex: "#b08a5e" }, { v: "Marron", hex: "#6b4a2f" }, { v: "Bleu", hex: "#2b4f8e" }, { v: "Bleu ciel", hex: "#8fb8d8" }, { v: "Bleu marine", hex: "#1c2b4a" }, { v: "Vert", hex: "#5a6b4f" }, { v: "Noir et rouge", hex: "#a3262b" }, { v: "Blanc et bleu", hex: "#dbe4f0" }, { v: "Bleu et blanc", hex: "#3d6ea8" }, { v: "Tricolore", hex: "#8c2f39" }] }] }
       ],
       /* Collections : marques, capsules, univers. Vides par défaut — une
          boutique mono-marque n'en a pas besoin et n'en voit aucune trace.
@@ -155,8 +155,8 @@
     /* Categories par defaut. Elles ne sont qu'une graine : la liste
        effective vit dans les reglages et se modifie depuis l'administration. */
     CATEGORIES: [
-        { key: "claquettes", label: "Claquettes", cover: "assets/cat-claquettes.webp", axes: [{ name: "Pointure", values: [{ v: "39" }, { v: "40" }, { v: "41" }, { v: "42" }, { v: "43" }, { v: "44" }, { v: "45" }] }] },
-        { key: "mules", label: "Mules & sabots", cover: "assets/cat-mules.webp", axes: [{ name: "Pointure", values: [{ v: "39" }, { v: "40" }, { v: "41" }, { v: "42" }, { v: "43" }, { v: "44" }, { v: "45" }] }] }
+        { key: "claquettes", label: "Claquettes", cover: "assets/cat-claquettes.webp", axes: [{ name: "Pointure", values: [{ v: "39" }, { v: "40" }, { v: "41" }, { v: "42" }, { v: "43" }, { v: "44" }, { v: "45" }] }, { name: "Coloris", values: [{ v: "Noir", hex: "#111111" }, { v: "Blanc", hex: "#f2f2f2" }, { v: "Blanc cassé", hex: "#e8e2d5" }, { v: "Beige", hex: "#c8b79b" }, { v: "Tan", hex: "#b08a5e" }, { v: "Marron", hex: "#6b4a2f" }, { v: "Bleu", hex: "#2b4f8e" }, { v: "Bleu ciel", hex: "#8fb8d8" }, { v: "Bleu marine", hex: "#1c2b4a" }, { v: "Vert", hex: "#5a6b4f" }, { v: "Noir et rouge", hex: "#a3262b" }, { v: "Blanc et bleu", hex: "#dbe4f0" }, { v: "Bleu et blanc", hex: "#3d6ea8" }, { v: "Tricolore", hex: "#8c2f39" }] }] },
+        { key: "mules", label: "Mules & sabots", cover: "assets/cat-mules.webp", axes: [{ name: "Pointure", values: [{ v: "39" }, { v: "40" }, { v: "41" }, { v: "42" }, { v: "43" }, { v: "44" }, { v: "45" }] }, { name: "Coloris", values: [{ v: "Noir", hex: "#111111" }, { v: "Blanc", hex: "#f2f2f2" }, { v: "Blanc cassé", hex: "#e8e2d5" }, { v: "Beige", hex: "#c8b79b" }, { v: "Tan", hex: "#b08a5e" }, { v: "Marron", hex: "#6b4a2f" }, { v: "Bleu", hex: "#2b4f8e" }, { v: "Bleu ciel", hex: "#8fb8d8" }, { v: "Bleu marine", hex: "#1c2b4a" }, { v: "Vert", hex: "#5a6b4f" }, { v: "Noir et rouge", hex: "#a3262b" }, { v: "Blanc et bleu", hex: "#dbe4f0" }, { v: "Bleu et blanc", hex: "#3d6ea8" }, { v: "Tricolore", hex: "#8c2f39" }] }] }
     ]
   };
 })();

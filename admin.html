@@ -183,6 +183,13 @@
   .val-chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg);
     border:1px solid var(--line);border-radius:30px;padding:5px 6px 5px 10px;font-size:12.5px;font-weight:700}
   .val-chip i{width:14px;height:14px;border-radius:50%;border:1px solid var(--line);display:inline-block}
+  .val-chip img{width:22px;height:22px;border-radius:4px;object-fit:cover;
+    border:1px solid var(--line)}
+  .val-chip.a-image{padding-left:5px}
+  .val-photo{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;
+    border-radius:50%;cursor:pointer;color:var(--muted);font-size:13px;line-height:1}
+  .val-photo:hover{background:var(--line);color:var(--ink)}
+  .val-photo input{display:none}
   .val-chip button{width:22px;height:22px;border:none;background:transparent;color:var(--muted);
     font-size:15px;line-height:1;cursor:pointer;border-radius:50%}
   .val-chip button:hover{background:var(--line);color:var(--ink)}
@@ -534,6 +541,20 @@
           </div>
         </form>
       </div>
+
+      <div class="card" style="max-width:640px;margin-top:20px">
+        <h2>Marques et collections</h2>
+        <p class="hint" style="margin-bottom:16px">Une collection regroupe des produits sous une même identité : une marque que vous revendez, une capsule saisonnière. Dès qu'il en existe une, la page d'accueil les met en avant à la place des catégories. Laissez la liste vide si vous ne vendez qu'une seule marque.</p>
+        <div id="collList"></div>
+        <div class="or">Ajouter</div>
+        <form id="collForm" novalidate>
+          <div class="cat-row">
+            <input type="text" id="collLabel" placeholder="Nom affiché (ex. Louis Vuitton)" />
+            <input type="text" id="collKey" placeholder="Identifiant (ex. louis-vuitton)" />
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
     </section>
 
   </main>
@@ -719,9 +740,15 @@
       var valeurs = (ax.values || []).map(function(v, k){
         var val = v && v.v ? v.v : v;
         var hex = (v && v.hex) || "";
-        return '<span class="val-chip">' +
-          (hex ? '<i style="background:' + esc(hex) + '"></i>' : '') +
+        var aImg = !!(v && v.img);
+        return '<span class="val-chip' + (aImg ? ' a-image' : '') + '">' +
+          (v && v.img ? '<img src="' + esc(v.img) + '" alt="" />'
+                      : (hex ? '<i style="background:' + esc(hex) + '"></i>' : '')) +
           esc(val) +
+          '<label class="val-photo" title="' + (aImg ? 'Remplacer la photo' : 'Ajouter une photo pour ce coloris') + '">' +
+            (aImg ? '⟳' : '＋') +
+            '<input type="file" accept="image/*" data-valimg="' + i + '.' + j + '.' + k + '" />' +
+          '</label>' +
           '<button type="button" data-valdel="' + i + '.' + j + '.' + k + '" aria-label="Retirer ' + esc(val) + '">×</button>' +
         '</span>';
       }).join("");
@@ -1141,6 +1168,22 @@
   });
   /* ---------------- Categories ---------------- */
   $("#catList").addEventListener("change", function(e){
+    /* Photo attachée à une valeur d'axe : c'est elle qui s'affichera quand
+       le client choisira ce coloris. Recadrée au format de la fiche produit. */
+    var vimg = e.target.closest("[data-valimg]");
+    if (vimg){
+      var r0 = vimg.getAttribute("data-valimg").split(".");
+      var f = vimg.files && vimg.files[0];
+      vimg.value = "";
+      if (!f) return;
+      envoyerImage(f, 3/4, function(url){
+        var l0 = catList();
+        l0[parseInt(r0[0],10)].axes[parseInt(r0[1],10)].values[parseInt(r0[2],10)].img = url;
+        majCategories(l0);
+        toast("Photo du coloris enregistrée");
+      });
+      return;
+    }
     var axn = e.target.closest("[data-axname]");
     if (axn){
       var r = axn.getAttribute("data-axname").split(".");
@@ -1209,6 +1252,7 @@
       return;
     }
     var valDel = e.target.closest("[data-valdel]");
+    if (false) {}
     if (valDel){
       var r3 = valDel.getAttribute("data-valdel").split(".");
       var l4 = catList();
@@ -1247,6 +1291,164 @@
     $("#catForm").reset();
     renderCatSettings();
     toast("Catégorie « " + label + " » ajoutée");
+  });
+
+  /* ---------------- Collections ----------------
+     Seconde taxonomie : la catégorie dit le type de produit, la collection
+     dit la marque. Facultative — sans elle, la boutique reste mono-marque. */
+  var collOuverte = null;
+
+  function collList(){
+    var c = store.settings.collections;
+    if (!Array.isArray(c)) return [];
+    return c.filter(function(x){ return x && x.key && x.label; });
+  }
+  function collUsage(key){
+    return store.products.filter(function(p){ return p.collection === key; }).length;
+  }
+  function majCollections(list){
+    store.settings.collections = list;
+    saveStore();
+    renderCollSettings();
+    renderProducts();
+  }
+
+  function collEditorHTML(c, i){
+    return '<div class="axes-editeur">' +
+      '<div class="field"><label for="clTag' + i + '">Accroche</label>' +
+        '<input type="text" id="clTag' + i + '" data-clfield="tagline.' + i + '" maxlength="40" value="' + esc(c.tagline || "") + '" placeholder="Monogram, Vintage Check…" />' +
+        '<p class="hint">Deux ou trois mots, affichés au-dessus du nom sur la bannière.</p></div>' +
+      '<div class="field"><label for="clDesc' + i + '">Description</label>' +
+        '<textarea id="clDesc' + i + '" data-clfield="desc.' + i + '" maxlength="180" rows="2" placeholder="Ce qui distingue cette marque.">' + esc(c.desc || "") + '</textarea></div>' +
+      '<div class="field"><label>Image de couverture</label>' +
+        (c.cover ? '<img class="img-preview" src="' + esc(c.cover) + '" alt="" style="display:block;margin-bottom:8px" />' : '') +
+        '<label class="drop"><b>Choisir une photo</b>' +
+          '<span>Recadrée automatiquement au format de la carte</span>' +
+          '<input type="file" data-clcover="' + i + '" accept="image/*" />' +
+        '</label></div>' +
+      '<div class="field"><label class="chk teinte" style="gap:8px">' +
+          '<input type="checkbox" data-clusehex="' + i + '"' + (c.accent ? ' checked' : '') + ' /> Couleur d\'accent</label>' +
+        '<input type="color" data-clhex="' + i + '" value="' + esc(c.accent || "#111111") + '" style="width:56px;height:38px;padding:2px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);margin-top:8px" />' +
+        '<p class="hint">Elle ne colore que le filet au-dessus du nom de la marque. Ni fond, ni bouton : dix marques ne peuvent pas se contredire à l\'écran.</p></div>' +
+    '</div>';
+  }
+
+  function renderCollSettings(){
+    var host = $("#collList");
+    if (!host) return;
+    var list = collList();
+    if (!list.length){
+      host.innerHTML = '<p class="hint">Aucune collection. La page d\'accueil affiche les catégories.</p>';
+      return;
+    }
+    host.innerHTML = list.map(function(c, i){
+      var used = collUsage(c.key);
+      return '<div class="cat-bloc">' +
+        '<div class="cat-row">' +
+          '<div><input type="text" data-cllabel="' + i + '" value="' + esc(c.label) + '" aria-label="Nom de la collection" />' +
+            '<div class="cat-count">' + used + ' produit' + (used > 1 ? 's' : '') +
+              (c.cover ? ' · couverture' : ' · sans couverture') + '</div></div>' +
+          '<div class="key">' + esc(c.key) + '</div>' +
+          '<button type="button" class="sbtn danger" data-clldel="' + i + '"' +
+            (used ? ' disabled title="Collection utilisée par ' + used + ' produit(s)"' : '') + '>Supprimer</button>' +
+        '</div>' +
+        '<button type="button" class="sbtn" data-clopen="' + i + '">' +
+          (collOuverte === i ? 'Masquer l\'identité' : 'Identité') + '</button>' +
+        (collOuverte === i ? collEditorHTML(c, i) : '') +
+      '</div>';
+    }).join("");
+  }
+
+  $("#collForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var label = $("#collLabel").value.trim();
+    var key = $("#collKey").value.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
+    if (!label){ toast("Nom de la collection requis"); return; }
+    if (!key) key = label.toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    if (!key){ toast("Identifiant invalide"); return; }
+    var list = collList();
+    if (list.some(function(c){ return c.key === key; })){ toast("Cet identifiant existe déjà"); return; }
+    list.push({ key: key, label: label });
+    majCollections(list);
+    $("#collForm").reset();
+    toast("Collection « " + label + " » ajoutée");
+  });
+
+  $("#collList").addEventListener("click", function(e){
+    var ouvre = e.target.closest("[data-clopen]");
+    if (ouvre){
+      var i = parseInt(ouvre.getAttribute("data-clopen"), 10);
+      collOuverte = (collOuverte === i) ? null : i;
+      renderCollSettings();
+      return;
+    }
+    var del = e.target.closest("[data-clldel]");
+    if (del && !del.disabled){
+      var list = collList(), j = parseInt(del.getAttribute("data-clldel"), 10);
+      if (!confirm("Supprimer la collection « " + list[j].label + " » ?")) return;
+      list.splice(j, 1);
+      collOuverte = null;
+      majCollections(list);
+      toast("Collection supprimée");
+      return;
+    }
+  });
+
+  $("#collList").addEventListener("change", function(e){
+    var list = collList();
+
+    var lab = e.target.closest("[data-cllabel]");
+    if (lab){
+      var i1 = parseInt(lab.getAttribute("data-cllabel"), 10);
+      var v = lab.value.trim();
+      if (!v){ renderCollSettings(); return; }
+      list[i1].label = v; majCollections(list); toast("Collection renommée");
+      return;
+    }
+
+    var champ = e.target.closest("[data-clfield]");
+    if (champ){
+      var r = champ.getAttribute("data-clfield").split(".");
+      list[parseInt(r[1], 10)][r[0]] = champ.value.trim();
+      majCollections(list);
+      return;
+    }
+
+    var use = e.target.closest("[data-clusehex]");
+    if (use){
+      var i2 = parseInt(use.getAttribute("data-clusehex"), 10);
+      var teinte = $('[data-clhex="' + i2 + '"]');
+      if (use.checked && teinte) list[i2].accent = teinte.value;
+      else delete list[i2].accent;
+      majCollections(list);
+      return;
+    }
+    var hex = e.target.closest("[data-clhex]");
+    if (hex){
+      var i3 = parseInt(hex.getAttribute("data-clhex"), 10);
+      var coche = $('[data-clusehex="' + i3 + '"]');
+      if (coche && coche.checked){ list[i3].accent = hex.value; majCollections(list); }
+      return;
+    }
+
+    var cov = e.target.closest("[data-clcover]");
+    if (cov){
+      var i4 = parseInt(cov.getAttribute("data-clcover"), 10);
+      var f = cov.files && cov.files[0];
+      cov.value = "";
+      if (!f) return;
+      /* Ratio 4/3 : celui de la carte de marque. Recadré avant envoi, donc
+         une photo mal cadrée atterrit quand même dans un cadre juste. */
+      envoyerImage(f, 4/3, function(url){
+        var l = collList();
+        l[i4].cover = url;
+        majCollections(l);
+        toast("Couverture enregistrée");
+      });
+      return;
+    }
   });
 
   /* ---------------- Avis clients ---------------- */
@@ -1672,7 +1874,33 @@ function applyStatus(order, ns){
      Storage ; hors ligne, elle est conservee en base64 dans ce navigateur. */
   var MAX_SIDE = 1000, MAX_LOCAL = 400 * 1024;
 
-  function compressImage(file, cb){
+  /* Recadre au ratio demandé, redimensionne, compresse, puis envoie.
+     `ratio` vaut par exemple 4/3 pour une carte, 16/10 pour un en-tête.
+     Passer 0 conserve les proportions d'origine. */
+  function envoyerImage(file, ratio, onOk){
+    if (!file || !/^image\//.test(file.type)){ toast("Ce fichier n'est pas une image"); return; }
+    toast("Traitement de l'image…");
+    compressImage(file, function(er, blob, w, h){
+      if (er){ toast(er.message); return; }
+      if (online()){
+        window.AURA_DB.uploadImage(blob, function(er2, url){
+          if (er2 || !url){ toast("Envoi impossible : " + ((er2 && er2.message) || "erreur")); return; }
+          onOk(url);
+        });
+        return;
+      }
+      if (blob.size > MAX_LOCAL){
+        toast("Image trop lourde pour le mode local (" + Math.round(blob.size/1024) + " Ko)");
+        return;
+      }
+      blobToDataURL(blob, function(er3, dataUrl){
+        if (er3){ toast(er3.message); return; }
+        onOk(dataUrl);
+      });
+    }, ratio);
+  }
+
+  function compressImage(file, cb, ratio){
     var reader = new FileReader();
     reader.onerror = function(){ cb(new Error("Lecture du fichier impossible")); };
     reader.onload = function(){
@@ -1680,11 +1908,18 @@ function applyStatus(order, ns){
       img.onerror = function(){ cb(new Error("Fichier image invalide")); };
       img.onload = function(){
         var w = img.width, h = img.height;
-        var scale = Math.min(1, MAX_SIDE / Math.max(w, h));
-        var cw = Math.round(w * scale), ch = Math.round(h * scale);
+        /* Recadrage centré au ratio de l'emplacement, avant tout
+           redimensionnement : le cadre ne déforme jamais la photo. */
+        var sx = 0, sy = 0, sw = w, sh = h;
+        if (ratio && ratio > 0){
+          if (w / h > ratio){ sw = Math.round(h * ratio); sx = Math.round((w - sw) / 2); }
+          else { sh = Math.round(w / ratio); sy = Math.round((h - sh) * 0.3); }
+        }
+        var scale = Math.min(1, MAX_SIDE / Math.max(sw, sh));
+        var cw = Math.round(sw * scale), ch = Math.round(sh * scale);
         var cv = document.createElement("canvas");
         cv.width = cw; cv.height = ch;
-        cv.getContext("2d").drawImage(img, 0, 0, cw, ch);
+        cv.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
         cv.toBlob(function(blob){
           if (!blob) return cb(new Error("Compression impossible"));
           cb(null, blob, cw, ch);
@@ -1736,7 +1971,7 @@ function applyStatus(order, ns){
         if (er3){ setImageStatus(""); toast(er3.message); return; }
         applyImage(dataUrl, w, h, ko, "dans ce navigateur");
       });
-    });
+    }, 3/4);
   }
 
   function applyImage(url, w, h, ko, where){
@@ -1933,6 +2168,7 @@ function applyStatus(order, ns){
   });
 
   function renderAll(){
+    renderCollSettings();
     renderAxeChecks(null);
     renderStockGrid(null);
     if (!unlocked) return;

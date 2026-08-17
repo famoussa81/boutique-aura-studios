@@ -1570,6 +1570,7 @@
     $("#pvPrice").innerHTML = priceHTML(p);
     $("#pvDesc").textContent = p.desc || "";
     renderAxes();
+    majPhotoPrincipale();
     updateStockLine();
     updateQty(0);
     openModal("pvOverlay");
@@ -1583,6 +1584,34 @@
       return v[iAxe] === val && availFor(p, k) > 0;
     });
   }
+  /* Photo associée à la sélection courante : la première valeur choisie qui
+     en déclare une l'emporte. On remonte les axes dans l'ordre, donc le
+     coloris prime sur la pointure — ce qui est le bon sens : une pointure
+     n'a pas de photo propre. */
+  function photoDeSelection(){
+    var p = pvProduct;
+    if (!p) return "";
+    var axes = prodAxes(p);
+    for (var i = axes.length - 1; i >= 0; i--){
+      var meta = catAxisValue(p.cat, axes[i].name, pvSel[i]);
+      if (meta && meta.img) return meta.img;
+    }
+    return "";
+  }
+  function majPhotoPrincipale(){
+    var img = document.querySelector("#pvMedia .pv-main");
+    if (!img) return;
+    var voulue = photoDeSelection();
+    var defaut = pvImgs[0] || "";
+    var cible = voulue || defaut;
+    if (cible && img.getAttribute("src") !== cible) img.src = cible;
+    /* La miniature active suit, sinon l'état affiché se contredit. */
+    var vignettes = $$("#pvThumbs [data-thumb]");
+    vignettes.forEach(function(b, i){
+      b.classList.toggle("active", !voulue && i === 0);
+    });
+  }
+
   function renderAxes(){
     var p = pvProduct, host = $("#pvAxes");
     if (!host) return;
@@ -2103,6 +2132,7 @@
     if (sz){
       pvSel[parseInt(sz.getAttribute("data-axe"), 10)] = sz.getAttribute("data-val");
       renderAxes();
+      majPhotoPrincipale();
       updateStockLine();
       return;
     }
