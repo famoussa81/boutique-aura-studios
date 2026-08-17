@@ -46,15 +46,6 @@
       ]
     },
     {
-      "source": "/imagery/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
       "source": "/logos/(.*)",
       "headers": [
         {
@@ -64,7 +55,7 @@
       ]
     },
     {
-      "source": "/(catalog|supabase-client|supabase.config).js",
+      "source": "/(catalog|boutique|supabase-client|supabase.config).js",
       "headers": [
         {
           "key": "Cache-Control",
