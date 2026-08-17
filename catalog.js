@@ -59,11 +59,16 @@
       /* Categories de la boutique. Modifiables depuis l'administration :
          ajouter « Vestes » ou « Chaussures » ne demande aucune ligne de code. */
       categories: [
-        { key: "hoodies",     label: "Hoodies", axes: [{ name: "Taille", values: [{ v: "S" }, { v: "M" }, { v: "L" }, { v: "XL" }, { v: "XXL" }] }] },
-        { key: "tees",        label: "T-shirts", axes: [{ name: "Taille", values: [{ v: "S" }, { v: "M" }, { v: "L" }, { v: "XL" }, { v: "XXL" }] }] },
-        { key: "pants",       label: "Cargos", axes: [{ name: "Taille", values: [{ v: "S" }, { v: "M" }, { v: "L" }, { v: "XL" }, { v: "XXL" }] }] },
-        { key: "accessoires", label: "Accessoires", axes: [] }
+        { key: "hoodies",     label: "Hoodies", cover: "assets/cat-hoodies.webp", axes: [{ name: "Taille", values: [{ v: "S" }, { v: "M" }, { v: "L" }, { v: "XL" }, { v: "XXL" }] }] },
+        { key: "tees",        label: "T-shirts", cover: "assets/cat-tees.webp", axes: [{ name: "Taille", values: [{ v: "S" }, { v: "M" }, { v: "L" }, { v: "XL" }, { v: "XXL" }] }] },
+        { key: "pants",       label: "Cargos", cover: "assets/cat-cargos.webp", axes: [{ name: "Taille", values: [{ v: "S" }, { v: "M" }, { v: "L" }, { v: "XL" }, { v: "XXL" }] }] },
+        { key: "accessoires", label: "Accessoires", cover: "assets/cat-accessoires.webp", axes: [] }
       ],
+      /* Collections : marques, capsules, univers. Vides par défaut — une
+         boutique mono-marque n'en a pas besoin et n'en voit aucune trace.
+         Chacune porte son identité : couverture, accroche, description, et
+         une couleur d'accent bornée à trois usages décoratifs. */
+      collections: [],
       announcement: "Livraison gratuite à Bamako dès 35 000 FCFA d'achat",
       instagram: "",
       tiktok: "",

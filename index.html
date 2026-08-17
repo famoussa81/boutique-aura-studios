@@ -183,6 +183,8 @@
   .cbanner::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#111111 0%,color-mix(in srgb,#111111 55%,transparent) 48%,transparent 78%)}
   .cbanner-content{position:relative;z-index:2;max-width:520px}
   .cbanner .sec-kicker{color:color-mix(in srgb,#ffffff 72%,transparent)}
+  /* Couleur de marque, bornée au filet du sur-titre. */
+  .sec-kicker.has-accent::before{background:var(--accent-coll, var(--ink));width:44px;height:2px}
   .cbanner .sec-kicker::before{background:var(--bg)}
   .cbanner h2{color:var(--bg);font-size:clamp(2rem,5vw,3.6rem);font-weight:900;text-transform:uppercase;line-height:1;letter-spacing:-.01em}
   .cbanner p{color:color-mix(in srgb,#ffffff 80%,transparent);margin:18px 0 30px;max-width:40ch}
@@ -650,38 +652,27 @@
   <section class="section" id="categories" data-od-id="categories">
     <div class="wrap">
       <div class="sec-head">
-        <span class="sec-kicker">Les univers</span>
-        <h2 class="sec-title" id="cat-hoodies">Explorez les collections</h2>
+        <span class="sec-kicker" id="univKicker">Les univers</span>
+        <h2 class="sec-title" id="univTitre">Explorez les collections</h2>
       </div>
-      <div class="cats">
-        <a href="#nouveautes" class="cat-card" data-goto="hoodies" data-od-id="category-card-hoodies">
-          <img src="assets/cat-hoodies.webp" alt="Hoodie oversized sur cintre" width="800" height="600" loading="lazy" decoding="async" />
-          <div class="cat-body">
-            <span class="cat-label">Hoodies</span>
-            <span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
-          </div>
+      <div class="cats" id="univGrille"></div>
         </a>
-        <a href="#nouveautes" class="cat-card" data-goto="tees" data-od-id="category-card-tees">
-          <img src="assets/cat-tees.webp" alt="T-shirts en rangée sur cintres" width="800" height="600" loading="lazy" decoding="async" />
-          <div class="cat-body">
-            <span class="cat-label">T-shirts</span>
-            <span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
-          </div>
-        </a>
-        <a href="#nouveautes" class="cat-card" data-goto="pants" data-od-id="category-card-pants">
-          <img src="assets/cat-cargos.webp" alt="Pantalon cargo porté" width="800" height="600" loading="lazy" decoding="async" />
-          <div class="cat-body">
-            <span class="cat-label">Cargos</span>
-            <span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
-          </div>
-        </a>
-        <a href="#nouveautes" class="cat-card" data-goto="accessoires" data-od-id="category-card-accessories">
-          <img src="assets/cat-accessoires.webp" alt="Bonnet AURA porté en ville" width="800" height="600" loading="lazy" decoding="async" />
-          <div class="cat-body">
-            <span class="cat-label">Accessoires</span>
-            <span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
-          </div>
-        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Entête d'une collection ouverte. Masqué par défaut, il ne coûte rien
+       à une boutique qui n'en déclare aucune. -->
+  <section class="cbanner" id="collBanniere" hidden>
+    <img id="collImage" alt="" width="1600" height="900" decoding="async" hidden />
+    <div class="wrap">
+      <div class="cbanner-content">
+        <span class="sec-kicker" id="collKicker">Collection</span>
+        <h2 id="collTitre"></h2>
+        <p id="collTexte"></p>
+        <div class="cbanner-actions">
+          <a href="#produits" class="btn btn-light" data-goto="tous">Voir tout le catalogue</a>
+        </div>
       </div>
     </div>
   </section>
@@ -1277,6 +1268,76 @@
     return d ? "Livré en " + d : "Livraison à Bamako";
   }
 
+  /* La section « univers » montre les collections quand il y en a, les
+     catégories sinon. Une boutique mono-marque garde sa page à l'identique. */
+  function renderUnivers(){
+    var grille = $("#univGrille");
+    if (!grille) return;
+    var colls = collList();
+    var titre = $("#univTitre"), kicker = $("#univKicker");
+
+    if (colls.length){
+      if (kicker) kicker.textContent = "Les marques";
+      if (titre) titre.textContent = "Parcourez les marques";
+      grille.innerHTML = colls.map(function(c){
+        return '<a href="?collection=' + encodeURIComponent(c.key) + '" class="cat-card" data-coll="' + esc(c.key) + '">' +
+          (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' : '') +
+          '<div class="cat-body">' +
+            '<span class="cat-label">' + esc(c.label) + '</span>' +
+            '<span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
+          '</div>' +
+        '</a>';
+      }).join("");
+      return;
+    }
+
+    if (kicker) kicker.textContent = "Les univers";
+    if (titre) titre.textContent = "Explorez les collections";
+    grille.innerHTML = catList().map(function(c){
+      return '<a href="#produits" class="cat-card" data-goto="' + esc(c.key) + '">' +
+        (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' : '') +
+        '<div class="cat-body">' +
+          '<span class="cat-label">' + esc(c.label) + '</span>' +
+          '<span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
+        '</div>' +
+      '</a>';
+    }).join("");
+  }
+
+  /* Bannière de la collection ouverte. L'accent, s'il est défini, ne touche
+     que le filet du sur-titre : borné là, il personnalise sans rien casser. */
+  function renderCollBanniere(){
+    var box = $("#collBanniere");
+    if (!box) return;
+    var c = curColl ? collById(curColl) : null;
+    if (!c){ box.hidden = true; return; }
+    box.hidden = false;
+    var img = $("#collImage");
+    if (img){
+      if (c.cover){ img.src = c.cover; img.hidden = false; }
+      else { img.removeAttribute("src"); img.hidden = true; }
+    }
+    var k = $("#collKicker");
+    if (k){
+      k.textContent = c.tagline || "Collection";
+      k.style.setProperty("--accent-coll", c.accent || "");
+      k.classList.toggle("has-accent", !!c.accent);
+    }
+    var t = $("#collTitre"); if (t) t.textContent = c.label;
+    var d = $("#collTexte"); if (d) d.textContent = c.desc || "";
+  }
+
+  function setCollection(key){
+    curColl = key || "";
+    curFilter = "tous";
+    renderCollBanniere();
+    renderCategories();
+    renderGrid();
+    syncUrl(curFilter);
+    document.title = (curColl && collById(curColl) ? collById(curColl).label + " — " : "") +
+      store.settings.shopName + " — Boutique en ligne · Bamako";
+  }
+
   function applySellingCopy(){
     var s = store.settings;
     var free = Number(s.freeFrom) || 0;
@@ -1294,9 +1355,17 @@
     var wa = $("#waFloat");
     if (wa) wa.href = waLink(s.whatsapp, "Bonjour " + (s.shopName || "AURA STUDIOS") + " 👋 J'ai une question sur un article.");
     renderReviews();
+    renderUnivers();
     renderCategories();
+    renderCollBanniere();
     /* Une adresse du type ?cat=hoodies doit ouvrir directement la catégorie,
        y compris après l'arrivée des réglages depuis Supabase. */
+    var voulueColl = collFromUrl();
+    if (voulueColl && collById(voulueColl) && curColl !== voulueColl){
+      curColl = voulueColl;
+      renderCollBanniere();
+      renderGrid();
+    }
     var voulue = catFromUrl();
     if (voulue && CATS[voulue] && curFilter !== voulue){
       curFilter = voulue;
@@ -1351,7 +1420,26 @@
   applySettings();
 
   /* ---------------- Grille produits ---------------- */
-  var curFilter = "tous", curQuery = "";
+  var curFilter = "tous", curQuery = "", curColl = "";
+
+  /* ---------------- Collections ----------------
+     Seconde taxonomie : la catégorie dit le type de produit et porte les
+     déclinaisons, la collection dit la marque et porte l'identité. Les deux
+     filtrent la grille indépendamment. */
+  function collList(){
+    var c = store.settings.collections;
+    if (!Array.isArray(c)) return [];
+    return c.filter(function(x){ return x && x.key && x.label; });
+  }
+  function collById(key){
+    return collList().filter(function(c){ return c.key === key; })[0] || null;
+  }
+  function collFromUrl(){
+    try {
+      var m = location.search.match(/[?&]collection=([^&]+)/);
+      return m ? decodeURIComponent(m[1]) : "";
+    } catch(e){ return ""; }
+  }
 
   /* Sur une carte étroite, deux montants complets ne tiennent pas sur une
      ligne. L'ancien prix perd sa devise : barré et suivi du prix courant en
@@ -1404,6 +1492,7 @@
   function renderGrid(){
     var g = $("#grid");
     var list = store.products.filter(function(p){ return p.active; });
+    if (curColl) list = list.filter(function(p){ return p.collection === curColl; });
     list = list.filter(function(p){ return curFilter === "tous" || p.cat === curFilter; });
     if (curQuery){
       var q = curQuery.toLowerCase();
@@ -1426,7 +1515,10 @@
      chaque clic de filtre. */
   function syncUrl(cat){
     if (!window.history || !history.replaceState) return;
-    var url = location.pathname + (cat && cat !== "tous" ? "?cat=" + encodeURIComponent(cat) : "") + "#produits";
+    var params = [];
+    if (curColl) params.push("collection=" + encodeURIComponent(curColl));
+    if (cat && cat !== "tous") params.push("cat=" + encodeURIComponent(cat));
+    var url = location.pathname + (params.length ? "?" + params.join("&") : "") + "#produits";
     try { history.replaceState(null, "", url); } catch(e){}
   }
   function catFromUrl(){
@@ -2059,8 +2151,22 @@
     if (t.closest("[data-searchall]")){ applySearchToGrid(); return; }
     if (t.closest("[data-reset-filters]")){ setFilter("tous"); return; }
 
+    var coll = t.closest("[data-coll]");
+    if (coll){
+      e.preventDefault();
+      setCollection(coll.getAttribute("data-coll"));
+      var cible = $("#collBanniere");
+      if (cible) window.scrollTo({ top: cible.getBoundingClientRect().top + window.pageYOffset - 70, behavior: "smooth" });
+      return;
+    }
     var goto = t.closest("[data-goto]");
-    if (goto){ e.preventDefault(); goTo(goto.getAttribute("data-goto")); return; }
+    if (goto){
+      e.preventDefault();
+      /* « Voir tout le catalogue » quitte aussi la collection ouverte. */
+      if (curColl && goto.getAttribute("data-goto") === "tous") setCollection("");
+      goTo(goto.getAttribute("data-goto"));
+      return;
+    }
   });
 
   document.addEventListener("input", function(e){
