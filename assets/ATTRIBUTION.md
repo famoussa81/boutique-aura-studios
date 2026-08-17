@@ -4,33 +4,31 @@ Toutes les photographies proviennent de **Pexels** et sont utilisées sous
 [licence Pexels](https://www.pexels.com/license/) : usage commercial autorisé,
 attribution non obligatoire — elle figure ici par transparence.
 
-Le visuel `hoodie-noir.webp` a été retouché pour effacer la marque d'un tiers
-apposée sur le vêtement (modification autorisée par la licence).
+Ce sont des visuels de démonstration. Le commerçant les remplace par ses
+propres photos depuis l'administration ; ce fichier n'a alors plus d'objet.
 
 | Fichier | Photographe | Source |
 |---|---|---|
-| `assets/banniere.webp` | Foto Art Events | https://www.pexels.com/photo/fashionable-man-in-modern-urban-setting-30130737/ |
-| `assets/bonnet.webp` | Lee Hanson | https://www.pexels.com/photo/cozy-knitted-winter-hats-on-wooden-surface-37484033/ |
-| `assets/cargo-beige.webp` | Marlon Schmeiski | https://www.pexels.com/photo/man-wearing-white-clothes-in-studio-26936522/ |
-| `assets/cargo-noir.webp` | Lucretius  Mooka | https://www.pexels.com/photo/stylish-man-in-casual-streetwear-fashion-30415877/ |
-| `assets/cargo-technique.webp` | Ulises Peña | https://www.pexels.com/photo/a-person-wearing-green-pants-13125260/ |
-| `assets/casquette.webp` | MART  PRODUCTION | https://www.pexels.com/photo/woman-in-black-and-white-cap-9558763/ |
-| `assets/cat-accessoires.webp` | THEMRSINGH | https://www.pexels.com/photo/a-man-in-black-knit-cap-and-black-long-sleeve-shirt-11114970/ |
-| `assets/cat-cargos.webp` | Quang Viet Nguyen | https://www.pexels.com/photo/photo-of-a-person-in-oversize-pants-and-trainers-11716436/ |
-| `assets/cat-hoodies.webp` | Ron Lach | https://www.pexels.com/photo/fashion-shopping-indoors-no-people-9594669/ |
-| `assets/cat-tees.webp` | Ron Lach | https://www.pexels.com/photo/a-person-in-white-shirt-holding-a-stack-of-clothes-8346225/ |
-| `assets/editorial.webp` | MART  PRODUCTION | https://www.pexels.com/photo/man-in-white-shirt-standing-beside-a-white-wall-8217508/ |
-| `assets/hero.webp` | cottonbro studio | https://www.pexels.com/photo/a-person-in-black-hoodie-standing-under-the-bridge-7109128/ |
-| `assets/hoodie-blanc.webp` | MART  PRODUCTION | https://www.pexels.com/photo/photo-of-a-man-in-white-hoodie-jacket-8217400/ |
-| `assets/hoodie-noir.webp` | Ana Maria Arroyave | https://www.pexels.com/photo/young-man-in-black-hoodie-against-gray-background-28701960/ |
-| `assets/hoodie-tech.webp` | Edu Raw | https://www.pexels.com/photo/man-in-black-outdoor-gear-overlooking-scenic-view-37171523/ |
-| `assets/hoodie-trench.webp` | Biola Visuals | https://www.pexels.com/photo/woman-in-black-coat-standing-near-wall-19449367/ |
-| `assets/hoodie-urbain.webp` | Fernando Ortiz P | https://www.pexels.com/photo/contemplative-adult-man-in-urban-setting-34421368/ |
-| `assets/tee-core.webp` | MART  PRODUCTION | https://www.pexels.com/photo/man-in-black-crew-neck-long-sleeve-shirt-9558577/ |
-| `assets/tee-graphique.webp` | BANDAR BAANT | https://www.pexels.com/photo/stylish-oversized-men-s-t-shirt-with-abstract-print-36942017/ |
-| `assets/tee-oversized.webp` | MART  PRODUCTION | https://www.pexels.com/photo/woman-in-white-crew-neck-t-shirt-standing-straight-8217291/ |
-| `assets/tee-print.webp` | rehan verma | https://www.pexels.com/photo/person-wearing-white-shirt-and-tag-2451200/ |
-
-> Ces visuels sont des photographies de mode génériques : ils ne représentent
-> pas les pièces réellement vendues. À remplacer par les photos du client
-> dès qu’elles sont disponibles (voir AUDIT-LIVRAISON.md).
+| `assets/banniere.webp` | Terrance Barksdale | https://www.pexels.com/photo/a-close-up-shot-of-brown-yeezy-slides-13698233/ |
+| `assets/cat-claquettes.webp` | Terrance Barksdale | https://www.pexels.com/photo/pair-of-black-adidas-flip-flops-18186215/ |
+| `assets/cat-mules.webp` | Terrance Barksdale | https://www.pexels.com/photo/yeezy-450-slide-cream-24645252/ |
+| `assets/cl-beige.webp` | Terrance Barksdale | https://www.pexels.com/photo/yeezy-450-slide-cream-24645252/ |
+| `assets/cl-bleu.webp` | Terrance Barksdale | https://www.pexels.com/photo/blue-slides-against-cardboard-box-background-29320435/ |
+| `assets/cl-cuir.webp` | Natalia Walusiak | https://www.pexels.com/photo/a-beige-rope-knotted-slides-14063720/ |
+| `assets/cl-interieur.webp` | Denys Mikhalevych | https://www.pexels.com/photo/display-of-leather-accessories-9267585/ |
+| `assets/cl-noir.webp` | Terrance Barksdale | https://www.pexels.com/photo/pair-of-black-adidas-flip-flops-18186215/ |
+| `assets/cl-pile.webp` | Terrance Barksdale | https://www.pexels.com/photo/yeezy-slides-on-blue-surface-13966800/ |
+| `assets/cl-rouge.webp` | cottonbro studio | https://www.pexels.com/photo/close-up-shot-of-a-person-wearing-a-pink-sandal-5874855/ |
+| `assets/editorial.webp` | Diego F. Parra | https://www.pexels.com/photo/close-up-of-shoes-hanging-on-the-lines-and-the-market-25255085/ |
+| `assets/hero.webp` | Terrance Barksdale | https://www.pexels.com/photo/yeezy-slides-on-blue-surface-13966800/ |
+| `assets/marque-1.webp` | Denys Mikhalevych | https://www.pexels.com/photo/display-of-leather-accessories-9267585/ |
+| `assets/marque-10.webp` | mktomasik | https://www.pexels.com/photo/person-wearing-white-and-clogs-12368090/ |
+| `assets/marque-11.webp` | Terrance Barksdale | https://www.pexels.com/photo/yeezy-450-slide-cream-24645253/ |
+| `assets/marque-2.webp` | Natalia Walusiak | https://www.pexels.com/photo/a-beige-rope-knotted-slides-14063720/ |
+| `assets/marque-3.webp` | Ece Ebrar TOYCU | https://www.pexels.com/photo/old-sandals-standing-on-the-floor-by-a-multicolored-carpet-18854919/ |
+| `assets/marque-4.webp` | Terrance Barksdale | https://www.pexels.com/photo/blue-slides-against-cardboard-box-background-29320435/ |
+| `assets/marque-5.webp` | Nothing Ahead | https://www.pexels.com/photo/crop-woman-in-elegant-wear-resting-on-tree-trunk-5414818/ |
+| `assets/marque-6.webp` | Terrance Barksdale | https://www.pexels.com/photo/yeezy-slides-in-a-tan-colorway-13966828/ |
+| `assets/marque-7.webp` | Vera Rishkevich | https://www.pexels.com/photo/colorful-stack-of-modern-slide-sandals-38755593/ |
+| `assets/marque-8.webp` | Chu Chup Hinh | https://www.pexels.com/photo/person-wearing-blue-slide-sandals-under-blue-1721020/ |
+| `assets/marque-9.webp` | Eugenia Remark | https://www.pexels.com/photo/white-sandals-on-textured-fabric-background-31129829/ |
