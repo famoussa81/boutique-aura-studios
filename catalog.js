@@ -111,6 +111,49 @@
          boutique mono-marque n'en a pas besoin et n'en voit aucune trace.
          Chacune porte son identité : couverture, accroche, description, et
          une couleur d'accent bornée à trois usages décoratifs. */
+      /* Contenu éditorial de la page d'accueil. Chaque bloc peut être masqué
+         par son interrupteur `on`. Les valeurs ci-dessous ne sont qu'un
+         point de départ : tout se modifie depuis l'administration. */
+      content: {
+        hero: {
+          on: true,
+          image: "assets/hero.webp",
+          badge: "Collection 2026 · Bamako",
+          kicker: "Claquettes · Mules · Sabots",
+          title: "Le confort ne se négocie pas",
+          sub: "Les grandes marques, en pointures 39 à 45. Commande simple par WhatsApp, paiement à la livraison.",
+          cta1: "Voir les marques",
+          cta2: "Tout le catalogue"
+        },
+        banner: {
+          on: true,
+          image: "assets/banniere.webp",
+          kicker: "Sélection de la semaine",
+          title: "Prêtes à porter, tout de suite.",
+          text: "Semelle moulée, bride renforcée, pointures complètes. Les modèles qui partent le plus vite.",
+          cta1: "Voir la sélection",
+          cta2: "Les mules"
+        },
+        editorial: {
+          on: true,
+          image: "assets/editorial.webp",
+          kicker: "La maison",
+          title: "Le vrai, au bon prix",
+          text: "Nous sélectionnons chaque paire auprès de fournisseurs vérifiés. Pas de copie, pas de mauvaise surprise : ce que vous voyez est ce que vous recevez.",
+          pillars: [
+            { title: "Authentique", text: "Chaque modèle vient d'un circuit vérifié. Nous montrons la boîte et l'étiquette sur demande." },
+            { title: "Pointures complètes", text: "Du 39 au 45 sur la majorité des modèles, avec le stock réel affiché." },
+            { title: "Livraison rapide", text: "Bamako en 24 heures, paiement à la réception. Vous ne payez rien à l'avance." }
+          ]
+        },
+        newsletter: {
+          on: true,
+          kicker: "Restons en contact",
+          title: "Les arrivages en avant-première",
+          text: "Nouvelles paires, réassorts et offres réservées. Un message quand il y a du neuf, pas plus.",
+          note: "Zéro spam. Désinscription en un clic."
+        }
+      },
       collections: [
         { key: "calvin-klein", label: "Calvin Klein", tagline: "Minimalisme américain", accent: "#1f2933", cover: "assets/marque-1.webp",
           desc: "Le logo embossé sur bride large. Une claquette qui se reconnaît de loin." },

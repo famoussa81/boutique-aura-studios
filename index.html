@@ -611,14 +611,14 @@
     </div>
   </header>
 
-  <section class="hero" data-od-id="hero">
-    <img src="assets/hero.webp" alt="Modèle en veste technique sombre dans une ambiance urbaine" width="1600" height="1000" fetchpriority="high" decoding="async" />
-    <span class="hero-badge" data-od-id="hero-badge">Collections FW26 · Bamako</span>
+  <section class="hero" id="heroSection" data-od-id="hero">
+    <img id="heroImage" src="assets/hero.webp" alt="" width="1600" height="1000" fetchpriority="high" decoding="async" />
+    <span class="hero-badge" id="heroBadge" data-od-id="hero-badge"></span>
     <div class="wrap">
       <div class="hero-content">
-        <span class="hero-kicker">Sportswear · Streetwear · Techwear</span>
-        <h1 data-od-id="hero-title">Le mouvement est une attitude</h1>
-        <p class="hero-sub">Des pièces haut de gamme pour la génération urbaine. Conçues pour bouger, pensées pour durer.</p>
+        <span class="hero-kicker" id="heroKicker"></span>
+        <h1 id="heroTitre" data-od-id="hero-title"></h1>
+        <p class="hero-sub" id="heroSub"></p>
         <ul class="hero-points">
           <li>Paiement à la livraison</li>
           <li id="heroDelay">Livraison à Bamako</li>
@@ -691,13 +691,13 @@
     </div>
   </section>
 
-  <section class="cbanner" data-od-id="collection-banner">
-    <img src="assets/banniere.webp" alt="Modèle en hoodie et casquette en milieu urbain" width="1600" height="900" loading="lazy" decoding="async" />
+  <section class="cbanner" id="bannerSection" data-od-id="collection-banner">
+    <img id="bannerImage" src="assets/banniere.webp" alt="" width="1600" height="900" loading="lazy" decoding="async" />
     <div class="wrap">
       <div class="cbanner-content">
-        <span class="sec-kicker">Collection Urban Flow</span>
-        <h2>Pensée pour la ville.</h2>
-        <p>Une capsule monochrome pensée pour le mouvement : coupes généreuses, matières hydrofuges et détails réfléchissants.</p>
+        <span class="sec-kicker" id="bannerKicker"></span>
+        <h2 id="bannerTitre"></h2>
+        <p id="bannerTexte"></p>
         <div class="cbanner-actions">
           <a href="#nouveautes" class="btn btn-light" data-goto="tous" data-od-id="collection-cta">Voir la collection</a>
           <a href="#nouveautes" class="btn btn-ghost" data-goto="accessoires" data-od-id="collection-cta-alt">Les accessoires</a>
@@ -706,29 +706,17 @@
     </div>
   </section>
 
-  <section class="section" id="a-propos" data-od-id="editorial">
+  <section class="section" id="a-propos" data-od-id="editorial" hidden>
     <div class="wrap">
       <div class="about">
         <div class="about-media" data-od-id="editorial-image">
-          <img src="assets/editorial.webp" alt="Modèle en hoodie devant un mur blanc" width="900" height="1125" loading="lazy" decoding="async" />
+          <img id="edImage" src="assets/editorial.webp" alt="" width="900" height="1125" loading="lazy" decoding="async" />
         </div>
         <div>
-          <span class="sec-kicker">La marque</span>
-          <h2 class="sec-title" data-od-id="editorial-title">Plus qu'un vêtement, un état d'esprit</h2>
-          <p class="sec-sub">AURA STUDIOS est né au croisement du sportswear haut de gamme, du streetwear et des tenues techniques. Chaque pièce est conçue pour la génération urbaine — celle qui vit la ville à pleine vitesse.</p>
-          <div style="margin-top:28px">
-            <div class="pillar" data-od-id="pillar-design">
-              <span class="idx">01</span>
-              <div><h3>Design</h3><p>Lignes épurées, coupes oversize, détails contrastés. Une silhouette reconnaissable au premier regard.</p></div>
-            </div>
-            <div class="pillar" data-od-id="pillar-performance">
-              <span class="idx">02</span>
-              <div><h3>Performance</h3><p>Matières techniques, respirantes et résistantes. Pensées pour le mouvement et le quotidien.</p></div>
-            </div>
-            <div class="pillar" data-od-id="pillar-communaute">
-              <span class="idx">03</span>
-              <div><h3>Communauté</h3><p>Une marque portée par une génération passionnée de pop culture, de design et de performance.</p></div>
-            </div>
+          <span class="sec-kicker" id="edKicker"></span>
+          <h2 class="sec-title" id="edTitre" data-od-id="editorial-title"></h2>
+          <p class="sec-sub" id="edTexte"></p>
+          <div id="edPiliers" style="margin-top:28px"></div>
           </div>
           <a class="about-link" id="contactBtn" href="#" target="_blank" rel="noopener" data-od-id="editorial-link">Nous contacter sur WhatsApp <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
         </div>
@@ -747,16 +735,16 @@
     </div>
   </section>
 
-  <section class="news" data-od-id="newsletter">
+  <section class="news" id="nlSection" data-od-id="newsletter">
     <div class="wrap">
-      <span class="sec-kicker" style="justify-content:center;color:color-mix(in srgb,#ffffff 60%,transparent);margin-bottom:18px">Newsletter</span>
-      <h2>Rejoins la communauté</h2>
-      <p>Avant-premières, offres exclusives et lancements en édition limitée. Directement dans ta boîte mail.</p>
+      <span class="sec-kicker" id="nlKicker" style="justify-content:center;color:color-mix(in srgb,#ffffff 60%,transparent);margin-bottom:18px"></span>
+      <h2 id="nlTitre"></h2>
+      <p id="nlTexte"></p>
       <form class="news-form" id="newsForm" data-od-id="newsletter-form" novalidate>
         <input type="email" id="newsEmail" placeholder="ton@email.com" aria-label="Adresse e-mail" required />
         <button type="submit" class="btn btn-light" data-od-id="newsletter-submit">S'inscrire</button>
       </form>
-      <p class="news-note">Zéro spam. Désinscription en un clic.</p>
+      <p class="news-note" id="nlNote"></p>
       <p class="news-success" data-od-id="newsletter-success" role="status" aria-live="polite">Merci ! Bienvenue dans la communauté.</p>
     </div>
   </section>
@@ -1352,6 +1340,86 @@
     if (pied) pied.innerHTML = esc(tete) + (reste ? '<span style="font-size:11px">' + esc(reste) + '</span>' : '');
   }
 
+  /* Contenu éditorial. Chaque bloc a son interrupteur : masquer vaut mieux
+     que remplir de texte de remplissage. Un champ vide masque son élément
+     plutôt que de laisser un blanc dans la mise en page. */
+  function contenu(){
+    var c = store.settings.content;
+    return (c && typeof c === "object") ? c : {};
+  }
+  function poser(sel, texte){
+    var e = $(sel);
+    if (!e) return;
+    var v = (texte || "").toString().trim();
+    e.textContent = v;
+    e.hidden = !v;
+  }
+  function poserImage(sel, url){
+    var e = $(sel);
+    if (!e) return;
+    if (url){ e.src = url; e.hidden = false; }
+    else { e.removeAttribute("src"); e.hidden = true; }
+  }
+  function poserBouton(sel, texte){
+    var e = $(sel);
+    if (!e) return;
+    var v = (texte || "").toString().trim();
+    e.textContent = v;
+    e.hidden = !v;
+  }
+
+  function renderContenu(){
+    var c = contenu();
+
+    var h = c.hero || {};
+    var hs = $("#heroSection");
+    if (hs) hs.hidden = h.on === false;
+    poserImage("#heroImage", h.image);
+    poser("#heroBadge", h.badge);
+    poser("#heroKicker", h.kicker);
+    poser("#heroTitre", h.title);
+    poser("#heroSub", h.sub);
+    poserBouton("[data-od-id='hero-cta-primary']", h.cta1);
+    poserBouton("[data-od-id='hero-cta-secondary']", h.cta2);
+
+    var b = c.banner || {};
+    var bs = $("#bannerSection");
+    if (bs) bs.hidden = b.on === false;
+    poserImage("#bannerImage", b.image);
+    poser("#bannerKicker", b.kicker);
+    poser("#bannerTitre", b.title);
+    poser("#bannerTexte", b.text);
+    poserBouton("[data-od-id='collection-cta']", b.cta1);
+    poserBouton("[data-od-id='collection-cta-alt']", b.cta2);
+
+    var e = c.editorial || {};
+    var es = $("#a-propos");
+    if (es) es.hidden = e.on === false;
+    poserImage("#edImage", e.image);
+    poser("#edKicker", e.kicker);
+    poser("#edTitre", e.title);
+    poser("#edTexte", e.text);
+    var host = $("#edPiliers");
+    if (host){
+      var piliers = Array.isArray(e.pillars) ? e.pillars.filter(function(x){ return x && (x.title || x.text); }) : [];
+      host.innerHTML = piliers.map(function(x, i){
+        return '<div class="pillar">' +
+          '<span class="idx">' + ("0" + (i + 1)).slice(-2) + '</span>' +
+          '<div><h3>' + esc(x.title || "") + '</h3><p>' + esc(x.text || "") + '</p></div>' +
+        '</div>';
+      }).join("");
+      host.hidden = !piliers.length;
+    }
+
+    var nl = c.newsletter || {};
+    var ns = $("#nlSection");
+    if (ns) ns.hidden = nl.on === false;
+    poser("#nlKicker", nl.kicker);
+    poser("#nlTitre", nl.title);
+    poser("#nlTexte", nl.text);
+    poser("#nlNote", nl.note);
+  }
+
   function applySellingCopy(){
     var s = store.settings;
     var free = Number(s.freeFrom) || 0;
@@ -1369,6 +1437,7 @@
     var wa = $("#waFloat");
     if (wa) wa.href = waLink(s.whatsapp, "Bonjour " + (s.shopName || "AURA STUDIOS") + " 👋 J'ai une question sur un article.");
     renderLogo();
+    renderContenu();
     renderReviews();
     renderUnivers();
     renderCategories();

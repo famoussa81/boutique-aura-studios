@@ -249,6 +249,7 @@
         <button class="tab" data-view="orders">Commandes</button>
         <button class="tab" data-view="products">Produits</button>
         <button class="tab" data-view="settings">Réglages</button>
+        <button class="tab" data-view="contenu">Contenu du site</button>
         <button class="tab" data-view="news">Newsletter</button>
         <button class="tab" data-view="wait">Liste d'attente</button>
         <button class="tab" data-view="reviews">Avis</button>
@@ -469,6 +470,13 @@
           </form>
         </div>
       </div>
+    </section>
+
+    <section class="view" id="view-contenu">
+      <div class="view-head">
+        <div><h1>Contenu du site</h1><p>Les textes et les images de la page d'accueil. Les longueurs sont limitées et les photos recadrées automatiquement : vous ne pouvez pas casser la mise en page.</p></div>
+      </div>
+      <div id="contenuBlocs"></div>
     </section>
 
     <section class="view" id="view-settings">
@@ -1291,6 +1299,158 @@
     $("#catForm").reset();
     renderCatSettings();
     toast("Catégorie « " + label + " » ajoutée");
+  });
+
+  /* ---------------- Contenu éditorial ----------------
+     Description déclarative des blocs : ajouter un champ ici suffit, le
+     formulaire et l'enregistrement suivent. */
+  var BLOCS_CONTENU = [
+    { cle: "hero", titre: "En-tête", ratio: 16/10,
+      aide: "La première chose que voit un visiteur. Gardez le titre court : il s'affiche très grand.",
+      champs: [
+        { k: "badge",  l: "Pastille",   max: 40 },
+        { k: "kicker", l: "Sur-titre",  max: 50 },
+        { k: "title",  l: "Titre",      max: 60 },
+        { k: "sub",    l: "Sous-titre", max: 160, long: true },
+        { k: "cta1",   l: "Bouton principal",  max: 28 },
+        { k: "cta2",   l: "Bouton secondaire", max: 28 }
+      ] },
+    { cle: "banner", titre: "Bannière", ratio: 16/9,
+      aide: "Le bandeau large au milieu de la page.",
+      champs: [
+        { k: "kicker", l: "Sur-titre", max: 50 },
+        { k: "title",  l: "Titre",     max: 60 },
+        { k: "text",   l: "Texte",     max: 200, long: true },
+        { k: "cta1",   l: "Bouton principal",  max: 28 },
+        { k: "cta2",   l: "Bouton secondaire", max: 28 }
+      ] },
+    { cle: "editorial", titre: "Présentation", ratio: 4/5,
+      aide: "Votre histoire, vos garanties. Masquez ce bloc si vous n'avez rien à y écrire — mieux vaut l'absence que du remplissage.",
+      champs: [
+        { k: "kicker", l: "Sur-titre", max: 50 },
+        { k: "title",  l: "Titre",     max: 60 },
+        { k: "text",   l: "Texte",     max: 300, long: true }
+      ], piliers: true },
+    { cle: "newsletter", titre: "Newsletter", ratio: 0,
+      aide: "Le bloc de collecte d'adresses, en bas de page.",
+      champs: [
+        { k: "kicker", l: "Sur-titre", max: 50 },
+        { k: "title",  l: "Titre",     max: 60 },
+        { k: "text",   l: "Texte",     max: 200, long: true },
+        { k: "note",   l: "Mention",   max: 80 }
+      ] }
+  ];
+
+  function contenu(){
+    if (!store.settings.content || typeof store.settings.content !== "object") store.settings.content = {};
+    return store.settings.content;
+  }
+  function majContenu(){
+    saveStore();
+    renderContenuAdmin();
+  }
+
+  function renderContenuAdmin(){
+    var host = $("#contenuBlocs");
+    if (!host) return;
+    var c = contenu();
+    host.innerHTML = BLOCS_CONTENU.map(function(b){
+      var d = c[b.cle] || {};
+      var actif = d.on !== false;
+      var champs = b.champs.map(function(f){
+        var id = "ct-" + b.cle + "-" + f.k;
+        var val = esc(d[f.k] || "");
+        return '<div class="field"><label for="' + id + '">' + esc(f.l) +
+          ' <span class="hint" style="font-weight:400">' + f.max + ' caractères max</span></label>' +
+          (f.long
+            ? '<textarea id="' + id + '" rows="2" maxlength="' + f.max + '" data-ct="' + b.cle + '.' + f.k + '">' + val + '</textarea>'
+            : '<input type="text" id="' + id + '" maxlength="' + f.max + '" value="' + val + '" data-ct="' + b.cle + '.' + f.k + '" />') +
+        '</div>';
+      }).join("");
+
+      var image = b.ratio ? (
+        '<div class="field"><label>Image</label>' +
+          (d.image ? '<img class="img-preview" src="' + esc(d.image) + '" alt="" style="display:block;margin-bottom:8px" />' : '') +
+          '<label class="drop"><b>Choisir une photo</b>' +
+            '<span>Recadrée automatiquement au bon format</span>' +
+            '<input type="file" accept="image/*" data-ctimg="' + b.cle + '" />' +
+          '</label></div>') : '';
+
+      var piliers = "";
+      if (b.piliers){
+        var liste = Array.isArray(d.pillars) ? d.pillars : [];
+        piliers = '<div class="field"><label>Points forts</label>' +
+          '<p class="hint">Trois arguments courts. Laissez vide pour ne pas les afficher.</p>' +
+          [0,1,2].map(function(i){
+            var pv = liste[i] || {};
+            return '<div class="cat-row" style="grid-template-columns:1fr 2fr">' +
+              '<input type="text" maxlength="30" placeholder="Titre" value="' + esc(pv.title || "") + '" data-ctp="' + i + '.title" />' +
+              '<input type="text" maxlength="120" placeholder="Explication" value="' + esc(pv.text || "") + '" data-ctp="' + i + '.text" />' +
+            '</div>';
+          }).join("") + '</div>';
+      }
+
+      return '<div class="card" style="max-width:640px;margin-bottom:20px">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">' +
+          '<h2 style="margin:0">' + esc(b.titre) + '</h2>' +
+          '<label class="toggle"><input type="checkbox" data-cton="' + b.cle + '"' + (actif ? ' checked' : '') + ' />' +
+            '<span>' + (actif ? "Affiché" : "Masqué") + '</span></label>' +
+        '</div>' +
+        '<p class="hint" style="margin:8px 0 16px">' + esc(b.aide) + '</p>' +
+        champs + piliers + image +
+      '</div>';
+    }).join("");
+  }
+
+  $("#contenuBlocs").addEventListener("change", function(e){
+    var c = contenu();
+
+    var on = e.target.closest("[data-cton]");
+    if (on){
+      var k = on.getAttribute("data-cton");
+      c[k] = c[k] || {};
+      c[k].on = on.checked;
+      majContenu();
+      toast(on.checked ? "Bloc affiché" : "Bloc masqué");
+      return;
+    }
+
+    var ch = e.target.closest("[data-ct]");
+    if (ch){
+      var r = ch.getAttribute("data-ct").split(".");
+      c[r[0]] = c[r[0]] || {};
+      c[r[0]][r[1]] = ch.value.trim();
+      saveStore();
+      return;
+    }
+
+    var pil = e.target.closest("[data-ctp]");
+    if (pil){
+      var rp = pil.getAttribute("data-ctp").split(".");
+      c.editorial = c.editorial || {};
+      c.editorial.pillars = Array.isArray(c.editorial.pillars) ? c.editorial.pillars : [];
+      while (c.editorial.pillars.length < 3) c.editorial.pillars.push({ title: "", text: "" });
+      c.editorial.pillars[parseInt(rp[0], 10)][rp[1]] = pil.value.trim();
+      saveStore();
+      return;
+    }
+
+    var img = e.target.closest("[data-ctimg]");
+    if (img){
+      var bloc = img.getAttribute("data-ctimg");
+      var def = BLOCS_CONTENU.filter(function(x){ return x.cle === bloc; })[0];
+      var f = img.files && img.files[0];
+      img.value = "";
+      if (!f || !def) return;
+      envoyerImage(f, def.ratio, function(url){
+        var cc = contenu();
+        cc[bloc] = cc[bloc] || {};
+        cc[bloc].image = url;
+        majContenu();
+        toast("Image enregistrée");
+      });
+      return;
+    }
   });
 
   /* ---------------- Collections ----------------
@@ -2168,6 +2328,7 @@ function applyStatus(order, ns){
   });
 
   function renderAll(){
+    renderContenuAdmin();
     renderCollSettings();
     renderAxeChecks(null);
     renderStockGrid(null);
