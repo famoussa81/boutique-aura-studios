@@ -71,6 +71,27 @@ if (o.domaine) {
   }
 }
 
+// ---------------------------------------------------------------- WhatsApp du repli
+// Le numero vit dans les reglages, lus par le script. Le bloc <noscript> ne
+// peut pas les lire : il porte donc une copie en dur, que cette commande
+// realigne. Sans elle, changer de numero dans l'administration laisserait
+// l'ancien sur le seul ecran que voient les navigateurs sans JavaScript.
+if (o.whatsapp) {
+  const num = o.whatsapp.replace(/\D/g, '');
+  if (num.length < 8) {
+    console.error('Numero WhatsApp invalide. Attendu : indicatif + numero, ex. 22376123456');
+    process.exit(1);
+  }
+  for (const f of ['index.html', 'catalogue.html', 'collection.html']) {
+    const s2 = lire(f);
+    if (s2 === null) continue;
+    const maj = s2.replace(/https:\/\/wa\.me\/\d+/g, 'https://wa.me/' + num);
+    if (maj === s2) continue;
+    writeFileSync(f, maj, 'utf8');
+    modifs.push(`${f} — numero WhatsApp du repli sans JavaScript`);
+  }
+}
+
 // ---------------------------------------------------------------- enseigne et image de partage
 if (o.enseigne) {
   for (const f of FICHIERS_ENSEIGNE) {

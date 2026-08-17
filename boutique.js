@@ -830,6 +830,11 @@
       renderCategories();
       renderGrid();
     }
+    var vTaille = tailleFromUrl();
+    if (vTaille && curTaille !== vTaille){
+      curTaille = vTaille;
+      renderGrid();
+    }
   }
   function applySettings(){
     var s = store.settings;
@@ -969,6 +974,58 @@
       '<div class="padd"><button class="btn btn-primary btn-full" data-openp="' + esc(p.id) + '">' + (out ? "Me prévenir du retour" : "Choisir la taille") + '</button></div>' +
     '</article>';
   }
+  /* ---------------- Filtre par pointure ----------------
+     Dans une boutique de chaussures, la question n'est pas « quels modèles
+     existent » mais « lesquels existent à ma pointure ». Sans ce filtre, un
+     client qui chausse du 44 ouvre les fiches une par une jusqu'à en trouver
+     une disponible, et abandonne avant. Le filtre porte sur le premier axe
+     de la catégorie — celui que le commerçant a nommé « Pointure » — et ne
+     retient que les tailles réellement en stock. */
+  var curTaille = "";
+
+  function premierAxe(p){
+    var axes = prodAxes(p);
+    return axes.length ? axes[0] : null;
+  }
+  /* Vrai si le produit a au moins une combinaison disponible dont la valeur
+     du premier axe est celle demandée — toutes couleurs confondues. */
+  function aLaTaille(p, taille){
+    var keys = allKeys(p);
+    for (var i = 0; i < keys.length; i++){
+      var vals = valuesOf(keys[i]);
+      if (vals.length && vals[0] === taille && availFor(p, keys[i]) > 0) return true;
+    }
+    return false;
+  }
+  function renderBarreTailles(list){
+    var box = $("#barreTailles");
+    if (!box) return;
+    /* Union des valeurs disponibles sur les produits affichés, dans l'ordre
+       où la catégorie les déclare : 39, 40… et non 39, 40, 41 mélangés. */
+    var vues = [], nomAxe = "";
+    list.forEach(function(p){
+      var ax = premierAxe(p);
+      if (!ax) return;
+      if (!nomAxe) nomAxe = ax.name;
+      ax.values.forEach(function(v){
+        if (vues.indexOf(v) < 0 && aLaTaille(p, v)) vues.push(v);
+      });
+    });
+    if (vues.length < 2){ box.hidden = true; box.innerHTML = ""; return; }
+    box.hidden = false;
+    box.innerHTML = '<span class="sizebar-label">' + esc(nomAxe || "Taille") + '</span>' +
+      '<button type="button" class="size-chip' + (curTaille ? "" : " active") + '" data-taille="">Toutes</button>' +
+      vues.map(function(v){
+        return '<button type="button" class="size-chip' + (curTaille === v ? " active" : "") +
+               '" data-taille="' + esc(v) + '">' + esc(v) + '</button>';
+      }).join("");
+  }
+  function setTaille(v){
+    curTaille = v || "";
+    renderGrid();
+    syncUrl(curFilter);
+  }
+
   function renderGrid(){
     /* Les rangées de l'accueil contiennent les mêmes cartes que la grille :
        un cœur cliqué ou un stock consommé doit s'y voir aussi. L'accueil n'a
@@ -979,6 +1036,11 @@
     var list = store.products.filter(function(p){ return p.active; });
     if (curColl) list = list.filter(function(p){ return p.collection === curColl; });
     list = list.filter(function(p){ return curFilter === "tous" || p.cat === curFilter; });
+    /* La barre est bâtie avant le filtre de pointure, sinon choisir « 44 »
+       ferait disparaître toutes les autres pointures de la barre et on ne
+       pourrait plus en changer. */
+    renderBarreTailles(list);
+    if (curTaille) list = list.filter(function(p){ return aLaTaille(p, curTaille); });
     if (curQuery){
       var q = curQuery.toLowerCase();
       list = list.filter(function(p){ /* La marque est ce qu'on tape en premier dans une boutique
@@ -988,7 +1050,16 @@
                marqueDe(p).toLowerCase().indexOf(q) >= 0; });
     }
     if (!list.length){
-      g.innerHTML = '<p class="none-msg">Aucun produit ne correspond à votre recherche.<br><button type="button" class="btn btn-primary" style="margin-top:16px" data-reset-filters>Voir tout le catalogue</button></p>';
+      /* Message adapté : dire « aucun résultat » sans dire que c'est la
+         pointure qui exclut tout laisse le client croire que la boutique est
+         vide. */
+      g.innerHTML = '<p class="none-msg">' +
+        (curTaille
+          ? 'Aucun modèle disponible en ' + esc(curTaille) + ' pour cette sélection.' +
+            '<br><button type="button" class="btn btn-primary" style="margin-top:16px" data-taille="">Voir toutes les pointures</button>'
+          : 'Aucun produit ne correspond à votre recherche.' +
+            '<br><button type="button" class="btn btn-primary" style="margin-top:16px" data-reset-filters>Voir tout le catalogue</button>') +
+        '</p>';
       return;
     }
     g.innerHTML = list.map(cardHTML).join("");
@@ -1008,8 +1079,15 @@
     var params = [];
     if (curColl) params.push("c=" + encodeURIComponent(curColl));
     if (cat && cat !== "tous") params.push("cat=" + encodeURIComponent(cat));
+    if (curTaille) params.push("t=" + encodeURIComponent(curTaille));
     var url = location.pathname + (params.length ? "?" + params.join("&") : "");
     try { history.replaceState(null, "", url); } catch(e){}
+  }
+  function tailleFromUrl(){
+    try {
+      var m = location.search.match(/[?&]t=([^&]+)/);
+      return m ? decodeURIComponent(m[1]) : "";
+    } catch(e){ return ""; }
   }
   function catFromUrl(){
     try {
@@ -1678,6 +1756,8 @@
       return;
     }
 
+    var chip = t.closest("[data-taille]");
+    if (chip){ setTaille(chip.getAttribute("data-taille")); return; }
     if (t.closest("[data-searchall]")){ applySearchToGrid(); return; }
     if (t.closest("[data-reset-filters]")){ setFilter("tous"); return; }
 

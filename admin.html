@@ -381,6 +381,17 @@
               <p class="hint">Collez une URL web ou un chemin du dossier assets/.</p>
             </div>
             <div class="field">
+              <label>Photos supplémentaires</label>
+              <p class="hint" style="margin-bottom:10px">Elles apparaissent dans la fiche du produit, après la photo principale. Trois à cinq suffisent.</p>
+              <div id="fGalerie"></div>
+              <label class="filebtn" style="margin-top:10px">
+                <b>Ajouter une photo</b>
+                <span>Depuis votre téléphone ou votre ordinateur</span>
+                <input type="file" id="fGalFile" accept="image/*" />
+              </label>
+              <p class="hint" id="galStatus" style="margin-top:8px"></p>
+            </div>
+            <div class="field">
               <label for="fDesc">Description</label>
               <textarea id="fDesc" placeholder="Décrivez la pièce, ses matières, sa coupe…"></textarea>
             </div>
@@ -2131,6 +2142,27 @@ function applyStatus(order, ns){
         '<td><button type="button" class="sbtn" data-report="' + esc(l) + '" title="Reporter la première valeur sur toute la ligne">=</button></td></tr>';
       }).join("") + '</tbody></table></div>';
   }
+  /* Photos secondaires du produit en cours d'édition. La photo principale
+     reste `#fImg` ; celle-ci vient toujours en tête de `imgs`, donc la
+     galerie ne la répète pas. */
+  var galerieForm = [];
+
+  function renderGalerieForm(){
+    var host = $("#fGalerie");
+    if (!host) return;
+    if (!galerieForm.length){
+      host.innerHTML = '<p class="hint">Aucune photo supplémentaire.</p>';
+      return;
+    }
+    host.innerHTML = galerieForm.map(function(u, i){
+      return '<div class="cat-row" style="align-items:center">' +
+        '<img src="' + esc(u) + '" alt="" style="width:56px;height:74px;object-fit:cover;border-radius:6px" />' +
+        '<div class="cat-count" style="flex:1;word-break:break-all">Photo ' + (i + 2) + '</div>' +
+        '<button type="button" class="sbtn danger" data-galdel="' + i + '">Retirer</button>' +
+      '</div>';
+    }).join("");
+  }
+
   /* Ouvre un produit dans le formulaire. Appelé depuis la liste des produits
      et depuis la liste d'une catégorie : une seule définition, donc les deux
      chemins remplissent exactement les mêmes champs. */
@@ -2150,6 +2182,9 @@ function applyStatus(order, ns){
     if (p.img){ prev.src = p.img; prev.style.display = "block"; } else prev.style.display = "none";
     $("#fActive").checked = p.active !== false;
     $("#fOut").checked = !!p.stockout;
+    galerieForm = (Array.isArray(p.imgs) ? p.imgs : []).slice(1)
+                    .filter(function(u){ return u && u !== p.img; });
+    renderGalerieForm();
     var axesProd = prodAxes(p);
     renderAxeChecks(axesProd.map(function(a){ return a.values; }));
     var quantites = {};
@@ -2175,6 +2210,8 @@ function applyStatus(order, ns){
     $("#fImgPrev").style.display = "none";
     $("#fActive").checked = true;
     $("#fOut").checked = false;
+    galerieForm = [];
+    renderGalerieForm();
     renderAxeChecks(null);
     renderStockGrid(null);
     $("#formTitle").textContent = "Ajouter un produit";
@@ -2339,6 +2376,27 @@ function applyStatus(order, ns){
     });
   }
 
+  /* Ajout d'une photo secondaire. Même traitement que la photo principale :
+     recadrée au format de la carte produit, compressée, puis envoyée. */
+  $("#fGalFile").addEventListener("change", function(){
+    var f = this.files && this.files[0];
+    this.value = "";
+    if (!f) return;
+    $("#galStatus").textContent = "Traitement de l'image…";
+    envoyerImage(f, 3/4, function(url){
+      if (galerieForm.indexOf(url) < 0) galerieForm.push(url);
+      renderGalerieForm();
+      $("#galStatus").textContent = "";
+      toast("Photo ajoutée — enregistrez le produit");
+    });
+  });
+  $("#fGalerie").addEventListener("click", function(e){
+    var d = e.target.closest("[data-galdel]");
+    if (!d) return;
+    galerieForm.splice(parseInt(d.getAttribute("data-galdel"), 10), 1);
+    renderGalerieForm();
+    toast("Photo retirée — enregistrez le produit");
+  });
   $("#fImg").addEventListener("input", function(){
     var url = $("#fImg").value.trim();
     var prev = $("#fImgPrev");
@@ -2409,7 +2467,7 @@ function applyStatus(order, ns){
       /* La fiche produit affiche `imgs`, la carte affiche `img`. Sans cette
          ligne, remplacer la photo changeait la carte mais laissait la galerie
          sur l'ancienne image : le commerçant croyait sa photo refusée. */
-      pr.imgs = [img].concat((pr.imgs || []).slice(1).filter(function(u){ return u && u !== img; }));
+      pr.imgs = [img].concat(galerieForm.filter(function(u){ return u && u !== img; }));
       /* Les réservations en cours sont conservées : modifier un stock ne doit
          pas libérer une quantité déjà promise à une commande en attente. */
       var neuf = {};
@@ -2425,7 +2483,9 @@ function applyStatus(order, ns){
       toast("Produit mis à jour");
     } else {
       store.products.push({ id:"p" + Date.now(), name:name, cat:cat, price:price,
-        oldPrice:oldP, badge:badge, img:img, imgs:[img], desc:desc,
+        oldPrice:oldP, badge:badge, img:img,
+        imgs:[img].concat(galerieForm.filter(function(u){ return u && u !== img; })),
+        desc:desc,
         axes:axesProduit, variants:variants,
         active:$("#fActive").checked, stockout:$("#fOut").checked });
       saveStore();

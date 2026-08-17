@@ -41,6 +41,16 @@
 <link rel="stylesheet" href="boutique.css" />
 </head>
 <body data-page="collection">
+<noscript>
+  <div class="noscript-msg">
+    <h1>La boutique a besoin de JavaScript</h1>
+    <p>Votre navigateur ne l'exécute pas. C'est souvent le cas en
+       <b>mode économie de données</b> ou <b>navigation allégée</b> :
+       désactivez-le dans les réglages du navigateur, puis rechargez.</p>
+    <p>Vous pouvez aussi commander directement :</p>
+    <p><a class="noscript-cta" href="https://wa.me/22376759515">Commander sur WhatsApp</a></p>
+  </div>
+</noscript>
 <main id="page">
 <!-- Entête d'une collection ouverte. Masqué par défaut, il ne coûte rien
        à une boutique qui n'en déclare aucune. -->
@@ -68,6 +78,7 @@
       <div class="tabs" id="filterTabs" data-od-id="filter-tabs" role="tablist">
         <button class="tab active" data-filter="tous">Tous</button>
       </div>
+      <div class="sizebar" id="barreTailles" hidden></div>
       <div class="pgrid" id="grid" data-od-id="product-grid"></div>
     </div>
   </section>
