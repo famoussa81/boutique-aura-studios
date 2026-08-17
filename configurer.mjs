@@ -6,6 +6,7 @@
  * légales laissées en attente, dans tous les fichiers concernés.
  *
  *   node configurer.mjs --domaine https://ma-boutique.com
+ *   node configurer.mjs --enseigne "SNEAK BAMAKO" --image assets/hero.webp
  *   node configurer.mjs --domaine https://ma-boutique.com \
  *                       --enseigne "NOM SARL" --forme "SARL" \
  *                       --adresse "Rue 224, Porte 15, ACI 2000" \
@@ -19,9 +20,22 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 const DOMAINE_DEMO = 'https://aura-studios.vercel.app';
 
 const FICHIERS_DOMAINE = [
-  'index.html', 'cgv.html', 'confidentialite.html',
+  'index.html', 'catalogue.html', 'collection.html',
+  'cgv.html', 'confidentialite.html',
   'guide-des-tailles.html', 'durabilite.html',
   'robots.txt', 'sitemap.xml',
+];
+
+/* Nom et image de partage. Ils vivent dans les balises `<meta>`, que le
+   commerçant ne peut pas modifier depuis l'administration : ce sont elles qui
+   composent l'aperçu affiché quand il envoie le lien de sa boutique sur
+   WhatsApp. Sans ce passage, il enverrait le nom du modèle de départ. */
+const ENSEIGNE_DEMO = 'AURA STUDIOS';
+const IMAGE_DEMO = 'imagery/cover-0.webp';
+
+const FICHIERS_ENSEIGNE = [
+  'index.html', 'catalogue.html', 'collection.html', '404.html',
+  'cgv.html', 'confidentialite.html', 'guide-des-tailles.html', 'durabilite.html',
 ];
 
 function args() {
@@ -54,6 +68,32 @@ if (o.domaine) {
     const n = (s.match(new RegExp(DOMAINE_DEMO.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
     writeFileSync(f, s.split(DOMAINE_DEMO).join(domaine), 'utf8');
     modifs.push(`${f} — ${n} occurrence${n > 1 ? 's' : ''} du domaine`);
+  }
+}
+
+// ---------------------------------------------------------------- enseigne et image de partage
+if (o.enseigne) {
+  for (const f of FICHIERS_ENSEIGNE) {
+    const s = lire(f);
+    if (s === null) { console.warn(`  ignoré (absent) : ${f}`); continue; }
+    if (!s.includes(ENSEIGNE_DEMO)) continue;
+    const n = (s.match(new RegExp(ENSEIGNE_DEMO, 'g')) || []).length;
+    writeFileSync(f, s.split(ENSEIGNE_DEMO).join(o.enseigne), 'utf8');
+    modifs.push(`${f} — ${n} occurrence${n > 1 ? 's' : ''} de l'enseigne`);
+  }
+}
+
+if (o.image) {
+  if (!existsSync(o.image)) {
+    console.error(`Image de partage introuvable : ${o.image}`);
+    process.exit(1);
+  }
+  for (const f of FICHIERS_ENSEIGNE) {
+    const s = lire(f);
+    if (s === null || !s.includes(IMAGE_DEMO)) continue;
+    const n = (s.match(new RegExp(IMAGE_DEMO.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+    writeFileSync(f, s.split(IMAGE_DEMO).join(o.image), 'utf8');
+    modifs.push(`${f} — ${n} référence${n > 1 ? 's' : ''} à l'image de partage`);
   }
 }
 

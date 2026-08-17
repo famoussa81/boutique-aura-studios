@@ -157,7 +157,7 @@
       collections: [
         { key: "calvin-klein", label: "Calvin Klein", tagline: "Minimalisme américain", accent: "#1f2933", cover: "assets/marque-1.webp",
           desc: "Le logo embossé sur bride large. Une claquette qui se reconnaît de loin." },
-        { key: "louis-vuitton", label: "Louis Vuitton", tagline: "Monogram", accent: "#6b4f2a", cover: "assets/marque-2.webp",
+        { key: "louis-vuitton", featured: true, label: "Louis Vuitton", tagline: "Monogram", accent: "#6b4f2a", cover: "assets/marque-2.webp",
           desc: "Cuir embossé et bande signature. La pièce que tout le monde identifie." },
         { key: "burberry", label: "Burberry", tagline: "Vintage Check", accent: "#7d6b4f", cover: "assets/marque-3.webp",
           desc: "Le tartan maison, décliné en trois teintes." },
@@ -167,7 +167,7 @@
           desc: "Toile jacquard au motif maison. La mule d'intérieur qui se porte dehors." },
         { key: "balenciaga", label: "Balenciaga", tagline: "Mold", accent: "#111111", cover: "assets/marque-6.webp",
           desc: "Caoutchouc moulé d'une seule pièce. Une silhouette qu'on ne confond pas." },
-        { key: "hugo", label: "HUGO", tagline: "Bande rouge", accent: "#a3262b", cover: "assets/marque-7.webp",
+        { key: "hugo", featured: true, label: "HUGO", tagline: "Bande rouge", accent: "#a3262b", cover: "assets/marque-7.webp",
           desc: "La bande contrastée et le monogramme répété. Sport et net." },
         { key: "tommy-jeans", label: "Tommy Jeans", tagline: "Flag", accent: "#1c3a6e", cover: "assets/marque-8.webp",
           desc: "Le drapeau tricolore en grand sur la bride." },

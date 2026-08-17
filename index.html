@@ -3,22 +3,22 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AURA STUDIOS — Boutique en ligne · Bamako</title>
-<meta name="description" content="AURA STUDIOS : sportswear, streetwear et tenues techniques pour la génération urbaine. Commandez par WhatsApp à Bamako." />
+<title>SNEAK BAMAKO — Boutique en ligne · Bamako</title>
+<meta name="description" content="SNEAK BAMAKO : claquettes, mules et sabots des grandes marques, en pointures 39 à 45. Commandez par WhatsApp à Bamako, payez à la livraison." />
 <link rel="canonical" href="https://aura-studios.vercel.app/" />
 <link rel="icon" href="logos/favicon.ico" sizes="any" />
 <meta name="theme-color" content="#111111" />
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content="AURA STUDIOS" />
-<meta property="og:title" content="AURA STUDIOS — Sportswear, streetwear et techwear à Bamako" />
-<meta property="og:description" content="Des pièces haut de gamme pour la génération urbaine. Commande simple et rapide par WhatsApp." />
-<meta property="og:image" content="imagery/cover-0.webp" />
+<meta property="og:site_name" content="SNEAK BAMAKO" />
+<meta property="og:title" content="SNEAK BAMAKO — Claquettes et mules des grandes marques à Bamako" />
+<meta property="og:description" content="Les grandes marques en pointures 39 à 45. Commande simple par WhatsApp, paiement à la livraison." />
+<meta property="og:image" content="assets/hero.webp" />
 <meta property="og:url" content="https://aura-studios.vercel.app/" />
 <meta property="og:locale" content="fr_FR" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="AURA STUDIOS — Sportswear, streetwear et techwear à Bamako" />
-<meta name="twitter:description" content="Des pièces haut de gamme pour la génération urbaine. Commande par WhatsApp." />
-<meta name="twitter:image" content="imagery/cover-0.webp" />
+<meta name="twitter:title" content="SNEAK BAMAKO — Claquettes et mules des grandes marques à Bamako" />
+<meta name="twitter:description" content="Les grandes marques en pointures 39 à 45. Commande par WhatsApp, paiement à la livraison." />
+<meta name="twitter:image" content="assets/hero.webp" />
 <link rel="preconnect" href="https://vgzvavlmmqbxtuhanaqj.supabase.co" crossorigin />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -30,11 +30,11 @@
 {
   "@context": "https://schema.org",
   "@type": "Store",
-  "name": "AURA STUDIOS",
-  "description": "Sportswear, streetwear et tenues techniques pour la génération urbaine.",
-  "image": "imagery/cover-0.webp",
+  "name": "SNEAK BAMAKO",
+  "description": "Claquettes, mules et sabots des grandes marques, en pointures 39 à 45.",
+  "image": "assets/hero.webp",
   "address": { "@type": "PostalAddress", "addressLocality": "Bamako", "addressCountry": "ML" },
-  "priceRange": "8000-38000 FCFA",
+  "priceRange": "18000-42000 FCFA",
   "currenciesAccepted": "XOF",
   "paymentAccepted": "Espèces à la livraison"
 }
@@ -88,7 +88,13 @@
         <span class="sec-kicker" id="univKicker">Les univers</span>
         <h2 class="sec-title" id="univTitre">Explorez les collections</h2>
       </div>
-      <div class="cats" id="univGrille"></div>
+      <!-- Marques mises en avant : bandeau large + rangée de modèles. -->
+      <div id="marquesBandes"></div>
+      <!-- Les autres marques, en vignettes. Masqué s'il n'en reste aucune. -->
+      <div class="marques-reste" id="marquesReste" hidden>
+        <span class="sec-kicker">Toutes les marques</span>
+        <div class="cats" id="univGrille"></div>
+      </div>
     </div>
   </section>
 

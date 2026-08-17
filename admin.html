@@ -243,7 +243,7 @@
 
   <header class="top">
     <div class="top-inner">
-      <div class="brand">AURA STUDIOS<small>PANEL ADMINISTRATION</small></div>
+      <div class="brand" id="brandAdmin">AURA STUDIOS<small>PANEL ADMINISTRATION</small></div>
       <nav class="nav-admin">
         <button class="tab active" data-view="dashboard">Tableau de bord</button>
         <button class="tab" data-view="orders">Commandes</button>
@@ -1476,8 +1476,20 @@
     renderProducts();
   }
 
+  function collEnAvant(){
+    return collList().filter(function(c){ return c.featured; }).length;
+  }
+
   function collEditorHTML(c, i){
+    var plein = !c.featured && collEnAvant() >= 4;
     return '<div class="axes-editeur">' +
+      '<div class="field"><label class="chk" style="gap:8px">' +
+          '<input type="checkbox" data-clstar="' + i + '"' + (c.featured ? ' checked' : '') +
+          (plein ? ' disabled' : '') + ' /> Mettre en avant sur l\'accueil</label>' +
+        '<p class="hint">La marque obtient un bandeau pleine largeur suivi de ses modèles, au lieu d\'une simple vignette. ' +
+        (plein ? 'Quatre marques sont déjà mises en avant : décochez-en une pour libérer une place.'
+               : 'Quatre au maximum — au-delà, la page d\'accueil devient un catalogue et plus personne ne descend jusqu\'en bas.') +
+        '</p></div>' +
       '<div class="field"><label for="clTag' + i + '">Accroche</label>' +
         '<input type="text" id="clTag' + i + '" data-clfield="tagline.' + i + '" maxlength="40" value="' + esc(c.tagline || "") + '" placeholder="Monogram, Vintage Check…" />' +
         '<p class="hint">Deux ou trois mots, affichés au-dessus du nom sur la bannière.</p></div>' +
@@ -1510,7 +1522,8 @@
         '<div class="cat-row">' +
           '<div><input type="text" data-cllabel="' + i + '" value="' + esc(c.label) + '" aria-label="Nom de la collection" />' +
             '<div class="cat-count">' + used + ' produit' + (used > 1 ? 's' : '') +
-              (c.cover ? ' · couverture' : ' · sans couverture') + '</div></div>' +
+              (c.cover ? ' · couverture' : ' · sans couverture') +
+              (c.featured ? ' · en avant sur l\'accueil' : '') + '</div></div>' +
           '<div class="key">' + esc(c.key) + '</div>' +
           '<button type="button" class="sbtn danger" data-clldel="' + i + '"' +
             (used ? ' disabled title="Collection utilisée par ' + used + ' produit(s)"' : '') + '>Supprimer</button>' +
@@ -1576,6 +1589,17 @@
       var r = champ.getAttribute("data-clfield").split(".");
       list[parseInt(r[1], 10)][r[0]] = champ.value.trim();
       majCollections(list);
+      return;
+    }
+
+    var star = e.target.closest("[data-clstar]");
+    if (star){
+      var i5 = parseInt(star.getAttribute("data-clstar"), 10);
+      if (star.checked) list[i5].featured = true;
+      else delete list[i5].featured;
+      majCollections(list);
+      toast(star.checked ? "« " + list[i5].label + " » mise en avant"
+                         : "« " + list[i5].label + " » retirée de l'accueil");
       return;
     }
 
@@ -2283,6 +2307,12 @@ function applyStatus(order, ns){
     var s = store.settings;
     $("#sWhats").value = s.whatsapp || "";
     $("#sName").value = s.shopName || "";
+    /* Le commerçant a renommé sa boutique : son administration doit porter le
+       nouveau nom, pas celui du modèle de départ. */
+    var nom = s.shopName || "AURA STUDIOS";
+    document.title = nom + " — Administration";
+    var enseigne = $("#brandAdmin");
+    if (enseigne) enseigne.childNodes[0].nodeValue = nom;
     $("#sFee").value = s.deliveryFee != null ? s.deliveryFee : "";
     $("#sFree").value = s.freeFrom != null ? s.freeFrom : 0;
     $("#sDelay").value = s.deliveryTime || "";

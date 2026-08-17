@@ -563,6 +563,58 @@
     if (l) l.setAttribute("href", url);
   }
 
+  /* Marques mises en avant sur l'accueil : bandeau large puis rangée de
+     modèles. Le commerçant les coche dans l'administration ; sans choix, les
+     trois premières marques qui ont des produits sont prises, pour qu'une
+     boutique installée à l'instant ne montre pas une page vide.
+     Plafonné à quatre : au-delà, l'accueil devient un catalogue déguisé et
+     plus personne ne descend jusqu'aux autres marques. */
+  var MAX_BANDES = 4, MAX_MODELES = 8;
+  function marquesEnAvant(colls){
+    var actifs = {};
+    store.products.forEach(function(p){
+      if (p.active && p.collection) actifs[p.collection] = (actifs[p.collection] || 0) + 1;
+    });
+    var avec = colls.filter(function(c){ return actifs[c.key]; });
+    var choisies = avec.filter(function(c){ return c.featured; });
+    /* Choix automatique : au moins deux modèles, sinon le bandeau annonce une
+       marque et ne montre qu'une paire — l'effet inverse de celui recherché.
+       Un choix explicite du commerçant est respecté tel quel : c'est lui qui
+       sait ce qu'il veut pousser cette semaine. */
+    if (!choisies.length) choisies = avec.filter(function(c){ return actifs[c.key] >= 2; }).slice(0, 3);
+    return choisies.slice(0, MAX_BANDES);
+  }
+  function renderBandes(colls){
+    var host = $("#marquesBandes");
+    if (!host) return [];
+    var choisies = marquesEnAvant(colls);
+    host.innerHTML = choisies.map(function(c){
+      var produits = store.products.filter(function(p){
+        return p.active && p.collection === c.key;
+      }).slice(0, MAX_MODELES);
+      var n = produits.length;
+      return '<div class="mband">' +
+        '<a class="mband-top" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
+          ' aria-label="Voir les ' + n + ' modèle' + (n > 1 ? 's' : '') + ' ' + esc(c.label) + '">' +
+          (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="1600" height="500" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' : '') +
+          '<span class="mband-in">' +
+            '<span>' +
+              (c.tagline ? '<span class="mband-tag"' + (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' + esc(c.tagline) + '</span>' : '') +
+              '<span class="mband-name">' + esc(c.label) + '</span>' +
+            '</span>' +
+            '<span class="mband-go"><span>Voir les ' + n + ' modèle' + (n > 1 ? 's' : '') + '</span>' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
+          '</span>' +
+        '</a>' +
+        /* Quatre modèles ou moins tiennent sur une ligne : une barre de
+           défilement qui ne défile pas donne l'impression d'un bug. */
+        '<div class="mrow' + (n <= 4 ? ' mrow-fixe' : '') + '">' +
+          produits.map(cardHTML).join("") + '</div>' +
+      '</div>';
+    }).join("");
+    return choisies.map(function(c){ return c.key; });
+  }
+
   function renderUnivers(){
     var grille = $("#univGrille");
     if (!grille) return;
@@ -572,6 +624,11 @@
     if (colls.length){
       if (kicker) kicker.textContent = "Les marques";
       if (titre) titre.textContent = "Parcourez les marques";
+      var enAvant = renderBandes(colls);
+      colls = colls.filter(function(c){ return enAvant.indexOf(c.key) < 0; });
+      var reste = $("#marquesReste");
+      if (reste) reste.hidden = !colls.length;
+      if (!colls.length){ grille.innerHTML = ""; return; }
       grille.innerHTML = colls.map(function(c){
         return '<a href="collection.html?c=' + encodeURIComponent(c.key) + '" class="cat-card">' +
           (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' : '') +
@@ -913,6 +970,10 @@
     '</article>';
   }
   function renderGrid(){
+    /* Les rangées de l'accueil contiennent les mêmes cartes que la grille :
+       un cœur cliqué ou un stock consommé doit s'y voir aussi. L'accueil n'a
+       pas de grille, donc ce rafraîchissement passe avant la sortie. */
+    if ($("#marquesBandes")) renderBandes(collList());
     var g = $("#grid");
     if (!g) return;
     var list = store.products.filter(function(p){ return p.active; });
