@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /admin
 
-Sitemap: https://aura-studios.vercel.app/sitemap.xml
+Sitemap: https://boutique-aura-studios.vercel.app/sitemap.xml
