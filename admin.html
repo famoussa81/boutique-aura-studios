@@ -1944,7 +1944,10 @@
       releaseItem(o1, it);
       o1.items.splice(idx, 1);
       recomputeTotals(o1);
-      saveStore(); syncOrder(o1); renderAll();
+      /* `releaseItem` a modifié le stock du produit : il faut renvoyer les
+         produits, pas seulement la commande, sinon la paire reste
+         immobilisée sur la boutique. */
+      saveStore(); syncOrder(o1); syncProducts(); renderAll();
       toast("Article retiré");
       return;
     }
@@ -1976,7 +1979,9 @@
       o3.items.forEach(function(x){ releaseItem(o3, x); });
       store.orders = store.orders.filter(function(x){ return x.ref !== o3.ref; });
       editingOrder = null;
-      saveStore();
+      /* Le message de confirmation promet la restitution du stock : sans cet
+         envoi, elle n'avait lieu que dans le navigateur du commerçant. */
+      saveStore(); syncProducts();
       if (online()) window.AURA_DB.deleteOrder(o3.ref, function(er){
         if (er) console.warn("Suppression non synchronisée", er);
       });
@@ -2401,6 +2406,10 @@ function applyStatus(order, ns){
       if (!pr) return;
       pr.name = name; pr.price = price; pr.oldPrice = oldP; pr.cat = cat; pr.badge = badge;
       pr.img = img; pr.desc = desc; pr.active = $("#fActive").checked; pr.stockout = $("#fOut").checked;
+      /* La fiche produit affiche `imgs`, la carte affiche `img`. Sans cette
+         ligne, remplacer la photo changeait la carte mais laissait la galerie
+         sur l'ancienne image : le commerçant croyait sa photo refusée. */
+      pr.imgs = [img].concat((pr.imgs || []).slice(1).filter(function(u){ return u && u !== img; }));
       /* Les réservations en cours sont conservées : modifier un stock ne doit
          pas libérer une quantité déjà promise à une commande en attente. */
       var neuf = {};
