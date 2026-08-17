@@ -6,6 +6,21 @@ son administration, sans qu'aucun réglage ne puisse abîmer le design.
 
 ---
 
+## État au 16 août 2026
+
+| Phase | État |
+|---|---|
+| 0 — Sécuriser l'existant | **fait** — branche `multi-produit`, production intacte sur `main` |
+| 1 — Modèle de variantes | **fait et testé** — 667 unités préservées, cas Crocs complet |
+| 1 bis — Collections | **spécifié ci-dessous**, pas implémenté |
+| 2 à 6 | en attente du design |
+
+Méthode arrêtée avec le propriétaire : on fige la spécification, il réalise le
+design de la boutique et du tableau de bord, puis le câblage est fait sur ce
+design. Aucune structure n'est codée avant de savoir à quoi elle ressemblera.
+
+---
+
 ## Règle qui gouverne tout le plan
 
 > **Le commerçant modifie le contenu, jamais le design.**
@@ -134,6 +149,74 @@ C'est là que ce type de projet échoue d'habitude. Trois partis pris :
 
 ---
 
+## Phase 1 bis — Collections, pour le commerce multi-marques
+
+### Ce que le premier client demande
+
+Un revendeur de chaussures et de claquettes : une quarantaine de modèles,
+une dizaine de marques. Il ne veut pas d'une grille unique de soixante
+produits, mais un site organisé **par marque**, chaque marque ayant son
+espace et son identité. On entre par la marque, pas par le catalogue.
+
+C'est la structure classique du commerce multi-marques. Le catalogue plat
+convient à une marque unique ; pour un revendeur, c'est la marque qui fait
+entrer.
+
+### Deux dimensions, pas une
+
+| Dimension | Rôle | Exemples |
+|---|---|---|
+| **Catégorie** | Type de produit, porte les déclinaisons | Chaussures, Claquettes — toutes deux avec l'axe *Pointure* |
+| **Collection** | Marque ou capsule, porte l'identité | Louis Vuitton, Calvin Klein, Nike… |
+
+Un produit appartient aux deux.
+
+L'axe *Pointure 38-45* se définit **une seule fois** sur la catégorie
+Chaussures. Faire des marques de simples catégories — la solution paresseuse —
+obligerait à ressaisir les pointures pour chacune des dix marques, et à les
+corriger dix fois le jour où une pointure s'ajoute.
+
+### Les collections sont facultatives
+
+Une boutique mono-marque n'en déclare aucune et **ne voit aucun changement** :
+la page d'accueil garde ses cartes de catégories. Dès qu'une collection existe,
+l'accueil bascule sur les collections et les catégories redeviennent ce
+qu'elles sont, un filtre de type de produit.
+
+C'est ce qui permet de vendre le même site aux deux profils.
+
+### Ce que porte une collection
+
+Nom, accroche, image de couverture pleine largeur, description, ordre
+d'affichage. L'identité vient de la photographie et du texte.
+
+**Pas de charte graphique par marque.** C'est ainsi que procèdent les vrais
+multi-marques : chez SSENSE ou END., chaque marque a son univers par l'image,
+l'interface reste la même. Dix chartes qui se battent sur un même site donnent
+un site laid — exactement ce qu'il faut éviter.
+
+Une seule couleur d'accent par collection reste possible, strictement bornée à
+la pastille de la collection et au soulignement de l'onglet actif. À trancher.
+
+### Adresses
+
+`?collection=louis-vuitton` ouvre directement la marque, se partage sur
+WhatsApp et s'indexe. Pour un revendeur, c'est décisif : il enverra le lien de
+la marque, pas celui du site.
+
+### Point à vérifier avec le client
+
+Revendre des chaussures authentiques de grandes marques est légal — c'est
+l'épuisement des droits, tout revendeur multi-marques fonctionne ainsi. Vendre
+des copies en utilisant les noms et logos de ces marques est une contrefaçon,
+et le site qui les affiche y participe.
+
+Cela ne change pas l'architecture : les visuels de marque viennent du
+commerçant, aucun logo n'est embarqué dans le code. Mais la question engage
+aussi celui qui vend l'outil.
+
+---
+
 ## Phase 2 — Médias produits
 
 - **Plusieurs images par produit**, réordonnables, supprimables
@@ -235,3 +318,54 @@ Phase 0 → 1 → 2 → 3 → 5 → 4 → 6
 La phase 4, la plus longue et la moins urgente, passe après le marchandisage :
 un guide des tailles générique se remplit à la main en attendant, alors qu'un
 catalogue mal ordonné se voit tout de suite.
+
+---
+
+## Ce que le design doit couvrir
+
+Liste exhaustive, pour qu'aucun écran ne manque au moment du câblage.
+
+### Boutique
+
+Accueil · page de collection · grille de produits · carte produit · fiche
+produit avec sélecteurs de déclinaisons · panier · formulaire de commande ·
+confirmation de commande · recherche · grille vide · page 404 · les quatre
+pages de contenu (CGV, confidentialité, guide des tailles, durabilité).
+
+### Administration
+
+Connexion · tableau de bord · commandes avec bloc d'édition · produits avec
+formulaire et tableau de stock à deux axes · réglages · collections ·
+catégories et déclinaisons · newsletter · liste d'attente · avis.
+
+### Deux contraintes à tenir en designant
+
+Chaque écran doit exister **en version mobile** — c'est là que se fera
+l'essentiel du trafic.
+
+Chaque bloc rempli par le commerçant doit tenir **avec un texte court comme
+avec un texte long**. Un titre de trois mots et un titre de quinze doivent
+tous deux être présentables, sinon la première saisie casse la mise en page.
+
+---
+
+## Décisions à arrêter avant le câblage
+
+**Catalogue du client**
+
+1. Les claquettes ont-elles les mêmes pointures que les chaussures ?
+2. Un même modèle existe-t-il en plusieurs coloris ?
+3. Répartition des quarante modèles sur les dix marques ?
+4. Photos disponibles : quel fond, quel cadrage ?
+
+**Structure**
+
+5. Deux dimensions séparées, catégorie et collection ? *(recommandé)*
+6. Couleur d'accent par collection : oui ou non ?
+7. L'accueil montre-t-il les marques seules, ou marques et nouveautés ?
+
+**Commerce**
+
+8. Paiement à la livraison et commande WhatsApp maintenus ?
+9. Zone de livraison, frais, délai réel ?
+10. Authenticité des marques revendues ?
