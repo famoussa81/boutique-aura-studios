@@ -64,7 +64,7 @@
       ]
     },
     {
-      "source": "/(catalog|supabase-client|supabase.config).js",
+      "source": "/(catalog|boutique|supabase-client|supabase.config).js",
       "headers": [
         {
           "key": "Cache-Control",

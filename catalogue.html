@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Catalogue — Boutique en ligne · Bamako</title>
+<meta name="description" content="Tout le catalogue : claquettes, mules et sabots, du 39 au 45. Commande par WhatsApp, paiement à la livraison." />
+<link rel="canonical" href="https://aura-studios.vercel.app/catalogue" />
+<link rel="icon" href="logos/favicon.ico" sizes="any" />
+<meta name="theme-color" content="#111111" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="AURA STUDIOS" />
+<meta property="og:title" content="Catalogue — Boutique en ligne · Bamako" />
+<meta property="og:description" content="Tout le catalogue : claquettes, mules et sabots, du 39 au 45. Commande par WhatsApp, paiement à la livraison." />
+<meta property="og:image" content="imagery/cover-0.webp" />
+<meta property="og:url" content="https://aura-studios.vercel.app/catalogue" />
+<meta property="og:locale" content="fr_FR" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Catalogue — Boutique en ligne · Bamako" />
+<meta name="twitter:description" content="Tout le catalogue : claquettes, mules et sabots, du 39 au 45. Commande par WhatsApp, paiement à la livraison." />
+<meta name="twitter:image" content="imagery/cover-0.webp" />
+<link rel="preconnect" href="https://vgzvavlmmqbxtuhanaqj.supabase.co" crossorigin />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap"
+      media="print" onload="this.media='all';this.onload=null" />
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" /></noscript>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "AURA STUDIOS",
+  "description": "Sportswear, streetwear et tenues techniques pour la génération urbaine.",
+  "image": "imagery/cover-0.webp",
+  "address": { "@type": "PostalAddress", "addressLocality": "Bamako", "addressCountry": "ML" },
+  "priceRange": "8000-38000 FCFA",
+  "currenciesAccepted": "XOF",
+  "paymentAccepted": "Espèces à la livraison"
+}
+</script>
+<link rel="stylesheet" href="boutique.css" />
+</head>
+<body data-page="catalogue">
+<main id="page">
+<section class="section" id="produits" data-od-id="products">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-kicker">Toutes les marques</span>
+        <h2 class="sec-title" id="nouveautes" data-od-id="products-title">Le catalogue</h2>
+        <p class="sec-sub">Toutes les paires en stock, toutes marques confondues. Filtrez par type ci-dessous.</p>
+      </div>
+      <div class="tabs" id="filterTabs" data-od-id="filter-tabs" role="tablist">
+        <button class="tab active" data-filter="tous">Tous</button>
+      </div>
+      <div class="pgrid" id="grid" data-od-id="product-grid"></div>
+    </div>
+  </section>
+
+  <section class="news" id="nlSection" data-od-id="newsletter">
+    <div class="wrap">
+      <span class="sec-kicker" id="nlKicker" style="justify-content:center;color:color-mix(in srgb,#ffffff 60%,transparent);margin-bottom:18px"></span>
+      <h2 id="nlTitre"></h2>
+      <p id="nlTexte"></p>
+      <form class="news-form" id="newsForm" data-od-id="newsletter-form" novalidate>
+        <input type="email" id="newsEmail" placeholder="ton@email.com" aria-label="Adresse e-mail" required />
+        <button type="submit" class="btn btn-light" data-od-id="newsletter-submit">S'inscrire</button>
+      </form>
+      <p class="news-note" id="nlNote"></p>
+      <p class="news-success" data-od-id="newsletter-success" role="status" aria-live="polite">Merci ! Bienvenue dans la communauté.</p>
+    </div>
+  </section>
+</main>
+
+<script src="supabase.config.js"></script>
+<script src="supabase-client.js"></script>
+<script src="catalog.js"></script>
+<script src="boutique.js"></script>
+</body>
+</html>

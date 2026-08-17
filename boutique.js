@@ -8,7 +8,7 @@
    pages. Ils sont injectés ici plutôt que recopiés dans chaque fichier : une
    correction se fait à un seul endroit. */
 (function construireCoque(){
-  var avant = '  <a class="skip-link" href="#produits">Aller au catalogue</a>\n' +
+  var avant = '  <a class="skip-link" href="catalogue.html">Aller au catalogue</a>\n' +
     '  <div class="announce" data-od-id="announcement-bar" id="announce"></div>\n' +
     '\n' +
     '  <header class="nav" data-od-id="page-nav">\n' +
@@ -17,10 +17,10 @@
     '        <button class="icon-btn burger" data-od-id="nav-burger" id="navBurger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu">\n' +
     '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>\n' +
     '        </button>\n' +
-    '        <a href="#produits" class="logo" id="logoNav" data-od-id="brand-wordmark" data-goto="tous"></a>\n' +
+    '        <a href="index.html" class="logo" id="logoNav" data-od-id="brand-wordmark"></a>\n' +
     '      </div>\n' +
     '      <nav class="nav-links" id="navLinks" aria-label="Navigation principale">\n' +
-    '        <a href="#produits" data-goto="tous">Nouveautés</a>\n' +
+    '        <a href="catalogue.html" data-goto="tous">Nouveautés</a>\n' +
     '      </nav>\n' +
     '      <div class="nav-right">\n' +
     '        <button class="icon-btn" data-od-id="nav-search" id="navSearch" aria-label="Rechercher">\n' +
@@ -33,14 +33,14 @@
     '      </div>\n' +
     '    </div>\n' +
     '    <div class="mobile-menu" id="mobileMenu" data-od-id="nav-mobile-menu">\n' +
-    '      <a href="#produits" data-goto="tous">Nouveautés</a>\n' +
+    '      <a href="catalogue.html" data-goto="tous">Nouveautés</a>\n' +
     '    </div>\n' +
     '  </header>';
   var apres = '  <footer class="footer" data-od-id="footer">\n' +
     '    <div class="wrap">\n' +
     '      <div class="footer-grid">\n' +
     '        <div class="footer-brand">\n' +
-    '          <a href="#nouveautes" class="logo" id="logoPied" style="font-size:26px" data-goto="tous"></a>\n' +
+    '          <a href="index.html" class="logo" id="logoPied" style="font-size:26px"></a>\n' +
     '          <p>Sportswear, streetwear et tenues techniques pour la génération urbaine. Conçu pour bouger. Basé à Bamako, Mali.</p>\n' +
     '          <div class="social" id="socialRow">\n' +
     '            <a href="#" id="socialIG" target="_blank" rel="noopener" aria-label="Instagram" data-od-id="social-instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>\n' +
@@ -514,17 +514,20 @@
           return '<button class="tab' + (active === c.key ? " active" : "") + '" data-filter="' + esc(c.key) + '">' + esc(c.label) + '</button>';
         }).join("");
     }
+    /* Les liens pointent sur le catalogue, une vraie adresse : ouverture dans
+       un nouvel onglet, partage et indexation fonctionnent. Quand la grille
+       est déjà là, le clic est intercepté et filtre sans recharger. */
     var links = list.map(function(c){
-      return '<a href="#produits" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a>';
+      return '<a href="catalogue.html?cat=' + encodeURIComponent(c.key) + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a>';
     }).join("");
     var nav = $("#navLinks");
-    if (nav) nav.innerHTML = '<a href="#produits" data-goto="tous">Nouveautés</a>' + links;
+    if (nav) nav.innerHTML = '<a href="catalogue.html" data-goto="tous">Tout voir</a>' + links;
     var mob = $("#mobileMenu");
-    if (mob) mob.innerHTML = '<a href="#produits" data-goto="tous">Nouveautés</a>' + links;
+    if (mob) mob.innerHTML = '<a href="catalogue.html" data-goto="tous">Tout voir</a>' + links;
     var foot = $("#footShop");
-    if (foot) foot.innerHTML = '<li><a href="#produits" data-goto="tous">Nouveautés</a></li>' +
+    if (foot) foot.innerHTML = '<li><a href="catalogue.html" data-goto="tous">Tout voir</a></li>' +
       list.map(function(c){
-        return '<li><a href="#produits" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a></li>';
+        return '<li><a href="catalogue.html?cat=' + encodeURIComponent(c.key) + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a></li>';
       }).join("");
     /* Le filtre courant peut viser une categorie supprimee entre-temps. */
     if (curFilter !== "tous" && !CATS[curFilter]) curFilter = "tous";
@@ -545,6 +548,21 @@
 
   /* La section « univers » montre les collections quand il y en a, les
      catégories sinon. Une boutique mono-marque garde sa page à l'identique. */
+  /* Type de page, déclaré par `data-page` sur le `body`. Le même script sert
+     l'accueil, les pages de marque et le catalogue : il n'anime que ce que la
+     page contient réellement, et adapte titre et adresse canonique. */
+  function typePage(){
+    return (document.body && document.body.getAttribute("data-page")) || "accueil";
+  }
+  function poserMeta(nom, valeur){
+    var m = document.head.querySelector('meta[name="' + nom + '"]');
+    if (m) m.setAttribute("content", valeur);
+  }
+  function poserCanonique(url){
+    var l = document.head.querySelector('link[rel="canonical"]');
+    if (l) l.setAttribute("href", url);
+  }
+
   function renderUnivers(){
     var grille = $("#univGrille");
     if (!grille) return;
@@ -555,7 +573,7 @@
       if (kicker) kicker.textContent = "Les marques";
       if (titre) titre.textContent = "Parcourez les marques";
       grille.innerHTML = colls.map(function(c){
-        return '<a href="?collection=' + encodeURIComponent(c.key) + '" class="cat-card" data-coll="' + esc(c.key) + '">' +
+        return '<a href="collection.html?c=' + encodeURIComponent(c.key) + '" class="cat-card">' +
           (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' : '') +
           '<div class="cat-body">' +
             '<span class="cat-label">' + esc(c.label) + '</span>' +
@@ -569,7 +587,7 @@
     if (kicker) kicker.textContent = "Les univers";
     if (titre) titre.textContent = "Explorez les collections";
     grille.innerHTML = catList().map(function(c){
-      return '<a href="#produits" class="cat-card" data-goto="' + esc(c.key) + '">' +
+      return '<a href="catalogue.html?cat=' + encodeURIComponent(c.key) + '" class="cat-card" data-goto="' + esc(c.key) + '">' +
         (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' : '') +
         '<div class="cat-body">' +
           '<span class="cat-label">' + esc(c.label) + '</span>' +
@@ -737,6 +755,18 @@
       renderCollBanniere();
       renderGrid();
     }
+    /* Page de marque : le titre et l'adresse canonique doivent nommer la
+       marque, sinon les onze pages se ressemblent pour un moteur de
+       recherche et se cannibalisent. Une marque inconnue — lien périmé,
+       marque retirée par le commerçant — renvoie au catalogue plutôt que
+       d'afficher une page vide. */
+    if (typePage() === "collection"){
+      var c = curColl ? collById(curColl) : null;
+      if (!c){ location.replace("catalogue.html"); return; }
+      document.title = c.label + " — " + store.settings.shopName + " — Boutique en ligne · Bamako";
+      poserMeta("description", c.desc || ("Les modèles " + c.label + " disponibles à Bamako. Commande par WhatsApp, paiement à la livraison."));
+      poserCanonique(location.origin + location.pathname + "?c=" + encodeURIComponent(c.key));
+    }
     var voulue = catFromUrl();
     if (voulue && CATS[voulue] && curFilter !== voulue){
       curFilter = voulue;
@@ -746,7 +776,13 @@
   }
   function applySettings(){
     var s = store.settings;
-    document.title = s.shopName + " — Boutique en ligne · Bamako";
+    /* Le nom de la boutique est modifiable et le titre le suit. Sur une page
+       de marque, c'est la marque qui prime : le titre y est posé au
+       démarrage, une fois la marque connue. */
+    if (typePage() !== "collection"){
+      document.title = (typePage() === "catalogue" ? "Catalogue — " : "") +
+        s.shopName + " — Boutique en ligne · Bamako";
+    }
     var an = $("#announce"); if (an) an.textContent = s.announcement || "";
     var free = Number(s.freeFrom) || 0;
     var note = $("#cartDeliveryNote");
@@ -807,7 +843,9 @@
   }
   function collFromUrl(){
     try {
-      var m = location.search.match(/[?&]collection=([^&]+)/);
+      /* `?c=` est la forme courte des pages de marque ; `?collection=` est
+         l'ancienne forme, conservée pour les liens déjà partagés. */
+      var m = location.search.match(/[?&]c=([^&]+)/) || location.search.match(/[?&]collection=([^&]+)/);
       return m ? decodeURIComponent(m[1]) : "";
     } catch(e){ return ""; }
   }
@@ -842,8 +880,17 @@
     if (low.length) return '<span class="stock-hint">Plus que ' + esc(low[0]) + '</span>';
     return '<span class="stock-hint">Plus que ' + total + ' pièces</span>';
   }
+  /* Le nom du modèle ne suffit pas à l'identifier : deux marques peuvent
+     vendre une « Claquette Monogramme ». Sans la marque affichée, le client
+     ne sait pas ce qu'il achète et le commerçant ne sait pas quoi expédier.
+     Elle accompagne donc le nom partout : carte, fiche, panier, commande. */
+  function marqueDe(p){
+    var c = p.collection ? collById(p.collection) : null;
+    return c ? c.label : "";
+  }
   function cardHTML(p){
     var name = esc(p.name), img = esc(p.img), alt = esc("Produit " + p.name);
+    var marque = marqueDe(p);
     var out = isOut(p);
     return '<article class="pcard" data-card="' + esc(p.id) + '">' +
       '<div class="pmedia">' +
@@ -852,6 +899,11 @@
         '<button class="wish" data-wish="' + esc(p.id) + '" data-on="' + (isWished(p.id) ? "true" : "false") + '" aria-pressed="' + (isWished(p.id) ? "true" : "false") + '" aria-label="' + (isWished(p.id) ? "Retirer des favoris" : "Ajouter aux favoris") + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.4 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .9-4.5 2.5C10.5 3.9 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.1 3 5.5l7 6Z"/></svg></button>' +
       '</div>' +
       '<div class="pinfo">' +
+        /* Le bandeau est réservé dès qu'une marque existe dans la boutique,
+           même vide sur un produit sans marque : sinon deux cartes voisines
+           n'ont pas la même hauteur. Une boutique sans marques n'a pas de
+           bandeau du tout, donc pas d'espace perdu. */
+        (collList().length ? '<span class="pbrand">' + esc(marque) + '</span>' : '') +
         '<span class="pname">' + name + '</span>' +
         '<span class="pdelivery">' + esc(deliveryLabel()) + '</span>' +
         '<span class="price">' + priceHTML(p) + '</span>' +
@@ -862,12 +914,17 @@
   }
   function renderGrid(){
     var g = $("#grid");
+    if (!g) return;
     var list = store.products.filter(function(p){ return p.active; });
     if (curColl) list = list.filter(function(p){ return p.collection === curColl; });
     list = list.filter(function(p){ return curFilter === "tous" || p.cat === curFilter; });
     if (curQuery){
       var q = curQuery.toLowerCase();
-      list = list.filter(function(p){ return p.name.toLowerCase().indexOf(q) >= 0 || (CATS[p.cat]||"").toLowerCase().indexOf(q) >= 0; });
+      list = list.filter(function(p){ /* La marque est ce qu'on tape en premier dans une boutique
+           multi-marques : « dior » doit trouver les modèles Dior. */
+        return p.name.toLowerCase().indexOf(q) >= 0 ||
+               (CATS[p.cat]||"").toLowerCase().indexOf(q) >= 0 ||
+               marqueDe(p).toLowerCase().indexOf(q) >= 0; });
     }
     if (!list.length){
       g.innerHTML = '<p class="none-msg">Aucun produit ne correspond à votre recherche.<br><button type="button" class="btn btn-primary" style="margin-top:16px" data-reset-filters>Voir tout le catalogue</button></p>';
@@ -886,10 +943,11 @@
      chaque clic de filtre. */
   function syncUrl(cat){
     if (!window.history || !history.replaceState) return;
+    if (!$("#produits")) return;
     var params = [];
-    if (curColl) params.push("collection=" + encodeURIComponent(curColl));
+    if (curColl) params.push("c=" + encodeURIComponent(curColl));
     if (cat && cat !== "tous") params.push("cat=" + encodeURIComponent(cat));
-    var url = location.pathname + (params.length ? "?" + params.join("&") : "") + "#produits";
+    var url = location.pathname + (params.length ? "?" + params.join("&") : "");
     try { history.replaceState(null, "", url); } catch(e){}
   }
   function catFromUrl(){
@@ -903,6 +961,7 @@
     setFilter(cat);
     syncUrl(cat);
     var prod = $("#produits");
+    if (!prod) return;
     window.scrollTo({ top: prod.getBoundingClientRect().top + window.pageYOffset - 70, behavior: "smooth" });
   }
 
@@ -921,7 +980,8 @@
       }).join("") + '</div>';
     }
     $("#pvMedia").innerHTML = media;
-    $("#pvCat").textContent = CATS[p.cat] || p.cat;
+    var marque = marqueDe(p);
+    $("#pvCat").textContent = (marque ? marque + " · " : "") + (CATS[p.cat] || p.cat);
     $("#pvName").textContent = p.name;
     $("#pvPrice").innerHTML = priceHTML(p);
     $("#pvDesc").textContent = p.desc || "";
@@ -1065,7 +1125,8 @@
     for (var i=0;i<cart.length;i++) if (cart[i].id === p.id && cart[i].variant === key){ it = cart[i]; break; }
     if (it) it.qty += qty;
     else cart.push({ id:p.id, variant:key, variantLabel:variantLabel(p, key), qty:qty,
-                     name:p.name, cat:CATS[p.cat]||p.cat, price:p.price, img:p.img });
+                     name:p.name, brand:marqueDe(p), cat:CATS[p.cat]||p.cat,
+                     price:p.price, img:p.img });
     persistCart(); renderCount(); renderCart();
     toast("Ajouté au panier");
     return true;
@@ -1110,7 +1171,9 @@
         '<img src="' + esc(it.img) + '" alt="' + esc(it.name) + '" onerror="this.style.opacity=0" />' +
         '<div>' +
           '<div class="ci-name">' + esc(it.name) + '</div>' +
-          '<div class="ci-cat">' + esc(it.cat) + '</div>' +
+          /* `brand` manque aux paniers enregistrés avant cette version : la
+             ligne retombe alors sur la catégorie seule, sans casser. */
+          '<div class="ci-cat">' + esc(it.brand ? it.brand + " · " + it.cat : it.cat) + '</div>' +
           (it.variantLabel ? '<div class="ci-size">' + esc(it.variantLabel) + '</div>' : "") +
           '<div class="ci-price">' + fmt(it.price) + '</div>' +
           '<div class="ci-qty">' +
@@ -1167,7 +1230,7 @@
       list.map(function(p){
         return '<div class="xsell-item">' +
           '<img src="' + esc(p.img) + '" alt="" width="48" height="60" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' +
-          '<div><div class="xsell-name">' + esc(p.name) + '</div>' +
+          '<div><div class="xsell-name">' + esc(marqueDe(p) ? marqueDe(p) + ' ' + p.name : p.name) + '</div>' +
           '<div class="xsell-price">' + fmt(p.price) + '</div></div>' +
           '<button type="button" class="xsell-add" data-openp="' + esc(p.id) + '">Ajouter</button>' +
         '</div>';
@@ -1273,7 +1336,7 @@
     el.innerHTML =
       '<div class="co-sum">' +
         cart.map(function(it){
-          return '<div class="co-item"><span>' + esc(it.name) + ' <small>' + (it.variantLabel ? esc(it.variantLabel) + ' · ' : '') + it.qty + ' x</small></span><strong>' + fmt(it.price * it.qty) + '</strong></div>';
+          return '<div class="co-item"><span>' + esc(it.brand ? it.brand + ' ' + it.name : it.name) + ' <small>' + (it.variantLabel ? esc(it.variantLabel) + ' · ' : '') + it.qty + ' x</small></span><strong>' + fmt(it.price * it.qty) + '</strong></div>';
         }).join("") +
         '<div class="co-line"><span>Livraison (Bamako)</span><strong>' + (deliveryFor(subtotal()) === 0 ? "Offerte" : fmt(deliveryFor(subtotal()))) + '</strong></div>' +
         '<div class="co-total"><span>Total</span><strong>' + fmt(subtotal() + deliveryFor(subtotal())) + '</strong></div>' +
@@ -1292,7 +1355,8 @@
     L.push("");
     o.items.forEach(function(it){
       var lib = it.variantLabel || it.size || "";
-      L.push("• " + it.qty + " × " + it.name + (lib ? " (" + lib + ")" : "") + " — " + fmt(it.price * it.qty));
+      L.push("• " + it.qty + " × " + (it.brand ? it.brand + " " : "") + it.name +
+             (lib ? " (" + lib + ")" : "") + " — " + fmt(it.price * it.qty));
     });
     L.push("");
     L.push("🧾 *Sous-total :* " + fmt(o.subtotal));
@@ -1358,7 +1422,7 @@
       /* `variantLabel` est figé ici : une commande passée ne relit jamais le
          produit, donc renommer une couleur plus tard ne réécrit pas
          l'historique. `size` reste envoyé pour les commandes déjà en base. */
-      items.push({ id: it.id, name: it.name, variant: it.variant,
+      items.push({ id: it.id, name: it.name, brand: it.brand || "", variant: it.variant,
                    variantLabel: it.variantLabel, size: it.variantLabel,
                    qty: it.qty, price: it.price });
       sub += it.price * it.qty;
@@ -1407,7 +1471,11 @@
   function curSearch(){
     var q = $("#soInput").value.trim().toLowerCase();
     var list = store.products.filter(function(p){ return p.active; });
-    if (q) list = list.filter(function(p){ return p.name.toLowerCase().indexOf(q) >= 0 || (CATS[p.cat]||"").toLowerCase().indexOf(q) >= 0; });
+    if (q) list = list.filter(function(p){ /* La marque est ce qu'on tape en premier dans une boutique
+           multi-marques : « dior » doit trouver les modèles Dior. */
+        return p.name.toLowerCase().indexOf(q) >= 0 ||
+               (CATS[p.cat]||"").toLowerCase().indexOf(q) >= 0 ||
+               marqueDe(p).toLowerCase().indexOf(q) >= 0; });
     var total = list.length;
     list = list.slice(0, 8);
     var el = $("#soRes");
@@ -1415,7 +1483,7 @@
     el.innerHTML = list.map(function(p){
       return '<li><button type="button" data-openp="' + esc(p.id) + '">' +
         '<img class="s-thumb" src="' + esc(p.img) + '" onerror="this.style.opacity=0" alt="" />' +
-        '<span><span class="s-name" style="display:block">' + esc(p.name) + '</span><span class="s-cat">' + esc(CATS[p.cat]||p.cat) + '</span></span>' +
+        '<span><span class="s-name" style="display:block">' + esc(p.name) + '</span><span class="s-cat">' + esc([marqueDe(p), CATS[p.cat]||p.cat].filter(Boolean).join(' · ')) + '</span></span>' +
         '<span class="s-price">' + fmt(p.price) + '</span>' +
       '</button></li>';
     }).join("") +
@@ -1552,18 +1620,14 @@
     if (t.closest("[data-searchall]")){ applySearchToGrid(); return; }
     if (t.closest("[data-reset-filters]")){ setFilter("tous"); return; }
 
-    var coll = t.closest("[data-coll]");
-    if (coll){
-      e.preventDefault();
-      setCollection(coll.getAttribute("data-coll"));
-      var cible = $("#collBanniere");
-      if (cible) window.scrollTo({ top: cible.getBoundingClientRect().top + window.pageYOffset - 70, behavior: "smooth" });
-      return;
-    }
+    /* Les liens de catégorie mènent au catalogue. Si la grille est déjà sur
+       la page, on filtre sur place — plus rapide et la position de lecture
+       est conservée. Sinon on laisse le navigateur suivre le lien : c'est ce
+       qui rend le bouton « retour » et l'ouverture en nouvel onglet fiables. */
     var goto = t.closest("[data-goto]");
-    if (goto){
+    if (goto && $("#produits")){
       e.preventDefault();
-      /* « Voir tout le catalogue » quitte aussi la collection ouverte. */
+      /* « Tout voir » quitte aussi la marque ouverte. */
       if (curColl && goto.getAttribute("data-goto") === "tous") setCollection("");
       goTo(goto.getAttribute("data-goto"));
       return;
@@ -1614,7 +1678,9 @@
      configuré, dans le navigateur sinon (l'admin peut alors l'exporter). */
   var NKEY = "aura_news_v1";
   var newsForm = $("#newsForm");
-  newsForm.addEventListener("submit", function(e){
+  /* Le bloc peut être masqué par le commerçant : sans ce garde-fou, tout le
+     script s'arrête ici et la page devient inerte. */
+  if (newsForm) newsForm.addEventListener("submit", function(e){
     e.preventDefault();
     var input = $("#newsEmail");
     var email = input.value.trim().toLowerCase();

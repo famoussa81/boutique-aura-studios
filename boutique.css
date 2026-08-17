@@ -127,6 +127,12 @@
   /* Deux lignes réservées en permanence : c'est ce qui aligne la grille.
      Sans cela, neuf noms sur vingt passent à la ligne sur téléphone et
      produisent quatre hauteurs de carte différentes. */
+  /* La marque, au-dessus du nom. Une seule ligne coupée à la largeur de la
+     carte : « EA7 Emporio Armani » ne doit pas rajouter une hauteur que les
+     autres cartes n'ont pas. */
+  .pbrand{font-size:11.5px;font-weight:800;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:1.4em}
   .pname{font-size:15px;font-weight:700;line-height:1.3;
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
     overflow:hidden;min-height:2.6em}

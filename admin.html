@@ -1074,7 +1074,10 @@
       var href = waLink("223" + digits(o.phone), msg);
       var items = o.items.map(function(it){
         var lib = it.variantLabel || it.size || "";
-        return it.qty + " × " + it.name + (lib ? " (" + lib + ")" : "");
+        /* La marque distingue deux modèles homonymes : sans elle, le
+           commerçant ne sait pas quelle paire préparer. Absente des
+           commandes passées avant cette version, elle est simplement omise. */
+        return it.qty + " × " + (it.brand ? it.brand + " " : "") + it.name + (lib ? " (" + lib + ")" : "");
       }).join(" · ");
       return '<tr data-row="' + esc(o.ref) + '">' +
         '<td><span class="ref">' + esc(o.ref) + '</span><div style="font-size:11.5px;color:var(--muted);margin-top:3px">' + esc(items) + '</div></td>' +
@@ -1123,7 +1126,7 @@
         o.ref, d, o.client, localPhone(o.phone), o.quartier,
         o.items.map(function(it){
           var lib = it.variantLabel || it.size || "";
-          return it.qty + " x " + it.name + (lib ? " (" + lib + ")" : "");
+          return it.qty + " x " + (it.brand ? it.brand + " " : "") + it.name + (lib ? " (" + lib + ")" : "");
         }).join(" | "),
         o.subtotal, o.delivery, o.total,
         (STATUS[o.status] || {}).label || o.status
@@ -1731,7 +1734,7 @@
   function orderEditHTML(o){
     var items = o.items.map(function(it, i){
       return '<div class="ord-item">' +
-        '<span>' + it.qty + ' × ' + esc(it.name) +
+        '<span>' + it.qty + ' × ' + esc(it.brand ? it.brand + ' ' + it.name : it.name) +
           (it.variantLabel || it.size ? ' <small>(' + esc(it.variantLabel || it.size) + ')</small>' : '') + '</span>' +
         '<span>' + fmt(it.price * it.qty) +
           (o.items.length > 1 ? ' <button class="sbtn danger" data-orditem="' + i + '">Retirer</button>' : '') +

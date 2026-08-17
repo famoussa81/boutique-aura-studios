@@ -129,12 +129,11 @@ create policy "orders_write_auth" on public.orders
 --      quand deux clients commandent le dernier article en même temps) ;
 --   3. la référence vient d'une séquence serveur (pas de collision entre
 --      appareils, donc pas d'écrasement de commande).
-
 create or replace function public.place_order(payload jsonb)
 returns jsonb
 language plpgsql
 security definer
-set search_path = public
+set search_path to 'public'
 as $$
 declare
   v_client   text := trim(coalesce(payload->>'client', ''));
@@ -143,7 +142,12 @@ declare
   v_items    jsonb := coalesce(payload->'items', '[]'::jsonb);
   v_item     jsonb;
   v_prod     jsonb;
-  v_size     text;
+  v_key      text;
+  v_champ    text;
+  v_lib      text;
+  v_suffixe  text;
+  v_brand    text;
+  v_colls    jsonb;
   v_qty      int;
   v_avail    int;
   v_price    int;
@@ -154,7 +158,6 @@ declare
   v_ref      text;
   v_order    jsonb;
 begin
-  -- Validation des coordonnées client
   if length(v_client) < 2 then
     raise exception 'Nom du client invalide' using errcode = '22023';
   end if;
@@ -168,16 +171,18 @@ begin
     raise exception 'Panier vide ou trop volumineux' using errcode = '22023';
   end if;
 
-  -- Vérification du stock et réservation, ligne par ligne
+  -- Les marques vivent dans les réglages. Lues une fois pour la commande
+  -- entière : renommer une marque plus tard ne réécrit pas l'historique.
+  select coalesce(data->'collections', '[]'::jsonb) into v_colls
+    from public.settings where id = 1;
+  v_colls := coalesce(v_colls, '[]'::jsonb);
+
   for v_item in select * from jsonb_array_elements(v_items) loop
-    v_size := v_item->>'size';
-    v_qty  := greatest(0, coalesce((v_item->>'qty')::int, 0));
+    v_qty := greatest(0, coalesce((v_item->>'qty')::int, 0));
     if v_qty = 0 then
       continue;
     end if;
 
-    -- `for update` verrouille la ligne : deux commandes simultanées
-    -- sur le même produit sont traitées l'une après l'autre.
     select data into v_prod
       from public.products
      where id = v_item->>'id'
@@ -190,30 +195,66 @@ begin
       raise exception 'Produit indisponible : %', v_prod->>'name' using errcode = '22023';
     end if;
 
-    v_avail := coalesce((v_prod->'sizes'->v_size->>'s')::int, 0)
-             - coalesce((v_prod->'sizes'->v_size->>'r')::int, 0);
+    -- Le champ de stock dépend du modèle du produit, pas de celui du client :
+    -- `variants` pour le modèle à deux axes, `sizes` pour les produits créés
+    -- avant lui. Les deux cohabitent sans réécriture de la base.
+    v_champ := case when v_prod ? 'variants' then 'variants' else 'sizes' end;
+
+    -- La clé arrive sous « variant » (modèle neuf) ou « size » (ancien).
+    v_key := coalesce(v_item->>'variant', v_item->>'size', '');
+    -- Un produit sans axe porte la clé vide ; un ancien produit à taille
+    -- unique la porte sous « TU ». On rattrape les deux sens.
+    if not (v_prod->v_champ) ? v_key then
+      if v_key = '' and (v_prod->v_champ) ? 'TU' then
+        v_key := 'TU';
+      elsif v_key = 'TU' and (v_prod->v_champ) ? '' then
+        v_key := '';
+      else
+        raise exception 'Variante indisponible : % (%)', v_prod->>'name', v_key
+          using errcode = '22023';
+      end if;
+    end if;
+
+    v_avail := coalesce((v_prod->v_champ->v_key->>'s')::int, 0)
+             - coalesce((v_prod->v_champ->v_key->>'r')::int, 0);
     if v_avail < v_qty then
-      raise exception 'Stock insuffisant : % (taille %)', v_prod->>'name', v_size
+      v_suffixe := case when v_key = '' then '' else ' (' || v_key || ')' end;
+      raise exception 'Stock insuffisant : %', (v_prod->>'name') || v_suffixe
         using errcode = '22023';
     end if;
 
-    -- Le prix vient de la base, jamais du navigateur.
+    -- Marque du produit, résolue par sa clé de collection. Deux marques
+    -- peuvent vendre un modèle du même nom : sans elle, le commerçant ne
+    -- sait pas quoi expédier. Dérivée du produit, jamais du navigateur.
+    v_brand := '';
+    if coalesce(v_prod->>'collection', '') <> '' then
+      select coalesce(c->>'label', '') into v_brand
+        from jsonb_array_elements(v_colls) as c
+       where c->>'key' = v_prod->>'collection'
+       limit 1;
+      v_brand := coalesce(v_brand, '');
+    end if;
+
     v_price := coalesce((v_prod->>'price')::int, 0);
     v_subtotal := v_subtotal + v_price * v_qty;
+    v_lib := coalesce(nullif(v_item->>'variantLabel', ''), nullif(v_key, ''), '');
 
     v_lines := v_lines || jsonb_build_object(
-      'id',    v_prod->>'id',
-      'name',  v_prod->>'name',
-      'size',  v_size,
-      'qty',   v_qty,
-      'price', v_price
+      'id',           v_prod->>'id',
+      'name',         v_prod->>'name',
+      'brand',        v_brand,
+      'variant',      v_key,
+      'variantLabel', v_lib,
+      'size',         v_lib,
+      'qty',          v_qty,
+      'price',        v_price
     );
 
     update public.products
        set data = jsonb_set(
              data,
-             array['sizes', v_size, 'r'],
-             to_jsonb(coalesce((data->'sizes'->v_size->>'r')::int, 0) + v_qty)
+             array[v_champ, v_key, 'r'],
+             to_jsonb(coalesce((data->v_champ->v_key->>'r')::int, 0) + v_qty)
            ),
            updated_at = now()
      where id = v_prod->>'id';
@@ -223,7 +264,6 @@ begin
     raise exception 'Aucune ligne de commande valide' using errcode = '22023';
   end if;
 
-  -- Frais de livraison relus depuis les réglages
   select coalesce((data->>'deliveryFee')::int, 0),
          coalesce((data->>'freeFrom')::int, 0)
     into v_delivery, v_freefrom
@@ -254,7 +294,6 @@ begin
   return v_order;
 end;
 $$;
-
 revoke all on function public.place_order(jsonb) from public;
 grant execute on function public.place_order(jsonb) to anon, authenticated;
 

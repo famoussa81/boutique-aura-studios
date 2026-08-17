@@ -41,7 +41,7 @@
 </script>
 <link rel="stylesheet" href="boutique.css" />
 </head>
-<body>
+<body data-page="accueil">
 
   <main id="page">
 <section class="hero" id="heroSection" data-od-id="hero">
@@ -58,8 +58,8 @@
           <li id="heroExchange">Échange</li>
         </ul>
         <div class="hero-actions">
-          <a href="#nouveautes" class="btn btn-light" data-goto="tous" data-od-id="hero-cta-primary">Découvrir la collection</a>
-          <a href="#produits" class="btn btn-ghost" data-goto="tous" data-od-id="hero-cta-secondary">Voir les nouveautés</a>
+          <a href="#categories" class="btn btn-light" data-od-id="hero-cta-primary">Découvrir la collection</a>
+          <a href="catalogue.html" class="btn btn-ghost" data-od-id="hero-cta-secondary">Voir les nouveautés</a>
         </div>
       </div>
     </div>
@@ -89,38 +89,6 @@
         <h2 class="sec-title" id="univTitre">Explorez les collections</h2>
       </div>
       <div class="cats" id="univGrille"></div>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Entête d'une collection ouverte. Masqué par défaut, il ne coûte rien
-       à une boutique qui n'en déclare aucune. -->
-  <section class="cbanner" id="collBanniere" hidden>
-    <img id="collImage" alt="" width="1600" height="900" decoding="async" hidden />
-    <div class="wrap">
-      <div class="cbanner-content">
-        <span class="sec-kicker" id="collKicker">Collection</span>
-        <h2 id="collTitre"></h2>
-        <p id="collTexte"></p>
-        <div class="cbanner-actions">
-          <a href="#produits" class="btn btn-light" data-goto="tous">Voir tout le catalogue</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="produits" data-od-id="products" style="padding-top:0">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-kicker">Les essentiels</span>
-        <h2 class="sec-title" id="nouveautes" data-od-id="products-title">Nouveautés</h2>
-        <p class="sec-sub">Des pièces pensées pour le quotidien urbain : coupes oversize, matières techniques et détails contrastés. Livraison à Bamako.</p>
-      </div>
-      <div class="tabs" id="filterTabs" data-od-id="filter-tabs" role="tablist">
-        <button class="tab active" data-filter="tous">Tous</button>
-      </div>
-      <div class="pgrid" id="grid" data-od-id="product-grid"></div>
     </div>
   </section>
 
@@ -132,8 +100,8 @@
         <h2 id="bannerTitre"></h2>
         <p id="bannerTexte"></p>
         <div class="cbanner-actions">
-          <a href="#nouveautes" class="btn btn-light" data-goto="tous" data-od-id="collection-cta">Voir la collection</a>
-          <a href="#nouveautes" class="btn btn-ghost" data-goto="accessoires" data-od-id="collection-cta-alt">Les accessoires</a>
+          <a href="catalogue.html" class="btn btn-light" data-od-id="collection-cta">Voir la collection</a>
+          <a href="catalogue.html?cat=mules" class="btn btn-ghost" data-od-id="collection-cta-alt">Les accessoires</a>
         </div>
       </div>
     </div>
