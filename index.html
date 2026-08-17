@@ -591,7 +591,7 @@
         <button class="icon-btn burger" data-od-id="nav-burger" id="navBurger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
         </button>
-        <a href="#produits" class="logo" data-od-id="brand-wordmark" data-goto="tous">AURA<span>STUDIOS</span></a>
+        <a href="#produits" class="logo" id="logoNav" data-od-id="brand-wordmark" data-goto="tous"></a>
       </div>
       <nav class="nav-links" id="navLinks" aria-label="Navigation principale">
         <a href="#produits" data-goto="tous">Nouveautés</a>
@@ -765,7 +765,7 @@
     <div class="wrap">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="#nouveautes" class="logo" style="font-size:26px" data-goto="tous">AURA<span style="font-size:11px">STUDIOS</span></a>
+          <a href="#nouveautes" class="logo" id="logoPied" style="font-size:26px" data-goto="tous"></a>
           <p>Sportswear, streetwear et tenues techniques pour la génération urbaine. Conçu pour bouger. Basé à Bamako, Mali.</p>
           <div class="social" id="socialRow">
             <a href="#" id="socialIG" target="_blank" rel="noopener" aria-label="Instagram" data-od-id="social-instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
@@ -1338,6 +1338,20 @@
       store.settings.shopName + " — Boutique en ligne · Bamako";
   }
 
+  /* Le logo suit le nom de la boutique. Coupé au premier espace : la première
+     partie en gras, le reste en petit, comme le dessin d'origine. */
+  function renderLogo(){
+    var nom = (store.settings.shopName || "").trim();
+    if (!nom) return;
+    var i = nom.indexOf(" ");
+    var tete = i > 0 ? nom.slice(0, i) : nom;
+    var reste = i > 0 ? nom.slice(i + 1) : "";
+    var nav = $("#logoNav");
+    if (nav) nav.innerHTML = esc(tete) + (reste ? '<span>' + esc(reste) + '</span>' : '');
+    var pied = $("#logoPied");
+    if (pied) pied.innerHTML = esc(tete) + (reste ? '<span style="font-size:11px">' + esc(reste) + '</span>' : '');
+  }
+
   function applySellingCopy(){
     var s = store.settings;
     var free = Number(s.freeFrom) || 0;
@@ -1354,6 +1368,7 @@
     var hd = $("#heroDelay"); if (hd) hd.textContent = libelle;
     var wa = $("#waFloat");
     if (wa) wa.href = waLink(s.whatsapp, "Bonjour " + (s.shopName || "AURA STUDIOS") + " 👋 J'ai une question sur un article.");
+    renderLogo();
     renderReviews();
     renderUnivers();
     renderCategories();

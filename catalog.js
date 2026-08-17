@@ -15,35 +15,80 @@
 
   function products() {
     return [
-      { id: "hoodie-noir", name: "Hoodie Oversized « Noir Absolu »", cat: "hoodies", price: 25000, oldPrice: 0, badge: "Nouveau", img: "assets/hoodie-noir.webp", imgs: ["assets/hoodie-noir.webp"], desc: "Coupe oversize, tissu molletonné premium, capuche doublée et cordon contrasté. La pièce signature de la saison.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(6), "M": v(9), "L": v(12), "XL": v(7), "XXL": v(4) }, active: true, stockout: false },
-      { id: "hoodie-blanc", name: "Hoodie Studio Blanc", cat: "hoodies", price: 25000, oldPrice: 0, badge: "Top vente", img: "assets/hoodie-blanc.webp", imgs: ["assets/hoodie-blanc.webp"], desc: "Édition studio en molleton lourd, silhouette épurée et finitions contrastées. Polyvalence totale.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(5), "M": v(8), "L": v(10), "XL": v(6), "XXL": v(3) }, active: true, stockout: false },
-      { id: "hoodie-tech", name: "Hoodie Aura Tech", cat: "hoodies", price: 28000, oldPrice: 0, badge: "", img: "assets/hoodie-tech.webp", imgs: ["assets/hoodie-tech.webp"], desc: "Version technique hydrofuge : zip intégral, coutures scellées et poches étanches.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(4), "M": v(6), "L": v(8), "XL": v(4), "XXL": v(2) }, active: true, stockout: false },
-      { id: "hoodie-urbain", name: "Hoodie Urban Flow", cat: "hoodies", price: 27000, oldPrice: 0, badge: "Nouveau", img: "assets/hoodie-urbain.webp", imgs: ["assets/hoodie-urbain.webp"], desc: "Silhouette streetwear engagée : capuche classique, poche kangourou et grammage lourd.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(6), "M": v(8), "L": v(11), "XL": v(6), "XXL": v(3) }, active: true, stockout: false },
-      { id: "hoodie-trench", name: "Hoodie Trench Noir", cat: "hoodies", price: 30000, oldPrice: 0, badge: "", img: "assets/hoodie-trench.webp", imgs: ["assets/hoodie-trench.webp"], desc: "Trench technique oversize : patte boutonnée, tissu coupe-vent et finitions contrastées.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(4), "M": v(6), "L": v(8), "XL": v(5), "XXL": v(2) }, active: true, stockout: false },
-      { id: "tee-graphique", name: "T-shirt Graphique AURA", cat: "tees", price: 15000, oldPrice: 0, badge: "Top vente", img: "assets/tee-graphique.webp", imgs: ["assets/tee-graphique.webp"], desc: "Coton premium 220 g/m², graphisme AURA imprimé, coupe régulière droite.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(8), "M": v(12), "L": v(14), "XL": v(8), "XXL": v(5) }, active: true, stockout: false },
-      { id: "tee-core", name: "T-shirt Essential Core", cat: "tees", price: 12000, oldPrice: 15000, badge: "-20 %", img: "assets/tee-core.webp", imgs: ["assets/tee-core.webp"], desc: "Le basique absolu du dressing urbain : coton épais, col renforcé, tombé impeccable.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(10), "M": v(15), "L": v(16), "XL": v(9), "XXL": v(5) }, active: true, stockout: false },
-      { id: "tee-oversized", name: "T-shirt Oversized Blanc", cat: "tees", price: 14000, oldPrice: 0, badge: "Top vente", img: "assets/tee-oversized.webp", imgs: ["assets/tee-oversized.webp"], desc: "Coupe oversized confortable, manches tombantes et coton épais au toucher premium.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(7), "M": v(10), "L": v(12), "XL": v(7), "XXL": v(4) }, active: true, stockout: false },
-      { id: "tee-print", name: "T-shirt Print Studio", cat: "tees", price: 16000, oldPrice: 0, badge: "Nouveau", img: "assets/tee-print.webp", imgs: ["assets/tee-print.webp"], desc: "Sérigraphie éditoriale en face avant et arrière, coton peigné à séchage rapide.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(6), "M": v(9), "L": v(11), "XL": v(6), "XXL": v(3) }, active: true, stockout: false },
-      { id: "cargo-technique", name: "Pantalon Cargo Technique", cat: "pants", price: 36000, oldPrice: 45000, badge: "-20 %", img: "assets/cargo-technique.webp", imgs: ["assets/cargo-technique.webp"], desc: "Série technique : tissu anti-déchirure, coupe ample, poches cargo zippées et cordon cheville.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(6), "M": v(9), "L": v(10), "XL": v(5), "XXL": v(3) }, active: true, stockout: false },
-      { id: "cargo-noir", name: "Cargo Noir Slim", cat: "pants", price: 34000, oldPrice: 42000, badge: "-20 %", img: "assets/cargo-noir.webp", imgs: ["assets/cargo-noir.webp"], desc: "Cargo ajusté aux chevilles, toile épaisse et six poches utilitaires.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(6), "M": v(8), "L": v(10), "XL": v(5), "XXL": v(3) }, active: true, stockout: false },
-      { id: "cargo-beige", name: "Pantalon Cargo Beige", cat: "pants", price: 38000, oldPrice: 0, badge: "Nouveau", img: "assets/cargo-beige.webp", imgs: ["assets/cargo-beige.webp"], desc: "Tonalité sable, coupe droite et poches cargo volumineuses : le cargo color-block de la saison.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(5), "M": v(8), "L": v(9), "XL": v(5), "XXL": v(2) }, active: true, stockout: false },
-      { id: "casquette-aura", name: "Casquette Ajustée AURA", cat: "accessoires", price: 10000, oldPrice: 0, badge: "Nouveau", img: "assets/casquette.webp", imgs: ["assets/casquette.webp"], desc: "Coton gabardine, broderie AURA, visière courbée et fermeture ajustable.", axes: [], variants: { "": v(20) }, active: true, stockout: false },
-      { id: "bonnet-aura", name: "Bonnet AURA", cat: "accessoires", price: 8000, oldPrice: 0, badge: "Nouveau", img: "assets/bonnet.webp", imgs: ["assets/bonnet.webp"], desc: "Bonnet en maille souple au toucher doux, liseré brodé AURA : l'accessoire signature de l'hiver urbain.", axes: [], variants: { "": v(18) }, active: true, stockout: false },
-      { id: "ensemble-blanc", name: "Ensemble Molleton Blanc", cat: "hoodies", price: 42000, oldPrice: 0, badge: "Nouveau", img: "assets/ensemble-blanc.webp", imgs: ["assets/ensemble-blanc.webp"], desc: "Hoodie et jogger assortis en molleton lourd. Vendu en ensemble : la pièce la plus simple à porter du vestiaire, du matin au soir.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(4), "M": v(7), "L": v(8), "XL": v(5), "XXL": v(2) }, active: true, stockout: false },
-      { id: "hoodie-capuche", name: "Hoodie Capuche Profonde", cat: "hoodies", price: 26000, oldPrice: 0, badge: "", img: "assets/hoodie-capuche.webp", imgs: ["assets/hoodie-capuche.webp"], desc: "Capuche doublée à tombé profond, molleton gratté à l'intérieur. Il garde sa forme lavage après lavage.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(5), "M": v(9), "L": v(10), "XL": v(6), "XXL": v(3) }, active: true, stockout: false },
-      { id: "tee-poche", name: "T-shirt Poche Délavé", cat: "tees", price: 13000, oldPrice: 0, badge: "Nouveau", img: "assets/tee-poche.webp", imgs: ["assets/tee-poche.webp"], desc: "Coton délavé pièce par pièce : la couleur est déjà stabilisée, elle ne partira pas au lavage. Poche poitrine renforcée.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(7), "M": v(11), "L": v(12), "XL": v(7), "XXL": v(4) }, active: true, stockout: false },
-      { id: "tee-essentiel", name: "T-shirt Essentiel Blanc", cat: "tees", price: 12000, oldPrice: 0, badge: "", img: "assets/tee-essentiel.webp", imgs: ["assets/tee-essentiel.webp"], desc: "Coupe droite classique, col côtelé qui ne se détend pas. Coton 190 g/m² : il reste opaque, même en blanc.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(9), "M": v(14), "L": v(15), "XL": v(8), "XXL": v(5) }, active: true, stockout: false },
-      { id: "cargo-ivoire", name: "Cargo Ivoire", cat: "pants", price: 35000, oldPrice: 0, badge: "Nouveau", img: "assets/cargo-ivoire.webp", imgs: ["assets/cargo-ivoire.webp"], desc: "Toile de coton ivoire, coupe droite et six poches. La pièce claire qui va avec tout le reste du vestiaire.", axes: [{ name: "Taille", values: ["S", "M", "L", "XL", "XXL"] }], variants: { "S": v(5), "M": v(8), "L": v(9), "XL": v(5), "XXL": v(3) }, active: true, stockout: false },
-      { id: "casquette-trucker", name: "Casquette Trucker Bicolore", cat: "accessoires", price: 9000, oldPrice: 0, badge: "", img: "assets/casquette-trucker.webp", imgs: ["assets/casquette-trucker.webp"], desc: "Devant coton blanc, filet noir à l'arrière : elle ventile vraiment sous la chaleur. Fermeture à pression réglable.", axes: [], variants: { "": v(24) }, active: true, stockout: false }
+      { id: "ck-pool", name: "Claquette Pool Logo", cat: "claquettes", collection: "calvin-klein", price: 22000, oldPrice: 0,
+        badge: "Top vente", img: "assets/cl-noir.webp", imgs: ["assets/cl-noir.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Noir", "Blanc", "Beige", "Bleu"] }],
+        variants: { "39::Noir": v(3), "40::Noir": v(5), "41::Noir": v(6), "42::Noir": v(6), "43::Noir": v(5), "44::Noir": v(4), "45::Noir": v(2), "39::Blanc": v(3), "40::Blanc": v(5), "41::Blanc": v(6), "42::Blanc": v(6), "43::Blanc": v(5), "44::Blanc": v(4), "45::Blanc": v(2), "39::Beige": v(3), "40::Beige": v(5), "41::Beige": v(6), "42::Beige": v(6), "43::Beige": v(5), "44::Beige": v(4), "45::Beige": v(2), "39::Bleu": v(3), "40::Bleu": v(5), "41::Bleu": v(6), "42::Bleu": v(6), "43::Bleu": v(5), "44::Bleu": v(4), "45::Bleu": v(2) }, active: true, stockout: false },
+      { id: "lv-mule", name: "Mule Cuir Monogram", cat: "mules", collection: "louis-vuitton", price: 45000, oldPrice: 0,
+        badge: "", img: "assets/cl-cuir.webp", imgs: ["assets/cl-cuir.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Noir", "Blanc cassé"] }],
+        variants: { "39::Noir": v(2), "40::Noir": v(4), "41::Noir": v(5), "42::Noir": v(5), "43::Noir": v(4), "44::Noir": v(3), "45::Noir": v(1), "39::Blanc cassé": v(2), "40::Blanc cassé": v(4), "41::Blanc cassé": v(5), "42::Blanc cassé": v(5), "43::Blanc cassé": v(4), "44::Blanc cassé": v(3), "45::Blanc cassé": v(1) }, active: true, stockout: false },
+      { id: "lv-bande", name: "Claquette Bande LV", cat: "claquettes", collection: "louis-vuitton", price: 42000, oldPrice: 0,
+        badge: "Top vente", img: "assets/cl-bleu.webp", imgs: ["assets/cl-bleu.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Bleu ciel", "Noir", "Marron", "Bleu marine"] }],
+        variants: { "39::Bleu ciel": v(1), "40::Bleu ciel": v(3), "41::Bleu ciel": v(4), "42::Bleu ciel": v(4), "43::Bleu ciel": v(3), "44::Bleu ciel": v(2), "45::Bleu ciel": v(0), "39::Noir": v(1), "40::Noir": v(3), "41::Noir": v(4), "42::Noir": v(4), "43::Noir": v(3), "44::Noir": v(2), "45::Noir": v(0), "39::Marron": v(1), "40::Marron": v(3), "41::Marron": v(4), "42::Marron": v(4), "43::Marron": v(3), "44::Marron": v(2), "45::Marron": v(0), "39::Bleu marine": v(1), "40::Bleu marine": v(3), "41::Bleu marine": v(4), "42::Bleu marine": v(4), "43::Bleu marine": v(3), "44::Bleu marine": v(2), "45::Bleu marine": v(0) }, active: true, stockout: false },
+      { id: "bb-check", name: "Claquette Vintage Check", cat: "claquettes", collection: "burberry", price: 38000, oldPrice: 0,
+        badge: "", img: "assets/cl-pile.webp", imgs: ["assets/cl-pile.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Vert", "Beige", "Bleu ciel"] }],
+        variants: { "39::Vert": v(3), "40::Vert": v(5), "41::Vert": v(6), "42::Vert": v(6), "43::Vert": v(5), "44::Vert": v(4), "45::Vert": v(2), "39::Beige": v(3), "40::Beige": v(5), "41::Beige": v(6), "42::Beige": v(6), "43::Beige": v(5), "44::Beige": v(4), "45::Beige": v(2), "39::Bleu ciel": v(3), "40::Bleu ciel": v(5), "41::Bleu ciel": v(6), "42::Bleu ciel": v(6), "43::Bleu ciel": v(5), "44::Bleu ciel": v(4), "45::Bleu ciel": v(2) }, active: true, stockout: false },
+      { id: "gv-paris", name: "Paris Logo Slide", cat: "claquettes", collection: "givenchy", price: 40000, oldPrice: 0,
+        badge: "Nouveau", img: "assets/cl-noir.webp", imgs: ["assets/cl-noir.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Blanc", "Noir", "Bleu", "Tan"] }],
+        variants: { "39::Blanc": v(2), "40::Blanc": v(4), "41::Blanc": v(5), "42::Blanc": v(5), "43::Blanc": v(4), "44::Blanc": v(3), "45::Blanc": v(1), "39::Noir": v(2), "40::Noir": v(4), "41::Noir": v(5), "42::Noir": v(5), "43::Noir": v(4), "44::Noir": v(3), "45::Noir": v(1), "39::Bleu": v(2), "40::Bleu": v(4), "41::Bleu": v(5), "42::Bleu": v(5), "43::Bleu": v(4), "44::Bleu": v(3), "45::Bleu": v(1), "39::Tan": v(2), "40::Tan": v(4), "41::Tan": v(5), "42::Tan": v(5), "43::Tan": v(4), "44::Tan": v(3), "45::Tan": v(1) }, active: true, stockout: false },
+      { id: "dr-oblique", name: "Mule Oblique", cat: "mules", collection: "dior", price: 48000, oldPrice: 0,
+        badge: "", img: "assets/cl-interieur.webp", imgs: ["assets/cl-interieur.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Noir"] }],
+        variants: { "39::Noir": v(1), "40::Noir": v(3), "41::Noir": v(4), "42::Noir": v(4), "43::Noir": v(3), "44::Noir": v(2), "45::Noir": v(0) }, active: true, stockout: false },
+      { id: "bl-mold", name: "Sabot Moulé", cat: "mules", collection: "balenciaga", price: 44000, oldPrice: 0,
+        badge: "Nouveau", img: "assets/cl-beige.webp", imgs: ["assets/cl-beige.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Noir"] }],
+        variants: { "39::Noir": v(3), "40::Noir": v(5), "41::Noir": v(6), "42::Noir": v(6), "43::Noir": v(5), "44::Noir": v(4), "45::Noir": v(2) }, active: true, stockout: false },
+      { id: "hg-match", name: "Match Slide", cat: "claquettes", collection: "hugo", price: 24000, oldPrice: 0,
+        badge: "", img: "assets/cl-rouge.webp", imgs: ["assets/cl-rouge.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Noir et rouge"] }],
+        variants: { "39::Noir et rouge": v(2), "40::Noir et rouge": v(4), "41::Noir et rouge": v(5), "42::Noir et rouge": v(5), "43::Noir et rouge": v(4), "44::Noir et rouge": v(3), "45::Noir et rouge": v(1) }, active: true, stockout: false },
+      { id: "hg-mono", name: "Claquette Monogramme", cat: "claquettes", collection: "hugo", price: 23000, oldPrice: 0,
+        badge: "", img: "assets/cl-noir.webp", imgs: ["assets/cl-noir.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Noir", "Blanc et bleu", "Bleu et blanc"] }],
+        variants: { "39::Noir": v(1), "40::Noir": v(3), "41::Noir": v(4), "42::Noir": v(4), "43::Noir": v(3), "44::Noir": v(2), "45::Noir": v(0), "39::Blanc et bleu": v(1), "40::Blanc et bleu": v(3), "41::Blanc et bleu": v(4), "42::Blanc et bleu": v(4), "43::Blanc et bleu": v(3), "44::Blanc et bleu": v(2), "45::Blanc et bleu": v(0), "39::Bleu et blanc": v(1), "40::Bleu et blanc": v(3), "41::Bleu et blanc": v(4), "42::Bleu et blanc": v(4), "43::Bleu et blanc": v(3), "44::Bleu et blanc": v(2), "45::Bleu et blanc": v(0) }, active: true, stockout: false },
+      { id: "tj-flag", name: "Claquette Flag", cat: "claquettes", collection: "tommy-jeans", price: 20000, oldPrice: 0,
+        badge: "", img: "assets/cl-bleu.webp", imgs: ["assets/cl-bleu.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Tricolore"] }],
+        variants: { "39::Tricolore": v(3), "40::Tricolore": v(5), "41::Tricolore": v(6), "42::Tricolore": v(6), "43::Tricolore": v(5), "44::Tricolore": v(4), "45::Tricolore": v(2) }, active: true, stockout: false },
+      { id: "mc-mono", name: "Claquette Monogramme", cat: "claquettes", collection: "moncler", price: 35000, oldPrice: 0,
+        badge: "", img: "assets/cl-bleu.webp", imgs: ["assets/cl-bleu.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Bleu et blanc"] }],
+        variants: { "39::Bleu et blanc": v(2), "40::Bleu et blanc": v(4), "41::Bleu et blanc": v(5), "42::Bleu et blanc": v(5), "43::Bleu et blanc": v(4), "44::Bleu et blanc": v(3), "45::Bleu et blanc": v(1) }, active: true, stockout: false },
+      { id: "ea-logo", name: "Claquette Logo", cat: "claquettes", collection: "ea7", price: 21000, oldPrice: 0,
+        badge: "", img: "assets/cl-beige.webp", imgs: ["assets/cl-beige.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Noir", "Beige"] }],
+        variants: { "39::Noir": v(1), "40::Noir": v(3), "41::Noir": v(4), "42::Noir": v(4), "43::Noir": v(3), "44::Noir": v(2), "45::Noir": v(0), "39::Beige": v(1), "40::Beige": v(3), "41::Beige": v(4), "42::Beige": v(4), "43::Beige": v(3), "44::Beige": v(2), "45::Beige": v(0) }, active: true, stockout: false },
+      { id: "as-pool", name: "Claquette Piscine", cat: "claquettes", collection: "allsaints", price: 20000, oldPrice: 0,
+        badge: "", img: "assets/cl-bleu.webp", imgs: ["assets/cl-bleu.webp"],
+        desc: "Semelle moulée à mémoire, bride renforcée. Se porte pieds nus toute la journée.",
+        axes: [{ name: "Pointure", values: ["39", "40", "41", "42", "43", "44", "45"] }, { name: "Coloris", values: ["Bleu marine"] }],
+        variants: { "39::Bleu marine": v(3), "40::Bleu marine": v(5), "41::Bleu marine": v(6), "42::Bleu marine": v(6), "43::Bleu marine": v(5), "44::Bleu marine": v(4), "45::Bleu marine": v(2) }, active: true, stockout: false }
     ];
   }
 
   function settings() {
     return {
       whatsapp: "22376759515",
-      shopName: "AURA STUDIOS",
+      shopName: "SNEAK BAMAKO",
       deliveryFee: 1500,
-      freeFrom: 35000,
+      freeFrom: 40000,
       /* Délai de livraison annoncé. Modifiable depuis l'administration :
          il alimente à la fois les cartes produit, le bandeau de réassurance
          et les mentions du hero, pour qu'ils ne puissent jamais diverger.
@@ -59,17 +104,38 @@
       /* Categories de la boutique. Modifiables depuis l'administration :
          ajouter « Vestes » ou « Chaussures » ne demande aucune ligne de code. */
       categories: [
-        { key: "hoodies",     label: "Hoodies", cover: "assets/cat-hoodies.webp", axes: [{ name: "Taille", values: [{ v: "S" }, { v: "M" }, { v: "L" }, { v: "XL" }, { v: "XXL" }] }] },
-        { key: "tees",        label: "T-shirts", cover: "assets/cat-tees.webp", axes: [{ name: "Taille", values: [{ v: "S" }, { v: "M" }, { v: "L" }, { v: "XL" }, { v: "XXL" }] }] },
-        { key: "pants",       label: "Cargos", cover: "assets/cat-cargos.webp", axes: [{ name: "Taille", values: [{ v: "S" }, { v: "M" }, { v: "L" }, { v: "XL" }, { v: "XXL" }] }] },
-        { key: "accessoires", label: "Accessoires", cover: "assets/cat-accessoires.webp", axes: [] }
+        { key: "claquettes", label: "Claquettes", cover: "assets/cat-claquettes.webp", axes: [{ name: "Pointure", values: [{ v: "39" }, { v: "40" }, { v: "41" }, { v: "42" }, { v: "43" }, { v: "44" }, { v: "45" }] }] },
+        { key: "mules", label: "Mules & sabots", cover: "assets/cat-mules.webp", axes: [{ name: "Pointure", values: [{ v: "39" }, { v: "40" }, { v: "41" }, { v: "42" }, { v: "43" }, { v: "44" }, { v: "45" }] }] }
       ],
       /* Collections : marques, capsules, univers. Vides par défaut — une
          boutique mono-marque n'en a pas besoin et n'en voit aucune trace.
          Chacune porte son identité : couverture, accroche, description, et
          une couleur d'accent bornée à trois usages décoratifs. */
-      collections: [],
-      announcement: "Livraison gratuite à Bamako dès 35 000 FCFA d'achat",
+      collections: [
+        { key: "calvin-klein", label: "Calvin Klein", tagline: "Minimalisme américain", accent: "#1f2933", cover: "assets/marque-1.webp",
+          desc: "Le logo embossé sur bride large. Une claquette qui se reconnaît de loin." },
+        { key: "louis-vuitton", label: "Louis Vuitton", tagline: "Monogram", accent: "#6b4f2a", cover: "assets/marque-2.webp",
+          desc: "Cuir embossé et bande signature. La pièce que tout le monde identifie." },
+        { key: "burberry", label: "Burberry", tagline: "Vintage Check", accent: "#7d6b4f", cover: "assets/marque-3.webp",
+          desc: "Le tartan maison, décliné en trois teintes." },
+        { key: "givenchy", label: "Givenchy", tagline: "Paris", accent: "#2b2b2b", cover: "assets/marque-4.webp",
+          desc: "L'inscription signature centrée sur la bride. Sobre et immédiat." },
+        { key: "dior", label: "Dior", tagline: "Oblique", accent: "#3a3a3a", cover: "assets/marque-5.webp",
+          desc: "Toile jacquard au motif maison. La mule d'intérieur qui se porte dehors." },
+        { key: "balenciaga", label: "Balenciaga", tagline: "Mold", accent: "#111111", cover: "assets/marque-6.webp",
+          desc: "Caoutchouc moulé d'une seule pièce. Une silhouette qu'on ne confond pas." },
+        { key: "hugo", label: "HUGO", tagline: "Bande rouge", accent: "#a3262b", cover: "assets/marque-7.webp",
+          desc: "La bande contrastée et le monogramme répété. Sport et net." },
+        { key: "tommy-jeans", label: "Tommy Jeans", tagline: "Flag", accent: "#1c3a6e", cover: "assets/marque-8.webp",
+          desc: "Le drapeau tricolore en grand sur la bride." },
+        { key: "moncler", label: "Moncler", tagline: "Monogramme", accent: "#1d4f8b", cover: "assets/marque-9.webp",
+          desc: "Imprimé graphique intégral, bleu et blanc." },
+        { key: "ea7", label: "EA7 Emporio Armani", tagline: "Sport", accent: "#4a4a4a", cover: "assets/marque-10.webp",
+          desc: "Texture technique et logo large. Pensée pour l'été." },
+        { key: "allsaints", label: "AllSaints", tagline: "Minimal", accent: "#22303c", cover: "assets/marque-11.webp",
+          desc: "Bleu marine et logo blanc. Rien de plus." }
+      ],
+      announcement: "Livraison gratuite à Bamako dès 40 000 FCFA d'achat",
       instagram: "",
       tiktok: "",
       youtube: ""
@@ -89,10 +155,8 @@
     /* Categories par defaut. Elles ne sont qu'une graine : la liste
        effective vit dans les reglages et se modifie depuis l'administration. */
     CATEGORIES: [
-      { key: "hoodies",     label: "Hoodies", axes: [{ name: "Taille", values: [{ v: "S" }, { v: "M" }, { v: "L" }, { v: "XL" }, { v: "XXL" }] }] },
-      { key: "tees",        label: "T-shirts", axes: [{ name: "Taille", values: [{ v: "S" }, { v: "M" }, { v: "L" }, { v: "XL" }, { v: "XXL" }] }] },
-      { key: "pants",       label: "Cargos", axes: [{ name: "Taille", values: [{ v: "S" }, { v: "M" }, { v: "L" }, { v: "XL" }, { v: "XXL" }] }] },
-      { key: "accessoires", label: "Accessoires", axes: [] }
+        { key: "claquettes", label: "Claquettes", cover: "assets/cat-claquettes.webp", axes: [{ name: "Pointure", values: [{ v: "39" }, { v: "40" }, { v: "41" }, { v: "42" }, { v: "43" }, { v: "44" }, { v: "45" }] }] },
+        { key: "mules", label: "Mules & sabots", cover: "assets/cat-mules.webp", axes: [{ name: "Pointure", values: [{ v: "39" }, { v: "40" }, { v: "41" }, { v: "42" }, { v: "43" }, { v: "44" }, { v: "45" }] }] }
     ]
   };
 })();
