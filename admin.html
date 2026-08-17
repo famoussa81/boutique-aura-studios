@@ -248,6 +248,7 @@
         <button class="tab active" data-view="dashboard">Tableau de bord</button>
         <button class="tab" data-view="orders">Commandes</button>
         <button class="tab" data-view="products">Produits</button>
+        <button class="tab" data-view="catalogue">Catégories &amp; marques</button>
         <button class="tab" data-view="settings">Réglages</button>
         <button class="tab" data-view="contenu">Contenu du site</button>
         <button class="tab" data-view="news">Newsletter</button>
@@ -479,6 +480,39 @@
       <div id="contenuBlocs"></div>
     </section>
 
+    <section class="view" id="view-catalogue">
+      <div class="view-head">
+        <div><h1>Catégories &amp; marques</h1><p>Comment votre marchandise est rangée. Une <b>catégorie</b> dit ce qu'est un produit — elle porte ses pointures et ses coloris. Une <b>marque</b> dit de qui il est — elle lui donne sa page sur le site.</p></div>
+      </div>
+      <div class="card" style="max-width:640px">
+        <h2>Catégories de la boutique</h2>
+        <p class="hint" style="margin-bottom:16px">Elles alimentent les onglets, la navigation et le pied de page. Une catégorie utilisée par des produits ne peut pas être supprimée.</p>
+        <div id="catList"></div>
+        <div class="or">Ajouter</div>
+        <form id="catForm" novalidate>
+          <div class="cat-row">
+            <input type="text" id="catLabel" placeholder="Nom affiché (ex. Vestes)" />
+            <input type="text" id="catKey" placeholder="Identifiant (ex. vestes)" />
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card" style="max-width:640px;margin-top:20px">
+        <h2>Marques et collections</h2>
+        <p class="hint" style="margin-bottom:16px">Une collection regroupe des produits sous une même identité : une marque que vous revendez, une capsule saisonnière. Dès qu'il en existe une, la page d'accueil les met en avant à la place des catégories. Laissez la liste vide si vous ne vendez qu'une seule marque.</p>
+        <div id="collList"></div>
+        <div class="or">Ajouter</div>
+        <form id="collForm" novalidate>
+          <div class="cat-row">
+            <input type="text" id="collLabel" placeholder="Nom affiché (ex. Louis Vuitton)" />
+            <input type="text" id="collKey" placeholder="Identifiant (ex. louis-vuitton)" />
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
     <section class="view" id="view-settings">
       <div class="view-head">
         <div><h1>Réglages de la boutique</h1><p>Modifiez ces réglages sans toucher au code — ils s'appliquent instantanément à la boutique.</p></div>
@@ -536,33 +570,6 @@
         </form>
       </div>
 
-      <div class="card" style="max-width:640px;margin-top:20px">
-        <h2>Catégories de la boutique</h2>
-        <p class="hint" style="margin-bottom:16px">Elles alimentent les onglets, la navigation et le pied de page. Une catégorie utilisée par des produits ne peut pas être supprimée.</p>
-        <div id="catList"></div>
-        <div class="or">Ajouter</div>
-        <form id="catForm" novalidate>
-          <div class="cat-row">
-            <input type="text" id="catLabel" placeholder="Nom affiché (ex. Vestes)" />
-            <input type="text" id="catKey" placeholder="Identifiant (ex. vestes)" />
-            <button type="submit" class="btn btn-primary">Ajouter</button>
-          </div>
-        </form>
-      </div>
-
-      <div class="card" style="max-width:640px;margin-top:20px">
-        <h2>Marques et collections</h2>
-        <p class="hint" style="margin-bottom:16px">Une collection regroupe des produits sous une même identité : une marque que vous revendez, une capsule saisonnière. Dès qu'il en existe une, la page d'accueil les met en avant à la place des catégories. Laissez la liste vide si vous ne vendez qu'une seule marque.</p>
-        <div id="collList"></div>
-        <div class="or">Ajouter</div>
-        <form id="collForm" novalidate>
-          <div class="cat-row">
-            <input type="text" id="collLabel" placeholder="Nom affiché (ex. Louis Vuitton)" />
-            <input type="text" id="collKey" placeholder="Identifiant (ex. louis-vuitton)" />
-            <button type="submit" class="btn btn-primary">Ajouter</button>
-          </div>
-        </form>
-      </div>
     </section>
 
   </main>
@@ -594,7 +601,15 @@
   }
   /* Sauvegarde locale + synchronisation ciblée : on n'envoie que ce qui
      a changé, jamais tout l'historique des commandes à chaque clic. */
-  function saveStore(){ saveStoreWith(store); }
+  /* Enregistre localement PUIS envoie les réglages à la base.
+     Avant, `saveStore` n'écrivait que dans `localStorage` et `syncSettings`
+     n'était appelé que par le formulaire Réglages : renommer une catégorie,
+     ajouter une marque, changer un texte ou poser une image de couverture
+     restait dans le navigateur du commerçant et n'atteignait jamais la
+     boutique. Le remède tient ici, à la source, plutôt qu'en ajoutant un
+     appel dans chacun des vingt endroits qui modifient les réglages —
+     dont le prochain aurait été oublié à son tour. */
+  function saveStore(){ saveStoreWith(store); syncSettings(); }
   function saveStoreWith(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
 
   var store = readStore();
@@ -608,7 +623,10 @@
     cb = cb || function(){};
     if (!online()) return cb();
     var pending = 3;
-    function step(){ if (--pending === 0){ saveStore(); renderAll(); cb(); } }
+    /* Copie locale seulement : ce qui vient d'être lu depuis la base n'a pas
+       à y être renvoyé. Si l'une des trois lectures a échoué, un renvoi
+       réécrirait la base avec une copie incomplète. */
+    function step(){ if (--pending === 0){ saveStoreWith(store); renderAll(); cb(); } }
     window.AURA_DB.loadProducts(function(ep, rows){
       if (!ep && rows && rows.length) store.products = normalizeProducts(rows);
       step();
@@ -791,6 +809,59 @@
     renderProducts();
   }
 
+  /* Les produits d'une catégorie, listés depuis la catégorie elle-même.
+     Le seul chemin existant partait du produit : il fallait deviner qu'on
+     ajoute un produit ailleurs, puis choisir sa catégorie dans une liste.
+     Depuis une catégorie, on veut voir ce qu'elle contient, y créer un
+     produit, et y ranger un produit déjà saisi. */
+  var prodOuverts = null;
+
+  function produitsDeCategorieHTML(c){
+    var dedans = store.products.filter(function(p){ return p.cat === c.key; });
+    var dehors = store.products.filter(function(p){ return p.cat !== c.key; });
+
+    var liste = dedans.length
+      ? dedans.map(function(p){
+          return '<div class="cat-row">' +
+            '<div><b>' + esc(p.name) + '</b>' +
+              '<div class="cat-count">' + fmt(p.price) +
+                (p.active ? '' : ' · masqué') + '</div></div>' +
+            '<button type="button" class="sbtn" data-edit="' + esc(p.id) + '">Modifier</button>' +
+          '</div>';
+        }).join("")
+      : '<p class="hint">Aucun produit dans cette catégorie.</p>';
+
+    var options = dehors.map(function(p){
+      return '<option value="' + esc(p.id) + '">' + esc(p.name) +
+             ' (' + esc(CATS[p.cat] || p.cat) + ')</option>';
+    }).join("");
+
+    return '<div class="axes-editeur">' +
+      liste +
+      '<div class="field" style="margin-top:14px">' +
+        '<button type="button" class="btn btn-primary" data-catnew="' + esc(c.key) + '">' +
+          'Créer un produit dans « ' + esc(c.label) + ' »</button>' +
+      '</div>' +
+      (dehors.length ? '<div class="field">' +
+        '<label for="mv' + esc(c.key) + '">Déplacer un produit existant ici</label>' +
+        '<div class="cat-row">' +
+          '<select id="mv' + esc(c.key) + '" data-catmovesel="' + esc(c.key) + '">' + options + '</select>' +
+          '<button type="button" class="sbtn" data-catmove="' + esc(c.key) + '">Déplacer</button>' +
+        '</div>' +
+        '<p class="hint">Les pointures et coloris viennent de la catégorie. ' +
+        'Si la catégorie d\'arrivée n\'a pas les mêmes déclinaisons, le stock du ' +
+        'produit est remis à zéro et devra être ressaisi.</p>' +
+      '</div>' : '') +
+    '</div>';
+  }
+
+  /* Noms des axes d'une catégorie, pour savoir si un déplacement conserve le
+     stock ou l'invalide. */
+  function nomsAxes(cle){
+    var c = catList().filter(function(x){ return x.key === cle; })[0];
+    return (c && Array.isArray(c.axes) ? c.axes : []).map(function(a){ return a.name; }).join("|");
+  }
+
   function renderCatSettings(){
     rebuildCats();
     fillCatSelect();
@@ -811,8 +882,11 @@
           '<button type="button" class="sbtn danger" data-catdel="' + i + '"' +
             (used ? ' disabled title="Catégorie utilisée par ' + used + ' produit(s)"' : '') + '>Supprimer</button>' +
         '</div>' +
+        '<button type="button" class="sbtn" data-catprod="' + esc(c.key) + '">' +
+          (prodOuverts === c.key ? 'Masquer les produits' : 'Produits (' + used + ')') + '</button> ' +
         '<button type="button" class="sbtn" data-axopen="' + i + '">' +
           (catOuverte === i ? 'Masquer les déclinaisons' : 'Déclinaisons') + '</button>' +
+        (prodOuverts === c.key ? produitsDeCategorieHTML(c) : '') +
         (catOuverte === i ? axesEditorHTML(c, i) : '') +
       '</div>';
     }).join("");
@@ -1217,6 +1291,46 @@
     toast("Catégorie renommée");
   });
   $("#catList").addEventListener("click", function(e){
+    var pEdit = e.target.closest("[data-edit]");
+    if (pEdit){ ouvrirProduit(pEdit.getAttribute("data-edit")); return; }
+    var pOuvre = e.target.closest("[data-catprod]");
+    if (pOuvre){
+      var ck = pOuvre.getAttribute("data-catprod");
+      prodOuverts = (prodOuverts === ck) ? null : ck;
+      renderCatSettings();
+      return;
+    }
+    /* Création depuis la catégorie : le formulaire s'ouvre déjà rempli avec
+       elle, pour ne pas avoir à la retrouver dans une liste. */
+    var pNeuf = e.target.closest("[data-catnew]");
+    if (pNeuf){
+      var cn = pNeuf.getAttribute("data-catnew");
+      showView("products");
+      resetForm();
+      $("#fCat").value = cn;
+      $("#fCat").dispatchEvent(new Event("change"));
+      $("#formTitle").textContent = "Ajouter un produit — " + (CATS[cn] || cn);
+      $("#fName").focus();
+      return;
+    }
+    var pMove = e.target.closest("[data-catmove]");
+    if (pMove){
+      var dest = pMove.getAttribute("data-catmove");
+      var sel = $('[data-catmovesel="' + dest + '"]');
+      var pid = sel && sel.value;
+      var prod = store.products.filter(function(x){ return x.id === pid; })[0];
+      if (!prod) return;
+      var memeAxes = nomsAxes(prod.cat) === nomsAxes(dest);
+      var texte = "Déplacer « " + prod.name + " » vers « " + (CATS[dest] || dest) + " » ?";
+      if (!memeAxes) texte += "\n\nLes déclinaisons diffèrent : le stock de ce produit sera remis à zéro.";
+      if (!confirm(texte)) return;
+      prod.cat = dest;
+      if (!memeAxes){ prod.axes = []; prod.variants = {}; }
+      saveStore(); syncProducts();
+      renderCatSettings(); renderProducts(); renderDash();
+      toast(memeAxes ? "Produit déplacé" : "Produit déplacé — stock à ressaisir");
+      return;
+    }
     var ouvre = e.target.closest("[data-axopen]");
     if (ouvre){
       var idx = parseInt(ouvre.getAttribute("data-axopen"), 10);
@@ -2012,10 +2126,42 @@ function applyStatus(order, ns){
         '<td><button type="button" class="sbtn" data-report="' + esc(l) + '" title="Reporter la première valeur sur toute la ligne">=</button></td></tr>';
       }).join("") + '</tbody></table></div>';
   }
+  /* Ouvre un produit dans le formulaire. Appelé depuis la liste des produits
+     et depuis la liste d'une catégorie : une seule définition, donc les deux
+     chemins remplissent exactement les mêmes champs. */
+  function ouvrirProduit(id){
+    var p = findProduct(id);
+    if (!p) return;
+    showView("products");
+    $("#fId").value = p.id;
+    $("#fName").value = p.name;
+    $("#fCat").value = p.cat;
+    $("#fPrice").value = p.price;
+    $("#fOld").value = p.oldPrice || "";
+    $("#fBadge").value = p.badge || "";
+    $("#fDesc").value = p.desc || "";
+    $("#fImg").value = p.img || "";
+    var prev = $("#fImgPrev");
+    if (p.img){ prev.src = p.img; prev.style.display = "block"; } else prev.style.display = "none";
+    $("#fActive").checked = p.active !== false;
+    $("#fOut").checked = !!p.stockout;
+    var axesProd = prodAxes(p);
+    renderAxeChecks(axesProd.map(function(a){ return a.values; }));
+    var quantites = {};
+    for (var cle in p.variants) quantites[cle] = p.variants[cle].s;
+    renderStockGrid(quantites);
+    $("#formTitle").textContent = "Modifier le produit";
+    window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
+  }
+
   function resetForm(){
     $("#fId").value = "";
     $("#fName").value = "";
-    $("#fCat").value = "hoodies";
+    /* Premiere categorie existante. L'ancienne valeur en dur, « hoodies »,
+       n'existe plus : le champ restait vide et le produit partait sans
+       categorie. */
+    var prem = catList()[0];
+    $("#fCat").value = prem ? prem.key : "";
     $("#fPrice").value = "";
     $("#fOld").value = "";
     $("#fBadge").value = "";
@@ -2198,27 +2344,7 @@ function applyStatus(order, ns){
     var t = e.target;
     var ed = t.closest("[data-edit]");
     if (ed){
-      var p = findProduct(ed.getAttribute("data-edit"));
-      if (!p) return;
-      $("#fId").value = p.id;
-      $("#fName").value = p.name;
-      $("#fCat").value = p.cat;
-      $("#fPrice").value = p.price;
-      $("#fOld").value = p.oldPrice || "";
-      $("#fBadge").value = p.badge || "";
-      $("#fDesc").value = p.desc || "";
-      $("#fImg").value = p.img || "";
-      var prev = $("#fImgPrev");
-      if (p.img){ prev.src = p.img; prev.style.display = "block"; } else prev.style.display = "none";
-      $("#fActive").checked = p.active !== false;
-      $("#fOut").checked = !!p.stockout;
-      var axesProd = prodAxes(p);
-      renderAxeChecks(axesProd.map(function(a){ return a.values; }));
-      var quantites = {};
-      for (var cle in p.variants) quantites[cle] = p.variants[cle].s;
-      renderStockGrid(quantites);
-      $("#formTitle").textContent = "Modifier le produit";
-      window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
+      ouvrirProduit(ed.getAttribute("data-edit"));
       return;
     }
     var tg = t.closest("[data-toggle]");

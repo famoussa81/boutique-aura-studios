@@ -45,7 +45,7 @@ Quelques points importants :
 - Mot de passe perdu : il faut le réinitialiser depuis le compte technique du
   site. Prévenez la personne qui vous a livré la boutique.
 
-Une fois connecté, vous voyez huit onglets en haut. Ce guide les parcourt
+Une fois connecté, vous voyez neuf onglets en haut. Ce guide les parcourt
 dans l'ordre où vous les utiliserez au quotidien.
 
 ---
@@ -168,6 +168,17 @@ vous voyez dans l'administration, la commande enregistrée fait foi.
 
 ## 5. Produits
 
+Deux chemins mènent au même formulaire :
+
+- Onglet **Produits**, formulaire en bas de page.
+- Onglet **Catégories & marques**, bouton **Produits** d'une catégorie, puis
+  **Créer un produit dans « … »**. Le formulaire s'ouvre déjà rangé dans la
+  bonne catégorie — c'est le chemin le plus court quand vous savez d'avance
+  où va le produit.
+
+Le même panneau liste les produits déjà dans la catégorie, et permet d'y
+**déplacer un produit existant**.
+
 ### Ajouter un produit
 
 1. **Nom du modèle** — court et reconnaissable : « Claquette Monogramme »,
@@ -228,6 +239,8 @@ Deux classements coexistent, et ils ne servent pas à la même chose.
 | Exemples | Claquettes, Mules & sabots | Dior, HUGO, Balenciaga |
 | Porte | Les pointures et les coloris | L'identité visuelle |
 | Où ça s'affiche | Les onglets de filtre du catalogue | Les bandeaux et les pages de marque |
+
+Tout se passe dans l'onglet **Catégories & marques**.
 
 ### Les catégories
 
