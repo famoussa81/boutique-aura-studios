@@ -1,0 +1,1656 @@
+/* Logique de la boutique. Extraite de la page pour être partagée par
+   l'accueil, les pages de marque et le catalogue : une seule définition,
+   donc aucune divergence possible entre les pages. */
+
+/* ---------------- Coque partagée ----------------
+   Bandeau d'annonce, navigation, menu mobile, tiroir panier, modales, bouton
+   WhatsApp, message flottant et pied de page sont identiques sur toutes les
+   pages. Ils sont injectés ici plutôt que recopiés dans chaque fichier : une
+   correction se fait à un seul endroit. */
+(function construireCoque(){
+  var avant = '  <a class="skip-link" href="#produits">Aller au catalogue</a>\n' +
+    '  <div class="announce" data-od-id="announcement-bar" id="announce"></div>\n' +
+    '\n' +
+    '  <header class="nav" data-od-id="page-nav">\n' +
+    '    <div class="nav-inner">\n' +
+    '      <div class="nav-left">\n' +
+    '        <button class="icon-btn burger" data-od-id="nav-burger" id="navBurger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu">\n' +
+    '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>\n' +
+    '        </button>\n' +
+    '        <a href="#produits" class="logo" id="logoNav" data-od-id="brand-wordmark" data-goto="tous"></a>\n' +
+    '      </div>\n' +
+    '      <nav class="nav-links" id="navLinks" aria-label="Navigation principale">\n' +
+    '        <a href="#produits" data-goto="tous">Nouveautés</a>\n' +
+    '      </nav>\n' +
+    '      <div class="nav-right">\n' +
+    '        <button class="icon-btn" data-od-id="nav-search" id="navSearch" aria-label="Rechercher">\n' +
+    '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>\n' +
+    '        </button>\n' +
+    '        <button class="icon-btn" data-od-id="nav-cart" aria-label="Ouvrir le panier">\n' +
+    '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h2l2.6 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21.5 7H6.1"/></svg>\n' +
+    '          <span class="cart-count" id="cartCount" data-hidden="true">0</span>\n' +
+    '        </button>\n' +
+    '      </div>\n' +
+    '    </div>\n' +
+    '    <div class="mobile-menu" id="mobileMenu" data-od-id="nav-mobile-menu">\n' +
+    '      <a href="#produits" data-goto="tous">Nouveautés</a>\n' +
+    '    </div>\n' +
+    '  </header>';
+  var apres = '  <footer class="footer" data-od-id="footer">\n' +
+    '    <div class="wrap">\n' +
+    '      <div class="footer-grid">\n' +
+    '        <div class="footer-brand">\n' +
+    '          <a href="#nouveautes" class="logo" id="logoPied" style="font-size:26px" data-goto="tous"></a>\n' +
+    '          <p>Sportswear, streetwear et tenues techniques pour la génération urbaine. Conçu pour bouger. Basé à Bamako, Mali.</p>\n' +
+    '          <div class="social" id="socialRow">\n' +
+    '            <a href="#" id="socialIG" target="_blank" rel="noopener" aria-label="Instagram" data-od-id="social-instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>\n' +
+    '            <a href="#" id="socialTT" target="_blank" rel="noopener" aria-label="TikTok" data-od-id="social-tiktok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4c.5 2.5 2.5 4.5 5 5"/></svg></a>\n' +
+    '            <a href="#" id="socialYT" target="_blank" rel="noopener" aria-label="YouTube" data-od-id="social-youtube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="3.5"/><path d="M10 9.5 15 12l-5 2.5Z" fill="currentColor" stroke="none"/></svg></a>\n' +
+    '          </div>\n' +
+    '        </div>\n' +
+    '        <div class="fcol" data-od-id="footer-col-boutique">\n' +
+    '          <h4>Boutique</h4>\n' +
+    '          <ul id="footShop"></ul>\n' +
+    '        </div>\n' +
+    '        <div class="fcol" data-od-id="footer-col-aide">\n' +
+    '          <h4>Aide</h4>\n' +
+    '          <ul>\n' +
+    '            <li><a href="#" id="helpDelivery" target="_blank" rel="noopener">Livraison à Bamako</a></li>\n' +
+    '            <li><a href="guide-des-tailles.html">Guide des tailles</a></li>\n' +
+    '            <li><a href="#" id="helpOrder" target="_blank" rel="noopener">Suivi de commande</a></li>\n' +
+    '            <li><a href="#" id="helpContact" target="_blank" rel="noopener">Contact WhatsApp</a></li>\n' +
+    '          </ul>\n' +
+    '        </div>\n' +
+    '        <div class="fcol" data-od-id="footer-col-apropos">\n' +
+    '          <h4>À propos</h4>\n' +
+    '          <ul>\n' +
+    '            <li><a href="#a-propos">Notre histoire</a></li>\n' +
+    '            <li><a href="durabilite.html">Durabilité</a></li>\n' +
+    '            <li><a href="#" id="helpPress" target="_blank" rel="noopener">Presse</a></li>\n' +
+    '            <li><a href="admin.html">Espace vendeur</a></li>\n' +
+    '          </ul>\n' +
+    '        </div>\n' +
+    '      </div>\n' +
+    '      <div class="footer-bottom">\n' +
+    '        <p id="footerBrandLine">© 2026 AURA STUDIOS. Tous droits réservés.</p>\n' +
+    '        <nav>\n' +
+    '          <a href="cgv.html">CGV</a>\n' +
+    '          <a href="confidentialite.html">Confidentialité</a>\n' +
+    '          <a href="admin.html">Administration</a>\n' +
+    '        </nav>\n' +
+    '      </div>\n' +
+    '    </div>\n' +
+    '  </footer>\n' +
+    '  <div class="overlay" id="overlay" data-od-id="cart-overlay"></div>\n' +
+    '  <div class="m-overlay" id="errOverlay" role="alertdialog" aria-modal="true" aria-labelledby="errTitle" aria-hidden="true">\n' +
+    '    <div class="modal s-modal">\n' +
+    '      <div class="m-head">\n' +
+    '        <h3 id="errTitle">Commande non enregistrée</h3>\n' +
+    '        <button class="icon-btn" data-close="errOverlay" aria-label="Fermer">\n' +
+    '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>\n' +
+    '        </button>\n' +
+    '      </div>\n' +
+    '      <div class="m-body">\n' +
+    '        <p id="errText" style="margin-bottom:16px"></p>\n' +
+    '        <button class="btn btn-primary btn-full" data-close="errOverlay">Fermer</button>\n' +
+    '      </div>\n' +
+    '    </div>\n' +
+    '  </div>\n' +
+    '\n' +
+    '  <aside class="drawer" id="cartDrawer" data-od-id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true">\n' +
+    '    <div class="drawer-head">\n' +
+    '      <h3 id="cartTitle">Mon panier</h3>\n' +
+    '      <button class="icon-btn" id="cartClose" data-od-id="cart-close" aria-label="Fermer le panier">\n' +
+    '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>\n' +
+    '      </button>\n' +
+    '    </div>\n' +
+    '    <div class="drawer-body" id="cartBody"></div>\n' +
+    '    <div class="drawer-foot" id="cartFoot">\n' +
+    '      <div class="freeship" id="freeShip" hidden>\n' +
+    '        <p id="freeShipMsg"></p>\n' +
+    '        <div class="bar"><i id="freeShipBar" style="width:0%"></i></div>\n' +
+    '      </div>\n' +
+    '      <div class="subtotal-row"><span>Sous-total</span><strong id="cartSubtotal">0 FCFA</strong></div>\n' +
+    '      <div class="subtotal-row" id="cartDeliveryRow"><span>Livraison</span><strong id="cartDelivery">0 FCFA</strong></div>\n' +
+    '      <div class="subtotal-row" style="font-size:15px"><span>Total</span><strong id="cartTotal">0 FCFA</strong></div>\n' +
+    '      <p class="delivery-note" id="cartDeliveryNote"></p>\n' +
+    '      <button class="btn btn-primary btn-full" data-od-id="cart-checkout" id="checkoutBtn">Passer commande</button>\n' +
+    '      <button class="btn btn-ghost-dark btn-full" id="cartContinue" data-od-id="cart-continue">Continuer mes achats</button>\n' +
+    '    </div>\n' +
+    '  </aside>\n' +
+    '\n' +
+    '  <div class="m-overlay" id="pvOverlay" role="dialog" aria-modal="true" aria-label="Fiche produit" aria-hidden="true">\n' +
+    '    <div class="modal">\n' +
+    '      <div class="m-head">\n' +
+    '        <h3>Fiche produit</h3>\n' +
+    '        <button class="icon-btn" data-close="pvOverlay" aria-label="Fermer">\n' +
+    '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>\n' +
+    '        </button>\n' +
+    '      </div>\n' +
+    '      <div class="pv-grid">\n' +
+    '        <div class="pv-media" id="pvMedia"></div>\n' +
+    '        <div class="pv-info">\n' +
+    '          <span class="pcat" id="pvCat"></span>\n' +
+    '          <h3 id="pvName"></h3>\n' +
+    '          <span class="price" id="pvPrice"></span>\n' +
+    '          <p class="pv-desc" id="pvDesc"></p>\n' +
+    '          <span class="size-label" style="margin-top:6px">Taille</span>\n' +
+    '          <div id="pvAxes"></div>\n' +
+    '          <span class="stock-line" id="pvStock"></span>\n' +
+    '          <div id="pvWaitlistHost"></div>\n' +
+    '          <span class="size-label">Quantité</span>\n' +
+    '          <div class="qty-stepper">\n' +
+    '            <button id="pvMinus" aria-label="Diminuer">−</button>\n' +
+    '            <span id="pvQtyVal">1</span>\n' +
+    '            <button id="pvPlus" aria-label="Augmenter">+</button>\n' +
+    '          </div>\n' +
+    '          <button class="btn btn-primary btn-full" id="pvAdd" style="margin-top:8px">Ajouter au panier</button>\n' +
+    '          <button type="button" class="about-link" id="pvBuyNow" style="justify-content:center">Commander maintenant</button>\n' +
+    '        </div>\n' +
+    '      </div>\n' +
+    '    </div>\n' +
+    '  </div>\n' +
+    '\n' +
+    '  <div class="m-overlay" id="coOverlay" role="dialog" aria-modal="true" aria-label="Finaliser la commande" aria-hidden="true">\n' +
+    '    <div class="modal">\n' +
+    '      <div class="m-head">\n' +
+    '        <h3>Finaliser la commande</h3>\n' +
+    '        <button class="icon-btn" data-close="coOverlay" aria-label="Fermer">\n' +
+    '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>\n' +
+    '        </button>\n' +
+    '      </div>\n' +
+    '      <div class="m-body" id="coStepForm">\n' +
+    '        <div id="coSummary"></div>\n' +
+    '        <form id="coForm" novalidate>\n' +
+    '          <div class="field">\n' +
+    '            <label for="coName">Nom complet</label>\n' +
+    '            <input type="text" id="coName" placeholder="Adama Traoré" autocomplete="name" />\n' +
+    '            <p class="err" id="errName">Veuillez indiquer votre nom complet.</p>\n' +
+    '          </div>\n' +
+    '          <div class="field">\n' +
+    '            <label for="coPhone">Numéro de téléphone</label>\n' +
+    '            <input type="tel" id="coPhone" placeholder="76 12 34 56" inputmode="tel" autocomplete="tel" />\n' +
+    '            <p class="hint">Format Mali : 76 12 34 56</p>\n' +
+    '            <p class="err" id="errPhone">Numéro invalide (8 chiffres minimum).</p>\n' +
+    '          </div>\n' +
+    '          <div class="field">\n' +
+    '            <label for="coQuartier">Quartier de livraison (Bamako)</label>\n' +
+    '            <input type="text" id="coQuartier" placeholder="ACI 2000, Hamdallaye, Korofina…" list="quartiers" />\n' +
+    '            <datalist id="quartiers">\n' +
+    '              <option value="ACI 2000"></option><option value="Hamdallaye"></option><option value="Korofina"></option>\n' +
+    '              <option value="Badalabougou"></option><option value="Lafiabougou"></option><option value="Faladié"></option>\n' +
+    '              <option value="Magnambougou"></option><option value="Niamakoro"></option><option value="Sanja"></option><option value="Sotuba"></option>\n' +
+    '            </datalist>\n' +
+    '            <p class="err" id="errQuartier">Veuillez indiquer votre quartier de livraison.</p>\n' +
+    '          </div>\n' +
+    '          <div class="wa-note">\n' +
+    '            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;flex-shrink:0"><path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 7.8 19.4Z"/></svg>\n' +
+    '            <span>Aucun paiement en ligne. Vous serez redirigé vers WhatsApp : un agent confirme votre commande et la livraison.</span>\n' +
+    '          </div>\n' +
+    '          <button type="submit" class="btn btn-primary btn-full" id="coSubmit">Commander via WhatsApp</button>\n' +
+    '        </form>\n' +
+    '      </div>\n' +
+    '      <div class="m-body" id="coStepDone" style="display:none">\n' +
+    '        <div class="wa-success">\n' +
+    '          <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>\n' +
+    '          <h3>Commande enregistrée !</h3>\n' +
+    '          <span class="ref-line">Référence : <strong id="waRef"></strong></span>\n' +
+    '          <p>Un agent vous répondra sur WhatsApp pour valider la livraison. Si l\'application ne s\'ouvre pas, copiez le texte de la commande.</p>\n' +
+    '          <textarea class="wa-msg" id="waMsg" readonly aria-label="Résumé de la commande"></textarea>\n' +
+    '          <div class="wa-buttons">\n' +
+    '            <a class="btn btn-primary btn-full" id="waLink" target="_blank" rel="noopener">Ouvrir WhatsApp</a>\n' +
+    '            <button class="btn btn-ghost-dark btn-full" id="waCopy">Copier le texte de la commande</button>\n' +
+    '            <button class="btn btn-ghost-dark btn-full" id="waClose">Fermer</button>\n' +
+    '          </div>\n' +
+    '        </div>\n' +
+    '      </div>\n' +
+    '    </div>\n' +
+    '  </div>\n' +
+    '\n' +
+    '  <div class="m-overlay" id="soOverlay" role="dialog" aria-modal="true" aria-label="Recherche" aria-hidden="true">\n' +
+    '    <div class="modal s-modal">\n' +
+    '      <div class="m-head">\n' +
+    '        <h3>Rechercher</h3>\n' +
+    '        <button class="icon-btn" data-close="soOverlay" aria-label="Fermer">\n' +
+    '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>\n' +
+    '        </button>\n' +
+    '      </div>\n' +
+    '      <div class="m-body">\n' +
+    '        <input class="search-in" id="soInput" type="search" placeholder="Hoodie, tee, cargo…" autocomplete="off" />\n' +
+    '        <ul class="search-results" id="soRes"></ul>\n' +
+    '      </div>\n' +
+    '    </div>\n' +
+    '  </div>\n' +
+    '\n' +
+    '  <a class="wa-float" id="waFloat" target="_blank" rel="noopener" aria-label="Nous ecrire sur WhatsApp">\n' +
+    '    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.69 8.23-8.24 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.53.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.43.06-.66.31-.22.25-.87.85-.87 2.07s.89 2.4 1.02 2.57c.12.16 1.75 2.67 4.25 3.74.59.26 1.06.41 1.42.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.22-.17-.47-.29Z"/></svg>\n' +
+    '    <span>WhatsApp</span>\n' +
+    '  </a>\n' +
+    '\n' +
+    '  <div class="toast" id="toast" data-od-id="toast" role="status" aria-live="polite"></div>';
+  var conteneur = document.getElementById("page");
+  if (!conteneur) return;
+  conteneur.insertAdjacentHTML("beforebegin", avant);
+  conteneur.insertAdjacentHTML("afterend", apres);
+})();
+
+(function(){
+  var KEY = "aura_store_v3";
+  var CKEY = "aura_cart_v1";
+  var WKEY = "aura_wish_v1";
+  var VSEP = window.AURA_CATALOG.VSEP || "::";
+
+  /* ---------------- Variantes ----------------
+     Un produit porte ses axes (« Taille », « Pointure », « Couleur »…) et un
+     stock par combinaison. Aucun axe : une seule variante, de clé vide. */
+  function prodAxes(p){
+    return (p && Array.isArray(p.axes)) ? p.axes.filter(function(a){
+      return a && a.name && Array.isArray(a.values) && a.values.length;
+    }) : [];
+  }
+  /* Valeurs déclarées par la catégorie : elles portent la pastille de couleur
+     et l'image associée, que le produit ne redéfinit pas. */
+  function catAxisValue(catKey, axisName, value){
+    var c = catList().filter(function(x){ return x.key === catKey; })[0];
+    if (!c || !Array.isArray(c.axes)) return null;
+    var ax = c.axes.filter(function(a){ return a.name === axisName; })[0];
+    if (!ax || !Array.isArray(ax.values)) return null;
+    return ax.values.filter(function(v){ return (v && v.v) === value; })[0] || null;
+  }
+  function keyOf(values){ return (values || []).join(VSEP); }
+  function valuesOf(key){ return key === "" ? [] : String(key).split(VSEP); }
+  function variantLabel(p, key){
+    var vals = valuesOf(key);
+    if (!vals.length) return "";
+    return vals.join(" · ");
+  }
+  /* Toutes les combinaisons déclarées par le produit, dans l'ordre des axes. */
+  function allKeys(p){
+    var axes = prodAxes(p);
+    if (!axes.length) return [""];
+    var out = [""];
+    axes.forEach(function(ax){
+      var suivant = [];
+      out.forEach(function(prefixe){
+        ax.values.forEach(function(v){
+          suivant.push(prefixe === "" ? v : prefixe + VSEP + v);
+        });
+      });
+      out = suivant;
+    });
+    return out;
+  }
+  function firstAvailableKey(p){
+    var k = allKeys(p);
+    for (var i=0;i<k.length;i++) if (availFor(p, k[i]) > 0) return k[i];
+    /* Tout est épuisé : on sélectionne quand même une combinaison existante
+       pour que le formulaire « me prévenir » ait un objet. */
+    return k.length ? k[0] : "";
+  }
+  /* Table libelle par cle, reconstruite a chaque changement de reglages. */
+  var CATS = {};
+  function catList(){
+    var c = store.settings.categories;
+    if (!Array.isArray(c) || !c.length) c = window.AURA_CATALOG.CATEGORIES;
+    return c.filter(function(x){ return x && x.key && x.label; });
+  }
+  function rebuildCats(){
+    CATS = {};
+    catList().forEach(function(c){ CATS[c.key] = c.label; });
+  }
+
+  /* Catalogue et réglages viennent de catalog.js : une seule définition
+     partagée avec l'administration, donc aucune divergence possible. */
+  function SEED(){ return window.AURA_CATALOG.seed(); }
+
+  /* Progression des tailles de vêtement. Toute valeur absente de cette liste
+     est laissée à sa place : on ne devine pas l'ordre d'un axe libre.
+     La liste vit dans la fonction : déclarée dehors avec `var`, elle valait
+     `undefined` pour tout appel situé plus haut dans le fichier. */
+  function trierValeurs(vals){
+    var ORDRE_TAILLES = ["XXS","XS","S","M","L","XL","XXL","XXXL","3XL","4XL"];
+    var v = vals.slice();
+    var tousNombres = v.every(function(x){ return /^\d+([.,]\d+)?$/.test(String(x).trim()); });
+    if (tousNombres) return v.sort(function(a, b){
+      return parseFloat(String(a).replace(",", ".")) - parseFloat(String(b).replace(",", "."));
+    });
+    var toutesConnues = v.every(function(x){ return ORDRE_TAILLES.indexOf(String(x).toUpperCase()) >= 0; });
+    if (toutesConnues) return v.sort(function(a, b){
+      return ORDRE_TAILLES.indexOf(String(a).toUpperCase()) - ORDRE_TAILLES.indexOf(String(b).toUpperCase());
+    });
+    return v;
+  }
+
+  /* Convertit un produit resté au format « sizes » vers le format
+     « axes + variants ». Aucune écriture : la conversion vit en mémoire. */
+  function normalizeProduct(p){
+    if (!p) return p;
+    if (p.variants){
+      /* Déjà au bon format : on assure seulement l'ordre d'affichage. */
+      if (Array.isArray(p.axes)) p.axes.forEach(function(ax){
+        if (Array.isArray(ax.values)) ax.values = trierValeurs(ax.values);
+      });
+      return p;
+    }
+    if (!p.sizes) { p.axes = p.axes || []; p.variants = { "": { s: 0, r: 0 } }; return p; }
+    var cles = Object.keys(p.sizes);
+    if (cles.length === 1 && cles[0] === "TU"){
+      p.axes = [];
+      p.variants = { "": p.sizes.TU };
+    } else {
+      p.axes = [{ name: "Taille", values: trierValeurs(cles) }];
+      p.variants = {};
+      cles.forEach(function(k){ p.variants[k] = p.sizes[k]; });
+    }
+    return p;
+  }
+  function normalizeProducts(list){
+    return (list || []).map(normalizeProduct);
+  }
+
+  function readStore(){
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw){
+        var s = JSON.parse(raw);
+        if (s && s.products && s.settings){ s.products = normalizeProducts(s.products); return s; }
+      }
+    } catch(e){}
+    var s = SEED();
+    saveStore(s);
+    return s;
+  }
+  function saveStore(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
+  function readCart(){ try { var r = localStorage.getItem(CKEY); return r ? JSON.parse(r) : []; } catch(e){ return []; } }
+  function persistCart(){ try { localStorage.setItem(CKEY, JSON.stringify(cart)); } catch(e){} }
+
+  var store = readStore();
+  var cart = readCart();
+
+  /* ---------------- Utilitaires ---------------- */
+  function $(s){ return document.querySelector(s); }
+  function $$(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function fmtShort(n){ return (Math.round(Number(n)||0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g," "); }
+  function fmt(n){ return (Math.round(Number(n)||0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g," ") + " FCFA"; }
+  function digits(s){ return String(s||"").replace(/\D/g,""); }
+  function localPhone(d){
+    d = digits(d);
+    if (d.length === 11 && d.slice(0,3) === "223") d = d.slice(3);
+    d = d.slice(0,8);
+    return "+223 " + d.slice(0,2) + " " + d.slice(2,4) + " " + d.slice(4,6) + " " + d.slice(6,8);
+  }
+  function findProduct(id){ for (var i=0;i<store.products.length;i++) if (store.products[i].id === id) return store.products[i]; return null; }
+  function availFor(p, key){
+    var v = p && p.variants ? p.variants[key] : null;
+    return v ? (v.s - v.r) : 0;
+  }
+  function totalFor(p){
+    var t = 0;
+    if (p && p.variants) for (var k in p.variants) t += p.variants[k].s;
+    return t;
+  }
+  function isOut(p){ if (p.stockout) return true; return totalFor(p) <= 0; }
+  function waLink(phone, text){ return "https://wa.me/" + digits(phone) + "?text=" + encodeURIComponent(text); }
+
+  var toastTimer;
+  function toast(msg){
+    var t = $("#toast");
+    t.textContent = msg;
+    t.setAttribute("data-visible","true");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.setAttribute("data-visible","false"); }, 2400);
+  }
+
+  /* ---------------- Favoris (persistés dans le navigateur) ---------------- */
+  function readWish(){ try { var r = localStorage.getItem(WKEY); return r ? JSON.parse(r) : []; } catch(e){ return []; } }
+  var wish = readWish();
+  function persistWish(){ try { localStorage.setItem(WKEY, JSON.stringify(wish)); } catch(e){} }
+  function isWished(id){ return wish.indexOf(id) >= 0; }
+  function toggleWish(id){
+    var i = wish.indexOf(id);
+    if (i >= 0) wish.splice(i, 1); else wish.push(id);
+    persistWish();
+    return i < 0;
+  }
+
+  /* ---------------- Frais de livraison ---------------- */
+  /* La bannière annonce la livraison offerte au-delà d'un montant :
+     le calcul doit appliquer réellement ce seuil. */
+  function deliveryFor(sub){
+    var free = Number(store.settings.freeFrom) || 0;
+    if (free > 0 && sub >= free) return 0;
+    return Number(store.settings.deliveryFee) || 0;
+  }
+
+  /* ---------------- Liens issus des réglages ---------------- */
+  function helpLink(msg){ return waLink(store.settings.whatsapp, msg); }
+  function setSocial(sel, url){
+    var e = $(sel); if (!e) return;
+    if (url && /^https?:\/\//i.test(url)){
+      e.href = url;
+      e.style.display = "";
+      e.removeAttribute("aria-hidden");
+      e.removeAttribute("tabindex");
+    } else {
+      /* Pas d'URL renseignée : on masque l'icône plutôt que de laisser
+         un lien qui ne mène nulle part — et on la retire aussi du parcours
+         clavier et des lecteurs d'écran. */
+      e.style.display = "none";
+      e.setAttribute("aria-hidden", "true");
+      e.setAttribute("tabindex", "-1");
+    }
+  }
+  /* Le seuil de gratuite est un reglage : le bandeau doit dire le vrai
+     montant, pas une promesse figee dans le HTML. */
+  /* Avis clients. Rien n'est invente : sans avis saisi, la section entiere
+     reste retiree du document. Une preuve sociale fabriquee se repere, et le
+     jour ou elle se voit la marque est morte. */
+  function renderReviews(){
+    var sec = $("#avis"), grid = $("#revGrid"), count = $("#revCount");
+    if (!sec || !grid) return;
+    var list = (store.settings.reviews || []).filter(function(r){
+      return r && r.text && r.name;
+    });
+    if (!list.length){ sec.hidden = true; grid.innerHTML = ""; return; }
+    sec.hidden = false;
+    grid.innerHTML = list.slice(0, 3).map(function(r){
+      var note = Math.min(5, Math.max(0, parseInt(r.rating, 10) || 0));
+      var dots = "";
+      if (note){
+        for (var i = 1; i <= 5; i++) dots += '<i' + (i > note ? ' data-off' : '') + '></i>';
+        dots = '<div class="rev-note" role="img" aria-label="Note : ' + note + ' sur 5">' + dots + '</div>';
+      }
+      var meta = [r.quartier, r.product].filter(Boolean).map(esc).join(" · ");
+      return '<figure class="rev-item">' + dots +
+        '<blockquote class="rev-text">« ' + esc(r.text) + ' »</blockquote>' +
+        '<figcaption><div class="rev-who">' + esc(r.name) + '</div>' +
+        (meta ? '<div class="rev-meta">' + meta + '</div>' : '') +
+        '</figcaption></figure>';
+    }).join("");
+    count.textContent = list.length > 3
+      ? list.length + " avis clients recueillis à Bamako."
+      : "";
+    addReviewSchema(list);
+  }
+
+  /* Donnees structurees : emises uniquement s'il existe de vrais avis notes.
+     Declarer une note moyenne sans avis reel est une infraction aux regles
+     de Google et expose a une penalite. */
+  function addReviewSchema(list){
+    var old = document.getElementById("revSchema");
+    if (old) old.remove();
+    var rated = list.filter(function(r){ return parseInt(r.rating, 10) > 0; });
+    if (rated.length < 1) return;
+    var sum = rated.reduce(function(a, r){ return a + parseInt(r.rating, 10); }, 0);
+    var el = document.createElement("script");
+    el.type = "application/ld+json";
+    el.id = "revSchema";
+    el.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": store.settings.shopName || "AURA STUDIOS",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": (sum / rated.length).toFixed(1),
+        "reviewCount": rated.length,
+        "bestRating": 5,
+        "worstRating": 1
+      }
+    });
+    document.head.appendChild(el);
+  }
+
+  /* Onglets, navigation et pied de page sont bati depuis la liste : une
+     categorie ajoutee dans l'administration apparait partout d'un coup. */
+  function renderCategories(){
+    rebuildCats();
+    var list = catList();
+    var tabs = $("#filterTabs");
+    if (tabs){
+      var active = curFilter;
+      tabs.innerHTML = '<button class="tab' + (active === "tous" ? " active" : "") + '" data-filter="tous">Tous</button>' +
+        list.map(function(c){
+          return '<button class="tab' + (active === c.key ? " active" : "") + '" data-filter="' + esc(c.key) + '">' + esc(c.label) + '</button>';
+        }).join("");
+    }
+    var links = list.map(function(c){
+      return '<a href="#produits" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a>';
+    }).join("");
+    var nav = $("#navLinks");
+    if (nav) nav.innerHTML = '<a href="#produits" data-goto="tous">Nouveautés</a>' + links;
+    var mob = $("#mobileMenu");
+    if (mob) mob.innerHTML = '<a href="#produits" data-goto="tous">Nouveautés</a>' + links;
+    var foot = $("#footShop");
+    if (foot) foot.innerHTML = '<li><a href="#produits" data-goto="tous">Nouveautés</a></li>' +
+      list.map(function(c){
+        return '<li><a href="#produits" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a></li>';
+      }).join("");
+    /* Le filtre courant peut viser une categorie supprimee entre-temps. */
+    if (curFilter !== "tous" && !CATS[curFilter]) curFilter = "tous";
+  }
+
+  /* Délai de livraison : une seule valeur dans les réglages alimente la
+     carte produit, le bandeau de réassurance et le hero. Sans cette source
+     unique, changer « 24h » pour « 1 semaine » laisserait des mentions
+     contradictoires sur la page. */
+  function deliveryDelay(){
+    var d = (store.settings.deliveryTime || "").toString().trim();
+    return d;
+  }
+  function deliveryLabel(){
+    var d = deliveryDelay();
+    return d ? "Livré en " + d : "Livraison à Bamako";
+  }
+
+  /* La section « univers » montre les collections quand il y en a, les
+     catégories sinon. Une boutique mono-marque garde sa page à l'identique. */
+  function renderUnivers(){
+    var grille = $("#univGrille");
+    if (!grille) return;
+    var colls = collList();
+    var titre = $("#univTitre"), kicker = $("#univKicker");
+
+    if (colls.length){
+      if (kicker) kicker.textContent = "Les marques";
+      if (titre) titre.textContent = "Parcourez les marques";
+      grille.innerHTML = colls.map(function(c){
+        return '<a href="?collection=' + encodeURIComponent(c.key) + '" class="cat-card" data-coll="' + esc(c.key) + '">' +
+          (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' : '') +
+          '<div class="cat-body">' +
+            '<span class="cat-label">' + esc(c.label) + '</span>' +
+            '<span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
+          '</div>' +
+        '</a>';
+      }).join("");
+      return;
+    }
+
+    if (kicker) kicker.textContent = "Les univers";
+    if (titre) titre.textContent = "Explorez les collections";
+    grille.innerHTML = catList().map(function(c){
+      return '<a href="#produits" class="cat-card" data-goto="' + esc(c.key) + '">' +
+        (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' : '') +
+        '<div class="cat-body">' +
+          '<span class="cat-label">' + esc(c.label) + '</span>' +
+          '<span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
+        '</div>' +
+      '</a>';
+    }).join("");
+  }
+
+  /* Bannière de la collection ouverte. L'accent, s'il est défini, ne touche
+     que le filet du sur-titre : borné là, il personnalise sans rien casser. */
+  function renderCollBanniere(){
+    var box = $("#collBanniere");
+    if (!box) return;
+    var c = curColl ? collById(curColl) : null;
+    if (!c){ box.hidden = true; return; }
+    box.hidden = false;
+    var img = $("#collImage");
+    if (img){
+      if (c.cover){ img.src = c.cover; img.hidden = false; }
+      else { img.removeAttribute("src"); img.hidden = true; }
+    }
+    var k = $("#collKicker");
+    if (k){
+      k.textContent = c.tagline || "Collection";
+      k.style.setProperty("--accent-coll", c.accent || "");
+      k.classList.toggle("has-accent", !!c.accent);
+    }
+    var t = $("#collTitre"); if (t) t.textContent = c.label;
+    var d = $("#collTexte"); if (d) d.textContent = c.desc || "";
+  }
+
+  function setCollection(key){
+    curColl = key || "";
+    curFilter = "tous";
+    renderCollBanniere();
+    renderCategories();
+    renderGrid();
+    syncUrl(curFilter);
+    document.title = (curColl && collById(curColl) ? collById(curColl).label + " — " : "") +
+      store.settings.shopName + " — Boutique en ligne · Bamako";
+  }
+
+  /* Le logo suit le nom de la boutique. Coupé au premier espace : la première
+     partie en gras, le reste en petit, comme le dessin d'origine. */
+  function renderLogo(){
+    var nom = (store.settings.shopName || "").trim();
+    if (!nom) return;
+    var i = nom.indexOf(" ");
+    var tete = i > 0 ? nom.slice(0, i) : nom;
+    var reste = i > 0 ? nom.slice(i + 1) : "";
+    var nav = $("#logoNav");
+    if (nav) nav.innerHTML = esc(tete) + (reste ? '<span>' + esc(reste) + '</span>' : '');
+    var pied = $("#logoPied");
+    if (pied) pied.innerHTML = esc(tete) + (reste ? '<span style="font-size:11px">' + esc(reste) + '</span>' : '');
+  }
+
+  /* Contenu éditorial. Chaque bloc a son interrupteur : masquer vaut mieux
+     que remplir de texte de remplissage. Un champ vide masque son élément
+     plutôt que de laisser un blanc dans la mise en page. */
+  function contenu(){
+    var c = store.settings.content;
+    return (c && typeof c === "object") ? c : {};
+  }
+  function poser(sel, texte){
+    var e = $(sel);
+    if (!e) return;
+    var v = (texte || "").toString().trim();
+    e.textContent = v;
+    e.hidden = !v;
+  }
+  function poserImage(sel, url){
+    var e = $(sel);
+    if (!e) return;
+    if (url){ e.src = url; e.hidden = false; }
+    else { e.removeAttribute("src"); e.hidden = true; }
+  }
+  function poserBouton(sel, texte){
+    var e = $(sel);
+    if (!e) return;
+    var v = (texte || "").toString().trim();
+    e.textContent = v;
+    e.hidden = !v;
+  }
+
+  function renderContenu(){
+    var c = contenu();
+
+    var h = c.hero || {};
+    var hs = $("#heroSection");
+    if (hs) hs.hidden = h.on === false;
+    poserImage("#heroImage", h.image);
+    poser("#heroBadge", h.badge);
+    poser("#heroKicker", h.kicker);
+    poser("#heroTitre", h.title);
+    poser("#heroSub", h.sub);
+    poserBouton("[data-od-id='hero-cta-primary']", h.cta1);
+    poserBouton("[data-od-id='hero-cta-secondary']", h.cta2);
+
+    var b = c.banner || {};
+    var bs = $("#bannerSection");
+    if (bs) bs.hidden = b.on === false;
+    poserImage("#bannerImage", b.image);
+    poser("#bannerKicker", b.kicker);
+    poser("#bannerTitre", b.title);
+    poser("#bannerTexte", b.text);
+    poserBouton("[data-od-id='collection-cta']", b.cta1);
+    poserBouton("[data-od-id='collection-cta-alt']", b.cta2);
+
+    var e = c.editorial || {};
+    var es = $("#a-propos");
+    if (es) es.hidden = e.on === false;
+    poserImage("#edImage", e.image);
+    poser("#edKicker", e.kicker);
+    poser("#edTitre", e.title);
+    poser("#edTexte", e.text);
+    var host = $("#edPiliers");
+    if (host){
+      var piliers = Array.isArray(e.pillars) ? e.pillars.filter(function(x){ return x && (x.title || x.text); }) : [];
+      host.innerHTML = piliers.map(function(x, i){
+        return '<div class="pillar">' +
+          '<span class="idx">' + ("0" + (i + 1)).slice(-2) + '</span>' +
+          '<div><h3>' + esc(x.title || "") + '</h3><p>' + esc(x.text || "") + '</p></div>' +
+        '</div>';
+      }).join("");
+      host.hidden = !piliers.length;
+    }
+
+    var nl = c.newsletter || {};
+    var ns = $("#nlSection");
+    if (ns) ns.hidden = nl.on === false;
+    poser("#nlKicker", nl.kicker);
+    poser("#nlTitre", nl.title);
+    poser("#nlTexte", nl.text);
+    poser("#nlNote", nl.note);
+  }
+
+  function applySellingCopy(){
+    var s = store.settings;
+    var free = Number(s.freeFrom) || 0;
+    var t = $("#trustFree");
+    if (t) t.textContent = free > 0
+      ? "Offerte dès " + fmt(free) + " d'achat."
+      : "Partout dans la ville.";
+    var d = deliveryDelay();
+    var libelle = d ? "Livraison en " + d + " à Bamako" : "Livraison à Bamako";
+    var td = $("#trustDelay"); if (td) td.textContent = libelle;
+    var ex = (store.settings.exchangeTime || "").toString().trim();
+    var te = $("#trustExchange"); if (te) te.textContent = ex ? "Échange sous " + ex : "Échange possible";
+    var he = $("#heroExchange"); if (he) he.textContent = ex ? "Échange sous " + ex : "Échange possible";
+    var hd = $("#heroDelay"); if (hd) hd.textContent = libelle;
+    var wa = $("#waFloat");
+    if (wa) wa.href = waLink(s.whatsapp, "Bonjour " + (s.shopName || "AURA STUDIOS") + " 👋 J'ai une question sur un article.");
+    renderLogo();
+    renderContenu();
+    renderReviews();
+    renderUnivers();
+    renderCategories();
+    renderCollBanniere();
+    /* Une adresse du type ?cat=hoodies doit ouvrir directement la catégorie,
+       y compris après l'arrivée des réglages depuis Supabase. */
+    var voulueColl = collFromUrl();
+    if (voulueColl && collById(voulueColl) && curColl !== voulueColl){
+      curColl = voulueColl;
+      renderCollBanniere();
+      renderGrid();
+    }
+    var voulue = catFromUrl();
+    if (voulue && CATS[voulue] && curFilter !== voulue){
+      curFilter = voulue;
+      renderCategories();
+      renderGrid();
+    }
+  }
+  function applySettings(){
+    var s = store.settings;
+    document.title = s.shopName + " — Boutique en ligne · Bamako";
+    var an = $("#announce"); if (an) an.textContent = s.announcement || "";
+    var free = Number(s.freeFrom) || 0;
+    var note = $("#cartDeliveryNote");
+    if (note){
+      note.textContent = free > 0
+        ? "Livraison à Bamako : " + fmt(s.deliveryFee) + " · offerte dès " + fmt(free)
+        : "Livraison à Bamako : " + fmt(s.deliveryFee);
+    }
+    var wa = waLink(s.whatsapp, "Bonjour " + s.shopName + " 👋");
+    ["#contactBtn","#helpContact"].forEach(function(sel){ var e = $(sel); if (e) e.href = wa; });
+    var d = $("#helpDelivery"); if (d) d.href = helpLink("Bonjour " + s.shopName + ", j'aimerais connaître les modalités de livraison à Bamako.");
+    var o = $("#helpOrder"); if (o) o.href = helpLink("Bonjour " + s.shopName + ", j'aimerais suivre ma commande.");
+    var pr = $("#helpPress"); if (pr) pr.href = helpLink("Bonjour " + s.shopName + ", je vous contacte dans le cadre d'une demande presse.");
+    setSocial("#socialIG", s.instagram);
+    setSocial("#socialTT", s.tiktok);
+    setSocial("#socialYT", s.youtube);
+    var f = $("#footerBrandLine");
+    if (f) f.textContent = "© " + new Date().getFullYear() + " " + s.shopName + ". Tous droits réservés.";
+    applySellingCopy();
+  }
+
+  /* ---------------- Hydratation Supabase (catalogue + réglages) ---------------- */
+  function hydrate(){
+    if (typeof window.AURA_DB === "undefined" || !window.AURA_DB.ready()) return;
+    window.AURA_DB.loadSettings(function(es, s){
+      if (es || !s) return;
+      for (var k in s) store.settings[k] = s[k];
+      saveStore(store);
+      applySettings();
+      renderCart();
+    });
+    window.AURA_DB.loadProducts(function(ep, rows){
+      if (ep || !rows || !rows.length) return;
+      store.products = normalizeProducts(rows);
+      saveStore(store);
+      renderGrid();
+      renderCart();
+    });
+  }
+
+  /* ---------------- Initialisation ---------------- */
+  applySettings();
+
+  /* ---------------- Grille produits ---------------- */
+  var curFilter = "tous", curQuery = "", curColl = "";
+
+  /* ---------------- Collections ----------------
+     Seconde taxonomie : la catégorie dit le type de produit et porte les
+     déclinaisons, la collection dit la marque et porte l'identité. Les deux
+     filtrent la grille indépendamment. */
+  function collList(){
+    var c = store.settings.collections;
+    if (!Array.isArray(c)) return [];
+    return c.filter(function(x){ return x && x.key && x.label; });
+  }
+  function collById(key){
+    return collList().filter(function(c){ return c.key === key; })[0] || null;
+  }
+  function collFromUrl(){
+    try {
+      var m = location.search.match(/[?&]collection=([^&]+)/);
+      return m ? decodeURIComponent(m[1]) : "";
+    } catch(e){ return ""; }
+  }
+
+  /* Sur une carte étroite, deux montants complets ne tiennent pas sur une
+     ligne. L'ancien prix perd sa devise : barré et suivi du prix courant en
+     FCFA, il reste parfaitement lisible. */
+  function priceHTML(p){
+    if (p.oldPrice > 0) return '<span class="old">' + fmtShort(p.oldPrice) + '</span><span class="sale">' + fmt(p.price) + '</span>';
+    return fmt(p.price);
+  }
+  function badgeHTML(p){
+    if (isOut(p)) return '<span class="badge">Rupture de stock</span>';
+    if (p.oldPrice > 0) return '<span class="badge badge-sale">-20 %</span>';
+    if (p.badge) return '<span class="badge">' + esc(p.badge) + '</span>';
+    return "";
+  }
+  /* Rarete affichee seulement sous 4 pieces, et uniquement a partir du stock
+     reel : un faux compte a rebours convertit une fois puis brule la marque. */
+  function stockHintHTML(p){
+    if (isOut(p)) return '<span class="stock-hint">&nbsp;</span>';
+    var total = 0, low = [];
+    for (var k in p.variants){
+      var a = availFor(p, k);
+      if (a > 0){
+        total += a;
+        var lib = variantLabel(p, k);
+        if (a <= 3) low.push(lib ? a + " en " + lib : a + " pièces");
+      }
+    }
+    if (total === 0 || total > 8) return '<span class="stock-hint">&nbsp;</span>';
+    if (low.length) return '<span class="stock-hint">Plus que ' + esc(low[0]) + '</span>';
+    return '<span class="stock-hint">Plus que ' + total + ' pièces</span>';
+  }
+  function cardHTML(p){
+    var name = esc(p.name), img = esc(p.img), alt = esc("Produit " + p.name);
+    var out = isOut(p);
+    return '<article class="pcard" data-card="' + esc(p.id) + '">' +
+      '<div class="pmedia">' +
+        '<img src="' + img + '" alt="' + alt + '" width="600" height="800" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' +
+        badgeHTML(p) +
+        '<button class="wish" data-wish="' + esc(p.id) + '" data-on="' + (isWished(p.id) ? "true" : "false") + '" aria-pressed="' + (isWished(p.id) ? "true" : "false") + '" aria-label="' + (isWished(p.id) ? "Retirer des favoris" : "Ajouter aux favoris") + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.4 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .9-4.5 2.5C10.5 3.9 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.1 3 5.5l7 6Z"/></svg></button>' +
+      '</div>' +
+      '<div class="pinfo">' +
+        '<span class="pname">' + name + '</span>' +
+        '<span class="pdelivery">' + esc(deliveryLabel()) + '</span>' +
+        '<span class="price">' + priceHTML(p) + '</span>' +
+        stockHintHTML(p) +
+      '</div>' +
+      '<div class="padd"><button class="btn btn-primary btn-full" data-openp="' + esc(p.id) + '">' + (out ? "Me prévenir du retour" : "Choisir la taille") + '</button></div>' +
+    '</article>';
+  }
+  function renderGrid(){
+    var g = $("#grid");
+    var list = store.products.filter(function(p){ return p.active; });
+    if (curColl) list = list.filter(function(p){ return p.collection === curColl; });
+    list = list.filter(function(p){ return curFilter === "tous" || p.cat === curFilter; });
+    if (curQuery){
+      var q = curQuery.toLowerCase();
+      list = list.filter(function(p){ return p.name.toLowerCase().indexOf(q) >= 0 || (CATS[p.cat]||"").toLowerCase().indexOf(q) >= 0; });
+    }
+    if (!list.length){
+      g.innerHTML = '<p class="none-msg">Aucun produit ne correspond à votre recherche.<br><button type="button" class="btn btn-primary" style="margin-top:16px" data-reset-filters>Voir tout le catalogue</button></p>';
+      return;
+    }
+    g.innerHTML = list.map(cardHTML).join("");
+  }
+  function setFilter(f){
+    curFilter = f; curQuery = "";
+    syncUrl(f);
+    $$(".tab").forEach(function(x){ x.classList.toggle("active", x.getAttribute("data-filter") === curFilter); });
+    renderGrid();
+  }
+  /* L'adresse suit la catégorie affichée : elle devient partageable et
+     indexable. `replaceState` évite d'empiler une entrée d'historique à
+     chaque clic de filtre. */
+  function syncUrl(cat){
+    if (!window.history || !history.replaceState) return;
+    var params = [];
+    if (curColl) params.push("collection=" + encodeURIComponent(curColl));
+    if (cat && cat !== "tous") params.push("cat=" + encodeURIComponent(cat));
+    var url = location.pathname + (params.length ? "?" + params.join("&") : "") + "#produits";
+    try { history.replaceState(null, "", url); } catch(e){}
+  }
+  function catFromUrl(){
+    try {
+      var m = location.search.match(/[?&]cat=([^&]+)/);
+      return m ? decodeURIComponent(m[1]) : null;
+    } catch(e){ return null; }
+  }
+
+  function goTo(cat){
+    setFilter(cat);
+    syncUrl(cat);
+    var prod = $("#produits");
+    window.scrollTo({ top: prod.getBoundingClientRect().top + window.pageYOffset - 70, behavior: "smooth" });
+  }
+
+  /* ---------------- Fiche produit ---------------- */
+  var pvProduct = null, pvSel = [], pvQty = 1, pvBuy = false, pvImgs = [];
+  function pvKey(){ return keyOf(pvSel); }
+  function openPV(id){
+    var p = findProduct(id); if (!p) return;
+    pvProduct = p; pvSel = valuesOf(firstAvailableKey(p)); pvQty = 1; pvBuy = false; pvImgs = [];
+    var imgs = (p.imgs && p.imgs.length) ? p.imgs : (p.img ? [p.img] : []);
+    pvImgs = imgs;
+    var media = '<img class="pv-main" src="' + esc(imgs[0] || "") + '" onerror="this.style.opacity=0" alt="' + esc(p.name) + '" />';
+    if (imgs.length > 1){
+      media += '<div class="pv-thumbs" id="pvThumbs">' + imgs.map(function(src, i){
+        return '<button type="button" data-thumb="' + i + '"' + (i === 0 ? ' class="active"' : '') + '><img src="' + esc(src) + '" onerror="this.style.opacity=0" alt="" /></button>';
+      }).join("") + '</div>';
+    }
+    $("#pvMedia").innerHTML = media;
+    $("#pvCat").textContent = CATS[p.cat] || p.cat;
+    $("#pvName").textContent = p.name;
+    $("#pvPrice").innerHTML = priceHTML(p);
+    $("#pvDesc").textContent = p.desc || "";
+    renderAxes();
+    majPhotoPrincipale();
+    updateStockLine();
+    updateQty(0);
+    openModal("pvOverlay");
+  }
+  /* Un sélecteur par axe. Une valeur est marquée épuisée quand aucune
+     combinaison la contenant n'a de stock — ce qui reste juste avec deux axes
+     sans obliger le client à tâtonner. */
+  function valueHasStock(p, iAxe, val){
+    return allKeys(p).some(function(k){
+      var v = valuesOf(k);
+      return v[iAxe] === val && availFor(p, k) > 0;
+    });
+  }
+  /* Photo associée à la sélection courante : la première valeur choisie qui
+     en déclare une l'emporte. On remonte les axes dans l'ordre, donc le
+     coloris prime sur la pointure — ce qui est le bon sens : une pointure
+     n'a pas de photo propre. */
+  function photoDeSelection(){
+    var p = pvProduct;
+    if (!p) return "";
+    var axes = prodAxes(p);
+    for (var i = axes.length - 1; i >= 0; i--){
+      var meta = catAxisValue(p.cat, axes[i].name, pvSel[i]);
+      if (meta && meta.img) return meta.img;
+    }
+    return "";
+  }
+  function majPhotoPrincipale(){
+    var img = document.querySelector("#pvMedia .pv-main");
+    if (!img) return;
+    var voulue = photoDeSelection();
+    var defaut = pvImgs[0] || "";
+    var cible = voulue || defaut;
+    if (cible && img.getAttribute("src") !== cible) img.src = cible;
+    /* La miniature active suit, sinon l'état affiché se contredit. */
+    var vignettes = $$("#pvThumbs [data-thumb]");
+    vignettes.forEach(function(b, i){
+      b.classList.toggle("active", !voulue && i === 0);
+    });
+  }
+
+  function renderAxes(){
+    var p = pvProduct, host = $("#pvAxes");
+    if (!host) return;
+    var axes = prodAxes(p);
+    if (!axes.length){ host.innerHTML = ""; return; }
+    host.innerHTML = axes.map(function(ax, i){
+      var boutons = ax.values.map(function(val){
+        var dispo = valueHasStock(p, i, val);
+        var choisi = pvSel[i] === val;
+        var meta = catAxisValue(p.cat, ax.name, val) || {};
+        var pastille = meta.hex
+          ? '<span class="swatch" style="background:' + esc(meta.hex) + '"></span>'
+          : '';
+        return '<button type="button" class="size-btn' + (pastille ? " has-swatch" : "") +
+               (choisi ? " selected" : "") + (dispo ? "" : " soldout") +
+               '" data-axe="' + i + '" data-val="' + esc(val) + '"' +
+               (dispo ? "" : ' aria-label="' + esc(val) + ' — épuisé, être prévenu du retour"') +
+               '>' + pastille + esc(val) + '</button>';
+      }).join("");
+      return '<div class="axe-bloc">' +
+               '<span class="size-label">' + esc(ax.name) + '</span>' +
+               '<div class="size-row">' + boutons + '</div>' +
+             '</div>';
+    }).join("");
+  }
+
+  /* Une variante epuisee, c'est un acheteur qui voulait payer. On garde son
+     numero au lieu de le laisser partir sans trace. */
+  function waitlistHTML(){
+    if (!pvProduct) return "";
+    if (availFor(pvProduct, pvKey()) > 0) return "";
+    return '<div class="waitlist" id="pvWaitlist">' +
+      '<p>' + esc(variantLabel(pvProduct, pvKey()) || "Ce produit") + ' épuisé. Laissez votre numéro : on vous prévient dès le réassort.</p>' +
+      '<div class="waitlist-row">' +
+        '<input type="tel" id="wlPhone" inputmode="tel" autocomplete="tel" placeholder="76 12 34 56" aria-label="Votre numéro WhatsApp" />' +
+        '<button type="button" class="btn btn-primary" id="wlSubmit">Me prévenir</button>' +
+      '</div>' +
+    '</div>';
+  }
+  function renderWaitlist(){
+    var host = $("#pvWaitlistHost");
+    if (host) host.innerHTML = waitlistHTML();
+  }
+  function submitWaitlist(){
+    var inp = $("#wlPhone");
+    if (!inp) return;
+    var phone = digits(inp.value);
+    if (phone.length === 11 && phone.slice(0, 3) === "223") phone = phone.slice(3);
+    if (phone.length !== 8){ toast("Numéro invalide (8 chiffres)"); inp.focus(); return; }
+    var entry = { id: pvProduct.id, name: pvProduct.name,
+                  size: variantLabel(pvProduct, pvKey()) || "—", phone: phone };
+    if (window.AURA_DB && window.AURA_DB.ready()){
+      window.AURA_DB.joinWaitlist(entry, function(er){
+        if (er) console.warn("Liste d'attente non synchronisée", er);
+      });
+    }
+    try {
+      var local = JSON.parse(localStorage.getItem("aura_waitlist_v1") || "[]");
+      local.push({ product_id: entry.id, product_name: entry.name, size: entry.size,
+                   phone: entry.phone, created_at: new Date().toISOString() });
+      localStorage.setItem("aura_waitlist_v1", JSON.stringify(local));
+    } catch(e){}
+    var host = $("#pvWaitlistHost");
+    if (host) host.innerHTML = '<div class="waitlist"><p class="ok">C\'est noté. On vous écrit sur WhatsApp dès le retour de ' + esc(variantLabel(pvProduct, pvKey()) || "ce produit") + '.</p></div>';
+    toast("Vous serez prévenu");
+  }
+
+  function updateStockLine(){
+    var a = availFor(pvProduct, pvKey());
+    var el = $("#pvStock");
+    if (a <= 0) el.innerHTML = 'Rupture de stock pour cette taille';
+    else el.innerHTML = 'En stock · <strong>' + a + '</strong> disponible' + (a > 1 ? "s" : "");
+    var add = $("#pvAdd");
+    add.disabled = a <= 0;
+    renderWaitlist();
+    updateQty(0);
+  }
+  function updateQty(delta){
+    var a = availFor(pvProduct, pvKey());
+    pvQty += delta;
+    if (pvQty < 1) pvQty = 1;
+    if (pvQty > a) pvQty = Math.max(1, a);
+    $("#pvQtyVal").textContent = pvQty;
+    var minus = $("#pvMinus"), plus = $("#pvPlus");
+    minus.disabled = pvQty <= 1;
+    plus.disabled = (a <= 0 || pvQty >= a);
+    minus.style.opacity = pvQty <= 1 ? .4 : 1;
+    plus.style.opacity = (a <= 0 || pvQty >= a) ? .4 : 1;
+  }
+  function addToCart(p, key, qty){
+    var a = availFor(p, key);
+    if (qty > a) qty = Math.max(0, a);
+    if (qty <= 0) return false;
+    var it = null;
+    for (var i=0;i<cart.length;i++) if (cart[i].id === p.id && cart[i].variant === key){ it = cart[i]; break; }
+    if (it) it.qty += qty;
+    else cart.push({ id:p.id, variant:key, variantLabel:variantLabel(p, key), qty:qty,
+                     name:p.name, cat:CATS[p.cat]||p.cat, price:p.price, img:p.img });
+    persistCart(); renderCount(); renderCart();
+    toast("Ajouté au panier");
+    return true;
+  }
+
+  /* ---------------- Panier ---------------- */
+  function count(){ return cart.reduce(function(a,i){ return a + i.qty; }, 0); }
+  function subtotal(){ return cart.reduce(function(a,i){ return a + i.price * i.qty; }, 0); }
+  function renderCount(){
+    var c = count(), el = $("#cartCount");
+    el.textContent = c;
+    el.setAttribute("data-hidden", c > 0 ? "false" : "true");
+    if (lastCount >= 0 && c > lastCount){
+      el.setAttribute("data-pop", "true");
+      clearTimeout(countPopTimer);
+      countPopTimer = setTimeout(function(){ el.setAttribute("data-pop", "false"); }, 430);
+    }
+    lastCount = c;
+  }
+  var lastCount = -1, countPopTimer;
+  function renderCart(){
+    var body = $("#cartBody"), foot = $("#cartFoot");
+    $("#cartTitle").textContent = "Mon panier (" + count() + ")";
+    if (!cart.length){
+      body.innerHTML =
+        '<div class="cart-empty">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h2l2.6 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21.5 7H6.1"/></svg>' +
+          '<p>Votre panier est vide.</p>' +
+          '<button type="button" class="btn btn-primary" data-empty-cta>Découvrir la collection</button>' +
+        '</div>';
+      foot.style.display = "none";
+      return;
+    }
+    foot.style.display = "block";
+    var sub = subtotal(), del = deliveryFor(sub);
+    renderFreeShip(sub);
+    $("#cartSubtotal").textContent = fmt(sub);
+    $("#cartDelivery").textContent = del === 0 ? "Offerte" : fmt(del);
+    $("#cartTotal").textContent = fmt(sub + del);
+    body.innerHTML = cart.map(function(it){
+      return '<div class="cart-item" data-key="' + esc(it.id + "|" + it.variant) + '">' +
+        '<img src="' + esc(it.img) + '" alt="' + esc(it.name) + '" onerror="this.style.opacity=0" />' +
+        '<div>' +
+          '<div class="ci-name">' + esc(it.name) + '</div>' +
+          '<div class="ci-cat">' + esc(it.cat) + '</div>' +
+          (it.variantLabel ? '<div class="ci-size">' + esc(it.variantLabel) + '</div>' : "") +
+          '<div class="ci-price">' + fmt(it.price) + '</div>' +
+          '<div class="ci-qty">' +
+            '<button data-qty="dec" aria-label="Réduire la quantité">−</button>' +
+            '<span>' + it.qty + '</span>' +
+            '<button data-qty="inc" aria-label="Augmenter la quantité">+</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="ci-right">' +
+          '<button class="ci-remove" data-remove>Retirer</button>' +
+          '<strong style="font-size:14px">' + fmt(it.price * it.qty) + '</strong>' +
+        '</div>' +
+      '</div>';
+    }).join("") + xsellHTML();
+  }
+  /* Barre de progression vers la livraison offerte. Le seuil vient des
+     reglages : c'est le levier de panier moyen le plus sûr, a condition que
+     le client voie ce qu'il lui reste a parcourir. */
+  function renderFreeShip(sub){
+    var box = $("#freeShip");
+    if (!box) return;
+    var free = Number(store.settings.freeFrom) || 0;
+    var fee  = Number(store.settings.deliveryFee) || 0;
+    if (free <= 0 || fee <= 0){ box.hidden = true; return; }
+    box.hidden = false;
+    var reste = free - sub;
+    if (reste <= 0){
+      box.classList.add("done");
+      $("#freeShipMsg").textContent = "Livraison offerte";
+      $("#freeShipBar").style.width = "100%";
+    } else {
+      box.classList.remove("done");
+      $("#freeShipMsg").textContent = "Plus que " + fmt(reste) + " pour la livraison offerte";
+      $("#freeShipBar").style.width = Math.max(4, Math.round(sub / free * 100)) + "%";
+    }
+  }
+
+  /* Vente croisee : deux accessoires disponibles, hors panier. Apres avoir
+     accepte un hoodie, un bonnet parait secondaire — c'est la marge. */
+  function xsellHTML(){
+    var inCart = {};
+    cart.forEach(function(it){ inCart[it.id] = true; });
+    var list = store.products.filter(function(p){
+      return p.active && !inCart[p.id] && !isOut(p) && p.cat === "accessoires";
+    });
+    if (list.length < 1){
+      list = store.products.filter(function(p){
+        return p.active && !inCart[p.id] && !isOut(p);
+      }).sort(function(a, b){ return a.price - b.price; });
+    }
+    list = list.slice(0, 2);
+    if (!list.length) return "";
+    return '<div class="xsell"><h4>Complétez votre tenue</h4>' +
+      list.map(function(p){
+        return '<div class="xsell-item">' +
+          '<img src="' + esc(p.img) + '" alt="" width="48" height="60" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' +
+          '<div><div class="xsell-name">' + esc(p.name) + '</div>' +
+          '<div class="xsell-price">' + fmt(p.price) + '</div></div>' +
+          '<button type="button" class="xsell-add" data-openp="' + esc(p.id) + '">Ajouter</button>' +
+        '</div>';
+      }).join("") + '</div>';
+  }
+
+  /* ---------------- Modales, tiroir et gestion du focus ----------------
+     Chaque surface qui s'ouvre par-dessus la page doit : mémoriser le
+     bouton d'origine, y renvoyer le focus à la fermeture, retenir le focus
+     à l'intérieur pendant l'ouverture et se fermer avec la touche Échap. */
+  var layers = [];   // pile des surfaces ouvertes
+  var lastFocus = null;
+
+  function focusables(el){
+    return $$("a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex='-1'])")
+      .filter(function(n){ return el.contains(n) && n.offsetParent !== null; });
+  }
+  /* Verrou de défilement. `overflow:hidden` sur le body ne suffit pas sur
+     iOS : seule la mise en `position:fixed` bloque réellement, à condition de
+     mémoriser puis restituer la position. */
+  var scrollLockY = 0;
+  function lockScroll(){
+    if (layers.length) return;                 /* déjà verrouillé par une couche */
+    scrollLockY = window.pageYOffset || document.documentElement.scrollTop || 0;
+    document.body.style.position = "fixed";
+    document.body.style.top = "-" + scrollLockY + "px";
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+  }
+  function unlockScroll(){
+    if (layers.length) return;                 /* une autre couche reste ouverte */
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    document.body.style.width = "";
+    window.scrollTo(0, scrollLockY);
+  }
+
+  function pushLayer(el, closer){
+    if (!layers.length) lastFocus = document.activeElement;
+    lockScroll();
+    layers.push({ el: el, close: closer });
+    el.setAttribute("aria-hidden", "false");
+    setTimeout(function(){
+      var f = focusables(el);
+      if (f.length) f[0].focus();
+    }, 50);
+  }
+  function popLayer(el){
+    el.setAttribute("aria-hidden", "true");
+    for (var i = layers.length - 1; i >= 0; i--) if (layers[i].el === el) layers.splice(i, 1);
+    unlockScroll();
+    if (!layers.length && lastFocus && typeof lastFocus.focus === "function"){
+      lastFocus.focus();
+      lastFocus = null;
+    }
+  }
+
+  function openCart(){
+    renderCart();
+    $("#cartDrawer").setAttribute("data-open","true");
+    $("#overlay").setAttribute("data-open","true");
+    pushLayer($("#cartDrawer"), closeCart);
+  }
+  function closeCart(){
+    $("#cartDrawer").setAttribute("data-open","false");
+    $("#overlay").setAttribute("data-open","false");
+    popLayer($("#cartDrawer"));
+  }
+  function openModal(id){
+    var el = $("#" + id);
+    el.setAttribute("data-open","true");
+    pushLayer(el, function(){ closeModal(id); });
+  }
+  function closeModal(id){
+    var el = $("#" + id);
+    el.setAttribute("data-open","false");
+    popLayer(el);
+  }
+
+  document.addEventListener("keydown", function(e){
+    if (!layers.length) return;
+    var top = layers[layers.length - 1];
+    if (e.key === "Escape" || e.key === "Esc"){
+      e.preventDefault();
+      top.close();
+      return;
+    }
+    if (e.key !== "Tab") return;
+    var f = focusables(top.el);
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    else if (!top.el.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
+  });
+
+  /* ---------------- Checkout WhatsApp ---------------- */
+  function renderCheckoutSummary(){
+    var el = $("#coSummary");
+    el.innerHTML =
+      '<div class="co-sum">' +
+        cart.map(function(it){
+          return '<div class="co-item"><span>' + esc(it.name) + ' <small>' + (it.variantLabel ? esc(it.variantLabel) + ' · ' : '') + it.qty + ' x</small></span><strong>' + fmt(it.price * it.qty) + '</strong></div>';
+        }).join("") +
+        '<div class="co-line"><span>Livraison (Bamako)</span><strong>' + (deliveryFor(subtotal()) === 0 ? "Offerte" : fmt(deliveryFor(subtotal()))) + '</strong></div>' +
+        '<div class="co-total"><span>Total</span><strong>' + fmt(subtotal() + deliveryFor(subtotal())) + '</strong></div>' +
+      '</div>';
+  }
+  function openCheckout(){
+    if (!cart.length){ toast("Votre panier est vide"); return; }
+    $("#coStepForm").style.display = "block";
+    $("#coStepDone").style.display = "none";
+    renderCheckoutSummary();
+    openModal("coOverlay");
+  }
+  function buildWAMessage(o){
+    var L = [];
+    L.push("🛍️ *Nouvelle commande " + o.ref + "*");
+    L.push("");
+    o.items.forEach(function(it){
+      var lib = it.variantLabel || it.size || "";
+      L.push("• " + it.qty + " × " + it.name + (lib ? " (" + lib + ")" : "") + " — " + fmt(it.price * it.qty));
+    });
+    L.push("");
+    L.push("🧾 *Sous-total :* " + fmt(o.subtotal));
+    L.push("🚚 *Livraison :* " + (o.delivery === 0 ? "Offerte" : fmt(o.delivery)));
+    L.push("💰 *Total :* " + fmt(o.total));
+    L.push("👤 *Client :* " + o.client + " (" + localPhone(o.phone) + ")");
+    L.push("📍 *Livraison :* Bamako, " + o.quartier);
+    return L.join("\n");
+  }
+  function localRef(){
+    /* Repli hors ligne : suffixe aléatoire au lieu d'un compteur local,
+       sinon deux appareils produisent la même référence le même jour. */
+    var d = new Date();
+    var stamp = d.getFullYear() + ("0" + (d.getMonth() + 1)).slice(-2) + ("0" + d.getDate()).slice(-2);
+    var rnd = "";
+    var alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+    for (var i = 0; i < 5; i++) rnd += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    return "CMD-" + stamp + "-" + rnd;
+  }
+  function showOrderError(msg){
+    $("#errText").textContent = msg;
+    openModal("errOverlay");
+  }
+  function finishOrder(order){
+    /* Réservation locale du stock pour que l'affichage reste cohérent
+       jusqu'au prochain rechargement du catalogue. */
+    order.items.forEach(function(it){
+      var p = findProduct(it.id);
+      if (p && p.variants && p.variants[it.variant]) p.variants[it.variant].r += it.qty;
+    });
+    store.orders.unshift(order);
+    saveStore(store);
+
+    cart = []; persistCart(); renderCount(); renderCart(); renderGrid();
+
+    var msg = buildWAMessage(order);
+    $("#waRef").textContent = order.ref;
+    $("#waMsg").value = msg;
+    $("#waLink").href = waLink(store.settings.whatsapp, msg);
+    $("#coStepForm").style.display = "none";
+    $("#coStepDone").style.display = "block";
+    $("#waLink").focus();
+    toast("Commande " + order.ref + " enregistrée");
+  }
+  var sending = false;
+  function submitOrder(){
+    if (sending) return;
+    var name = $("#coName").value.trim();
+    var phone = digits($("#coPhone").value);
+    var quartier = $("#coQuartier").value.trim();
+    $("#errName").setAttribute("data-show", name.length < 2 ? "true" : "false");
+    $("#errPhone").setAttribute("data-show", phone.length < 8 ? "true" : "false");
+    $("#errQuartier").setAttribute("data-show", quartier.length < 2 ? "true" : "false");
+    if (name.length < 2 || phone.length < 8 || quartier.length < 2){
+      var bad = name.length < 2 ? "#coName" : (phone.length < 8 ? "#coPhone" : "#coQuartier");
+      $(bad).focus();
+      return;
+    }
+    if (!cart.length){ toast("Votre panier est vide"); return; }
+
+    var items = [], sub = 0;
+    cart.forEach(function(it){
+      /* `variantLabel` est figé ici : une commande passée ne relit jamais le
+         produit, donc renommer une couleur plus tard ne réécrit pas
+         l'historique. `size` reste envoyé pour les commandes déjà en base. */
+      items.push({ id: it.id, name: it.name, variant: it.variant,
+                   variantLabel: it.variantLabel, size: it.variantLabel,
+                   qty: it.qty, price: it.price });
+      sub += it.price * it.qty;
+    });
+
+    var btn = $("#coSubmit");
+    var draft = { client: name, phone: phone, quartier: quartier, items: items };
+
+    /* Quand Supabase est configuré, la commande est créée par la fonction
+       serveur : elle recalcule les montants, vérifie le stock et attribue
+       la référence. Le navigateur ne décide plus de rien. */
+    if (typeof window.AURA_DB !== "undefined" && window.AURA_DB.ready()){
+      sending = true;
+      btn.disabled = true;
+      btn.textContent = "Envoi en cours…";
+      window.AURA_DB.placeOrder(draft, function(er, order){
+        sending = false;
+        btn.disabled = false;
+        btn.textContent = "Commander via WhatsApp";
+        if (er || !order){
+          showOrderError((er && er.message) ? er.message : "La commande n'a pas pu être enregistrée. Vérifiez votre connexion et réessayez.");
+          return;
+        }
+        finishOrder(order);
+      });
+      return;
+    }
+
+    /* Mode autonome (Supabase désactivé) : tout reste dans le navigateur. */
+    var delivery = deliveryFor(sub);
+    finishOrder({
+      ref: localRef(),
+      date: new Date().toISOString(),
+      client: name, phone: phone, quartier: quartier,
+      items: items, subtotal: sub, delivery: delivery,
+      total: sub + delivery, status: "PENDING"
+    });
+  }
+
+  /* ---------------- Recherche ---------------- */
+  function openSearch(){
+    $("#soInput").value = ""; curSearch();
+    openModal("soOverlay");
+    setTimeout(function(){ $("#soInput").focus(); }, 60);
+  }
+  function curSearch(){
+    var q = $("#soInput").value.trim().toLowerCase();
+    var list = store.products.filter(function(p){ return p.active; });
+    if (q) list = list.filter(function(p){ return p.name.toLowerCase().indexOf(q) >= 0 || (CATS[p.cat]||"").toLowerCase().indexOf(q) >= 0; });
+    var total = list.length;
+    list = list.slice(0, 8);
+    var el = $("#soRes");
+    if (!list.length){ el.innerHTML = '<p class="none-msg" style="margin:0">Aucun résultat.</p>'; return; }
+    el.innerHTML = list.map(function(p){
+      return '<li><button type="button" data-openp="' + esc(p.id) + '">' +
+        '<img class="s-thumb" src="' + esc(p.img) + '" onerror="this.style.opacity=0" alt="" />' +
+        '<span><span class="s-name" style="display:block">' + esc(p.name) + '</span><span class="s-cat">' + esc(CATS[p.cat]||p.cat) + '</span></span>' +
+        '<span class="s-price">' + fmt(p.price) + '</span>' +
+      '</button></li>';
+    }).join("") +
+    (q ? '<li><button type="button" data-searchall style="justify-content:center;font-weight:700">Voir les ' + total + ' résultat' + (total > 1 ? "s" : "") + ' dans le catalogue</button></li>' : "");
+  }
+  /* Applique la recherche à la grille principale et referme la modale. */
+  function applySearchToGrid(){
+    curQuery = $("#soInput").value.trim();
+    curFilter = "tous";
+    $$(".tab").forEach(function(x){ x.classList.toggle("active", x.getAttribute("data-filter") === "tous"); });
+    renderGrid();
+    closeModal("soOverlay");
+    var prod = $("#produits");
+    window.scrollTo({ top: prod.getBoundingClientRect().top + window.pageYOffset - 70, behavior: "smooth" });
+  }
+
+  function legacyCopy(t, done){
+    var ta = document.createElement("textarea");
+    ta.value = t; ta.style.cssText = "position:fixed;left:-9999px;top:0";
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch(e){}
+    document.body.removeChild(ta);
+    if (ok && done) done();
+  }
+  function copyWA(){
+    var t = $("#waMsg").value;
+    var done = function(){ toast("Texte de la commande copié"); };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(done, function(){ legacyCopy(t, done); });
+    } else legacyCopy(t, done);
+  }
+
+  /* ---------------- Événements ---------------- */
+  document.addEventListener("click", function(e){
+    var t = e.target;
+
+    var open = t.closest("[data-openp]");
+    if (open){
+      var id = open.getAttribute("data-openp");
+      if (open.closest("#soOverlay")) closeModal("soOverlay");
+      openPV(id);
+      return;
+    }
+    var close = t.closest("[data-close]");
+    if (close){ closeModal(close.getAttribute("data-close")); return; }
+
+    if (t.closest("#overlay")){ closeCart(); return; }
+    if (t.closest("#cartClose") || t.closest("#cartContinue") || t.closest("#waClose")){ closeCart(); closeModal("coOverlay"); return; }
+    if (t.closest("[data-empty-cta]")){ closeCart(); return; }
+
+    if (t.closest("#navCart") || t.closest("[data-od-id='nav-cart']")){ openCart(); return; }
+    if (t.closest("[data-od-id='cart-close']")){ closeCart(); return; }
+
+    if (t.closest("#navSearch") || t.closest("[data-od-id='nav-search']")){ openSearch(); return; }
+
+    var thumb = t.closest("#pvThumbs [data-thumb]");
+    if (thumb){
+      var idx = parseInt(thumb.getAttribute("data-thumb"), 10);
+      if (pvImgs[idx]){
+        var main = document.querySelector("#pvMedia .pv-main");
+        if (main) main.src = pvImgs[idx];
+        $$("#pvThumbs [data-thumb]").forEach(function(b, i){ b.classList.toggle("active", i === idx); });
+      }
+      return;
+    }
+
+    var sz = t.closest("#pvAxes [data-val]");
+    if (sz){
+      pvSel[parseInt(sz.getAttribute("data-axe"), 10)] = sz.getAttribute("data-val");
+      renderAxes();
+      majPhotoPrincipale();
+      updateStockLine();
+      return;
+    }
+    if (t.closest("#pvMinus")){ updateQty(-1); return; }
+    if (t.closest("#pvPlus")){ updateQty(1); return; }
+    if (t.closest("#pvAdd")){
+      if (addToCart(pvProduct, pvKey(), pvQty)){
+        closeModal("pvOverlay");
+        openCart();
+      }
+      return;
+    }
+    if (t.closest("#pvBuyNow")){
+      if (addToCart(pvProduct, pvKey(), pvQty)){
+        closeModal("pvOverlay");
+        openCheckout();
+      }
+      return;
+    }
+
+    var qtyBtn = t.closest("[data-qty]");
+    if (qtyBtn){
+      var itemEl = qtyBtn.closest("[data-key]");
+      var key = itemEl.getAttribute("data-key");
+      var it = null;
+      for (var i=0;i<cart.length;i++) if (cart[i].id + "|" + cart[i].variant === key){ it = cart[i]; break; }
+      if (it){
+        if (qtyBtn.getAttribute("data-qty") === "inc"){
+          var p = findProduct(it.id);
+          var a = p ? availFor(p, it.variant) : 0;
+          if (it.qty < a){ it.qty += 1; } else toast("Stock disponible limité");
+        } else {
+          it.qty -= 1;
+          if (it.qty <= 0) cart = cart.filter(function(c){ return !(c.id + "|" + c.variant === key); });
+        }
+        persistCart(); renderCount(); renderCart();
+      }
+      return;
+    }
+    if (t.closest("[data-remove]")){
+      var itemEl2 = t.closest("[data-key]");
+      cart = cart.filter(function(c){ return !(c.id + "|" + c.variant === itemEl2.getAttribute("data-key")); });
+      persistCart(); renderCount(); renderCart();
+      return;
+    }
+
+    if (t.closest("[data-od-id='cart-checkout']") || t.closest("#checkoutBtn")){ openCheckout(); return; }
+    if (t.closest("#waCopy")){ copyWA(); return; }
+    if (t.closest("#wlSubmit")){ submitWaitlist(); return; }
+
+    var wishBtn = t.closest("[data-wish]");
+    if (wishBtn){
+      var added = toggleWish(wishBtn.getAttribute("data-wish"));
+      wishBtn.setAttribute("data-on", added ? "true" : "false");
+      wishBtn.setAttribute("aria-pressed", added ? "true" : "false");
+      wishBtn.setAttribute("aria-label", added ? "Retirer des favoris" : "Ajouter aux favoris");
+      toast(added ? "Ajouté aux favoris" : "Retiré des favoris");
+      return;
+    }
+
+    if (t.closest("[data-searchall]")){ applySearchToGrid(); return; }
+    if (t.closest("[data-reset-filters]")){ setFilter("tous"); return; }
+
+    var coll = t.closest("[data-coll]");
+    if (coll){
+      e.preventDefault();
+      setCollection(coll.getAttribute("data-coll"));
+      var cible = $("#collBanniere");
+      if (cible) window.scrollTo({ top: cible.getBoundingClientRect().top + window.pageYOffset - 70, behavior: "smooth" });
+      return;
+    }
+    var goto = t.closest("[data-goto]");
+    if (goto){
+      e.preventDefault();
+      /* « Voir tout le catalogue » quitte aussi la collection ouverte. */
+      if (curColl && goto.getAttribute("data-goto") === "tous") setCollection("");
+      goTo(goto.getAttribute("data-goto"));
+      return;
+    }
+  });
+
+  document.addEventListener("input", function(e){
+    if (e.target === $("#soInput")) curSearch();
+  });
+  $("#soInput").addEventListener("keydown", function(e){
+    if (e.key === "Enter"){ e.preventDefault(); if (this.value.trim()) applySearchToGrid(); }
+  });
+
+  /* Delegation : les onglets sont reconstruits a chaque changement de
+     categories, un ecouteur pose sur chaque bouton serait perdu. */
+  var tabsHost = $("#filterTabs");
+  if (tabsHost) tabsHost.addEventListener("click", function(e){
+    var tb = e.target.closest(".tab");
+    if (!tb) return;
+    setFilter(tb.getAttribute("data-filter"));
+    var prod = $("#produits");
+    window.scrollTo({ top: prod.getBoundingClientRect().top + window.pageYOffset - 70, behavior: "smooth" });
+  });
+
+  var coForm = $("#coForm");
+  coForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    submitOrder();
+  });
+
+  var burger = $("#navBurger");
+  if (burger) burger.addEventListener("click", function(){
+    var m = $("#mobileMenu");
+    var open = m.getAttribute("data-open") !== "true";
+    m.setAttribute("data-open", open ? "true" : "false");
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+    burger.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+  });
+  var mobileMenu = $("#mobileMenu");
+  if (mobileMenu) mobileMenu.addEventListener("click", function(e){
+    if (!e.target.closest("a")) return;
+    mobileMenu.setAttribute("data-open","false");
+    if (burger){ burger.setAttribute("aria-expanded","false"); burger.setAttribute("aria-label","Ouvrir le menu"); }
+  });
+
+  /* ---------------- Newsletter ----------------
+     L'adresse est réellement enregistrée : en base quand Supabase est
+     configuré, dans le navigateur sinon (l'admin peut alors l'exporter). */
+  var NKEY = "aura_news_v1";
+  var newsForm = $("#newsForm");
+  newsForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    var input = $("#newsEmail");
+    var email = input.value.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ toast("Adresse e-mail invalide"); input.focus(); return; }
+
+    function done(){
+      newsForm.setAttribute("data-hidden","true");
+      $("[data-od-id='newsletter-success']").setAttribute("data-visible","true");
+    }
+    function keepLocally(){
+      try {
+        var list = JSON.parse(localStorage.getItem(NKEY) || "[]");
+        if (list.indexOf(email) < 0) list.push(email);
+        localStorage.setItem(NKEY, JSON.stringify(list));
+      } catch(err){}
+    }
+
+    var btn = newsForm.querySelector("button[type='submit']");
+    if (typeof window.AURA_DB !== "undefined" && window.AURA_DB.ready()){
+      btn.disabled = true;
+      window.AURA_DB.subscribe(email, function(er){
+        btn.disabled = false;
+        if (er){
+          keepLocally();
+          toast("Inscription enregistrée hors ligne");
+        }
+        done();
+      });
+    } else {
+      keepLocally();
+      done();
+    }
+  });
+
+  renderGrid();
+  renderCount();
+  renderCart();
+  hydrate();
+})();
