@@ -338,6 +338,11 @@
                   <option value="accessoires">Accessoires</option>
                 </select>
               </div>
+            <div class="field">
+              <label for="fColl">Marque</label>
+              <select id="fColl"></select>
+              <p class="hint">Elle range le produit dans sa page de marque et s'affiche sur la carte. « Sans marque » si le produit n'en a pas.</p>
+            </div>
             </div>
             <div class="grid2">
               <div class="field">
@@ -758,6 +763,20 @@
   function catUsage(key){
     return store.products.filter(function(p){ return p.cat === key; }).length;
   }
+  /* Liste des marques du formulaire produit. Sans elle, le commerçant
+     pouvait créer une marque mais jamais y rattacher un produit : la page de
+     la marque restait vide et la carte n'affichait aucune marque. */
+  function fillCollSelect(){
+    var sel = $("#fColl");
+    if (!sel) return;
+    var avant = sel.value;
+    sel.innerHTML = '<option value="">Sans marque</option>' +
+      collList().map(function(c){
+        return '<option value="' + esc(c.key) + '">' + esc(c.label) + '</option>';
+      }).join("");
+    sel.value = avant;
+  }
+
   function fillCatSelect(){
     var sel = $("#fCat");
     if (!sel) return;
@@ -772,6 +791,17 @@
   var catOuverte = null;
 
   function axesEditorHTML(c, i){
+    /* Image de la catégorie. Elle sert la carte de l'accueil quand la
+       boutique ne déclare aucune marque : sans ce champ, elle restait figée
+       sur la photo de démonstration, seule image du site que le commerçant
+       ne pouvait pas remplacer. */
+    var couverture = '<div class="field" style="margin-bottom:14px">' +
+      '<label>Image de la catégorie</label>' +
+      (c.cover ? '<img class="img-preview" src="' + esc(c.cover) + '" alt="" style="display:block;margin-bottom:8px" />' : '') +
+      '<label class="filebtn"><b>Choisir une image</b>' +
+      '<span>Recadrée automatiquement au format de la carte</span>' +
+      '<input type="file" data-catcover="' + i + '" accept="image/*" /></label>' +
+      '</div>';
     var axes = Array.isArray(c.axes) ? c.axes : [];
     var blocs = axes.map(function(ax, j){
       var valeurs = (ax.values || []).map(function(v, k){
@@ -803,7 +833,7 @@
         '</div>' +
       '</div>';
     }).join("");
-    return '<div class="axes-editeur">' +
+    return '<div class="axes-editeur">' + couverture +
       '<p class="hint">Une déclinaison est ce qui fait varier un produit : taille, pointure, couleur, contenance. Deux au maximum — au-delà, le nombre de cases de stock à remplir devient ingérable.</p>' +
       blocs +
       (axes.length < 2
@@ -876,6 +906,7 @@
   function renderCatSettings(){
     rebuildCats();
     fillCatSelect();
+    fillCollSelect();
     var host = $("#catList");
     if (!host) return;
     var list = catList();
@@ -1264,6 +1295,21 @@
   });
   /* ---------------- Categories ---------------- */
   $("#catList").addEventListener("change", function(e){
+    /* Image de la catégorie, recadrée au format 4/3 de la carte d'accueil. */
+    var ccov = e.target.closest("[data-catcover]");
+    if (ccov){
+      var i5 = parseInt(ccov.getAttribute("data-catcover"), 10);
+      var f5 = ccov.files && ccov.files[0];
+      ccov.value = "";
+      if (!f5) return;
+      envoyerImage(f5, 4/3, function(url){
+        var l5 = catList();
+        l5[i5].cover = url;
+        majCategories(l5);
+        toast("Image de la catégorie enregistrée");
+      });
+      return;
+    }
     /* Photo attachée à une valeur d'axe : c'est elle qui s'affichera quand
        le client choisira ce coloris. Recadrée au format de la fiche produit. */
     var vimg = e.target.closest("[data-valimg]");
@@ -1598,6 +1644,7 @@
     store.settings.collections = list;
     saveStore();
     renderCollSettings();
+    fillCollSelect();
     renderProducts();
   }
 
@@ -2173,6 +2220,8 @@ function applyStatus(order, ns){
     $("#fId").value = p.id;
     $("#fName").value = p.name;
     $("#fCat").value = p.cat;
+    fillCollSelect();
+    $("#fColl").value = p.collection || "";
     $("#fPrice").value = p.price;
     $("#fOld").value = p.oldPrice || "";
     $("#fBadge").value = p.badge || "";
@@ -2202,6 +2251,8 @@ function applyStatus(order, ns){
        categorie. */
     var prem = catList()[0];
     $("#fCat").value = prem ? prem.key : "";
+    fillCollSelect();
+    $("#fColl").value = "";
     $("#fPrice").value = "";
     $("#fOld").value = "";
     $("#fBadge").value = "";
@@ -2463,6 +2514,7 @@ function applyStatus(order, ns){
       pr = findProduct(editing);
       if (!pr) return;
       pr.name = name; pr.price = price; pr.oldPrice = oldP; pr.cat = cat; pr.badge = badge;
+      pr.collection = $("#fColl").value || "";
       pr.img = img; pr.desc = desc; pr.active = $("#fActive").checked; pr.stockout = $("#fOut").checked;
       /* La fiche produit affiche `imgs`, la carte affiche `img`. Sans cette
          ligne, remplacer la photo changeait la carte mais laissait la galerie
@@ -2482,7 +2534,8 @@ function applyStatus(order, ns){
       syncProducts();
       toast("Produit mis à jour");
     } else {
-      store.products.push({ id:"p" + Date.now(), name:name, cat:cat, price:price,
+      store.products.push({ id:"p" + Date.now(), name:name, cat:cat,
+        collection:$("#fColl").value || "", price:price,
         oldPrice:oldP, badge:badge, img:img,
         imgs:[img].concat(galerieForm.filter(function(u){ return u && u !== img; })),
         desc:desc,
