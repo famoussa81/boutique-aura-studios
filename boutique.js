@@ -1604,6 +1604,12 @@
   }
   function closeModal(id){
     var el = $("#" + id);
+    /* La fiche produit en pleine page n'a pas de modale à refermer : sans ce
+       garde-fou, « Ajouter au panier » et « Commander maintenant » levaient
+       une exception juste après l'ajout. L'article entrait bien au panier,
+       mais ni le tiroir ni la commande ne s'ouvraient — le client n'avait
+       aucun retour et ne pouvait pas acheter depuis la fiche. */
+    if (!el) return;
     el.setAttribute("data-open","false");
     popLayer(el);
   }
