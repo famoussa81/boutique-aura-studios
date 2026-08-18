@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Produit — Boutique en ligne · Bamako</title>
+<meta name="description" content="Pointures disponibles, coloris et stock réel. Commande par WhatsApp, paiement à la livraison à Bamako." />
+<link rel="canonical" href="https://boutique-aura-studios.vercel.app/produit" />
+<link rel="icon" href="logos/favicon.ico" sizes="any" />
+<meta name="theme-color" content="#111111" />
+<meta property="og:type" content="product" />
+<meta property="og:site_name" content="AURA STUDIOS" />
+<meta property="og:title" content="Produit — Boutique en ligne · Bamako" />
+<meta property="og:description" content="Pointures disponibles, coloris et stock réel. Commande par WhatsApp, paiement à la livraison." />
+<meta property="og:image" content="assets/hero.webp" />
+<meta property="og:url" content="https://boutique-aura-studios.vercel.app/produit" />
+<meta property="og:locale" content="fr_FR" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Produit — Boutique en ligne · Bamako" />
+<meta name="twitter:description" content="Pointures disponibles, coloris et stock réel. Commande par WhatsApp." />
+<meta name="twitter:image" content="assets/hero.webp" />
+<link rel="preconnect" href="https://vgzvavlmmqbxtuhanaqj.supabase.co" crossorigin />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap"
+      media="print" onload="this.media='all';this.onload=null" />
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" /></noscript>
+<link rel="stylesheet" href="boutique.css" />
+</head>
+<body data-page="produit">
+<noscript>
+  <div class="noscript-msg">
+    <h1>La boutique a besoin de JavaScript</h1>
+    <p>Votre navigateur ne l'exécute pas. C'est souvent le cas en
+       <b>mode économie de données</b> ou <b>navigation allégée</b> :
+       désactivez-le dans les réglages du navigateur, puis rechargez.</p>
+    <p>Vous pouvez aussi commander directement :</p>
+    <p><a class="noscript-cta" href="https://wa.me/22376759515">Commander sur WhatsApp</a></p>
+  </div>
+</noscript>
+<main id="page">
+
+  <!-- Fil d'Ariane : sur une fiche ouverte depuis une recherche ou un lien
+       partagé, il dit d'où l'on vient et donne un chemin de retour. -->
+  <nav class="fiche-fil" aria-label="Fil d'Ariane">
+    <div class="wrap"><a href="catalogue.html">Catalogue</a> <span id="filMarque"></span></div>
+  </nav>
+
+  <section class="fiche">
+    <div class="wrap">
+      <div class="fiche-grid">
+        <div class="pv-media" id="pvMedia"></div>
+
+        <div class="pv-info">
+          <span class="pcat" id="pvCat"></span>
+          <h1 id="pvName"></h1>
+          <span class="price" id="pvPrice"></span>
+          <p class="pv-desc" id="pvDesc"></p>
+
+          <div id="pvAxes"></div>
+          <span class="stock-line" id="pvStock"></span>
+          <div id="pvWaitlistHost"></div>
+
+          <span class="size-label">Quantité</span>
+          <div class="qty-stepper">
+            <button id="pvMinus" aria-label="Diminuer">−</button>
+            <span id="pvQtyVal">1</span>
+            <button id="pvPlus" aria-label="Augmenter">+</button>
+          </div>
+
+          <button class="btn btn-primary btn-full" id="pvAdd" style="margin-top:8px">Ajouter au panier</button>
+          <button type="button" class="about-link" id="pvBuyNow" style="justify-content:center">Commander maintenant</button>
+
+          <!-- Guide des tailles replié : présent pour qui doute, invisible
+               pour qui connaît sa pointure. -->
+          <details class="fiche-guide" id="ficheGuide">
+            <summary>Guide des pointures</summary>
+            <div id="ficheGuideCorps"></div>
+          </details>
+
+          <div class="fiche-specs" id="ficheSpecs"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section fiche-sugg" id="ficheSuggSection" hidden>
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="sec-title" id="ficheSuggTitre">Dans la même marque</h2>
+      </div>
+      <div class="pgrid" id="ficheSugg"></div>
+    </div>
+  </section>
+
+  <div class="fiche-trust" id="ficheTrust"></div>
+
+  <!-- Barre d'achat fixe : sur téléphone, le prix et le bouton restent
+       accessibles quelle que soit la position de lecture. -->
+  <div class="buybar" id="buybar" hidden>
+    <div class="buybar-info">
+      <span class="buybar-variant" id="buybarVariant"></span>
+      <strong class="buybar-price" id="buybarPrice"></strong>
+    </div>
+    <button class="btn btn-primary" id="buybarAdd">Ajouter au panier</button>
+  </div>
+
+</main>
+
+<script src="supabase.config.js"></script>
+<script src="supabase-client.js"></script>
+<script src="catalog.js"></script>
+<script src="boutique.js"></script>
+</body>
+</html>

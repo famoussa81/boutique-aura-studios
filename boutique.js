@@ -232,6 +232,14 @@
   if (!conteneur) return;
   conteneur.insertAdjacentHTML("beforebegin", avant);
   conteneur.insertAdjacentHTML("afterend", apres);
+  /* La page produit affiche la fiche en pleine page et porte donc deja
+     `pvMedia`, `pvAxes`, `pvAdd`… La modale injectee par la coque
+     dupliquerait ces identifiants : le script ecrirait dans la copie
+     cachee et la page resterait vide. On la retire. */
+  if (document.body.getAttribute("data-page") === "produit"){
+    var modale = document.getElementById("pvOverlay");
+    if (modale) modale.remove();
+  }
 })();
 
 (function(){
@@ -817,6 +825,16 @@
        recherche et se cannibalisent. Une marque inconnue — lien périmé,
        marque retirée par le commerçant — renvoie au catalogue plutôt que
        d'afficher une page vide. */
+    if (typePage() === "produit"){
+      var vid = "";
+      try { var mm = location.search.match(/[?&]id=([^&]+)/); vid = mm ? decodeURIComponent(mm[1]) : ""; } catch(e){}
+      var prod = vid ? findProduct(vid) : null;
+      /* Produit retiré du catalogue ou lien périmé : le catalogue vaut mieux
+         qu'une page vide, et garde le client dans la boutique. */
+      if (!prod || !prod.active){ location.replace("catalogue.html"); return; }
+      openPV(prod.id);
+      return;
+    }
     if (typePage() === "collection"){
       var c = curColl ? collById(curColl) : null;
       if (!c){ location.replace("catalogue.html"); return; }
@@ -957,6 +975,10 @@
     return '<article class="pcard" data-card="' + esc(p.id) + '">' +
       '<div class="pmedia">' +
         '<img src="' + img + '" alt="' + alt + '" width="600" height="800" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' +
+        /* Lien en surimpression plutot qu'un <a> autour du bloc : le bouton
+           favori est un vrai bouton, et un bouton dans un lien n'est pas du
+           HTML valide. Le favori passe au-dessus par son z-index. */
+        '<a class="pmedia-link" href="produit.html?id=' + encodeURIComponent(p.id) + '" aria-label="' + alt + '"></a>' +
         badgeHTML(p) +
         '<button class="wish" data-wish="' + esc(p.id) + '" data-on="' + (isWished(p.id) ? "true" : "false") + '" aria-pressed="' + (isWished(p.id) ? "true" : "false") + '" aria-label="' + (isWished(p.id) ? "Retirer des favoris" : "Ajouter aux favoris") + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.4 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .9-4.5 2.5C10.5 3.9 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.1 3 5.5l7 6Z"/></svg></button>' +
       '</div>' +
@@ -966,11 +988,14 @@
            n'ont pas la même hauteur. Une boutique sans marques n'a pas de
            bandeau du tout, donc pas d'espace perdu. */
         (collList().length ? '<span class="pbrand">' + esc(marque) + '</span>' : '') +
-        '<span class="pname">' + name + '</span>' +
+        '<a class="pname" href="produit.html?id=' + encodeURIComponent(p.id) + '">' + name + '</a>' +
         '<span class="pdelivery">' + esc(deliveryLabel()) + '</span>' +
         '<span class="price">' + priceHTML(p) + '</span>' +
         stockHintHTML(p) +
       '</div>' +
+      /* Sur la grille le bouton ouvre la modale — un achat rapide sans
+         quitter la liste. Le nom et la photo mènent à la fiche pleine page,
+         qui a une adresse partageable. */
       '<div class="padd"><button class="btn btn-primary btn-full" data-openp="' + esc(p.id) + '">' + (out ? "Me prévenir du retour" : "Choisir la taille") + '</button></div>' +
     '</article>';
   }
@@ -1104,6 +1129,128 @@
     window.scrollTo({ top: prod.getBoundingClientRect().top + window.pageYOffset - 70, behavior: "smooth" });
   }
 
+
+  /* ---------------- Fiche produit en pleine page ----------------
+     La modale suffit pour ajouter vite au panier depuis une grille. Elle ne
+     suffit pas pour vendre : elle n'a pas d'adresse, donc rien à envoyer sur
+     WhatsApp, rien à indexer, et le bouton « retour » la referme au lieu de
+     revenir. La fiche pleine page reprend le même moteur — mêmes
+     identifiants, même sélection de variante — et y ajoute ce qui décide
+     l'achat : garanties, guide des pointures, et les autres modèles de la
+     marque. */
+
+  function ficheGarantiesHTML(){
+    var d = deliveryDelay();
+    var e = (store.settings.exchangeTime || "").toString().trim();
+    return [
+      { t: "Payé à la livraison", s: "Vous essayez devant le livreur avant de payer. Rien à avancer." },
+      { t: d ? "Livraison " + d : "Livraison à Bamako", s: "Partout dans la ville, prévenue par WhatsApp." },
+      { t: e ? "Échange sous " + e : "Échange possible", s: "Mauvaise pointure ? On repasse l'échanger." },
+      { t: "Stock réel", s: "Le nombre affiché est celui de la boutique, pointure par pointure." }
+    ].map(function(x){
+      return '<div class="trust-item"><b>' + esc(x.t) + '</b><span>' + esc(x.s) + '</span></div>';
+    }).join("");
+  }
+
+  /* Correspondance pointure / longueur de pied. Bornée aux pointures que le
+     produit propose vraiment : un guide qui parle du 46 quand la boutique
+     s'arrête au 45 fait douter de tout le reste. */
+  function ficheGuideHTML(p){
+    /* Table déclarée dans la fonction, pas au-dessus : une `var` de module
+       lue avant que sa ligne d'affectation ne s'exécute vaut `undefined`, et
+       le rendu s'arrête net. Le même piège avait déjà vidé le catalogue. */
+    var LONGUEUR_CM = { "36":"22,5", "37":"23,2", "38":"24,0", "39":"24,7", "40":"25,3",
+                        "41":"26,0", "42":"26,6", "43":"27,3", "44":"27,9", "45":"28,6",
+                        "46":"29,2", "47":"29,9" };
+    var axes = prodAxes(p);
+    if (!axes.length) return "";
+    var lignes = axes[0].values.filter(function(v){ return LONGUEUR_CM[v]; });
+    if (lignes.length < 2) return "";
+    return '<table class="guide-table"><tbody>' + lignes.map(function(v){
+      return '<tr><th scope="row">' + esc(axes[0].name) + ' ' + esc(v) + '</th><td>' +
+             LONGUEUR_CM[v] + ' cm</td></tr>';
+    }).join("") + '</tbody></table>' +
+    '<p class="guide-note">Mesurez votre pied du talon au gros orteil, debout, en fin de journée. Entre deux pointures, prenez au-dessus.</p>';
+  }
+
+  /* Autres modèles de la même marque, sinon de la même catégorie. Un client
+     venu pour une marque en veut d'autres de la même marque ; c'est ce qui
+     transforme une fiche en deuxième vente. */
+  function ficheSuggestions(p){
+    var actifs = store.products.filter(function(x){ return x.active && x.id !== p.id; });
+    var memeMarque = p.collection
+      ? actifs.filter(function(x){ return x.collection === p.collection; })
+      : [];
+    var liste = memeMarque.length ? memeMarque
+              : actifs.filter(function(x){ return x.cat === p.cat; });
+    return { titre: memeMarque.length ? "Autres modèles " + marqueDe(p) : "Dans le même rayon",
+             liste: liste.slice(0, 4) };
+  }
+
+  function majFiche(){
+    var p = pvProduct;
+    if (!p) return;
+    var marque = marqueDe(p);
+
+    var fil = $("#filMarque");
+    if (fil){
+      fil.innerHTML = (p.collection && marque)
+        ? '· <a href="collection.html?c=' + encodeURIComponent(p.collection) + '">' + esc(marque) + '</a>'
+        : '· ' + esc(CATS[p.cat] || p.cat);
+    }
+
+    var g = $("#ficheGuideCorps");
+    if (g){
+      var html = ficheGuideHTML(p);
+      g.innerHTML = html;
+      var det = $("#ficheGuide");
+      if (det) det.hidden = !html;
+    }
+
+    var sp = $("#ficheSpecs");
+    if (sp) sp.innerHTML = ficheGarantiesHTML();
+    var tr = $("#ficheTrust");
+    if (tr) tr.innerHTML = '<div class="wrap"><div class="trust-grid">' + ficheGarantiesHTML() + '</div></div>';
+
+    var sugg = ficheSuggestions(p);
+    var host = $("#ficheSugg");
+    if (host){
+      host.innerHTML = sugg.liste.map(cardHTML).join("");
+      var sec = $("#ficheSuggSection");
+      if (sec) sec.hidden = !sugg.liste.length;
+      var t = $("#ficheSuggTitre");
+      if (t) t.textContent = sugg.titre;
+    }
+
+    majBuybar();
+
+    document.title = (marque ? marque + " " : "") + p.name + " — " +
+      store.settings.shopName + " — Boutique en ligne · Bamako";
+    poserMeta("description", (p.desc || "").toString().slice(0, 160) ||
+      ((marque ? marque + " " : "") + p.name + " à Bamako. Paiement à la livraison."));
+    poserCanonique(location.origin + location.pathname + "?id=" + encodeURIComponent(p.id));
+  }
+
+  /* Barre d'achat fixe. Elle répète le prix et la variante choisie : sur
+     téléphone, la sélection des pointures a défilé hors de l'écran au moment
+     où le client se décide. */
+  function majBuybar(){
+    var bar = $("#buybar");
+    if (!bar || !pvProduct) return;
+    bar.hidden = false;
+    var lib = variantLabel(pvProduct, pvKey());
+    var v = $("#buybarVariant");
+    if (v) v.textContent = lib || (CATS[pvProduct.cat] || "");
+    var pr = $("#buybarPrice");
+    if (pr) pr.textContent = fmt(pvProduct.price);
+    var b = $("#buybarAdd");
+    if (b){
+      var a = availFor(pvProduct, pvKey());
+      b.disabled = a <= 0;
+      b.textContent = a <= 0 ? "Pointure épuisée" : "Ajouter au panier";
+    }
+  }
+
   /* ---------------- Fiche produit ---------------- */
   var pvProduct = null, pvSel = [], pvQty = 1, pvBuy = false, pvImgs = [];
   function pvKey(){ return keyOf(pvSel); }
@@ -1128,7 +1275,9 @@
     majPhotoPrincipale();
     updateStockLine();
     updateQty(0);
-    openModal("pvOverlay");
+    /* En pleine page il n'y a rien a ouvrir : la fiche est deja la. */
+    if ($("#pvOverlay")) openModal("pvOverlay");
+    else majFiche();
   }
   /* Un sélecteur par axe. Une valeur est marquée épuisée quand aucune
      combinaison la contenant n'a de stock — ce qui reste juste avec deux axes
@@ -1243,6 +1392,7 @@
     add.disabled = a <= 0;
     renderWaitlist();
     updateQty(0);
+    majBuybar();
   }
   function updateQty(delta){
     var a = availFor(pvProduct, pvKey());
@@ -1756,6 +1906,11 @@
       return;
     }
 
+    if (t.closest("#buybarAdd")){
+      var bAdd = $("#pvAdd");
+      if (bAdd && !bAdd.disabled) bAdd.click();
+      return;
+    }
     var chip = t.closest("[data-taille]");
     if (chip){ setTaille(chip.getAttribute("data-taille")); return; }
     if (t.closest("[data-searchall]")){ applySearchToGrid(); return; }
