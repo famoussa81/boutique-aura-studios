@@ -694,3 +694,67 @@
     .buybar .btn{flex:1;min-height:48px}
     .fiche-trust{padding-bottom:0}
   }
+
+  /* ══════════════════════════════════════════════════════════════════
+     Mouvement
+     ══════════════════════════════════════════════════════════════════
+     Palette Nike inchangée : noir, blanc, filets nets. Le mouvement
+     remplace la couleur comme signal — il guide l'œil sans rien salir.
+     Trois règles tenues partout : rien ne bouge plus de 320 ms, rien ne
+     se déplace de plus de 14 px, et tout s'arrête si le visiteur a
+     demandé moins d'animations. Une boutique qui gigote fait perdre
+     confiance ; une boutique qui répond donne envie. */
+
+  /* Apparition à l'arrivée dans l'écran. Décalée de quelques dizaines de
+     millisecondes d'une carte à l'autre pour que la grille se pose au
+     lieu de surgir d'un bloc. */
+  [data-reveal]{opacity:0;transform:translateY(14px)}
+  [data-reveal][data-seen="true"]{opacity:1;transform:none;
+    transition:opacity .38s ease,transform .38s cubic-bezier(.22,.61,.36,1)}
+
+  /* Carte produit : la photo respire, le bouton se remplit. Sur mobile
+     le survol n'existe pas — l'effet est réservé aux appareils qui
+     pointent, sinon il reste collé après le doigt. */
+  @media (hover:hover){
+    .pcard .pmedia img{transition:transform .5s cubic-bezier(.22,.61,.36,1)}
+    .pcard:hover .pmedia img{transform:scale(1.04)}
+    .pcard .padd .btn{transition:background-color .2s ease,color .2s ease}
+    .mband-link svg{transition:transform .22s ease}
+    .mband-link:hover svg{transform:translateX(5px)}
+  }
+
+  /* Retour au doigt : sur écran tactile, seul l'enfoncement fait signe. */
+  .pcard .padd .btn:active,.buybar .btn:active{transform:scale(.985)}
+  .tab{transition:background-color .18s ease,color .18s ease,border-color .18s ease}
+  .size-chip{transition:background-color .16s ease,color .16s ease,border-color .16s ease}
+
+  /* Tiroir panier et modales : elles glissent au lieu d'apparaître. Le
+     sens du mouvement dit d'où elles viennent et où le retour les
+     renverra. */
+  .cart-drawer{transition:transform .3s cubic-bezier(.22,.61,.36,1)}
+  .m-overlay .modal{transition:transform .28s cubic-bezier(.22,.61,.36,1),opacity .2s ease}
+  .m-overlay[data-open="false"] .modal{transform:translateY(10px);opacity:0}
+  .m-overlay[data-open="true"] .modal{transform:none;opacity:1}
+
+  /* Compteur du panier : une pulsation courte quand il change, sinon
+     l'ajout se fait sans que rien ne le signale. */
+  @keyframes pastille{0%{transform:scale(1)}45%{transform:scale(1.32)}100%{transform:scale(1)}}
+  .cart-count[data-bump="true"]{animation:pastille .34s ease}
+
+  /* Mobile d'abord : cibles tactiles d'au moins 44 px, et défilement
+     horizontal qui s'aligne sur les cartes au lieu de s'arrêter
+     n'importe où. */
+  @media (max-width:900px){
+    .mband-rail,.pv-thumbs{scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+    .mband-rail > *,.pv-thumbs > *{scroll-snap-align:start}
+    .tabs{scroll-snap-type:x proximity}
+    .tab{scroll-snap-align:start;min-height:44px}
+    .icon-btn,.qty-stepper button{min-width:44px;min-height:44px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    [data-reveal]{opacity:1;transform:none;transition:none}
+    .pcard:hover .pmedia img,.mband-link:hover svg{transform:none}
+    .cart-drawer,.m-overlay .modal{transition:none}
+    .cart-count[data-bump="true"]{animation:none}
+  }

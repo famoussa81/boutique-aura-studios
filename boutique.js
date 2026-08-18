@@ -1450,7 +1450,7 @@
     else cart.push({ id:p.id, variant:key, variantLabel:variantLabel(p, key), qty:qty,
                      name:p.name, brand:marqueDe(p), cat:CATS[p.cat]||p.cat,
                      price:p.price, img:p.img });
-    persistCart(); renderCount(); renderCart();
+    persistCart(); renderCount(); pulserPanier(); renderCart();
     toast("Ajouté au panier");
     return true;
   }
@@ -2051,7 +2051,63 @@
     }
   });
 
+  /* Apparition progressive des sections. Un observateur plutôt qu'un
+     écouteur de défilement : le navigateur fait le calcul lui-même, sans
+     réveiller le script à chaque pixel — ce qui compte sur les téléphones
+     modestes visés ici. Les navigateurs sans `IntersectionObserver`
+     n'animent rien et voient le site tel quel : aucune dégradation. */
+  function animerApparitions(){
+    var cibles = $$(".pcard, .cat-card, .mband, .trust-item, .pillar");
+    if (!cibles.length) return;
+
+    function montrer(el){ el.setAttribute("data-seen", "true"); }
+
+    /* Filet de sécurité : quoi qu'il arrive — observateur absent, section
+       plus haute que prévu, navigateur exotique — tout devient visible au
+       bout de deux secondes. Une animation ratée doit coûter un effet, pas
+       le contenu de la page. */
+    function toutMontrer(){ cibles.forEach(montrer); }
+    setTimeout(toutMontrer, 2000);
+
+    if (!("IntersectionObserver" in window)){ toutMontrer(); return; }
+
+    var obs = new IntersectionObserver(function(entrees){
+      entrees.forEach(function(e){
+        if (!e.isIntersecting) return;
+        montrer(e.target);
+        obs.unobserve(e.target);
+      });
+    }, { rootMargin: "0px 0px -6% 0px" });
+
+    cibles.forEach(function(el, i){
+      el.setAttribute("data-reveal", "");
+      /* Ce qui est déjà à l'écran ne s'anime pas : la page paraîtrait vide
+         une fraction de seconde au chargement. */
+      if (el.getBoundingClientRect().top < window.innerHeight){ montrer(el); return; }
+      /* Décalage court entre voisins : la grille se pose au lieu de
+         surgir d'un bloc. Plafonné, sinon la dernière carte d'une longue
+         rangée attendrait une demi-seconde. */
+      el.style.transitionDelay = Math.min(i % 4, 3) * 45 + "ms";
+      obs.observe(el);
+    });
+  }
+
+  /* Pulsation du compteur quand le panier change : sans elle, un ajout
+     depuis une carte ne se voit nulle part sur la page. */
+  var dernierCompte = -1;
+  function pulserPanier(){
+    var el = $("#cartCount");
+    if (!el) return;
+    var n = count();
+    if (dernierCompte >= 0 && n > dernierCompte){
+      el.setAttribute("data-bump", "true");
+      setTimeout(function(){ el.removeAttribute("data-bump"); }, 360);
+    }
+    dernierCompte = n;
+  }
+
   renderGrid();
+  animerApparitions();
   renderCount();
   renderCart();
   hydrate();
