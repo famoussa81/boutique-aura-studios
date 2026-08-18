@@ -41,7 +41,7 @@
     '      <div class="footer-grid">\n' +
     '        <div class="footer-brand">\n' +
     '          <a href="index.html" class="logo" id="logoPied" style="font-size:26px"></a>\n' +
-    '          <p>Sportswear, streetwear et tenues techniques pour la génération urbaine. Conçu pour bouger. Basé à Bamako, Mali.</p>\n' +
+    '          <p id="piedTexte"></p>\n' +
     '          <div class="social" id="socialRow">\n' +
     '            <a href="#" id="socialIG" target="_blank" rel="noopener" aria-label="Instagram" data-od-id="social-instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>\n' +
     '            <a href="#" id="socialTT" target="_blank" rel="noopener" aria-label="TikTok" data-od-id="social-tiktok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4c.5 2.5 2.5 4.5 5 5"/></svg></a>\n' +
@@ -864,6 +864,12 @@
         s.shopName + " — Boutique en ligne · Bamako";
     }
     var an = $("#announce"); if (an) an.textContent = s.announcement || "";
+    /* Phrase de présentation du pied de page. Elle décrivait du streetwear
+       sur une boutique de claquettes et n'était modifiable nulle part :
+       c'était le seul texte du site figé dans le script. */
+    var pt = $("#piedTexte");
+    if (pt) pt.textContent = (s.footerText || "").toString().trim() ||
+      (s.shopName + " — vente en ligne à Bamako. Paiement à la livraison.");
     var free = Number(s.freeFrom) || 0;
     var note = $("#cartDeliveryNote");
     if (note){

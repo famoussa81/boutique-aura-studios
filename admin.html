@@ -364,7 +364,7 @@
               </select>
             </div>
             <div class="field" id="fAxesField">
-              <label>Déclinaisons</label>
+              <label>Pointures et couleurs</label>
               <p class="hint" id="fAxesHint"></p>
               <div id="fAxes"></div>
               <div id="fStockGrid"></div>
@@ -383,7 +383,7 @@
               <label for="fImg">Adresse d'une image en ligne</label>
               <input type="text" id="fImg" placeholder="assets/cl-noir.webp ou https://…" />
               <img class="img-preview" id="fImgPrev" alt="" />
-              <p class="hint">Collez une URL web ou un chemin du dossier assets/.</p>
+              <p class="hint">Réservé si vous avez déjà un lien vers une image. Sinon, utilisez le bouton ci-dessus.</p>
             </div>
             <div class="field">
               <label>Photos supplémentaires</label>
@@ -507,22 +507,20 @@
         <div class="or">Ajouter</div>
         <form id="catForm" novalidate>
           <div class="cat-row">
-            <input type="text" id="catLabel" placeholder="Nom affiché (ex. Vestes)" />
-            <input type="text" id="catKey" placeholder="Identifiant (ex. vestes)" />
+            <input type="text" id="catLabel" placeholder="Nom de la catégorie (ex. Sacs)" />
             <button type="submit" class="btn btn-primary">Ajouter</button>
           </div>
         </form>
       </div>
 
       <div class="card" style="max-width:640px;margin-top:20px">
-        <h2>Marques et collections</h2>
-        <p class="hint" style="margin-bottom:16px">Une collection regroupe des produits sous une même identité : une marque que vous revendez, une capsule saisonnière. Dès qu'il en existe une, la page d'accueil les met en avant à la place des catégories. Laissez la liste vide si vous ne vendez qu'une seule marque.</p>
+        <h2>Vos marques</h2>
+        <p class="hint" style="margin-bottom:16px">Les marques que vous revendez : Dior, HUGO, Balenciaga… Chaque marque a sa page sur le site, et l'accueil les met en avant. Laissez vide si vous ne vendez qu'une seule marque.</p>
         <div id="collList"></div>
         <div class="or">Ajouter</div>
         <form id="collForm" novalidate>
           <div class="cat-row">
-            <input type="text" id="collLabel" placeholder="Nom affiché (ex. Louis Vuitton)" />
-            <input type="text" id="collKey" placeholder="Identifiant (ex. louis-vuitton)" />
+            <input type="text" id="collLabel" placeholder="Nom de la marque (ex. Louis Vuitton)" />
             <button type="submit" class="btn btn-primary">Ajouter</button>
           </div>
         </form>
@@ -547,6 +545,11 @@
           <div class="field">
             <label for="sFee">Frais de livraison à Bamako (FCFA)</label>
             <input type="number" id="sFee" min="0" step="100" />
+          </div>
+          <div class="field">
+            <label for="sFoot">Phrase de présentation (bas de page)</label>
+            <input type="text" id="sFoot" maxlength="160" />
+            <p class="hint">Une ou deux lignes sous votre nom, tout en bas du site. Dites ce que vous vendez et où.</p>
           </div>
           <div class="field">
             <label for="sAnn">Bannière d'annonce (haut de site)</label>
@@ -659,25 +662,25 @@
   function syncProducts(){
     if (!online()) return;
     window.AURA_DB.saveProducts(store.products, function(er){
-      if (er) toast("Synchronisation produits : " + er.message);
+      if (er) toast("Vos produits n'ont pas pu être envoyés au site. Vérifiez votre connexion et réessayez.");
     });
   }
   function syncSettings(){
     if (!online()) return;
     window.AURA_DB.saveSettings(store.settings, function(er){
-      if (er) toast("Synchronisation réglages : " + er.message);
+      if (er) toast("Vos réglages n'ont pas pu être envoyés au site. Vérifiez votre connexion et réessayez.");
     });
   }
   function syncOrder(order){
     if (!online()) return;
     window.AURA_DB.updateOrder(order, function(er){
-      if (er) toast("Synchronisation commande : " + er.message);
+      if (er) toast("La commande n'a pas pu être mise à jour sur le site. Vérifiez votre connexion et réessayez.");
     });
   }
   function syncDeleteProduct(id){
     if (!online()) return;
     window.AURA_DB.deleteProduct(id, function(er){
-      if (er) toast("Suppression non synchronisée : " + er.message);
+      if (er) toast("Le produit est retiré ici mais toujours visible sur le site. Vérifiez votre connexion et réessayez.");
     });
   }
 
@@ -766,6 +769,20 @@
   /* Liste des marques du formulaire produit. Sans elle, le commerçant
      pouvait créer une marque mais jamais y rattacher un produit : la page de
      la marque restait vide et la carte n'affichait aucune marque. */
+  /* Fabrique l'identifiant technique a partir du nom saisi : accents retires,
+     espaces en tirets, et un suffixe numerique si le nom est deja pris. */
+  function cleDepuisNom(nom, liste){
+    var base = nom.toLowerCase()
+      .normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    if (!base) return "";
+    var pris = {};
+    (liste || []).forEach(function(x){ pris[x.key] = 1; });
+    if (!pris[base]) return base;
+    for (var n = 2; n < 200; n++){ if (!pris[base + "-" + n]) return base + "-" + n; }
+    return "";
+  }
+
   function fillCollSelect(){
     var sel = $("#fColl");
     if (!sel) return;
@@ -785,8 +802,19 @@
       return '<option value="' + esc(c.key) + '">' + esc(c.label) + '</option>';
     }).join("");
     if (cur && CATS[cur]) sel.value = cur;
+    /* La liste des catégories se remplit après le premier passage du
+       formulaire : sans ce rafraîchissement, `resetForm` avait posé une
+       catégorie qui n'existait pas encore comme option, le champ restait
+       vide, et le formulaire annonçait « pas de pointures ni couleurs » pour
+       une catégorie qui en a — puis refusait d'enregistrer faute de pointure
+       cochée. Cul-de-sac, sans aucun moyen d'en sortir. */
+    if (!sel.value && catList().length) sel.value = catList()[0].key;
+    if (!$("#fId").value){
+      renderAxeChecks(null);
+      renderStockGrid(null);
+    }
   }
-  /* Catégorie dont l'éditeur de déclinaisons est déplié. Une seule à la fois :
+  /* Catégorie dont l'éditeur de pointures et couleurs est déplié. Une seule à la fois :
      tout ouvrir d'un coup rendrait la page illisible. */
   var catOuverte = null;
 
@@ -834,11 +862,11 @@
       '</div>';
     }).join("");
     return '<div class="axes-editeur">' + couverture +
-      '<p class="hint">Une déclinaison est ce qui fait varier un produit : taille, pointure, couleur, contenance. Deux au maximum — au-delà, le nombre de cases de stock à remplir devient ingérable.</p>' +
+      '<p class="hint">Ce qui fait varier ce type de produit : les pointures, les couleurs. Deux listes au maximum — au-delà, le tableau des stocks devient impossible à remplir.</p>' +
       blocs +
       (axes.length < 2
         ? '<button type="button" class="btn btn-ghost" data-axadd="' + i + '">Ajouter une déclinaison</button>'
-        : '<p class="hint">Deux déclinaisons : c\'est le maximum.</p>') +
+        : '<p class="hint">Deux listes : c\'est le maximum.</p>') +
     '</div>';
   }
 
@@ -890,7 +918,7 @@
           '<button type="button" class="sbtn" data-catmove="' + esc(c.key) + '">Déplacer</button>' +
         '</div>' +
         '<p class="hint">Les pointures et coloris viennent de la catégorie. ' +
-        'Si la catégorie d\'arrivée n\'a pas les mêmes déclinaisons, le stock du ' +
+        'Si la catégorie d\'arrivée n\'a pas les mêmes pointures et couleurs, le stock du ' +
         'produit est remis à zéro et devra être ressaisi.</p>' +
       '</div>' : '') +
     '</div>';
@@ -920,14 +948,15 @@
         '<div class="cat-row">' +
           '<div><input type="text" data-catlabel="' + i + '" value="' + esc(c.label) + '" aria-label="Nom de la catégorie" />' +
             '<div class="cat-count">' + used + ' produit' + (used > 1 ? 's' : '') + ' · ' + resume + '</div></div>' +
-          '<div class="key">' + esc(c.key) + '</div>' +
+          /* L'identifiant technique ne s'affiche plus : le commerçant ne le
+             saisit plus et n'a jamais à s'en servir. */
           '<button type="button" class="sbtn danger" data-catdel="' + i + '"' +
             (used ? ' disabled title="Catégorie utilisée par ' + used + ' produit(s)"' : '') + '>Supprimer</button>' +
         '</div>' +
         '<button type="button" class="sbtn" data-catprod="' + esc(c.key) + '">' +
           (prodOuverts === c.key ? 'Masquer les produits' : 'Produits (' + used + ')') + '</button> ' +
         '<button type="button" class="sbtn" data-axopen="' + i + '">' +
-          (catOuverte === i ? 'Masquer les déclinaisons' : 'Déclinaisons') + '</button>' +
+          (catOuverte === i ? 'Masquer' : 'Pointures et couleurs') + '</button>' +
         (prodOuverts === c.key ? produitsDeCategorieHTML(c) : '') +
         (catOuverte === i ? axesEditorHTML(c, i) : '') +
       '</div>';
@@ -1037,7 +1066,7 @@
       unlock();
       loadNews();
       loadWait();
-      toast("Mode local — données de ce navigateur uniquement");
+      toast("Mode hors ligne : vos modifications restent sur cet appareil");
       return;
     }
 
@@ -1379,7 +1408,7 @@
       if (!prod) return;
       var memeAxes = nomsAxes(prod.cat) === nomsAxes(dest);
       var texte = "Déplacer « " + prod.name + " » vers « " + (CATS[dest] || dest) + " » ?";
-      if (!memeAxes) texte += "\n\nLes déclinaisons diffèrent : le stock de ce produit sera remis à zéro.";
+      if (!memeAxes) texte += "\n\nLes pointures et couleurs ne sont pas les mêmes : le stock de ce produit sera remis à zéro.";
       if (!confirm(texte)) return;
       prod.cat = dest;
       if (!memeAxes){ prod.axes = []; prod.variants = {}; }
@@ -1419,8 +1448,8 @@
       var champ = $('[data-valnew="' + r2[0] + '.' + r2[1] + '"]');
       var teinte = $('[data-valhex="' + r2[0] + '.' + r2[1] + '"]');
       var val = (champ.value || "").trim();
-      if (!val){ toast("Saisissez une valeur"); champ.focus(); return; }
-      if (val.indexOf(VSEP) >= 0){ toast("Les caractères « " + VSEP + " » sont interdits"); return; }
+      if (!val){ toast("Écrivez d'abord la pointure ou la couleur"); champ.focus(); return; }
+      if (val.indexOf(VSEP) >= 0){ toast("Le signe « " + VSEP + " » n'est pas autorisé ici"); return; }
       var l3 = catList(), ax3 = l3[parseInt(r2[0], 10)].axes[parseInt(r2[1], 10)];
       ax3.values = ax3.values || [];
       if (ax3.values.some(function(v){ return (v && v.v) === val; })){ toast("Cette valeur existe déjà"); return; }
@@ -1448,7 +1477,7 @@
     var list = catList();
     var c = list[i];
     if (!c) return;
-    if (catUsage(c.key)){ toast("Catégorie utilisée par des produits"); return; }
+    if (catUsage(c.key)){ toast("Des produits sont encore dans cette catégorie. Déplacez-les d'abord."); return; }
     if (!confirm("Supprimer la catégorie « " + c.label + " » ?")) return;
     list.splice(i, 1);
     store.settings.categories = list;
@@ -1459,14 +1488,16 @@
   $("#catForm").addEventListener("submit", function(e){
     e.preventDefault();
     var label = $("#catLabel").value.trim();
-    var key = $("#catKey").value.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
-    if (!label){ toast("Nom de la catégorie requis"); return; }
-    if (!key) key = label.toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    if (!key){ toast("Identifiant invalide"); return; }
+    if (!label){ toast("Écrivez le nom de la catégorie"); return; }
     var list = catList();
-    if (list.some(function(c){ return c.key === key; })){ toast("Cet identifiant existe déjà"); return; }
+    /* L'identifiant technique se déduit du nom : le commerçant n'a aucune
+       raison de le connaître, et le lui faire saisir était le champ le plus
+       intimidant du panneau. */
+    var key = cleDepuisNom(label, list);
+    if (!key){ toast("Ce nom ne peut pas être utilisé, essayez-en un autre"); return; }
+    if (list.some(function(c){ return c.label.toLowerCase() === label.toLowerCase(); })){
+      toast("Une catégorie porte déjà ce nom"); return;
+    }
     list.push({ key: key, label: label });
     store.settings.categories = list;
     saveStore();
@@ -1685,23 +1716,24 @@
     if (!host) return;
     var list = collList();
     if (!list.length){
-      host.innerHTML = '<p class="hint">Aucune collection. La page d\'accueil affiche les catégories.</p>';
+      host.innerHTML = '<p class="hint">Aucune marque pour l\'instant. L\'accueil affiche les catégories à la place.</p>';
       return;
     }
     host.innerHTML = list.map(function(c, i){
       var used = collUsage(c.key);
       return '<div class="cat-bloc">' +
         '<div class="cat-row">' +
-          '<div><input type="text" data-cllabel="' + i + '" value="' + esc(c.label) + '" aria-label="Nom de la collection" />' +
+          '<div><input type="text" data-cllabel="' + i + '" value="' + esc(c.label) + '" aria-label="Nom de la marque" />' +
             '<div class="cat-count">' + used + ' produit' + (used > 1 ? 's' : '') +
               (c.cover ? ' · couverture' : ' · sans couverture') +
               (c.featured ? ' · en avant sur l\'accueil' : '') + '</div></div>' +
-          '<div class="key">' + esc(c.key) + '</div>' +
+          /* L'identifiant technique ne s'affiche plus : le commerçant ne le
+             saisit plus et n'a jamais à s'en servir. */
           '<button type="button" class="sbtn danger" data-clldel="' + i + '"' +
-            (used ? ' disabled title="Collection utilisée par ' + used + ' produit(s)"' : '') + '>Supprimer</button>' +
+            (used ? ' disabled title="Marque utilisée par ' + used + ' produit(s)"' : '') + '>Supprimer</button>' +
         '</div>' +
         '<button type="button" class="sbtn" data-clopen="' + i + '">' +
-          (collOuverte === i ? 'Masquer l\'identité' : 'Identité') + '</button>' +
+          (collOuverte === i ? 'Masquer l\'identité' : 'Modifier cette marque') + '</button>' +
         (collOuverte === i ? collEditorHTML(c, i) : '') +
       '</div>';
     }).join("");
@@ -1710,18 +1742,17 @@
   $("#collForm").addEventListener("submit", function(e){
     e.preventDefault();
     var label = $("#collLabel").value.trim();
-    var key = $("#collKey").value.trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
-    if (!label){ toast("Nom de la collection requis"); return; }
-    if (!key) key = label.toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    if (!key){ toast("Identifiant invalide"); return; }
+    if (!label){ toast("Écrivez le nom de la marque"); return; }
     var list = collList();
-    if (list.some(function(c){ return c.key === key; })){ toast("Cet identifiant existe déjà"); return; }
+    var key = cleDepuisNom(label, list);
+    if (!key){ toast("Ce nom ne peut pas être utilisé, essayez-en un autre"); return; }
+    if (list.some(function(c){ return c.label.toLowerCase() === label.toLowerCase(); })){
+      toast("Une marque porte déjà ce nom"); return;
+    }
     list.push({ key: key, label: label });
     majCollections(list);
     $("#collForm").reset();
-    toast("Collection « " + label + " » ajoutée");
+    toast("Marque « " + label + " » ajoutée");
   });
 
   $("#collList").addEventListener("click", function(e){
@@ -1735,11 +1766,11 @@
     var del = e.target.closest("[data-clldel]");
     if (del && !del.disabled){
       var list = collList(), j = parseInt(del.getAttribute("data-clldel"), 10);
-      if (!confirm("Supprimer la collection « " + list[j].label + " » ?")) return;
+      if (!confirm("Supprimer la marque « " + list[j].label + " » ?")) return;
       list.splice(j, 1);
       collOuverte = null;
       majCollections(list);
-      toast("Collection supprimée");
+      toast("Marque supprimée");
       return;
     }
   });
@@ -1752,7 +1783,7 @@
       var i1 = parseInt(lab.getAttribute("data-cllabel"), 10);
       var v = lab.value.trim();
       if (!v){ renderCollSettings(); return; }
-      list[i1].label = v; majCollections(list); toast("Collection renommée");
+      list[i1].label = v; majCollections(list); toast("Marque renommée");
       return;
     }
 
@@ -1858,8 +1889,8 @@
     e.preventDefault();
     var name = $("#rName").value.trim();
     var text = $("#rText").value.trim();
-    if (name.length < 2){ toast("Nom du client requis"); $("#rName").focus(); return; }
-    if (text.length < 10){ toast("Témoignage trop court"); $("#rText").focus(); return; }
+    if (name.length < 2){ toast("Écrivez le nom du client"); $("#rName").focus(); return; }
+    if (text.length < 10){ toast("L'avis est trop court, écrivez une phrase complète"); $("#rText").focus(); return; }
     if (!Array.isArray(store.settings.reviews)) store.settings.reviews = [];
     store.settings.reviews.push({
       name: name,
@@ -2006,7 +2037,7 @@
          produits, pas seulement la commande, sinon la paire reste
          immobilisée sur la boutique. */
       saveStore(); syncOrder(o1); syncProducts(); renderAll();
-      toast("Article retiré");
+      toast("Article retiré de la commande");
       return;
     }
 
@@ -2018,9 +2049,9 @@
       var phone = digits($("#oePhone").value);
       if (phone.length === 11 && phone.slice(0, 3) === "223") phone = phone.slice(3);
       var quartier = $("#oeQuartier").value.trim();
-      if (name.length < 2){ toast("Nom du client requis"); $("#oeName").focus(); return; }
-      if (phone.length !== 8){ toast("Numéro invalide (8 chiffres)"); $("#oePhone").focus(); return; }
-      if (quartier.length < 2){ toast("Quartier requis"); $("#oeQuartier").focus(); return; }
+      if (name.length < 2){ toast("Écrivez le nom du client"); $("#oeName").focus(); return; }
+      if (phone.length !== 8){ toast("Le numéro doit avoir 8 chiffres"); $("#oePhone").focus(); return; }
+      if (quartier.length < 2){ toast("Écrivez le quartier de livraison"); $("#oeQuartier").focus(); return; }
       o2.client = name; o2.phone = phone; o2.quartier = quartier;
       saveStore(); syncOrder(o2);
       editingOrder = null;
@@ -2129,7 +2160,7 @@ function applyStatus(order, ns){
     var axes = catAxes($("#fCat").value);
     var hint = $("#fAxesHint"), host = $("#fAxes");
     if (!axes.length){
-      hint.textContent = "Cette catégorie n'a pas de déclinaison : un seul stock à saisir.";
+      hint.textContent = "Cette catégorie n'a ni pointures ni couleurs : un seul stock à saisir.";
       host.innerHTML = "";
       return;
     }
@@ -2284,7 +2315,7 @@ function applyStatus(order, ns){
     if (!champs.length) return;
     var v = champs[0].value;
     champs.forEach(function(c){ c.value = v; });
-    toast("Quantité reportée sur la ligne");
+    toast("Quantité mise à jour");
   });
   /* Relit les quantités saisies pour ne pas les perdre à chaque redessin. */
   function stockActuel(){
@@ -2304,19 +2335,19 @@ function applyStatus(order, ns){
      `ratio` vaut par exemple 4/3 pour une carte, 16/10 pour un en-tête.
      Passer 0 conserve les proportions d'origine. */
   function envoyerImage(file, ratio, onOk){
-    if (!file || !/^image\//.test(file.type)){ toast("Ce fichier n'est pas une image"); return; }
-    toast("Traitement de l'image…");
+    if (!file || !/^image\//.test(file.type)){ toast("Ce fichier n'est pas une photo. Choisissez une image."); return; }
+    toast("Préparation de la photo…");
     compressImage(file, function(er, blob, w, h){
       if (er){ toast(er.message); return; }
       if (online()){
         window.AURA_DB.uploadImage(blob, function(er2, url){
-          if (er2 || !url){ toast("Envoi impossible : " + ((er2 && er2.message) || "erreur")); return; }
+          if (er2 || !url){ toast("La photo n'a pas pu être envoyée. Vérifiez votre connexion et réessayez."); return; }
           onOk(url);
         });
         return;
       }
       if (blob.size > MAX_LOCAL){
-        toast("Image trop lourde pour le mode local (" + Math.round(blob.size/1024) + " Ko)");
+        toast("Cette photo est trop lourde. Prenez-la en plus petit format.");
         return;
       }
       blobToDataURL(blob, function(er3, dataUrl){
@@ -2372,7 +2403,7 @@ function applyStatus(order, ns){
 
   function handleImageFile(file){
     if (!file) return;
-    if (!/^image\//.test(file.type)){ toast("Ce fichier n'est pas une image"); return; }
+    if (!/^image\//.test(file.type)){ toast("Ce fichier n'est pas une photo. Choisissez une image."); return; }
     setImageStatus("Traitement de l'image…", true);
     compressImage(file, function(er, blob, w, h){
       if (er){ setImageStatus(""); toast(er.message); return; }
@@ -2381,7 +2412,7 @@ function applyStatus(order, ns){
         window.AURA_DB.uploadImage(blob, function(er2, url){
           if (er2 || !url){
             setImageStatus("");
-            toast("Envoi impossible : " + ((er2 && er2.message) || "erreur inconnue"));
+            toast("La photo n'a pas pu être envoyée. Vérifiez votre connexion et réessayez.");
             return;
           }
           applyImage(url, w, h, ko, "en ligne");
@@ -2390,7 +2421,7 @@ function applyStatus(order, ns){
       }
       if (blob.size > MAX_LOCAL){
         setImageStatus("");
-        toast("Image trop lourde pour le mode local (" + ko + " Ko)");
+        toast("Cette photo est trop lourde. Prenez-la en plus petit format.");
         return;
       }
       blobToDataURL(blob, function(er3, dataUrl){
@@ -2489,7 +2520,7 @@ function applyStatus(order, ns){
     var desc = $("#fDesc").value.trim();
     if (!name){ toast("Nom du produit requis"); return; }
     if (!price || isNaN(price) || price <= 0){ toast("Prix invalide en FCFA"); return; }
-    if (!img){ toast("Image requise (URL)"); return; }
+    if (!img){ toast("Ajoutez une photo du produit avant d'enregistrer"); return; }
     var axesCat = catAxes(cat);
     var sel = selectionCourante();
     for (var ia=0; ia<axesCat.length; ia++){
@@ -2566,6 +2597,7 @@ function applyStatus(order, ns){
     $("#sDelay").value = s.deliveryTime || "";
     $("#sExchange").value = s.exchangeTime || "";
     $("#sAnn").value = s.announcement || "";
+    $("#sFoot").value = s.footerText || "";
     $("#sIG").value = s.instagram || "";
     $("#sTT").value = s.tiktok || "";
     $("#sYT").value = s.youtube || "";
@@ -2597,6 +2629,7 @@ function applyStatus(order, ns){
     store.settings.deliveryTime = $("#sDelay").value.trim();
     store.settings.exchangeTime = $("#sExchange").value.trim();
     store.settings.announcement = $("#sAnn").value.trim();
+    store.settings.footerText = $("#sFoot").value.trim();
     store.settings.instagram = $("#sIG").value.trim();
     store.settings.tiktok = $("#sTT").value.trim();
     store.settings.youtube = $("#sYT").value.trim();
