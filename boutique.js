@@ -793,15 +793,17 @@
   function applySellingCopy(){
     var s = store.settings;
     var free = Number(s.freeFrom) || 0;
-    var t = $("#trustFree");
-    if (t) t.textContent = free > 0
-      ? "Offerte dès " + fmt(free) + " d'achat."
-      : "Partout dans la ville.";
     var d = deliveryDelay();
     var libelle = d ? "Livraison en " + d + " à Bamako" : "Livraison à Bamako";
-    var td = $("#trustDelay"); if (td) td.textContent = libelle;
     var ex = (store.settings.exchangeTime || "").toString().trim();
-    var te = $("#trustExchange"); if (te) te.textContent = ex ? "Échange sous " + ex : "Échange possible";
+    /* Le bandeau est désormais rendu depuis la liste unique des garanties.
+       Le seuil de livraison offerte, lui, reste un chiffre de réglage : il
+       doit suivre le champ, pas un texte libre. */
+    renderTrustBar();
+    if (free > 0){
+      var libre = document.querySelector(".trust-grid .trust-item:nth-child(2) span");
+      if (libre) libre.textContent = "Offerte dès " + fmt(free) + " d'achat.";
+    }
     var he = $("#heroExchange"); if (he) he.textContent = ex ? "Échange sous " + ex : "Échange possible";
     var hd = $("#heroDelay"); if (hd) hd.textContent = libelle;
     var wa = $("#waFloat");
@@ -1145,15 +1147,41 @@
      l'achat : garanties, guide des pointures, et les autres modèles de la
      marque. */
 
-  function ficheGarantiesHTML(){
+  /* Les garanties, source unique. Elles apparaissaient à trois endroits —
+     bandeau de l'accueil, fiche produit, bas de fiche — écrites trois fois.
+     Changer « Livraison 24h » pour « 48h » en laissait donc deux périmées, et
+     deux promesses contradictoires sur le même site coûtent la vente. Elles
+     vivent maintenant dans les réglages, modifiables par le commerçant. */
+  function garantiesListe(){
+    var c = contenu();
+    var g = Array.isArray(c.garanties) ? c.garanties : [];
     var d = deliveryDelay();
     var e = (store.settings.exchangeTime || "").toString().trim();
-    return [
+    var defauts = [
       { t: "Payé à la livraison", s: "Vous essayez devant le livreur avant de payer. Rien à avancer." },
       { t: d ? "Livraison " + d : "Livraison à Bamako", s: "Partout dans la ville, prévenue par WhatsApp." },
       { t: e ? "Échange sous " + e : "Échange possible", s: "Mauvaise pointure ? On repasse l'échanger." },
       { t: "Stock réel", s: "Le nombre affiché est celui de la boutique, pointure par pointure." }
-    ].map(function(x){
+    ];
+    /* Une ligne laissée vide par le commerçant reprend sa valeur par défaut
+       plutôt que d'afficher un blanc. */
+    return defauts.map(function(def, i){
+      var x = g[i] || {};
+      return { t: (x.t || "").toString().trim() || def.t,
+               s: (x.s || "").toString().trim() || def.s };
+    });
+  }
+  function ficheGarantiesHTML(){
+    return garantiesListe().map(function(x){
+      return '<div class="trust-item"><b>' + esc(x.t) + '</b><span>' + esc(x.s) + '</span></div>';
+    }).join("");
+  }
+  /* Le bandeau de l'accueil n'affiche que les trois premières : la quatrième
+     ferait passer les cartes à deux lignes sur téléphone. */
+  function renderTrustBar(){
+    var host = document.querySelector(".trust-grid");
+    if (!host) return;
+    host.innerHTML = garantiesListe().slice(0, 3).map(function(x){
       return '<div class="trust-item"><b>' + esc(x.t) + '</b><span>' + esc(x.s) + '</span></div>';
     }).join("");
   }

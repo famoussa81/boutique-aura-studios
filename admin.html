@@ -780,7 +780,10 @@
     (liste || []).forEach(function(x){ pris[x.key] = 1; });
     if (!pris[base]) return base;
     for (var n = 2; n < 200; n++){ if (!pris[base + "-" + n]) return base + "-" + n; }
-    return "";
+    /* Deux cents homonymes : hors de portée en pratique. On rend une clé
+       horodatée plutôt que d'échouer sur un message que personne ne
+       comprendrait. */
+    return base + "-" + Date.now();
   }
 
   function fillCollSelect(){
@@ -914,7 +917,11 @@
       (dehors.length ? '<div class="field">' +
         '<label for="mv' + esc(c.key) + '">Déplacer un produit existant ici</label>' +
         '<div class="cat-row">' +
-          '<select id="mv' + esc(c.key) + '" data-catmovesel="' + esc(c.key) + '">' + options + '</select>' +
+          /* Le sélecteur est repéré par sa position, pas par la clé : une clé
+             sert de fragment de sélecteur CSS et casserait sur un caractère
+             inattendu. Aujourd'hui `cleDepuisNom` n'en produit pas, mais rien
+             ne le garantissait par écrit. */
+          '<select data-catmovesel="1" aria-label="Produit à déplacer">' + options + '</select>' +
           '<button type="button" class="sbtn" data-catmove="' + esc(c.key) + '">Déplacer</button>' +
         '</div>' +
         '<p class="hint">Les pointures et coloris viennent de la catégorie. ' +
@@ -1371,6 +1378,9 @@
     var label = inp.value.trim();
     if (!label){ renderCatSettings(); return; }
     store.settings.categories = catList();
+    /* Seul le nom change. L'identifiant reste celui d'origine, parce que les
+       produits et les adresses partagées pointent dessus : le renommer
+       détacherait les produits et casserait les liens déjà envoyés. */
     store.settings.categories[i].label = label;
     saveStore();
     renderCatSettings(); renderProducts();
@@ -1402,7 +1412,7 @@
     var pMove = e.target.closest("[data-catmove]");
     if (pMove){
       var dest = pMove.getAttribute("data-catmove");
-      var sel = $('[data-catmovesel="' + dest + '"]');
+      var sel = pMove.parentElement.querySelector("[data-catmovesel]");
       var pid = sel && sel.value;
       var prod = store.products.filter(function(x){ return x.id === pid; })[0];
       if (!prod) return;
@@ -1536,6 +1546,9 @@
         { k: "title",  l: "Titre",     max: 60 },
         { k: "text",   l: "Texte",     max: 300, long: true }
       ], piliers: true },
+    { cle: "garanties", titre: "Vos garanties", ratio: 0,
+      aide: "Les quatre promesses affichées sur l'accueil et sur chaque fiche produit. Elles étaient écrites en dur à trois endroits : les voici en un seul. N'annoncez que ce que vous tenez.",
+      champs: [], garanties: true },
     { cle: "newsletter", titre: "Newsletter", ratio: 0,
       aide: "Le bloc de collecte d'adresses, en bas de page.",
       champs: [
@@ -1581,6 +1594,21 @@
             '<input type="file" accept="image/*" data-ctimg="' + b.cle + '" />' +
           '</label></div>') : '';
 
+      var garanties = "";
+      if (b.garanties){
+        var lg = Array.isArray(c.garanties) ? c.garanties : [];
+        var repere = ["Paiement", "Livraison", "Échange", "Stock"];
+        garanties = '<p class="hint" style="margin:-8px 0 14px">Laissez une ligne vide pour garder le texte proposé.</p>' +
+          [0,1,2,3].map(function(i){
+            var gv = lg[i] || {};
+            return '<div class="field"><label>' + esc(repere[i]) + '</label>' +
+              '<div class="cat-row" style="grid-template-columns:1fr 2fr">' +
+                '<input type="text" maxlength="34" placeholder="Titre court" value="' + esc(gv.t || "") + '" data-ctg="' + i + '.t" />' +
+                '<input type="text" maxlength="110" placeholder="Explication" value="' + esc(gv.s || "") + '" data-ctg="' + i + '.s" />' +
+              '</div></div>';
+          }).join("");
+      }
+
       var piliers = "";
       if (b.piliers){
         var liste = Array.isArray(d.pillars) ? d.pillars : [];
@@ -1602,7 +1630,7 @@
             '<span>' + (actif ? "Affiché" : "Masqué") + '</span></label>' +
         '</div>' +
         '<p class="hint" style="margin:8px 0 16px">' + esc(b.aide) + '</p>' +
-        champs + piliers + image +
+        champs + garanties + piliers + image +
       '</div>';
     }).join("");
   }
@@ -1625,6 +1653,16 @@
       var r = ch.getAttribute("data-ct").split(".");
       c[r[0]] = c[r[0]] || {};
       c[r[0]][r[1]] = ch.value.trim();
+      saveStore();
+      return;
+    }
+
+    var gar = e.target.closest("[data-ctg]");
+    if (gar){
+      var rg = gar.getAttribute("data-ctg").split(".");
+      c.garanties = Array.isArray(c.garanties) ? c.garanties : [];
+      while (c.garanties.length < 4) c.garanties.push({ t: "", s: "" });
+      c.garanties[parseInt(rg[0], 10)][rg[1]] = gar.value.trim();
       saveStore();
       return;
     }
