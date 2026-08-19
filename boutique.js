@@ -814,6 +814,9 @@
     renderUnivers();
     renderCategories();
     renderCollBanniere();
+    /* Les marques et les bandeaux viennent d'être fabriqués : c'est
+       maintenant qu'ils peuvent être animés. */
+    animerApparitions();
     /* Une adresse du type ?cat=hoodies doit ouvrir directement la catégorie,
        y compris après l'arrivée des réglages depuis Supabase. */
     var voulueColl = collFromUrl();
@@ -2057,7 +2060,12 @@
      modestes visés ici. Les navigateurs sans `IntersectionObserver`
      n'animent rien et voient le site tel quel : aucune dégradation. */
   function animerApparitions(){
-    var cibles = $$(".pcard, .cat-card, .mband, .trust-item, .pillar");
+    /* Les cartes, marques et bandeaux sont fabriqués par le script : au
+       premier passage ils n'existent pas encore. Cette fonction est donc
+       rappelée après chaque rendu, et ne reprend que les éléments qu'elle
+       n'a pas déjà traités. */
+    var cibles = $$(".pcard, .cat-card, .mband, .trust-item, .pillar")
+      .filter(function(el){ return !el.hasAttribute("data-reveal"); });
     if (!cibles.length) return;
 
     function montrer(el){ el.setAttribute("data-seen", "true"); }
