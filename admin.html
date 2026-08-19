@@ -1549,6 +1549,20 @@
     { cle: "garanties", titre: "Vos garanties", ratio: 0,
       aide: "Les quatre promesses affichées sur l'accueil et sur chaque fiche produit. Elles étaient écrites en dur à trois endroits : les voici en un seul. N'annoncez que ce que vous tenez.",
       champs: [], garanties: true },
+    { cle: "entete-catalogue", titre: "Entête du catalogue", ratio: 0,
+      aide: "Les trois lignes au-dessus de la grille, sur la page qui montre tout le catalogue.",
+      champs: [
+        { k: "kicker", l: "Sur-titre", max: 50 },
+        { k: "title",  l: "Titre",     max: 60 },
+        { k: "sub",    l: "Texte",     max: 200, long: true }
+      ] },
+    { cle: "entete-collection", titre: "Entête d'une page de marque", ratio: 0,
+      aide: "Les trois lignes au-dessus des modèles, sur la page de chaque marque. Le même texte sert à toutes les marques : le nom de la marque est déjà affiché juste au-dessus.",
+      champs: [
+        { k: "kicker", l: "Sur-titre", max: 50 },
+        { k: "title",  l: "Titre",     max: 60 },
+        { k: "sub",    l: "Texte",     max: 200, long: true }
+      ] },
     { cle: "newsletter", titre: "Newsletter", ratio: 0,
       aide: "Le bloc de collecte d'adresses, en bas de page.",
       champs: [

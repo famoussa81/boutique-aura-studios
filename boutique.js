@@ -623,6 +623,32 @@
     return choisies.map(function(c){ return c.key; });
   }
 
+  /* Entête de la grille du catalogue et des pages de marque. C'étaient les
+     derniers textes du site que le commerçant ne pouvait pas changer. Les
+     valeurs écrites dans la page servent de repli : tant qu'il n'y touche
+     pas, rien ne bouge. */
+  function renderEntetePage(){
+    var t = typePage();
+    if (t !== "catalogue" && t !== "collection") return;
+    var c = contenu();
+    var e = c["entete-" + t] || {};
+    /* Éteindre le bloc masque l'entête entière, pas seulement ses mots :
+       trois lignes vides au-dessus d'une grille se voient plus qu'une
+       absence. */
+    var tete = $("#pgTitre") && $("#pgTitre").closest(".sec-head");
+    if (tete) tete.hidden = e.on === false;
+    function poserSi(sel, val){
+      var el = $(sel);
+      if (!el) return;
+      var v = (val || "").toString().trim();
+      if (v) el.textContent = v;
+      el.hidden = false;
+    }
+    poserSi("#pgKicker", e.kicker);
+    poserSi("#pgTitre", e.title);
+    poserSi("#pgSub", e.sub);
+  }
+
   function renderUnivers(){
     var grille = $("#univGrille");
     if (!grille) return;
@@ -812,6 +838,7 @@
     renderContenu();
     renderReviews();
     renderUnivers();
+    renderEntetePage();
     renderCategories();
     renderCollBanniere();
     /* Les marques et les bandeaux viennent d'être fabriqués : c'est
@@ -1258,8 +1285,6 @@
       var t = $("#ficheSuggTitre");
       if (t) t.textContent = sugg.titre;
     }
-
-    majBuybar();
 
     document.title = (marque ? marque + " " : "") + p.name + " — " +
       store.settings.shopName + " — Boutique en ligne · Bamako";
