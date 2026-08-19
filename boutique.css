@@ -708,9 +708,13 @@
   /* Apparition à l'arrivée dans l'écran. Décalée de quelques dizaines de
      millisecondes d'une carte à l'autre pour que la grille se pose au
      lieu de surgir d'un bloc. */
-  [data-reveal]{opacity:0;transform:translateY(14px)}
-  [data-reveal][data-seen="true"]{opacity:1;transform:none;
-    transition:opacity .38s ease,transform .38s cubic-bezier(.22,.61,.36,1)}
+  /* L'état masqué est posé en ligne par le script, jamais par une règle de
+     feuille de style. Une règle peut être battue par une autre plus
+     spécifique — c'est arrivé, et la page d'accueil est restée invisible en
+     production. Un style en ligne ne peut pas perdre, et seul le script qui
+     l'a posé peut le retirer : si le script ne tourne pas, rien n'est
+     masqué. */
+  [data-reveal]{transition:opacity .38s ease,transform .38s cubic-bezier(.22,.61,.36,1)}
 
   /* Carte produit : la photo respire, le bouton se remplit. Sur mobile
      le survol n'existe pas — l'effet est réservé aux appareils qui
@@ -753,7 +757,7 @@
   }
 
   @media (prefers-reduced-motion:reduce){
-    [data-reveal]{opacity:1;transform:none;transition:none}
+    [data-reveal]{transition:none}
     .pcard:hover .pmedia img,.mband-link:hover svg{transform:none}
     .cart-drawer,.m-overlay .modal{transition:none}
     .cart-count[data-bump="true"]{animation:none}

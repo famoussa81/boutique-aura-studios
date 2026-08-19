@@ -2068,7 +2068,15 @@
       .filter(function(el){ return !el.hasAttribute("data-reveal"); });
     if (!cibles.length) return;
 
-    function montrer(el){ el.setAttribute("data-seen", "true"); }
+    function montrer(el){
+      el.setAttribute("data-seen", "true");
+      el.style.opacity = "";
+      el.style.transform = "";
+    }
+    function masquer(el){
+      el.style.opacity = "0";
+      el.style.transform = "translateY(14px)";
+    }
 
     /* Filet de sécurité : quoi qu'il arrive — observateur absent, section
        plus haute que prévu, navigateur exotique — tout devient visible au
@@ -2092,6 +2100,7 @@
       /* Ce qui est déjà à l'écran ne s'anime pas : la page paraîtrait vide
          une fraction de seconde au chargement. */
       if (el.getBoundingClientRect().top < window.innerHeight){ montrer(el); return; }
+      masquer(el);
       /* Décalage court entre voisins : la grille se pose au lieu de
          surgir d'un bloc. Plafonné, sinon la dernière carte d'une longue
          rangée attendrait une demi-seconde. */
