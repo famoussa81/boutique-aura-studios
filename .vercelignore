@@ -24,3 +24,6 @@ assets-candidats/
 # Copie de recette : ouvre le panneau sans mot de passe (mode local).
 # Ne doit jamais être publiée.
 admin-essai.html
+
+# Document de reprise : usage interne, pas une page du site.
+AGENTS.md
