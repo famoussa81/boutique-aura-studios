@@ -39,7 +39,7 @@
   "paymentAccepted": "Espèces à la livraison"
 }
 </script>
-<link rel="stylesheet" href="boutique.css?v=20260822d" />
+<link rel="stylesheet" href="boutique.css?v=20260822f" />
 </head>
 <body data-page="accueil">
 
@@ -68,7 +68,7 @@
           <li id="heroExchange">Échange</li>
         </ul>
         <div class="hero-actions">
-          <a href="#categories" class="btn btn-light" data-od-id="hero-cta-primary">Découvrir la collection</a>
+          <a href="marques.html" class="btn btn-light" data-od-id="hero-cta-primary">Découvrir la collection</a>
           <a href="catalogue.html" class="btn btn-ghost" data-od-id="hero-cta-secondary">Voir les nouveautés</a>
         </div>
       </div>
@@ -98,12 +98,15 @@
         <span class="sec-kicker" id="univKicker">Les univers</span>
         <h2 class="sec-title" id="univTitre">Explorez les collections</h2>
       </div>
-      <!-- Marques mises en avant : bandeau large + rangée de modèles. -->
+      <!-- Marques mises en avant : bannière large + rangée de modèles. -->
       <div id="marquesBandes"></div>
-      <!-- Les autres marques, en vignettes. Masqué s'il n'en reste aucune. -->
+      <!-- Aperçu compact des marques, juste après les bannières et leurs modèles. -->
       <div class="marques-reste" id="marquesReste" hidden>
         <span class="sec-kicker">Toutes les marques</span>
-        <div class="cats" id="univGrille"></div>
+        <div class="brands-directory home-brands-grid" id="univGrille"></div>
+        <div class="home-brands-actions">
+          <a class="btn btn-ghost-dark" href="marques.html" id="homeBrandsAll">Voir toutes les marques</a>
+        </div>
       </div>
     </div>
   </section>
@@ -168,8 +171,8 @@
 </main>
 
 <script src="supabase.config.js"></script>
-<script src="supabase-client.js?v=20260822d"></script>
-<script src="catalog.js?v=20260822d"></script>
-<script src="boutique.js?v=20260822d"></script>
+<script src="supabase-client.js?v=20260822f"></script>
+<script src="catalog.js?v=20260822f"></script>
+<script src="boutique.js?v=20260822f"></script>
 </body>
 </html>

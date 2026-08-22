@@ -111,6 +111,7 @@
      maison. Douze vignettes blanches alignées ne se distinguaient que par
      leur logo, trop petit pour être vu au défilement. */
   .cat-card.brand-card{border-top:3px solid var(--accent-marque,var(--line))}
+  .cat-card.brand-card img.brand-cover{object-position:right center;filter:none}
   .cat-card.brand-card .cat-link{color:var(--accent-marque,var(--ink))}
   .cat-card.brand-card::before{content:"";position:absolute;inset:0;z-index:1;
     background:linear-gradient(to top,color-mix(in srgb,var(--accent-marque,#ffffff) 12%,transparent) 0%,transparent 55%)}
@@ -133,11 +134,8 @@
   .mband-top>.brand-wordmark{left:28px;right:auto;top:28%;text-align:left}
   /* Dégradé latéral : le texte reste lisible quelle que soit la photo, sans
      avoir à imposer au commerçant une image « avec du vide à gauche ». */
-  .mband-top::after{content:"";position:absolute;inset:0;
-    background:linear-gradient(90deg,
-      rgba(255,255,255,.06) 0%,
-      rgba(255,255,255,.52) 52%,
-      color-mix(in srgb,var(--accent-marque,#ffffff) 6%,#ffffff) 100%)}
+  .mband-top::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(90deg,rgba(0,0,0,.76) 0%,rgba(0,0,0,.5) 38%,rgba(0,0,0,.08) 66%,transparent 78%)}
   /* Filet vertical aux couleurs de la maison : à hauteur d'œil dans une
      liste, c'est ce qui distingue une bande d'une autre avant même le nom. */
   .mband-top{border-left:4px solid var(--accent-marque,var(--line))}
@@ -145,15 +143,16 @@
      il reprend le geste graphique — damier, chevrons, rayures — dans la
      couleur de la marque, pour que l'œil distingue deux bandes de loin. */
   .mband-cover,.brand-cover{position:absolute;inset:0;width:100%;height:100%;
-    object-fit:cover;filter:none;transform:none;z-index:0}
+    object-fit:cover;object-position:right center;filter:none;transform:none;z-index:0}
+  .mband-top img.mband-cover{filter:none}
   .mband-top:hover .mband-cover,.brand-card:hover .brand-cover{transform:none}
-  .mband-name{color:var(--ink)}
-  .mband-go{color:var(--accent-marque,var(--ink));border-bottom:2px solid var(--accent-marque,transparent)}
+  .mband-name{color:#fff;text-shadow:0 1px 14px rgba(0,0,0,.25)}
+  .mband-go{color:#fff;border-bottom:2px solid var(--accent-marque,#fff)}
   .mband-in{position:relative;z-index:2;height:100%;padding:24px 28px;
     display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
   .mband-tag{display:block;font-size:11.5px;font-weight:800;letter-spacing:.2em;
-    text-transform:uppercase;color:var(--accent-marque,currentColor);margin-bottom:8px;padding-top:7px;
-    border-top:2px solid var(--accent-marque,currentColor);
+    text-transform:uppercase;color:rgba(255,255,255,.86);margin-bottom:8px;padding-top:7px;
+    border-top:2px solid var(--accent-marque,#fff);
     width:fit-content;max-width:100%;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mband-name{font-size:32px;font-weight:900;letter-spacing:-.02em;line-height:1.05}
@@ -176,7 +175,55 @@
   .marques-reste{margin-top:8px}
   .marques-reste .sec-kicker{display:block;margin-bottom:16px}
 
+  /* Page répertoire des marques : grille réelle, jamais carrousel. Deux
+     colonnes restent visibles sur téléphone pour que toutes les maisons se
+     découvrent en quelques gestes verticaux. */
+  .brands-page{padding-bottom:48px}
+  .brands-page-head{margin-bottom:32px}
+  .brands-directory{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .home-brands{margin-top:0}
+  .home-brands-actions{display:flex;justify-content:center;margin-top:28px}
+  .brand-directory-card{position:relative;display:block;overflow:hidden;aspect-ratio:4/3;
+    border-radius:var(--radius);background:var(--ink);color:#fff;text-decoration:none;
+    border-top:3px solid var(--accent-marque,var(--line))}
+  .brand-directory-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    object-position:right center;transition:transform .45s ease}
+  .brand-directory-card:hover img{transform:scale(1.035)}
+  .brand-directory-shade{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.82),rgba(0,0,0,.04) 72%)}
+  .brand-directory-copy{position:absolute;z-index:2;left:18px;right:48px;bottom:16px}
+  .brand-directory-copy>span{display:block;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.76);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand-directory-copy strong{display:block;font-size:clamp(17px,2vw,24px);line-height:1.04;text-transform:uppercase;letter-spacing:-.01em}
+  .brand-directory-card>svg{position:absolute;z-index:2;right:18px;bottom:18px;width:18px;height:18px;transition:transform .2s ease}
+  .brand-directory-card:hover>svg{transform:translateX(4px)}
+  .catalogue-gateway-section{padding-top:16px}
+  .catalogue-gateway{position:relative;display:block;overflow:hidden;min-height:360px;border-radius:var(--radius);color:#fff;text-decoration:none;background:var(--ink)}
+  .catalogue-gateway>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .5s ease}
+  .catalogue-gateway:hover>img{transform:scale(1.025)}
+  .catalogue-gateway-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.82),rgba(0,0,0,.38) 56%,rgba(0,0,0,.08))}
+  .catalogue-gateway-content{position:absolute;z-index:2;inset:0;padding:34px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+  .catalogue-gateway-copy{display:block;max-width:560px}
+  .catalogue-gateway-copy .sec-kicker{color:rgba(255,255,255,.78);margin-bottom:12px}
+  .catalogue-gateway-copy strong{display:block;font-size:clamp(30px,5vw,54px);line-height:1;text-transform:uppercase}
+  .catalogue-gateway-copy>span:last-child{display:block;margin-top:12px;color:rgba(255,255,255,.82)}
+  .catalogue-gateway-action{flex:none;display:inline-flex;align-items:center;gap:9px;padding-bottom:5px;border-bottom:2px solid #fff;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+  .catalogue-gateway-action svg{width:17px;height:17px;transition:transform .2s ease}
+  .catalogue-gateway:hover .catalogue-gateway-action svg{transform:translateX(4px)}
+
   @media (max-width:760px){
+    .brands-page{padding-top:52px;padding-bottom:32px}
+    .brands-page-head{margin-bottom:24px}
+    .brands-directory{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .brand-directory-card{aspect-ratio:4/3}
+    .brand-directory-copy{left:12px;right:30px;bottom:11px}
+    .brand-directory-copy>span{display:none}
+    .brand-directory-copy strong{font-size:13px;letter-spacing:0}
+    .brand-directory-card>svg{right:10px;bottom:11px;width:14px;height:14px}
+    .catalogue-gateway-section{padding-top:8px}
+    .catalogue-gateway{min-height:310px}
+    .catalogue-gateway-content{padding:22px;display:block}
+    .catalogue-gateway-action{position:absolute;left:22px;bottom:22px}
+    .catalogue-gateway-copy strong{font-size:34px}
+    .catalogue-gateway-copy>span:last-child{font-size:14px;max-width:28ch}
     .mband{margin-bottom:38px}
     .mband-top{aspect-ratio:16/9}
     .mband-in{padding:18px 18px;align-items:flex-end}
@@ -267,8 +314,6 @@
   .cat-opt:hover{border-color:var(--ink)}
   .cat-opt[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
   .cat-opt .cat-n{opacity:.55;font-weight:600;margin-left:5px;font-variant-numeric:tabular-nums}
-  .cat-swatch{width:13px;height:13px;border-radius:50%;display:inline-block;margin-right:7px;
-    border:1px solid color-mix(in srgb,var(--ink) 22%,transparent);vertical-align:-2px}
   .cat-actives{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
   .cat-tag{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:7px 14px;
     border-radius:999px;background:var(--gray);color:var(--ink);font-size:12.5px;font-weight:700}
@@ -352,6 +397,8 @@
   .cbanner.has-brand-logo img.brand-logo{inset:18% 6% 18% auto;width:42%;height:64%;object-fit:contain;filter:none}
   .cbanner.has-brand-logo .sec-kicker,.cbanner.has-brand-logo h1,.cbanner.has-brand-logo p{color:var(--ink)}
   .cbanner.has-brand-logo .sec-kicker::before{background:var(--ink)}
+  .cbanner.has-brand-cover img{object-position:right center}
+  .brand-status{font-size:11px!important;letter-spacing:.12em;text-transform:uppercase;opacity:.82;margin:-18px 0 28px!important}
 
   .about{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
   .about-media{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--gray);aspect-ratio:4/5}
@@ -382,6 +429,7 @@
   .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;padding:64px 0 48px}
   .footer-brand p{color:var(--muted);max-width:34ch;margin-top:14px;font-size:14px}
   .footer-brand .footer-contact{margin-top:8px;color:var(--ink);font-size:13px;font-weight:700}
+  .footer-independent{margin-top:8px!important;font-size:11px!important;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)!important}
   .social{display:flex;gap:8px;margin-top:20px}
   .social a{width:42px;height:42px;border-radius:var(--radius);border:var(--border-w) solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink);transition:all .16s ease}
   .social a:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -454,13 +502,6 @@
   .axe-bloc + .axe-bloc{margin-top:14px}
   .axe-bloc .size-label{margin-bottom:8px}
   .size-row{display:flex;flex-wrap:wrap;gap:8px}
-  /* Une valeur porteuse d'une teinte s'affiche avec sa pastille : le client
-     reconnaît la couleur sans lire le mot. */
-  .size-btn.has-swatch{width:auto;padding:0 14px 0 10px;gap:8px;
-    display:inline-flex;align-items:center}
-  .size-btn .swatch{width:16px;height:16px;border-radius:50%;flex-shrink:0;
-    border:var(--border-w) solid var(--line);display:inline-block}
-  .size-btn.selected .swatch{border-color:var(--bg)}
   .size-btn.has-photo{width:68px;height:76px;padding:0;overflow:hidden;background:#fff;border-color:var(--line);position:relative}
   .size-btn.has-photo .choice-photo{width:100%;height:100%;display:block;object-fit:cover}
   .size-btn.has-photo.selected{background:#fff;color:var(--ink);border:2px solid var(--ink);box-shadow:0 0 0 2px #fff inset}

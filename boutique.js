@@ -42,6 +42,7 @@
     '        <div class="footer-brand">\n' +
     '          <a href="index.html" class="logo" id="logoPied" style="font-size:26px"></a>\n' +
     '          <p id="piedTexte"></p>\n' +
+    '          <p class="footer-independent">Revendeur multimarques indépendant.</p>\n' +
     '          <p id="footerContact" class="footer-contact" hidden></p>\n' +
     '          <div class="social" id="socialRow">\n' +
     '            <a href="#" id="socialIG" target="_blank" rel="noopener" aria-label="Instagram" data-od-id="social-instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>\n' +
@@ -348,6 +349,72 @@ window.AURA_IMG = function (img) {
      « axes + variants ». Aucune écriture : la conversion vit en mémoire. */
   function normalizeProduct(p){
     if (!p) return p;
+    /* Corrige les anciennes photos qui montraient plusieurs coloris dans le
+       même cadre. La migration ne touche que les chemins locaux connus : une
+       photo téléversée ensuite par le commerçant reste toujours prioritaire. */
+    var correctionsPhotos = {
+      "ck-jeans": {
+        anciens:["assets/products/ck-jeans.webp"],
+        nouveaux:["assets/products/ck-jeans-paire-blanc.webp","assets/products/ck-jeans-paire-bleu.webp"],
+        coloris:{"Blanc":"assets/products/ck-jeans-paire-blanc.webp","Bleu":"assets/products/ck-jeans-paire-bleu.webp"}
+      },
+      "lv-signature": {
+        anciens:["assets/products/lv-signature-bleu.webp","assets/products/lv-signature-noir.webp","assets/products/lv-signature-marron.webp"],
+        nouveaux:["assets/products/lv-signature-paire-bleu.webp","assets/products/lv-signature-paire-noir.webp","assets/products/lv-signature-paire-marron.webp"],
+        coloris:{"Bleu":"assets/products/lv-signature-paire-bleu.webp","Noir":"assets/products/lv-signature-paire-noir.webp","Marron":"assets/products/lv-signature-paire-marron.webp"}
+      },
+      "lv-relief": {
+        anciens:["assets/products/lv-relief-multi.webp","assets/products/lv-relief-duo.webp","assets/products/lv-relief-noir.webp"],
+        nouveaux:["assets/products/lv-relief-paire-noir.webp","assets/products/lv-relief-paire-bordeaux.webp","assets/products/lv-relief-paire-ivoire.webp"],
+        coloris:{"Noir":"assets/products/lv-relief-paire-noir.webp","Bordeaux":"assets/products/lv-relief-paire-bordeaux.webp","Ivoire":"assets/products/lv-relief-paire-ivoire.webp"}
+      },
+      "bb-check": {
+        anciens:["assets/products/burberry-check-multi.webp"],
+        nouveaux:["assets/products/burberry-check-paire-bleu-ciel.webp","assets/products/burberry-check-paire-noir.webp"],
+        coloris:{"Bleu ciel":"assets/products/burberry-check-paire-bleu-ciel.webp","Noir":"assets/products/burberry-check-paire-noir.webp"}
+      },
+      "gv-paris": {
+        anciens:["assets/products/givenchy-paris-multi.webp"],
+        nouveaux:["assets/products/givenchy-paris-paire-bleu.webp","assets/products/givenchy-paris-paire-beige.webp"],
+        coloris:{"Bleu":"assets/products/givenchy-paris-paire-bleu.webp","Beige":"assets/products/givenchy-paris-paire-beige.webp"}
+      },
+      "dr-oblique": {
+        anciens:["assets/products/dior-oblique.webp"],
+        nouveaux:["assets/products/dior-oblique-paire-noir.webp","assets/products/dior-oblique-paire-gris.webp"],
+        coloris:{"Noir":"assets/products/dior-oblique-paire-noir.webp","Gris":"assets/products/dior-oblique-paire-gris.webp"}
+      },
+      "hg-mono": {
+        anciens:["assets/products/hugo-monogramme-multi.webp"],
+        nouveaux:["assets/products/hugo-monogramme-paire-bleu-blanc.webp"],
+        coloris:{"Bleu et blanc":"assets/products/hugo-monogramme-paire-bleu-blanc.webp"}
+      },
+      "ea-logo": {
+        anciens:["assets/products/ea7-logo.webp"],
+        nouveaux:["assets/products/ea7-logo-paire-noir.webp","assets/products/ea7-logo-paire-beige.webp"],
+        coloris:{"Noir":"assets/products/ea7-logo-paire-noir.webp","Beige":"assets/products/ea7-logo-paire-beige.webp"}
+      }
+    };
+    var correction = correctionsPhotos[p.id];
+    if (correction){
+      var refs = [p.img].concat(Array.isArray(p.imgs) ? p.imgs : []);
+      if (p.valueImages) Object.keys(p.valueImages).forEach(function(k){ refs.push(p.valueImages[k]); });
+      var ancienPresent = refs.some(function(src){ return correction.anciens.indexOf(src) >= 0; });
+      if (ancienPresent){
+        if (correction.anciens.indexOf(p.img) >= 0) p.img = correction.nouveaux[0];
+        var galerie = (Array.isArray(p.imgs) ? p.imgs : []).filter(function(src){
+          return correction.anciens.indexOf(src) < 0;
+        });
+        correction.nouveaux.forEach(function(src){ if (galerie.indexOf(src) < 0) galerie.push(src); });
+        p.imgs = galerie.length ? galerie : correction.nouveaux.slice();
+        p.valueImages = p.valueImages || {};
+        Object.keys(correction.coloris).forEach(function(couleur){
+          var cle = "Coloris" + VSEP + couleur;
+          if (!p.valueImages[cle] || correction.anciens.indexOf(p.valueImages[cle]) >= 0){
+            p.valueImages[cle] = correction.coloris[couleur];
+          }
+        });
+      }
+    }
     if (p.variants){
       /* Déjà au bon format : on assure seulement l'ordre d'affichage. */
       if (Array.isArray(p.axes)) p.axes.forEach(function(ax){
@@ -607,11 +674,11 @@ window.AURA_IMG = function (img) {
       return '<a href="catalogue.html?cat=' + encodeURIComponent(c.key) + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a>';
     }).join("");
     var nav = $("#navLinks");
-    if (nav) nav.innerHTML = '<a href="catalogue.html" data-goto="tous">Tout voir</a>' + links;
+    if (nav) nav.innerHTML = '<a href="marques.html">Marques</a><a href="catalogue.html" data-goto="tous">Tout voir</a>' + links;
     var mob = $("#mobileMenu");
-    if (mob) mob.innerHTML = '<a href="catalogue.html" data-goto="tous">Tout voir</a>' + links;
+    if (mob) mob.innerHTML = '<a href="marques.html">Marques</a><a href="catalogue.html" data-goto="tous">Tout voir</a>' + links;
     var foot = $("#footShop");
-    if (foot) foot.innerHTML = '<li><a href="catalogue.html" data-goto="tous">Tout voir</a></li>' +
+    if (foot) foot.innerHTML = '<li><a href="marques.html">Toutes les marques</a></li><li><a href="catalogue.html" data-goto="tous">Tout voir</a></li>' +
       list.map(function(c){
         return '<li><a href="catalogue.html?cat=' + encodeURIComponent(c.key) + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a></li>';
       }).join("");
@@ -684,14 +751,14 @@ window.AURA_IMG = function (img) {
         return p.active && p.collection === c.key;
       }).slice(0, MAX_MODELES);
       var n = produits.length;
-      /* La couleur de la marque habille toute sa bande — fond, filet, bouton —
-         au lieu de se limiter à une étiquette. Onze maisons présentées dans
-         le même gris se lisent comme une seule. */
-      return '<div class="mband"' + (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' +
+      /* Chaque maison tient sa bande : sa photo d'ambiance en fond, sa couleur
+         sur le filet et le lien. Tant qu'aucune photo n'est fournie, la
+         couleur remplit la bande — jamais un trou, jamais un fond gris. */
+      return '<div class="mband' + (c.cover ? ' a-photo' : '') + '"' +
+        (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' +
         '<a class="mband-top" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
           ' aria-label="' + (n > 1 ? 'Voir les ' + n + ' modèles ' : 'Voir le modèle ') + esc(c.label) + '">' +
           (c.cover ? '<img class="mband-cover" src="' + esc(c.cover) + '" alt="" loading="lazy" decoding="async" onerror="AURA_IMG(this)" />' : '') +
-          (c.logo ? '<img class="brand-logo" src="' + esc(c.logo) + '" alt="Logo ' + esc(c.label) + '" loading="lazy" decoding="async" />' : '<span class="brand-wordmark">' + esc(c.label) + '</span>') +
           '<span class="mband-in">' +
             '<span>' +
               (c.tagline ? '<span class="mband-tag">' + esc(c.tagline) + '</span>' : '') +
@@ -745,22 +812,22 @@ window.AURA_IMG = function (img) {
     if (colls.length){
       if (kicker) kicker.textContent = "Les marques";
       if (titre) titre.textContent = "Parcourez les marques";
-      var enAvant = renderBandes(colls);
-      colls = colls.filter(function(c){ return enAvant.indexOf(c.key) < 0; });
+      renderBandes(colls);
+      var actifs = {};
+      store.products.forEach(function(p){
+        if (p.active && p.collection) actifs[p.collection] = (actifs[p.collection] || 0) + 1;
+      });
+      var disponibles = colls.filter(function(c){ return actifs[c.key]; });
+      var choisies = disponibles.filter(function(c){ return c.featured; });
+      disponibles.forEach(function(c){
+        if (choisies.indexOf(c) < 0) choisies.push(c);
+      });
+      choisies = choisies.slice(0, 6);
       var reste = $("#marquesReste");
-      if (reste) reste.hidden = !colls.length;
-      if (!colls.length){ grille.innerHTML = ""; return; }
-      grille.innerHTML = colls.map(function(c){
-        return '<a href="collection.html?c=' + encodeURIComponent(c.key) + '" class="cat-card brand-card"' +
-          (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' +
-          (c.cover ? '<img class="brand-cover" src="' + esc(c.cover) + '" alt="" loading="lazy" decoding="async" onerror="AURA_IMG(this)" />' : '') +
-          (c.logo ? '<img class="brand-logo" src="' + esc(c.logo) + '" alt="Logo ' + esc(c.label) + '" loading="lazy" decoding="async" />' : '<span class="brand-wordmark">' + esc(c.label) + '</span>') +
-          '<div class="cat-body">' +
-            '<span class="cat-label">' + esc(c.label) + '</span>' +
-            '<span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
-          '</div>' +
-        '</a>';
-      }).join("");
+      if (reste) reste.hidden = !choisies.length;
+      grille.innerHTML = choisies.map(function(c, i){ return carteMarqueHTML(c, i); }).join("");
+      var tout = $("#homeBrandsAll");
+      if (tout) tout.textContent = disponibles.length ? "Voir les " + disponibles.length + " marques" : "Voir toutes les marques";
       return;
     }
 
@@ -777,6 +844,35 @@ window.AURA_IMG = function (img) {
     }).join("");
   }
 
+  function carteMarqueHTML(c, i){
+    return '<a class="brand-directory-card" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
+      (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') +
+      ' aria-label="Voir les modèles ' + esc(c.label) + '">' +
+        (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600"' +
+          (i < 6 ? '' : ' loading="lazy"') + ' decoding="async" onerror="AURA_IMG(this)" />' : '') +
+        '<span class="brand-directory-shade"></span>' +
+        '<span class="brand-directory-copy">' +
+          (c.tagline ? '<span>' + esc(c.tagline) + '</span>' : '') +
+          '<strong>' + esc(c.label) + '</strong>' +
+        '</span>' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>' +
+      '</a>';
+  }
+
+  /* Répertoire dédié : aucune paire dans cette grille, seulement les maisons.
+     Sur mobile deux colonnes restent visibles d'un regard, sans carrousel ni
+     défilement horizontal. Le nombre vient du catalogue réel et disparaît si
+     une marque n'a aucun produit actif. */
+  function renderToutesMarques(){
+    var host = $("#brandsDirectory");
+    if (!host) return;
+    var marques = collList().map(function(c){
+      var n = store.products.filter(function(p){ return p.active && p.collection === c.key; }).length;
+      return { marque:c, nombre:n };
+    }).filter(function(x){ return x.nombre > 0; });
+    host.innerHTML = marques.map(function(x, i){ return carteMarqueHTML(x.marque, i); }).join("");
+  }
+
   /* Bannière de la collection ouverte. L'accent, s'il est défini, ne touche
      que le filet du sur-titre : borné là, il personnalise sans rien casser. */
   function renderCollBanniere(){
@@ -785,10 +881,13 @@ window.AURA_IMG = function (img) {
     var c = curColl ? collById(curColl) : null;
     if (!c){ box.hidden = true; return; }
     box.hidden = false;
-    box.classList.toggle("has-brand-logo", !!c.logo);
+    box.classList.toggle("has-brand-cover", !!c.cover);
+    box.classList.toggle("has-brand-logo", !c.cover && !!c.logo);
     var img = $("#collImage");
     if (img){
-      if (c.logo){ img.src = c.logo; img.alt = "Logo " + c.label; img.classList.add("brand-logo"); img.hidden = false; }
+      img.classList.remove("brand-logo");
+      if (c.cover){ img.src = c.cover; img.alt = ""; img.hidden = false; }
+      else if (c.logo){ img.src = c.logo; img.alt = "Logo " + c.label; img.classList.add("brand-logo"); img.hidden = false; }
       else { img.removeAttribute("src"); img.hidden = true; }
     }
     var k = $("#collKicker");
@@ -928,6 +1027,7 @@ window.AURA_IMG = function (img) {
     renderContenu();
     renderReviews();
     renderUnivers();
+    renderToutesMarques();
     renderEntetePage();
     renderCategories();
     renderCollBanniere();
@@ -973,12 +1073,11 @@ window.AURA_IMG = function (img) {
     /* Une adresse partagée porte toute la sélection, pas seulement la
        pointure : le client qui reçoit le lien voit exactement la même
        vitrine que celui qui l'a envoyé. */
-    var vTaille = tailleFromUrl(), vMarques = listeUrl("m"), vColoris = listeUrl("co");
+    var vTaille = tailleFromUrl(), vMarques = listeUrl("m");
     var vPrix = paramUrl("p"), vDispo = paramUrl("dispo") === "1", vTri = paramUrl("tri");
     var change = false;
     if (vTaille && curTaille !== vTaille){ curTaille = vTaille; change = true; }
     if (vMarques.length && curMarques.join(",") !== vMarques.join(",")){ curMarques = vMarques; change = true; }
-    if (vColoris.length && curColoris.join(",") !== vColoris.join(",")){ curColoris = vColoris; change = true; }
     if (vPrix && curPrix !== vPrix){ curPrix = vPrix; change = true; }
     if (vDispo && !curDispo){ curDispo = true; change = true; }
     if (vTri && curTri !== vTri){ curTri = vTri; change = true; }
@@ -995,7 +1094,7 @@ window.AURA_IMG = function (img) {
        de marque, c'est la marque qui prime : le titre y est posé au
        démarrage, une fois la marque connue. */
     if (typePage() !== "collection"){
-      document.title = (typePage() === "catalogue" ? "Catalogue — " : "") +
+      document.title = (typePage() === "catalogue" ? "Catalogue — " : typePage() === "marques" ? "Marques — " : "") +
         s.shopName + " — Boutique en ligne · Bamako";
     }
     var an = $("#announce"); if (an) an.textContent = s.announcement || "";
@@ -1054,6 +1153,8 @@ window.AURA_IMG = function (img) {
       saveStore(store);
       reconcileCart();
       renderCount();
+      renderUnivers();
+      renderToutesMarques();
       renderGrid();
       renderCart();
       if(typePage()==="produit"){
@@ -1074,7 +1175,7 @@ window.AURA_IMG = function (img) {
      navigation : la lecture de l'adresse se fait avant le rendu de la
      grille, et une variable déclarée plus bas ne serait pas encore un
      tableau au moment où le lien partagé est relu. */
-  var curTaille = "", curMarques = [], curColoris = [], curPrix = "", curDispo = false, curTri = "defaut";
+  var curTaille = "", curMarques = [], curPrix = "", curDispo = false, curTri = "defaut";
 
   /* ---------------- Initialisation ---------------- */
   applySettings();
@@ -1088,7 +1189,35 @@ window.AURA_IMG = function (img) {
   function collList(){
     var c = store.settings.collections;
     if (!Array.isArray(c)) return [];
-    return c.filter(function(x){ return x && x.key && x.label; });
+    /* Migration visuelle bornée : les anciennes couvertures locales du dépôt
+       sont remplacées par les compositions issues des vraies photos produit.
+       Une couverture téléversée par le commerçant (URL Supabase) reste
+       prioritaire et n'est jamais écrasée. Table locale à la fonction pour
+       éviter toute lecture avant affectation au démarrage. */
+    var bannieres = {
+      "calvin-klein":"assets/brand-banners/calvin-klein.webp",
+      "louis-vuitton":"assets/brand-banners/louis-vuitton.webp",
+      "hermes":"assets/brand-banners/hermes.webp",
+      "burberry":"assets/brand-banners/burberry.webp",
+      "givenchy":"assets/brand-banners/givenchy.webp",
+      "dior":"assets/brand-banners/dior.webp",
+      "balenciaga":"assets/brand-banners/balenciaga.webp",
+      "hugo":"assets/brand-banners/hugo.webp",
+      "tommy-jeans":"assets/brand-banners/tommy-jeans.webp",
+      "moncler":"assets/brand-banners/moncler.webp",
+      "ea7":"assets/brand-banners/ea7.webp",
+      "allsaints":"assets/brand-banners/allsaints.webp"
+    };
+    return c.filter(function(x){ return x && x.key && x.label; }).map(function(x){
+      var ancien = (x.cover || "").toString();
+      if (bannieres[x.key] && /^assets\/(brands|marques|studio)\//.test(ancien)){
+        var copie = {};
+        for (var k in x) copie[k] = x[k];
+        copie.cover = bannieres[x.key];
+        return copie;
+      }
+      return x;
+    });
   }
   function collById(key){
     return collList().filter(function(c){ return c.key === key; })[0] || null;
@@ -1203,10 +1332,6 @@ window.AURA_IMG = function (img) {
      Ils tiennent désormais dans un panneau unique, avec le compte de
      résultats et un ordre d'affichage. */
 
-  function secondAxe(p){
-    var axes = prodAxes(p);
-    return axes.length > 1 ? axes[1] : null;
-  }
   /* Vrai si le produit possède cette valeur d'axe en stock, toutes autres
      valeurs confondues. `rang` vaut 0 pour la pointure, 1 pour le coloris. */
   function aLaValeur(p, rang, valeur){
@@ -1246,17 +1371,12 @@ window.AURA_IMG = function (img) {
   function passeFiltres(p, tranche){
     if (curTaille && !aLaValeur(p, 0, curTaille)) return false;
     if (curMarques.length && curMarques.indexOf(p.collection || "") < 0) return false;
-    if (curColoris.length){
-      var ok = false;
-      for (var i = 0; i < curColoris.length; i++) if (aLaValeur(p, 1, curColoris[i])) { ok = true; break; }
-      if (!ok) return false;
-    }
     if (tranche && (p.price < tranche.min || p.price > tranche.max)) return false;
     if (curDispo && !enStock(p)) return false;
     return true;
   }
   function nbFiltres(){
-    return (curTaille ? 1 : 0) + curMarques.length + curColoris.length + (curPrix ? 1 : 0) + (curDispo ? 1 : 0);
+    return (curTaille ? 1 : 0) + curMarques.length + (curPrix ? 1 : 0) + (curDispo ? 1 : 0);
   }
   function trier(list){
     var out = list.slice();
@@ -1318,31 +1438,6 @@ window.AURA_IMG = function (img) {
       }
     }
 
-    var coloris = [], nomCol = "";
-    base.forEach(function(p){
-      var ax = secondAxe(p);
-      if (!ax) return;
-      if (!nomCol) nomCol = ax.name;
-      ax.values.forEach(function(v){
-        if (coloris.indexOf(v) < 0 && aLaValeur(p, 1, v)) coloris.push(v);
-      });
-    });
-    if (coloris.length > 1){
-      groupes += '<div class="cat-group"><h4>' + esc(nomCol || "Coloris") + '</h4><div class="cat-opts">' +
-        coloris.map(function(v){
-          var hex = "";
-          for (var i = 0; i < base.length; i++){
-            var info = catAxisValue(base[i].cat, nomCol, v);
-            if (info && info.hex){ hex = info.hex; break; }
-          }
-          var n = base.filter(function(p){ return aLaValeur(p, 1, v); }).length;
-          return '<button type="button" class="cat-opt" data-fcoloris="' + esc(v) + '" aria-pressed="' +
-            (curColoris.indexOf(v) >= 0 ? "true" : "false") + '">' +
-            (hex ? '<i class="cat-swatch" style="background:' + esc(hex) + '"></i>' : "") +
-            esc(v) + '<span class="cat-n">' + n + '</span></button>';
-        }).join("") + '</div></div>';
-    }
-
     var tranches = tranchesPrix(base);
     if (tranches.length){
       groupes += '<div class="cat-group"><h4>Prix</h4><div class="cat-opts">' +
@@ -1369,7 +1464,6 @@ window.AURA_IMG = function (img) {
     var tags = [];
     if (curTaille) tags.push({ k: "pointure", v: curTaille, l: (nomAxe || "Pointure") + " " + curTaille });
     curMarques.forEach(function(k){ var c = collById(k); tags.push({ k: "marque", v: k, l: c ? c.label : k }); });
-    curColoris.forEach(function(v){ tags.push({ k: "coloris", v: v, l: v }); });
     var ta = trancheActive(base);
     if (ta) tags.push({ k: "prix", v: ta.cle, l: ta.label });
     if (curDispo) tags.push({ k: "dispo", v: "1", l: "En stock" });
@@ -1414,7 +1508,7 @@ window.AURA_IMG = function (img) {
     return liste;
   }
   function effacerFiltres(){
-    curTaille = ""; curMarques = []; curColoris = []; curPrix = ""; curDispo = false;
+    curTaille = ""; curMarques = []; curPrix = ""; curDispo = false;
     renderGrid(); syncUrl(curFilter);
   }
 
@@ -1513,7 +1607,6 @@ window.AURA_IMG = function (img) {
     /* Une sélection se partage : « voici les Dior en 43 » doit tenir dans un
        lien collé sur WhatsApp, sinon le client refait les clics à la main. */
     if (curMarques.length) params.push("m=" + encodeURIComponent(curMarques.join(",")));
-    if (curColoris.length) params.push("co=" + encodeURIComponent(curColoris.join(",")));
     if (curPrix) params.push("p=" + encodeURIComponent(curPrix));
     if (curDispo) params.push("dispo=1");
     if (curTri && curTri !== "defaut") params.push("tri=" + encodeURIComponent(curTri));
@@ -1777,18 +1870,19 @@ window.AURA_IMG = function (img) {
         var dispo = valueHasStock(p, i, val);
         var choisi = pvSel[i] === val;
         var meta = catAxisValue(p.cat, ax.name, val) || {};
-        var photo = p.valueImages && p.valueImages[ax.name + "::" + val];
+        var estColoris = /couleur|coloris|color/i.test(ax.name || "");
+        var photo = (p.valueImages && p.valueImages[ax.name + "::" + val]) || (estColoris && meta.img) || "";
+        /* Un coloris n'est jamais représenté par une pastille ou un mot :
+           seule sa vraie photo est montrée au client. */
+        if (estColoris && !photo) return "";
         var visuel = photo
           ? '<img class="choice-photo" src="' + esc(photo) + '" alt="" loading="lazy" decoding="async" />'
           : '';
-        var pastille = !photo && meta.hex
-          ? '<span class="swatch" style="background:' + esc(meta.hex) + '"></span>'
-          : '';
-        return '<button type="button" class="size-btn' + (photo ? " has-photo" : "") + (pastille ? " has-swatch" : "") +
+        return '<button type="button" class="size-btn' + (photo ? " has-photo" : "") +
                (choisi ? " selected" : "") + (dispo ? "" : " soldout") +
                '" data-axe="' + i + '" data-val="' + esc(val) + '"' +
                ' title="' + esc(val) + '" aria-label="' + esc(val) + (dispo ? '"' : ' — épuisé, être prévenu du retour"') +
-               '>' + visuel + (photo ? '<span class="sr-only">' + esc(val) + '</span>' : pastille + esc(val)) + '</button>';
+               '>' + visuel + (photo ? '<span class="sr-only">' + esc(val) + '</span>' : esc(val)) + '</button>';
       }).join("");
       return '<div class="axe-bloc">' +
                '<span class="size-label">' + esc(ax.name) + '</span>' +
@@ -2392,8 +2486,6 @@ window.AURA_IMG = function (img) {
     }
     var fm = t.closest("[data-fmarque]");
     if (fm){ toggleDansListe(curMarques, fm.getAttribute("data-fmarque")); renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return; }
-    var fc = t.closest("[data-fcoloris]");
-    if (fc){ toggleDansListe(curColoris, fc.getAttribute("data-fcoloris")); renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return; }
     var fpr = t.closest("[data-fprix]");
     if (fpr){
       var vpr = fpr.getAttribute("data-fprix");
@@ -2406,7 +2498,6 @@ window.AURA_IMG = function (img) {
       var k = ftag.getAttribute("data-ftag"), v = ftag.getAttribute("data-fval");
       if (k === "pointure") curTaille = "";
       else if (k === "marque") toggleDansListe(curMarques, v);
-      else if (k === "coloris") toggleDansListe(curColoris, v);
       else if (k === "prix") curPrix = "";
       else if (k === "dispo") curDispo = false;
       renderGrid(); syncUrl(curFilter); return;
@@ -2527,7 +2618,7 @@ window.AURA_IMG = function (img) {
        premier passage ils n'existent pas encore. Cette fonction est donc
        rappelée après chaque rendu, et ne reprend que les éléments qu'elle
        n'a pas déjà traités. */
-    var cibles = $$(".pcard, .cat-card, .mband, .trust-item, .pillar")
+    var cibles = $$(".pcard, .cat-card, .mband, .brand-directory-card, .catalogue-gateway, .trust-item, .pillar")
       .filter(function(el){ return !el.hasAttribute("data-reveal"); });
     if (!cibles.length) return;
 

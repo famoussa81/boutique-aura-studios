@@ -20,7 +20,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 const DOMAINE_DEMO = 'https://boutique-aura-studios.vercel.app';
 
 const FICHIERS_DOMAINE = [
-  'index.html', 'catalogue.html', 'collection.html', 'produit.html', '404.html',
+  'index.html', 'marques.html', 'catalogue.html', 'collection.html', 'produit.html', '404.html',
   'cgv.html', 'confidentialite.html',
   'guide-des-tailles.html', 'durabilite.html',
   'robots.txt', 'sitemap.xml',
@@ -34,7 +34,7 @@ const ENSEIGNE_DEMO = 'SNEAK BAMAKO';
 const IMAGE_DEMO = '/assets/hero.webp';
 
 const FICHIERS_ENSEIGNE = [
-  'index.html', 'catalogue.html', 'collection.html', 'produit.html', '404.html',
+  'index.html', 'marques.html', 'catalogue.html', 'collection.html', 'produit.html', '404.html',
   'cgv.html', 'confidentialite.html', 'guide-des-tailles.html', 'durabilite.html',
 ];
 
@@ -82,7 +82,7 @@ if (o.whatsapp) {
     console.error('Numero WhatsApp invalide. Attendu : indicatif + numero, ex. 22376123456');
     process.exit(1);
   }
-  for (const f of ['index.html', 'catalogue.html', 'collection.html']) {
+  for (const f of ['index.html', 'marques.html', 'catalogue.html', 'collection.html']) {
     const s2 = lire(f);
     if (s2 === null) continue;
     const maj = s2.replace(/https:\/\/wa\.me\/\d+/g, 'https://wa.me/' + num);
