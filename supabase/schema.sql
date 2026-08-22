@@ -568,6 +568,66 @@ begin
 end;
 $$;
 
+-- Réservations orphelines : du stock immobilisé par une commande qui
+-- n'existe plus. Une commande effacée hors de l'application, une base
+-- restaurée à mi-chemin, et des paires deviennent invendables sans que
+-- rien ne le signale. `set_inventory` refuse d'y toucher — c'est voulu,
+-- il ne doit jamais libérer une quantité promise à un client. Cette
+-- fonction recalcule donc chaque réservation à partir des commandes
+-- réellement en attente : elle ne devine rien, elle recompte.
+create or replace function public.rebuild_reservations()
+returns jsonb
+language plpgsql
+security definer
+set search_path to 'public'
+as $$
+declare
+  v_product record;
+  v_key text;
+  v_value jsonb;
+  v_merged jsonb;
+  v_reserved integer;
+  v_corrections jsonb := '[]'::jsonb;
+begin
+  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+
+  for v_product in select id, data from public.products for update loop
+    v_merged := '{}'::jsonb;
+
+    for v_key, v_value in
+      select key, value from jsonb_each(coalesce(v_product.data->'variants', '{}'::jsonb))
+    loop
+      select coalesce(sum((item->>'qty')::integer), 0) into v_reserved
+      from public.orders o,
+           lateral jsonb_array_elements(coalesce(o.data->'items', '[]'::jsonb)) item
+      where o.data->>'status' = 'PENDING'
+        and item->>'id' = v_product.id
+        and coalesce(item->>'variant', '') = v_key;
+
+      if v_reserved <> coalesce((v_value->>'r')::integer, 0) then
+        v_corrections := v_corrections || jsonb_build_object(
+          'product_id', v_product.id,
+          'variant', v_key,
+          'avant', coalesce((v_value->>'r')::integer, 0),
+          'apres', v_reserved
+        );
+      end if;
+
+      v_merged := v_merged || jsonb_build_object(
+        v_key,
+        jsonb_build_object('s', greatest(0, coalesce((v_value->>'s')::integer, 0)), 'r', v_reserved)
+      );
+    end loop;
+
+    update public.products
+    set data = jsonb_set(v_product.data, '{variants}', v_merged, true), updated_at = now()
+    where id = v_product.id;
+  end loop;
+
+  return jsonb_build_object('corrections', v_corrections);
+end;
+$$;
+
 grant execute on function public.publish_store(uuid, integer) to authenticated;
 grant execute on function public.save_admin_draft(uuid, integer, jsonb, boolean) to authenticated;
 grant execute on function public.restore_revision_as_draft(uuid, integer) to authenticated;
@@ -576,6 +636,7 @@ grant execute on function public.set_product_visibility(text, boolean) to authen
 grant execute on function public.archive_product(text) to authenticated;
 grant execute on function public.admin_save_order(jsonb) to authenticated;
 grant execute on function public.admin_delete_order(text) to authenticated;
+grant execute on function public.rebuild_reservations() to authenticated;
 revoke execute on function public.save_admin_draft(uuid, integer, jsonb, boolean) from public, anon;
 revoke execute on function public.publish_store(uuid, integer) from public, anon;
 revoke execute on function public.restore_revision_as_draft(uuid, integer) from public, anon;
@@ -584,6 +645,7 @@ revoke execute on function public.set_product_visibility(text, boolean) from pub
 revoke execute on function public.archive_product(text) from public, anon;
 revoke execute on function public.admin_save_order(jsonb) from public, anon;
 revoke execute on function public.admin_delete_order(text) from public, anon;
+revoke execute on function public.rebuild_reservations() from public, anon;
 
 -- ---------- Passage de commande (transaction serveur) ----------
 -- Résout trois problèmes que le navigateur ne peut pas résoudre seul :

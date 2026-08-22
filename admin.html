@@ -1470,6 +1470,11 @@
   function showView(name){
     $$(".view").forEach(function(v){ v.classList.toggle("active", v.id === "view-" + name); });
     $$(".tab").forEach(function(t){ t.classList.toggle("active", t.getAttribute("data-view") === name); });
+    /* Les commandes arrivent pendant que l'administration est ouverte. Sans
+       cette relecture, le commerçant ouvrait l'onglet et voyait la liste
+       telle qu'elle était à sa connexion : une vente passée dix minutes plus
+       tôt restait invisible jusqu'au rechargement complet de la page. */
+    if (name === "orders") loadOrders();
     if (name === "news") loadNews();
     if (name === "wait") loadWait();
     if (name === "site") loadRevisions();
@@ -1680,6 +1685,17 @@
       return '<tr><td>' + esc(s.email) + '</td><td class="mono">' + esc(d) + '</td></tr>';
     }).join("");
   }
+  /* Relecture des commandes à l'ouverture de l'onglet. Hors ligne, la liste
+     déjà chargée reste affichée : elle vaut mieux qu'un tableau vide. */
+  function loadOrders(){
+    if (!online()){ renderOrders(); renderDash(); return; }
+    window.AURA_DB.loadOrders(function(er, rows){
+      if (!er && rows) store.orders = rows;
+      renderOrders();
+      renderDash();
+    });
+  }
+
   function loadNews(){
     if (online()){
       window.AURA_DB.loadSubscribers(function(er, rows){
