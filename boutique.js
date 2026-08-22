@@ -367,6 +367,12 @@
         if (preview && preview.products && preview.settings){
           document.documentElement.setAttribute("data-preview", "true");
           preview.products = normalizeProducts(preview.products);
+          /* Le brouillon de l'administration ne transporte que les réglages
+             et les produits : l'historique des commandes n'a rien à y faire.
+             Sans cette liste vide, passer une commande d'essai depuis
+             « Voir le brouillon » plantait avant l'écran WhatsApp — le
+             commerçant croyait sa boutique cassée à l'instant de la vérifier. */
+          if (!Array.isArray(preview.orders)) preview.orders = [];
           return preview;
         }
       }
@@ -375,7 +381,11 @@
       var raw = localStorage.getItem(KEY);
       if (raw){
         var s = JSON.parse(raw);
-        if (s && s.products && s.settings){ s.products = normalizeProducts(s.products); return s; }
+        if (s && s.products && s.settings){
+          s.products = normalizeProducts(s.products);
+          if (!Array.isArray(s.orders)) s.orders = [];
+          return s;
+        }
       }
     } catch(e){}
     var s = SEED();

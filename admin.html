@@ -213,7 +213,7 @@
   .ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
     padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 </style>
-<link rel="stylesheet" href="admin-dashboard.css?v=20260821c" />
+<link rel="stylesheet" href="admin-dashboard.css?v=20260822a" />
 </head>
 <body>
 
@@ -677,8 +677,8 @@
   <div class="toast" id="toast"></div>
 
 <script src="supabase.config.js"></script>
-<script src="supabase-client.js?v=20260821c"></script>
-<script src="catalog.js?v=20260821c"></script>
+<script src="supabase-client.js?v=20260822a"></script>
+<script src="catalog.js?v=20260822a"></script>
 <script>
 (function(){
   var KEY = "aura_store_v9";
@@ -2466,7 +2466,9 @@
   }
   function requireLiveAction(){
     if (navigator.onLine && online()) return true;
-    toast("Internet est nécessaire pour modifier une commande ou le stock");
+    toast(dbAvailable()
+      ? "Internet est nécessaire pour modifier une commande ou le stock"
+      : "La base de données est nécessaire pour modifier une commande ou le stock");
     updateDraftUI(); return false;
   }
 
