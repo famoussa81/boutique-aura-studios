@@ -38,7 +38,7 @@
   "paymentAccepted": "Espèces à la livraison"
 }
 </script>
-<link rel="stylesheet" href="boutique.css?v=20260822b" />
+<link rel="stylesheet" href="boutique.css?v=20260822c" />
 </head>
 <body data-page="catalogue">
 <noscript>
@@ -62,7 +62,27 @@
       <div class="tabs" id="filterTabs" data-od-id="filter-tabs" role="tablist">
         <button class="tab active" data-filter="tous">Tous</button>
       </div>
-      <div class="sizebar" id="barreTailles" hidden></div>
+      <div class="cat-tools" id="catTools" hidden>
+        <div class="cat-tools-row">
+          <button type="button" class="cat-btn" id="catFiltrer" aria-expanded="false" aria-controls="catPanel">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span>Filtrer</span><span class="cat-count" id="catCount" hidden>0</span>
+          </button>
+          <label class="cat-sort">
+            <span>Trier</span>
+            <select id="catTri" aria-label="Ordre d'affichage">
+              <option value="defaut">Sélection de la boutique</option>
+              <option value="prix-asc">Prix croissant</option>
+              <option value="prix-desc">Prix décroissant</option>
+              <option value="nouveau">Nouveautés d'abord</option>
+              <option value="nom">Nom A à Z</option>
+            </select>
+          </label>
+          <p class="cat-total" id="catTotal" role="status" aria-live="polite"></p>
+        </div>
+        <div class="cat-panel" id="catPanel" hidden></div>
+        <div class="cat-actives" id="catActives" hidden></div>
+      </div>
       <div class="pgrid" id="grid" data-od-id="product-grid"></div>
     </div>
   </section>
@@ -83,8 +103,8 @@
 </main>
 
 <script src="supabase.config.js"></script>
-<script src="supabase-client.js?v=20260822b"></script>
-<script src="catalog.js?v=20260822b"></script>
-<script src="boutique.js?v=20260822b"></script>
+<script src="supabase-client.js?v=20260822c"></script>
+<script src="catalog.js?v=20260822c"></script>
+<script src="boutique.js?v=20260822c"></script>
 </body>
 </html>

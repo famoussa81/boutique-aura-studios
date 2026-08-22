@@ -964,11 +964,19 @@ window.AURA_IMG = function (img) {
       renderCategories();
       renderGrid();
     }
-    var vTaille = tailleFromUrl();
-    if (vTaille && curTaille !== vTaille){
-      curTaille = vTaille;
-      renderGrid();
-    }
+    /* Une adresse partagée porte toute la sélection, pas seulement la
+       pointure : le client qui reçoit le lien voit exactement la même
+       vitrine que celui qui l'a envoyé. */
+    var vTaille = tailleFromUrl(), vMarques = listeUrl("m"), vColoris = listeUrl("co");
+    var vPrix = paramUrl("p"), vDispo = paramUrl("dispo") === "1", vTri = paramUrl("tri");
+    var change = false;
+    if (vTaille && curTaille !== vTaille){ curTaille = vTaille; change = true; }
+    if (vMarques.length && curMarques.join(",") !== vMarques.join(",")){ curMarques = vMarques; change = true; }
+    if (vColoris.length && curColoris.join(",") !== vColoris.join(",")){ curColoris = vColoris; change = true; }
+    if (vPrix && curPrix !== vPrix){ curPrix = vPrix; change = true; }
+    if (vDispo && !curDispo){ curDispo = true; change = true; }
+    if (vTri && curTri !== vTri){ curTri = vTri; change = true; }
+    if (change) renderGrid();
   }
   function applySettings(){
     var s = store.settings;
@@ -1056,6 +1064,11 @@ window.AURA_IMG = function (img) {
      une page produit peut appeler openPV() pendant ce premier rendu. */
   var pvProduct = null, pvSel = [], pvQty = 1, pvBuy = false, pvImgs = [], pvPhotoChoice = false;
   var curFilter = "tous", curQuery = "", curColl = "";
+  /* État du tri du catalogue. Déclaré ici, avec les autres critères de
+     navigation : la lecture de l'adresse se fait avant le rendu de la
+     grille, et une variable déclarée plus bas ne serait pas encore un
+     tableau au moment où le lien partagé est relu. */
+  var curTaille = "", curMarques = [], curColoris = [], curPrix = "", curDispo = false, curTri = "defaut";
 
   /* ---------------- Initialisation ---------------- */
   applySettings();
@@ -1162,7 +1175,6 @@ window.AURA_IMG = function (img) {
      une disponible, et abandonne avant. Le filtre porte sur le premier axe
      de la catégorie — celui que le commerçant a nommé « Pointure » — et ne
      retient que les tailles réellement en stock. */
-  var curTaille = "";
 
   function premierAxe(p){
     var axes = prodAxes(p);
@@ -1178,6 +1190,203 @@ window.AURA_IMG = function (img) {
     }
     return false;
   }
+  /* ---------------- Tri et filtres du catalogue ----------------
+     Une boutique de chaussures se parcourt par pointure, puis par marque.
+     Ces critères vivaient jusqu'ici à trois endroits différents — onglets
+     de catégorie, rangée de pointures, recherche — sans jamais se combiner.
+     Ils tiennent désormais dans un panneau unique, avec le compte de
+     résultats et un ordre d'affichage. */
+
+  function secondAxe(p){
+    var axes = prodAxes(p);
+    return axes.length > 1 ? axes[1] : null;
+  }
+  /* Vrai si le produit possède cette valeur d'axe en stock, toutes autres
+     valeurs confondues. `rang` vaut 0 pour la pointure, 1 pour le coloris. */
+  function aLaValeur(p, rang, valeur){
+    var keys = allKeys(p);
+    for (var i = 0; i < keys.length; i++){
+      var vals = valuesOf(keys[i]);
+      if (vals.length > rang && vals[rang] === valeur && availFor(p, keys[i]) > 0) return true;
+    }
+    return false;
+  }
+  function enStock(p){
+    if (p.stockout) return false;
+    var keys = allKeys(p);
+    for (var i = 0; i < keys.length; i++) if (availFor(p, keys[i]) > 0) return true;
+    return false;
+  }
+  /* Trois tranches bâties sur les prix réellement présents : figées dans le
+     code, elles deviendraient fausses au premier changement de catalogue. */
+  function tranchesPrix(list){
+    var prix = list.map(function(p){ return p.price || 0; }).filter(function(n){ return n > 0; });
+    if (prix.length < 3) return [];
+    var min = Math.min.apply(null, prix), max = Math.max.apply(null, prix);
+    if (max - min < 3000) return [];
+    var pas = Math.round((max - min) / 3 / 1000) * 1000 || 1000;
+    var a = min + pas, b = min + pas * 2;
+    return [
+      { cle: "0-" + a, label: "Moins de " + fmt(a), min: 0, max: a - 1 },
+      { cle: a + "-" + b, label: fmt(a) + " à " + fmt(b), min: a, max: b },
+      { cle: b + "-", label: "Plus de " + fmt(b), min: b + 1, max: Infinity }
+    ];
+  }
+  function trancheActive(list){
+    var t = tranchesPrix(list);
+    for (var i = 0; i < t.length; i++) if (t[i].cle === curPrix) return t[i];
+    return null;
+  }
+  function passeFiltres(p, tranche){
+    if (curTaille && !aLaValeur(p, 0, curTaille)) return false;
+    if (curMarques.length && curMarques.indexOf(p.collection || "") < 0) return false;
+    if (curColoris.length){
+      var ok = false;
+      for (var i = 0; i < curColoris.length; i++) if (aLaValeur(p, 1, curColoris[i])) { ok = true; break; }
+      if (!ok) return false;
+    }
+    if (tranche && (p.price < tranche.min || p.price > tranche.max)) return false;
+    if (curDispo && !enStock(p)) return false;
+    return true;
+  }
+  function nbFiltres(){
+    return (curTaille ? 1 : 0) + curMarques.length + curColoris.length + (curPrix ? 1 : 0) + (curDispo ? 1 : 0);
+  }
+  function trier(list){
+    var out = list.slice();
+    if (curTri === "prix-asc") out.sort(function(a, b){ return (a.price || 0) - (b.price || 0); });
+    else if (curTri === "prix-desc") out.sort(function(a, b){ return (b.price || 0) - (a.price || 0); });
+    else if (curTri === "nom") out.sort(function(a, b){ return String(a.name).localeCompare(String(b.name), "fr"); });
+    else if (curTri === "nouveau") out.sort(function(a, b){
+      var na = /nouveau/i.test(a.badge || "") ? 0 : 1, nb = /nouveau/i.test(b.badge || "") ? 0 : 1;
+      return na - nb;
+    });
+    return out;
+  }
+
+  /* Le panneau ne propose que ce qui existe vraiment dans la sélection en
+     cours : une marque sans modèle disponible n'apparaît pas, et un filtre
+     ne peut donc jamais mener à une page vide par sa seule faute. */
+  function renderFiltres(base){
+    var tools = $("#catTools");
+    if (!tools) return;
+    var panel = $("#catPanel"), actives = $("#catActives"), compte = $("#catCount");
+    tools.hidden = base.length < 2;
+    if (tools.hidden) return;
+
+    var groupes = "";
+
+    var pointures = [], nomAxe = "";
+    base.forEach(function(p){
+      var ax = premierAxe(p);
+      if (!ax) return;
+      if (!nomAxe) nomAxe = ax.name;
+      ax.values.forEach(function(v){
+        if (pointures.indexOf(v) < 0 && aLaValeur(p, 0, v)) pointures.push(v);
+      });
+    });
+    if (pointures.length > 1){
+      groupes += '<div class="cat-group"><h4>' + esc(nomAxe || "Pointure") + '</h4><div class="cat-opts">' +
+        pointures.map(function(v){
+          var n = base.filter(function(p){ return aLaValeur(p, 0, v); }).length;
+          return '<button type="button" class="cat-opt" data-fpointure="' + esc(v) + '" aria-pressed="' +
+            (curTaille === v ? "true" : "false") + '">' + esc(v) + '<span class="cat-n">' + n + '</span></button>';
+        }).join("") + '</div></div>';
+    }
+
+    /* Sur une page de marque, proposer les marques n'a aucun sens : la
+       sélection est déjà faite par la page elle-même. */
+    if (!curColl){
+      var marques = [];
+      base.forEach(function(p){
+        if (p.collection && marques.indexOf(p.collection) < 0) marques.push(p.collection);
+      });
+      if (marques.length > 1){
+        groupes += '<div class="cat-group"><h4>Marque</h4><div class="cat-opts">' +
+          marques.map(function(k){
+            var c = collById(k), n = base.filter(function(p){ return p.collection === k; }).length;
+            return '<button type="button" class="cat-opt" data-fmarque="' + esc(k) + '" aria-pressed="' +
+              (curMarques.indexOf(k) >= 0 ? "true" : "false") + '">' + esc(c ? c.label : k) +
+              '<span class="cat-n">' + n + '</span></button>';
+          }).join("") + '</div></div>';
+      }
+    }
+
+    var coloris = [], nomCol = "";
+    base.forEach(function(p){
+      var ax = secondAxe(p);
+      if (!ax) return;
+      if (!nomCol) nomCol = ax.name;
+      ax.values.forEach(function(v){
+        if (coloris.indexOf(v) < 0 && aLaValeur(p, 1, v)) coloris.push(v);
+      });
+    });
+    if (coloris.length > 1){
+      groupes += '<div class="cat-group"><h4>' + esc(nomCol || "Coloris") + '</h4><div class="cat-opts">' +
+        coloris.map(function(v){
+          var hex = "";
+          for (var i = 0; i < base.length; i++){
+            var info = catAxisValue(base[i].cat, nomCol, v);
+            if (info && info.hex){ hex = info.hex; break; }
+          }
+          var n = base.filter(function(p){ return aLaValeur(p, 1, v); }).length;
+          return '<button type="button" class="cat-opt" data-fcoloris="' + esc(v) + '" aria-pressed="' +
+            (curColoris.indexOf(v) >= 0 ? "true" : "false") + '">' +
+            (hex ? '<i class="cat-swatch" style="background:' + esc(hex) + '"></i>' : "") +
+            esc(v) + '<span class="cat-n">' + n + '</span></button>';
+        }).join("") + '</div></div>';
+    }
+
+    var tranches = tranchesPrix(base);
+    if (tranches.length){
+      groupes += '<div class="cat-group"><h4>Prix</h4><div class="cat-opts">' +
+        tranches.map(function(t){
+          var n = base.filter(function(p){ return p.price >= t.min && p.price <= t.max; }).length;
+          if (!n) return "";
+          return '<button type="button" class="cat-opt" data-fprix="' + esc(t.cle) + '" aria-pressed="' +
+            (curPrix === t.cle ? "true" : "false") + '">' + esc(t.label) + '<span class="cat-n">' + n + '</span></button>';
+        }).join("") + '</div></div>';
+    }
+
+    groupes += '<div class="cat-group"><h4>Disponibilité</h4><div class="cat-opts">' +
+      '<button type="button" class="cat-opt" data-fdispo="1" aria-pressed="' + (curDispo ? "true" : "false") +
+      '">En stock seulement</button></div></div>';
+
+    panel.innerHTML = groupes;
+
+    var tags = [];
+    if (curTaille) tags.push({ k: "pointure", v: curTaille, l: (nomAxe || "Pointure") + " " + curTaille });
+    curMarques.forEach(function(k){ var c = collById(k); tags.push({ k: "marque", v: k, l: c ? c.label : k }); });
+    curColoris.forEach(function(v){ tags.push({ k: "coloris", v: v, l: v }); });
+    var ta = trancheActive(base);
+    if (ta) tags.push({ k: "prix", v: ta.cle, l: ta.label });
+    if (curDispo) tags.push({ k: "dispo", v: "1", l: "En stock" });
+
+    actives.hidden = !tags.length;
+    actives.innerHTML = tags.length
+      ? tags.map(function(t){
+          return '<button type="button" class="cat-tag" data-ftag="' + esc(t.k) + '" data-fval="' + esc(t.v) +
+            '" aria-label="Retirer le filtre ' + esc(t.l) + '"><b>' + esc(t.l) + '</b><span aria-hidden="true">×</span></button>';
+        }).join("") + '<button type="button" class="cat-clear" data-fclear>Tout effacer</button>'
+      : "";
+
+    var n = nbFiltres();
+    compte.hidden = !n;
+    compte.textContent = n;
+    var tri = $("#catTri");
+    if (tri && tri.value !== curTri) tri.value = curTri;
+  }
+
+  function toggleDansListe(liste, valeur){
+    var i = liste.indexOf(valeur);
+    if (i >= 0) liste.splice(i, 1); else liste.push(valeur);
+    return liste;
+  }
+  function effacerFiltres(){
+    curTaille = ""; curMarques = []; curColoris = []; curPrix = ""; curDispo = false;
+    renderGrid(); syncUrl(curFilter);
+  }
+
   function renderBarreTailles(list){
     var box = $("#barreTailles");
     if (!box) return;
@@ -1221,7 +1430,12 @@ window.AURA_IMG = function (img) {
        ferait disparaître toutes les autres pointures de la barre et on ne
        pourrait plus en changer. */
     renderBarreTailles(list);
-    if (curTaille) list = list.filter(function(p){ return aLaTaille(p, curTaille); });
+    /* Le panneau se construit sur la sélection d'avant les filtres : sinon
+       choisir « 44 » ferait disparaître toutes les autres pointures et on ne
+       pourrait plus en changer. */
+    renderFiltres(list);
+    var tranche = trancheActive(list);
+    list = list.filter(function(p){ return passeFiltres(p, tranche); });
     if (curQuery){
       var q = curQuery.toLowerCase();
       list = list.filter(function(p){ /* La marque est ce qu'on tape en premier dans une boutique
@@ -1230,20 +1444,23 @@ window.AURA_IMG = function (img) {
                (CATS[p.cat]||"").toLowerCase().indexOf(q) >= 0 ||
                marqueDe(p).toLowerCase().indexOf(q) >= 0; });
     }
+    var total = $("#catTotal");
+    if (total) total.textContent = list.length
+      ? (list.length > 1 ? list.length + " modèles" : "1 modèle")
+      : "";
     if (!list.length){
-      /* Message adapté : dire « aucun résultat » sans dire que c'est la
-         pointure qui exclut tout laisse le client croire que la boutique est
-         vide. */
+      /* Message adapté : dire « aucun résultat » sans dire quel critère
+         exclut tout laisse le client croire que la boutique est vide. */
       g.innerHTML = '<p class="none-msg">' +
-        (curTaille
-          ? 'Aucun modèle disponible en ' + esc(curTaille) + ' pour cette sélection.' +
-            '<br><button type="button" class="btn btn-primary" style="margin-top:16px" data-taille="">Voir toutes les pointures</button>'
+        (nbFiltres()
+          ? 'Aucun modèle ne correspond à ces critères.' +
+            '<br><button type="button" class="btn btn-primary" style="margin-top:16px" data-fclear>Effacer les filtres</button>'
           : 'Aucun produit ne correspond à votre recherche.' +
             '<br><button type="button" class="btn btn-primary" style="margin-top:16px" data-reset-filters>Voir tout le catalogue</button>') +
         '</p>';
       return;
     }
-    g.innerHTML = list.map(cardHTML).join("");
+    g.innerHTML = trier(list).map(cardHTML).join("");
   }
   function setFilter(f){
     curFilter = f; curQuery = "";
@@ -1261,8 +1478,25 @@ window.AURA_IMG = function (img) {
     if (curColl) params.push("c=" + encodeURIComponent(curColl));
     if (cat && cat !== "tous") params.push("cat=" + encodeURIComponent(cat));
     if (curTaille) params.push("t=" + encodeURIComponent(curTaille));
+    /* Une sélection se partage : « voici les Dior en 43 » doit tenir dans un
+       lien collé sur WhatsApp, sinon le client refait les clics à la main. */
+    if (curMarques.length) params.push("m=" + encodeURIComponent(curMarques.join(",")));
+    if (curColoris.length) params.push("co=" + encodeURIComponent(curColoris.join(",")));
+    if (curPrix) params.push("p=" + encodeURIComponent(curPrix));
+    if (curDispo) params.push("dispo=1");
+    if (curTri && curTri !== "defaut") params.push("tri=" + encodeURIComponent(curTri));
     var url = location.pathname + (params.length ? "?" + params.join("&") : "");
     try { history.replaceState(null, "", url); } catch(e){}
+  }
+  function paramUrl(nom){
+    try {
+      var m = location.search.match(new RegExp("[?&]" + nom + "=([^&]+)"));
+      return m ? decodeURIComponent(m[1]) : "";
+    } catch(e){ return ""; }
+  }
+  function listeUrl(nom){
+    var v = paramUrl(nom);
+    return v ? v.split(",").filter(Boolean) : [];
   }
   function tailleFromUrl(){
     try {
@@ -2112,6 +2346,45 @@ window.AURA_IMG = function (img) {
     }
     var chip = t.closest("[data-taille]");
     if (chip){ setTaille(chip.getAttribute("data-taille")); return; }
+
+    /* Panneau de tri du catalogue. Un critère déjà actif se désactive au
+       second clic : sans ça, le client ne trouve plus comment revenir en
+       arrière et quitte la page. */
+    if (t.closest("#catFiltrer")){
+      var btn = $("#catFiltrer"), panel = $("#catPanel");
+      var ouvert = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", ouvert ? "false" : "true");
+      panel.hidden = ouvert;
+      return;
+    }
+    var fp = t.closest("[data-fpointure]");
+    if (fp){
+      var vp = fp.getAttribute("data-fpointure");
+      curTaille = (curTaille === vp) ? "" : vp;
+      renderGrid(); syncUrl(curFilter); return;
+    }
+    var fm = t.closest("[data-fmarque]");
+    if (fm){ toggleDansListe(curMarques, fm.getAttribute("data-fmarque")); renderGrid(); syncUrl(curFilter); return; }
+    var fc = t.closest("[data-fcoloris]");
+    if (fc){ toggleDansListe(curColoris, fc.getAttribute("data-fcoloris")); renderGrid(); syncUrl(curFilter); return; }
+    var fpr = t.closest("[data-fprix]");
+    if (fpr){
+      var vpr = fpr.getAttribute("data-fprix");
+      curPrix = (curPrix === vpr) ? "" : vpr;
+      renderGrid(); syncUrl(curFilter); return;
+    }
+    if (t.closest("[data-fdispo]")){ curDispo = !curDispo; renderGrid(); syncUrl(curFilter); return; }
+    var ftag = t.closest("[data-ftag]");
+    if (ftag){
+      var k = ftag.getAttribute("data-ftag"), v = ftag.getAttribute("data-fval");
+      if (k === "pointure") curTaille = "";
+      else if (k === "marque") toggleDansListe(curMarques, v);
+      else if (k === "coloris") toggleDansListe(curColoris, v);
+      else if (k === "prix") curPrix = "";
+      else if (k === "dispo") curDispo = false;
+      renderGrid(); syncUrl(curFilter); return;
+    }
+    if (t.closest("[data-fclear]")){ effacerFiltres(); return; }
     if (t.closest("[data-searchall]")){ applySearchToGrid(); return; }
     if (t.closest("[data-reset-filters]")){ setFilter("tous"); return; }
 
@@ -2131,6 +2404,13 @@ window.AURA_IMG = function (img) {
 
   document.addEventListener("input", function(e){
     if (e.target === $("#soInput")) curSearch();
+  });
+  document.addEventListener("change", function(e){
+    var tri = e.target.closest ? e.target.closest("#catTri") : null;
+    if (!tri) return;
+    curTri = tri.value || "defaut";
+    renderGrid();
+    syncUrl(curFilter);
   });
   $("#soInput").addEventListener("keydown", function(e){
     if (e.key === "Enter"){ e.preventDefault(); if (this.value.trim()) applySearchToGrid(); }
