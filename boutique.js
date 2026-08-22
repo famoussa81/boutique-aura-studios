@@ -242,6 +242,19 @@
   }
 })();
 
+/* Une photo qui échoue est réessayée une fois avec un paramètre unique,
+   puis effacée en silence si elle manque vraiment. Le navigateur garde en
+   cache les réponses manquantes : un visiteur venu pendant une mise en
+   ligne incomplète continuait à voir des trous longtemps après la
+   correction, alors que le fichier était revenu sur le serveur. */
+window.AURA_IMG = function (img) {
+  if (!img || img.dataset.retry === "1") { if (img) img.style.opacity = 0; return; }
+  img.dataset.retry = "1";
+  var src = img.getAttribute("src") || "";
+  if (!src) { img.style.opacity = 0; return; }
+  img.setAttribute("src", src + (src.indexOf("?") >= 0 ? "&" : "?") + "r=" + Date.now());
+};
+
 (function(){
   var KEY = "aura_store_v9";
   var CKEY = "aura_cart_v1";
@@ -749,7 +762,7 @@
     if (titre) titre.textContent = "Explorez les collections";
     grille.innerHTML = catList().map(function(c){
       return '<a href="catalogue.html?cat=' + encodeURIComponent(c.key) + '" class="cat-card" data-goto="' + esc(c.key) + '">' +
-        (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' : '') +
+        (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600" loading="lazy" decoding="async" onerror="AURA_IMG(this)" />' : '') +
         '<div class="cat-body">' +
           '<span class="cat-label">' + esc(c.label) + '</span>' +
           '<span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
@@ -1117,7 +1130,7 @@
     var out = isOut(p);
     return '<article class="pcard" data-card="' + esc(p.id) + '">' +
       '<div class="pmedia">' +
-        '<img src="' + img + '" alt="' + alt + '" width="600" height="800" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' +
+        '<img src="' + img + '" alt="' + alt + '" width="600" height="800" loading="lazy" decoding="async" onerror="AURA_IMG(this)" />' +
         /* Lien en surimpression plutot qu'un <a> autour du bloc : le bouton
            favori est un vrai bouton, et un bouton dans un lien n'est pas du
            HTML valide. Le favori passe au-dessus par son z-index. */
@@ -1429,10 +1442,10 @@
     pvProduct = p; pvSel = valuesOf(firstAvailableKey(p)); pvQty = 1; pvBuy = false; pvImgs = []; pvPhotoChoice = false;
     var imgs = (p.imgs && p.imgs.length) ? p.imgs : (p.img ? [p.img] : []);
     pvImgs = imgs;
-    var media = '<img class="pv-main" src="' + esc(imgs[0] || "") + '" onerror="this.style.opacity=0" alt="' + esc(p.name) + '" />';
+    var media = '<img class="pv-main" src="' + esc(imgs[0] || "") + '" onerror="AURA_IMG(this)" alt="' + esc(p.name) + '" />';
     if (imgs.length > 1){
       media += '<div class="pv-thumbs" id="pvThumbs">' + imgs.map(function(src, i){
-        return '<button type="button" data-thumb="' + i + '" aria-label="Voir la photo ' + (i + 1) + ' sur ' + imgs.length + '"' + (i === 0 ? ' class="active"' : '') + '><img src="' + esc(src) + '" onerror="this.style.opacity=0" alt="" /></button>';
+        return '<button type="button" data-thumb="' + i + '" aria-label="Voir la photo ' + (i + 1) + ' sur ' + imgs.length + '"' + (i === 0 ? ' class="active"' : '') + '><img src="' + esc(src) + '" onerror="AURA_IMG(this)" alt="" /></button>';
       }).join("") + '</div>';
     }
     $("#pvMedia").innerHTML = media;
@@ -1633,7 +1646,7 @@
     $("#cartTotal").textContent = fmt(sub + del);
     body.innerHTML = cart.map(function(it){
       return '<div class="cart-item" data-key="' + esc(it.id + "|" + it.variant) + '">' +
-        '<img src="' + esc(it.img) + '" alt="' + esc(it.name) + '" onerror="this.style.opacity=0" />' +
+        '<img src="' + esc(it.img) + '" alt="' + esc(it.name) + '" onerror="AURA_IMG(this)" />' +
         '<div>' +
           '<div class="ci-name">' + esc(it.name) + '</div>' +
           /* `brand` manque aux paniers enregistrés avant cette version : la
@@ -1694,7 +1707,7 @@
     return '<div class="xsell"><h4>Complétez votre tenue</h4>' +
       list.map(function(p){
         return '<div class="xsell-item">' +
-          '<img src="' + esc(p.img) + '" alt="" width="48" height="60" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' +
+          '<img src="' + esc(p.img) + '" alt="" width="48" height="60" loading="lazy" decoding="async" onerror="AURA_IMG(this)" />' +
           '<div><div class="xsell-name">' + esc(marqueDe(p) ? marqueDe(p) + ' ' + p.name : p.name) + '</div>' +
           '<div class="xsell-price">' + fmt(p.price) + '</div></div>' +
           '<button type="button" class="xsell-add" data-openp="' + esc(p.id) + '">Ajouter</button>' +
@@ -1953,7 +1966,7 @@
     if (!list.length){ el.innerHTML = '<p class="none-msg" style="margin:0">Aucun résultat.</p>'; return; }
     el.innerHTML = list.map(function(p){
       return '<li><button type="button" data-openp="' + esc(p.id) + '">' +
-        '<img class="s-thumb" src="' + esc(p.img) + '" onerror="this.style.opacity=0" alt="" />' +
+        '<img class="s-thumb" src="' + esc(p.img) + '" onerror="AURA_IMG(this)" alt="" />' +
         '<span><span class="s-name" style="display:block">' + esc(p.name) + '</span><span class="s-cat">' + esc([marqueDe(p), CATS[p.cat]||p.cat].filter(Boolean).join(' · ')) + '</span></span>' +
         '<span class="s-price">' + fmt(p.price) + '</span>' +
       '</button></li>';
