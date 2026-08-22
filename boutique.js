@@ -684,13 +684,17 @@ window.AURA_IMG = function (img) {
         return p.active && p.collection === c.key;
       }).slice(0, MAX_MODELES);
       var n = produits.length;
-      return '<div class="mband">' +
+      /* La couleur de la marque habille toute sa bande — fond, filet, bouton —
+         au lieu de se limiter à une étiquette. Onze maisons présentées dans
+         le même gris se lisent comme une seule. */
+      return '<div class="mband"' + (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' +
         '<a class="mband-top" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
           ' aria-label="' + (n > 1 ? 'Voir les ' + n + ' modèles ' : 'Voir le modèle ') + esc(c.label) + '">' +
+          (c.cover ? '<img class="mband-cover" src="' + esc(c.cover) + '" alt="" loading="lazy" decoding="async" onerror="AURA_IMG(this)" />' : '') +
           (c.logo ? '<img class="brand-logo" src="' + esc(c.logo) + '" alt="Logo ' + esc(c.label) + '" loading="lazy" decoding="async" />' : '<span class="brand-wordmark">' + esc(c.label) + '</span>') +
           '<span class="mband-in">' +
             '<span>' +
-              (c.tagline ? '<span class="mband-tag"' + (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' + esc(c.tagline) + '</span>' : '') +
+              (c.tagline ? '<span class="mband-tag">' + esc(c.tagline) + '</span>' : '') +
               '<span class="mband-name">' + esc(c.label) + '</span>' +
             '</span>' +
             '<span class="mband-go"><span>' + (n > 1 ? 'Voir les ' + n + ' modèles' : 'Voir le modèle') + '</span>' +
@@ -747,7 +751,9 @@ window.AURA_IMG = function (img) {
       if (reste) reste.hidden = !colls.length;
       if (!colls.length){ grille.innerHTML = ""; return; }
       grille.innerHTML = colls.map(function(c){
-        return '<a href="collection.html?c=' + encodeURIComponent(c.key) + '" class="cat-card brand-card">' +
+        return '<a href="collection.html?c=' + encodeURIComponent(c.key) + '" class="cat-card brand-card"' +
+          (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' +
+          (c.cover ? '<img class="brand-cover" src="' + esc(c.cover) + '" alt="" loading="lazy" decoding="async" onerror="AURA_IMG(this)" />' : '') +
           (c.logo ? '<img class="brand-logo" src="' + esc(c.logo) + '" alt="Logo ' + esc(c.label) + '" loading="lazy" decoding="async" />' : '<span class="brand-wordmark">' + esc(c.label) + '</span>') +
           '<div class="cat-body">' +
             '<span class="cat-label">' + esc(c.label) + '</span>' +
@@ -1267,7 +1273,7 @@ window.AURA_IMG = function (img) {
   /* Le panneau ne propose que ce qui existe vraiment dans la sélection en
      cours : une marque sans modèle disponible n'apparaît pas, et un filtre
      ne peut donc jamais mener à une page vide par sa seule faute. */
-  function renderFiltres(base){
+  function renderFiltres(base, resultats){
     var tools = $("#catTools");
     if (!tools) return;
     var panel = $("#catPanel"), actives = $("#catActives"), compte = $("#catCount");
@@ -1352,6 +1358,12 @@ window.AURA_IMG = function (img) {
       '<button type="button" class="cat-opt" data-fdispo="1" aria-pressed="' + (curDispo ? "true" : "false") +
       '">En stock seulement</button></div></div>';
 
+    /* Sortie explicite du panneau : sans elle, refermer demande de remonter
+       jusqu'au bouton « Filtrer », au-dessus de la zone qu'on vient de lire. */
+    groupes += '<button type="button" class="cat-done" data-fclose>' +
+      (resultats > 1 ? 'Voir les ' + resultats + ' modèles' : (resultats === 1 ? 'Voir le modèle' : 'Fermer')) +
+      '</button>';
+
     panel.innerHTML = groupes;
 
     var tags = [];
@@ -1375,6 +1387,25 @@ window.AURA_IMG = function (img) {
     compte.textContent = n;
     var tri = $("#catTri");
     if (tri && tri.value !== curTri) tri.value = curTri;
+  }
+
+  /* Le panneau se replie en hauteur : sur téléphone il pousserait sinon les
+     produits sous la ligne de flottaison, et le client choisirait un critère
+     sans jamais voir ce qu'il déclenche. */
+  function panneauOuvert(){
+    var w = $("#catPanelWrap");
+    return !!w && w.getAttribute("data-open") === "true";
+  }
+  function ouvrirPanneau(ouvrir){
+    var w = $("#catPanelWrap"), btn = $("#catFiltrer");
+    if (!w || !btn) return;
+    w.setAttribute("data-open", ouvrir ? "true" : "false");
+    btn.setAttribute("aria-expanded", ouvrir ? "true" : "false");
+  }
+  /* Sur petit écran, choisir un critère referme le panneau : le client veut
+     voir le résultat, pas relire la liste des options. */
+  function refermerSiPetitEcran(){
+    if (window.innerWidth <= 760) ouvrirPanneau(false);
   }
 
   function toggleDansListe(liste, valeur){
@@ -1433,9 +1464,10 @@ window.AURA_IMG = function (img) {
     /* Le panneau se construit sur la sélection d'avant les filtres : sinon
        choisir « 44 » ferait disparaître toutes les autres pointures et on ne
        pourrait plus en changer. */
-    renderFiltres(list);
     var tranche = trancheActive(list);
-    list = list.filter(function(p){ return passeFiltres(p, tranche); });
+    var visibles = list.filter(function(p){ return passeFiltres(p, tranche); });
+    renderFiltres(list, visibles.length);
+    list = visibles;
     if (curQuery){
       var q = curQuery.toLowerCase();
       list = list.filter(function(p){ /* La marque est ce qu'on tape en premier dans une boutique
@@ -2350,30 +2382,25 @@ window.AURA_IMG = function (img) {
     /* Panneau de tri du catalogue. Un critère déjà actif se désactive au
        second clic : sans ça, le client ne trouve plus comment revenir en
        arrière et quitte la page. */
-    if (t.closest("#catFiltrer")){
-      var btn = $("#catFiltrer"), panel = $("#catPanel");
-      var ouvert = btn.getAttribute("aria-expanded") === "true";
-      btn.setAttribute("aria-expanded", ouvert ? "false" : "true");
-      panel.hidden = ouvert;
-      return;
-    }
+    if (t.closest("#catFiltrer")){ ouvrirPanneau(!panneauOuvert()); return; }
+    if (t.closest("[data-fclose]")){ ouvrirPanneau(false); return; }
     var fp = t.closest("[data-fpointure]");
     if (fp){
       var vp = fp.getAttribute("data-fpointure");
       curTaille = (curTaille === vp) ? "" : vp;
-      renderGrid(); syncUrl(curFilter); return;
+      renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return;
     }
     var fm = t.closest("[data-fmarque]");
-    if (fm){ toggleDansListe(curMarques, fm.getAttribute("data-fmarque")); renderGrid(); syncUrl(curFilter); return; }
+    if (fm){ toggleDansListe(curMarques, fm.getAttribute("data-fmarque")); renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return; }
     var fc = t.closest("[data-fcoloris]");
-    if (fc){ toggleDansListe(curColoris, fc.getAttribute("data-fcoloris")); renderGrid(); syncUrl(curFilter); return; }
+    if (fc){ toggleDansListe(curColoris, fc.getAttribute("data-fcoloris")); renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return; }
     var fpr = t.closest("[data-fprix]");
     if (fpr){
       var vpr = fpr.getAttribute("data-fprix");
       curPrix = (curPrix === vpr) ? "" : vpr;
-      renderGrid(); syncUrl(curFilter); return;
+      renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return;
     }
-    if (t.closest("[data-fdispo]")){ curDispo = !curDispo; renderGrid(); syncUrl(curFilter); return; }
+    if (t.closest("[data-fdispo]")){ curDispo = !curDispo; renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return; }
     var ftag = t.closest("[data-ftag]");
     if (ftag){
       var k = ftag.getAttribute("data-ftag"), v = ftag.getAttribute("data-fval");

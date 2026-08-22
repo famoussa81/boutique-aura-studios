@@ -37,7 +37,7 @@
   "paymentAccepted": "Espèces à la livraison"
 }
 </script>
-<link rel="stylesheet" href="boutique.css?v=20260822c" />
+<link rel="stylesheet" href="boutique.css?v=20260822d" />
 </head>
 <body data-page="collection">
 <noscript>
@@ -95,7 +95,9 @@
           </label>
           <p class="cat-total" id="catTotal" role="status" aria-live="polite"></p>
         </div>
-        <div class="cat-panel" id="catPanel" hidden></div>
+        <div class="cat-panel-wrap" id="catPanelWrap" data-open="false">
+          <div class="cat-panel" id="catPanel"></div>
+        </div>
         <div class="cat-actives" id="catActives" hidden></div>
       </div>
       <div class="pgrid" id="grid" data-od-id="product-grid"></div>
@@ -118,8 +120,8 @@
 </main>
 
 <script src="supabase.config.js"></script>
-<script src="supabase-client.js?v=20260822c"></script>
-<script src="catalog.js?v=20260822c"></script>
-<script src="boutique.js?v=20260822c"></script>
+<script src="supabase-client.js?v=20260822d"></script>
+<script src="catalog.js?v=20260822d"></script>
+<script src="boutique.js?v=20260822d"></script>
 </body>
 </html>
