@@ -376,6 +376,20 @@
      d'une redite. Le texte vient des réglages de la boutique. */
   .pdelivery{font-size:11.5px;color:var(--muted);text-transform:uppercase;
     letter-spacing:.12em;font-weight:700;min-height:1.4em}
+  /* Apercus reels des coloris : assez grands pour reconnaitre la matiere,
+     assez legers pour ne pas transformer la grille en galerie complete. */
+  .pcolors{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    min-height:38px;margin-top:3px}
+  .pcolors-empty{visibility:hidden}
+  .pcolors-count{font-size:10.5px;font-weight:800;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  .pcolors-list{display:flex;align-items:center;justify-content:flex-end;min-width:0}
+  .pcolor-photo{display:block;width:31px;height:36px;overflow:hidden;background:var(--bg);
+    border:1px solid var(--line);border-radius:3px;margin-left:-5px}
+  .pcolor-photo:first-child{margin-left:0}
+  .pcolor-photo img{display:block;width:100%;height:100%;object-fit:cover}
+  .pcolor-more{display:flex;align-items:center;justify-content:center;min-width:24px;height:36px;
+    padding-left:5px;font-size:10px;font-weight:800;color:var(--muted)}
   .price{display:flex;align-items:baseline;gap:8px;margin-top:4px;font-weight:800;font-size:15px}
   .price .old{color:var(--muted);font-weight:400;text-decoration:line-through;font-size:13px;white-space:nowrap}
   .price .sale{color:var(--ink);white-space:nowrap}
@@ -673,6 +687,10 @@
   .wish[data-on="true"] svg{fill:var(--ink);stroke:var(--ink)}
   @media (max-width:400px){
     .pgrid{gap:8px}
+    .pcolors{gap:5px}
+    .pcolors-count{font-size:9.5px;letter-spacing:.06em}
+    .pcolor-photo{width:27px;height:32px}
+    .pcolor-more{height:32px;min-width:18px;padding-left:3px}
     .cat-body{left:14px;bottom:12px;right:14px}
     .cart-item{grid-template-columns:64px 1fr auto;gap:12px}
     .hero-sub{font-size:.95rem}
@@ -808,6 +826,9 @@
   .fiche{padding:34px 0 10px}
   .fiche-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:start}
   .fiche .pv-info h1{font-size:30px;font-weight:900;line-height:1.1;margin:6px 0 10px}
+  .fiche-independent{margin:0 0 18px;padding:10px 0;border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);font-size:10.5px;font-weight:800;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 
   /* Le lien du nom ne doit pas se signaler comme un lien : la carte entière
      est cliquable, un soulignement bleu la salirait. */

@@ -526,7 +526,7 @@ window.AURA_IMG = function (img) {
   /* Les médias statiques sont servis un an en cache. Cette révision change
      leur URL à chaque livraison : le téléphone reçoit immédiatement la
      nouvelle image, puis la garde sans refaire de téléchargement inutile. */
-  var MEDIA_REV = "20260823a";
+  var MEDIA_REV = "20260823b";
   function mediaUrl(src){
     src = String(src || "");
     if (!/^(?:\.\/)?(?:assets|logos)\//.test(src)) return src;
@@ -534,6 +534,25 @@ window.AURA_IMG = function (img) {
   }
   function lazyAttrs(src){
     return 'data-src="' + esc(mediaUrl(src)) + '" loading="lazy" decoding="async"';
+  }
+  /* La grille n'a pas besoin des fichiers pleine definition de la fiche.
+     Les miniatures locales sont generees a part ; une photo distante ajoutee
+     par le commercant retombe simplement sur son URL d'origine. */
+  function cardThumbUrl(src){
+    src = String(src || "");
+    if (/^assets\/studio\/[^/]+\.webp$/i.test(src))
+      return src.replace(/^assets\/studio\//i, "assets/thumbs/cards/studio/");
+    return src;
+  }
+  function colorThumbUrl(src){
+    src = String(src || "");
+    if (/^assets\/products\/[^/]+\.webp$/i.test(src))
+      return src.replace(/^assets\/products\//i, "assets/thumbs/colors/products/");
+    return src;
+  }
+  function detailThumbUrl(src){
+    var card = cardThumbUrl(src);
+    return card !== src ? card : colorThumbUrl(src);
   }
 
   /* Le lazy-loading natif commence parfois plusieurs écrans trop tôt sur
@@ -1328,13 +1347,42 @@ window.AURA_IMG = function (img) {
     var c = p.collection ? collById(p.collection) : null;
     return c ? c.label : "";
   }
+  /* Les coloris se montrent avec les vraies photos du produit, jamais avec
+     des pastilles arbitraires. Trois apercus suffisent sur la carte ; le
+     nombre indique clairement s'il reste d'autres variantes a ouvrir. */
+  function cardColorisHTML(p){
+    var axes = prodAxes(p), axe = null;
+    for (var i = 0; i < axes.length; i++){
+      if (/coloris|couleur|color/i.test(axes[i].name)){ axe = axes[i]; break; }
+    }
+    var photos = [];
+    if (axe){
+      axe.values.forEach(function(val){
+        var src = p.valueImages && p.valueImages[axe.name + VSEP + val];
+        if (src && !photos.some(function(x){ return x.src === src; }))
+          photos.push({ src: src, label: val });
+      });
+    }
+    if (!photos.length) return '<div class="pcolors pcolors-empty" aria-hidden="true"></div>';
+    var total = photos.length, visibles = photos.slice(0, 3);
+    return '<div class="pcolors" aria-label="' + total + ' coloris disponible' + (total > 1 ? 's' : '') + '">' +
+      '<span class="pcolors-count">' + total + ' coloris</span>' +
+      '<span class="pcolors-list" aria-hidden="true">' +
+        visibles.map(function(x){
+          return '<span class="pcolor-photo"><img ' + lazyAttrs(colorThumbUrl(x.src)) +
+            ' alt="" width="72" height="88" onerror="AURA_IMG(this)" /></span>';
+        }).join("") +
+        (total > visibles.length ? '<span class="pcolor-more">+' + (total - visibles.length) + '</span>' : '') +
+      '</span>' +
+    '</div>';
+  }
   function cardHTML(p){
     var name = esc(p.name), img = esc(p.img), alt = esc("Produit " + p.name);
     var marque = marqueDe(p);
     var out = isOut(p);
     return '<article class="pcard" data-card="' + esc(p.id) + '">' +
       '<div class="pmedia">' +
-        '<img ' + lazyAttrs(p.img) + ' alt="' + alt + '" width="600" height="800" onerror="AURA_IMG(this)" />' +
+        '<img ' + lazyAttrs(cardThumbUrl(p.img)) + ' alt="' + alt + '" width="600" height="800" onerror="AURA_IMG(this)" />' +
         /* Lien en surimpression plutot qu'un <a> autour du bloc : le bouton
            favori est un vrai bouton, et un bouton dans un lien n'est pas du
            HTML valide. Le favori passe au-dessus par son z-index. */
@@ -1350,6 +1398,7 @@ window.AURA_IMG = function (img) {
         (collList().length ? '<span class="pbrand">' + esc(marque) + '</span>' : '') +
         '<a class="pname" href="produit.html?id=' + encodeURIComponent(p.id) + '">' + name + '</a>' +
         '<span class="pdelivery">' + esc(deliveryLabel()) + '</span>' +
+        cardColorisHTML(p) +
         '<span class="price">' + priceHTML(p) + '</span>' +
         stockHintHTML(p) +
       '</div>' +
@@ -1860,7 +1909,7 @@ window.AURA_IMG = function (img) {
     var media = '<img class="pv-main" src="' + esc(mediaUrl(imgs[0] || "")) + '" onerror="AURA_IMG(this)" alt="' + esc(p.name) + '" />';
     if (imgs.length > 1){
       media += '<div class="pv-thumbs" id="pvThumbs">' + imgs.map(function(src, i){
-        return '<button type="button" data-thumb="' + i + '" aria-label="Voir la photo ' + (i + 1) + ' sur ' + imgs.length + '"' + (i === 0 ? ' class="active"' : '') + '><img ' + lazyAttrs(src) + ' onerror="AURA_IMG(this)" alt="" /></button>';
+        return '<button type="button" data-thumb="' + i + '" aria-label="Voir la photo ' + (i + 1) + ' sur ' + imgs.length + '"' + (i === 0 ? ' class="active"' : '') + '><img ' + lazyAttrs(detailThumbUrl(src)) + ' onerror="AURA_IMG(this)" alt="" /></button>';
       }).join("") + '</div>';
     }
     $("#pvMedia").innerHTML = media;
@@ -1932,7 +1981,7 @@ window.AURA_IMG = function (img) {
            seule sa vraie photo est montrée au client. */
         if (estColoris && !photo) return "";
         var visuel = photo
-          ? '<img class="choice-photo" ' + lazyAttrs(photo) + ' alt="" />'
+          ? '<img class="choice-photo" ' + lazyAttrs(colorThumbUrl(photo)) + ' alt="" />'
           : '';
         return '<button type="button" class="size-btn' + (photo ? " has-photo" : "") +
                (choisi ? " selected" : "") + (dispo ? "" : " soldout") +
