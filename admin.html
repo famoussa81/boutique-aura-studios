@@ -680,7 +680,7 @@
   <div class="toast" id="toast"></div>
 
 <script src="supabase.config.js"></script>
-<script src="supabase-client.js?v=20260822e"></script>
+<script src="supabase-client.js?v=20260824a"></script>
 <script src="catalog.js?v=20260822e"></script>
 <script>
 (function(){
@@ -3000,7 +3000,7 @@ function applyStatus(order, ns){
      navigateur avant tout envoi : une photo de telephone de 4 Mo devient
      un WebP de quelques dizaines de Ko. En ligne, elle part dans Supabase
      Storage ; hors ligne, elle est conservee en base64 dans ce navigateur. */
-  var MAX_SIDE = 1000, MAX_LOCAL = 400 * 1024;
+  var MAX_SIDE = 900, MAX_LOCAL = 400 * 1024;
 
   /* Recadre au ratio demandé, redimensionne, compresse, puis envoie.
      `ratio` vaut par exemple 4/3 pour une carte, 16/10 pour un en-tête.
@@ -3051,7 +3051,7 @@ function applyStatus(order, ns){
         cv.toBlob(function(blob){
           if (!blob) return cb(new Error("Compression impossible"));
           cb(null, blob, cw, ch);
-        }, "image/webp", 0.82);
+        }, "image/webp", 0.76);
       };
       img.src = reader.result;
     };

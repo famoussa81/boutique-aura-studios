@@ -140,6 +140,7 @@
           "apikey": anon,
           "Authorization": "Bearer " + session.token,
           "Content-Type": "image/webp",
+          "cache-control": "31536000",
           "x-upsert": "true"
         },
         body: blob

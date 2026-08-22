@@ -25,7 +25,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap"
       media="print" onload="this.media='all';this.onload=null" />
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" /></noscript>
-<link rel="preload" as="image" href="assets/hero.webp?v=20260823b" fetchpriority="high" />
+<link rel="preload" as="image" href="assets/hero-960.webp?v=20260823b" media="(max-width:700px)" fetchpriority="high" />
+<link rel="preload" as="image" href="assets/hero.webp?v=20260823b" media="(min-width:701px)" fetchpriority="high" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -55,7 +56,7 @@
 </noscript>
 <main id="page">
 <section class="hero" id="heroSection" data-od-id="hero">
-<img id="heroImage" src="assets/hero.webp?v=20260823b" alt="" width="1600" height="1000" fetchpriority="high" decoding="async" />
+<picture><source id="heroMobileSource" media="(max-width:700px)" srcset="assets/hero-960.webp?v=20260823b" /><img id="heroImage" src="assets/hero.webp?v=20260823b" alt="" width="1600" height="1000" fetchpriority="high" decoding="async" /></picture>
     <span class="hero-badge" id="heroBadge" data-od-id="hero-badge"></span>
     <div class="wrap">
       <div class="hero-content">
@@ -171,8 +172,8 @@
 </main>
 
 <script src="supabase.config.js"></script>
-<script src="supabase-client.js?v=20260823b"></script>
+<script src="supabase-client.js?v=20260824a"></script>
 <script src="catalog.js?v=20260823b"></script>
-<script src="boutique.js?v=20260823b"></script>
+<script src="boutique.js?v=20260824a"></script>
 </body>
 </html>

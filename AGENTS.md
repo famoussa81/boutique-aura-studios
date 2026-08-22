@@ -126,7 +126,7 @@ pratique :
 - **Longueurs bornées** sur chaque champ de texte. Un titre trop long ne peut
   pas casser la mise en page.
 - **Ratios imposés** au téléversement : l'image est recadrée au centre et
-  compressée dans le navigateur avant l'envoi (1000 px max, WebP q0.82).
+  compressée dans le navigateur avant l'envoi (900 px max, WebP q0.76).
 - **Blocs extinguibles** plutôt que vides. Un bloc vide fait plus de mal qu'un
   bloc absent.
 - **Aucun réglage de couleur, de police ou de disposition n'est exposé.**

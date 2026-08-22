@@ -550,23 +550,29 @@ window.AURA_IMG = function (img) {
       return src.replace(/^assets\/products\//i, "assets/thumbs/colors/products/");
     return src;
   }
+  function brandCardThumbUrl(src){
+    src = String(src || "");
+    if (/^assets\/brand-banners\/[^/]+\.webp$/i.test(src))
+      return src.replace(/^assets\/brand-banners\//i, "assets/thumbs/brand-banners/");
+    return src;
+  }
   function detailThumbUrl(src){
     var card = cardThumbUrl(src);
     return card !== src ? card : colorThumbUrl(src);
   }
 
-  /* Le lazy-loading natif commence parfois plusieurs écrans trop tôt sur
-     mobile. Ici les images sous la ligne de flottaison ne sont demandées
-     qu'à 280 px de l'écran ; leur cadre et leur qualité restent inchangés. */
+  /* Les images du prochain écran commencent à charger avant que le visiteur
+     les voie. Cela évite le blanc après un défilement rapide, sans télécharger
+     tout le catalogue au chargement. */
   var lazyObserver = "IntersectionObserver" in window ? new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if (!entry.isIntersecting) return;
       var img = entry.target, src = img.getAttribute("data-src");
-      if (src) img.setAttribute("src", src);
+      if (src){ img.loading = "eager"; img.fetchPriority = "low"; img.setAttribute("src", src); }
       img.removeAttribute("data-src");
       lazyObserver.unobserve(img);
     });
-  }, { rootMargin: "280px 0px" }) : null;
+  }, { rootMargin: "800px 0px" }) : null;
   function observeLazy(root){
     var imgs = (root || document).querySelectorAll("img[data-src]");
     for (var i = 0; i < imgs.length; i++){
@@ -914,7 +920,7 @@ window.AURA_IMG = function (img) {
     return '<a class="brand-directory-card" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
       (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') +
       ' aria-label="Voir les modèles ' + esc(c.label) + '">' +
-        (c.cover ? '<img ' + lazyAttrs(c.cover) + ' alt="" width="800" height="600" onerror="AURA_IMG(this)" />' : '') +
+        (c.cover ? '<img ' + lazyAttrs(brandCardThumbUrl(c.cover)) + ' alt="" width="400" height="300" onerror="AURA_IMG(this)" />' : '') +
         '<span class="brand-directory-shade"></span>' +
         '<span class="brand-directory-copy">' +
           (c.tagline ? '<span>' + esc(c.tagline) + '</span>' : '') +
@@ -1010,6 +1016,12 @@ window.AURA_IMG = function (img) {
     if (url){
       if (prioritaire){
         e.removeAttribute("data-src");
+        var sourceMobile = e.id === "heroImage" ? $("#heroMobileSource") : null;
+        if (e.id === "heroImage" && /^(?:\.\/)?assets\/hero\.webp$/i.test(String(url))){
+          if (sourceMobile) sourceMobile.srcset = mediaUrl("assets/hero-960.webp");
+        } else {
+          if (sourceMobile) sourceMobile.removeAttribute("srcset");
+        }
         e.src = mediaUrl(url);
       } else {
         e.removeAttribute("src");
