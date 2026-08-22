@@ -12,8 +12,8 @@ du mode local (localStorage) au mode réel (base de données partagée).
 | Catalogue | localStorage du navigateur | Table `products`, partagée |
 | Réglages | localStorage | Table `settings` |
 | Commandes | localStorage + WhatsApp | Table `orders` **+** WhatsApp |
-| Accès admin | **aucune protection** | Compte e-mail Supabase (Supabase Auth) |
-| Stock | local à chaque navigateur | Réservé côté serveur, sans survente |
+| Accès admin | **aucune protection** | Compte Supabase explicitement autorisé |
+| Stock | local à chaque navigateur | Décompté côté serveur à la confirmation |
 | Prix | lus dans le navigateur | Recalculés en base à chaque commande |
 | Newsletter | localStorage | Table `subscribers` |
 
@@ -36,11 +36,31 @@ Tables créées, RLS active, `place_order` en place, bucket `produits` prêt,
 catalogue de 20 produits et réglages importés. `supabase.config.js` est
 renseigné et `enabled` est à `true`.
 
-**Il reste à créer le compte administrateur** (étape 3) : sans lui, personne
-ne peut se connecter à `admin.html`.
+**Il reste à créer puis autoriser le compte administrateur** (étape 3) : sans
+lui, personne ne peut se connecter à `admin.html`.
 
 Les étapes 1, 2 et 4 ci-dessous ne servent plus qu'à refaire l'installation
 depuis zéro, sur un autre projet.
+
+## Mise à jour de sécurité d'une boutique déjà en ligne
+
+Cette mise à jour est obligatoire si la boutique utilisait déjà Supabase.
+
+1. Dans *SQL Editor*, exécuter l'intégralité du fichier `supabase/schema.sql`
+   mis à jour.
+2. Juste après, autoriser le compte administrateur existant :
+
+   ```sql
+   insert into public.admin_users (user_id)
+   select id from auth.users where email = 'votre-email@exemple.com'
+   on conflict (user_id) do nothing;
+   ```
+
+3. Déconnecter puis reconnecter ce compte sur `/admin`. Un autre compte
+   Supabase doit désormais recevoir le message « non autorisé ».
+
+Sans l'étape 2, la nouvelle sécurité bloque aussi le bon compte : c'est
+normal, puisqu'une session seule n'est plus considérée comme administrateur.
 
 ---
 
@@ -56,22 +76,22 @@ depuis zéro, sur un autre projet.
 
 1. Ouvrir **SQL Editor**.
 2. Coller l'intégralité de `supabase/schema.sql` → **Run**.
-3. Résultat : 6 tables (`products`, `settings`, `orders`, `subscribers`,
-   `waitlist`, plus le bucket de stockage `produits`), RLS activé partout,
-   et la fonction serveur `place_order`.
+3. Résultat : les tables de boutique, la liste privée `admin_users`, les
+   limites anti-spam, le bucket `produits`, RLS active partout, et la
+   fonction serveur `place_order`.
 
 Ce que garantissent les règles d'accès :
 
 - Le public peut **lire** le catalogue et les réglages.
 - Le public **ne peut pas** insérer de commande directement : il passe obligatoirement
   par `place_order`, qui valide les coordonnées, **recalcule les montants depuis la base**
-  et **réserve le stock de façon atomique**.
+  et ne bloque le stock qu'à la confirmation par le commerçant.
 - Le public **ne peut jamais lire** les commandes ni la liste des inscrits.
-- L'administrateur connecté peut écrire les produits et les réglages, et lire/modifier
-  les commandes.
+- Seuls les comptes présents dans `admin_users` peuvent écrire les produits et les
+  réglages, ou lire/modifier les commandes.
 
 - Le bucket `produits` est **lisible publiquement** (les visuels s'affichent en
-  boutique sans connexion) mais **écrivable seulement par un compte connecté** :
+  boutique sans connexion) mais **écrivable seulement par un administrateur autorisé** :
   c'est là qu'atterrissent les photos envoyées depuis l'administration.
 
 > La table `settings` est lisible publiquement : n'y stockez jamais de secret.
@@ -85,7 +105,15 @@ Ce que garantissent les règles d'accès :
 
 1. *Authentication → Users → **Add user***.
 2. Renseigner un e-mail et un mot de passe robuste.
-3. **Ces identifiants ne se recopient nulle part dans le code** : ils se saisissent
+3. Dans **SQL Editor**, autoriser ce compte (remplacez l'e-mail) :
+
+   ```sql
+   insert into public.admin_users (user_id)
+   select id from auth.users where email = 'votre-email@exemple.com'
+   on conflict (user_id) do nothing;
+   ```
+
+4. **Ces identifiants ne se recopient nulle part dans le code** : ils se saisissent
    dans le formulaire de connexion de `admin.html`.
 
 Pour changer le mot de passe plus tard : même écran Supabase.
@@ -150,8 +178,8 @@ affiche seulement ce qui reste à faire.
 
 1. Sur la boutique déployée, passer une commande de test : le message WhatsApp
    s'ouvre **et** la commande apparaît dans `orders` (Table Editor).
-2. Vérifier que le stock du produit a bien été réservé (champ `r` de la taille).
-3. Dans l'administration, passer la commande à « Confirmée » : le stock est décrémenté.
+2. Vérifier qu'une demande « À confirmer » ne bloque pas artificiellement la paire.
+3. Dans l'administration, passer la commande à « Confirmée » : le stock est décrémenté atomiquement.
 4. Modifier le prix d'un produit, recharger la boutique : le nouveau prix s'affiche.
 5. S'inscrire à la newsletter depuis la boutique : l'adresse apparaît dans l'onglet
    Newsletter de l'administration.
@@ -192,6 +220,10 @@ Le protocole complet est dans [RECETTE.md](RECETTE.md).
   Supabase, l'espace admin s'ouvre sans mot de passe : c'est volontaire et annoncé à
   l'écran, car aucun contrôle côté navigateur ne constituerait une vraie protection.
 - Les montants et le stock sont décidés par le serveur, jamais par le navigateur.
+- Une demande WhatsApp ne réserve pas le stock ; seule sa confirmation le décompte.
+- Les demandes publiques (commande, newsletter, liste d'attente) sont limitées côté serveur.
+- Une session Supabase seule ne donne pas accès à l'administration : le compte doit être
+  enregistré dans `admin_users`.
 - Les en-têtes de sécurité (CSP, HSTS, X-Frame-Options, Permissions-Policy) sont
   configurés dans `vercel.json`.
 - Charte respectée : palette monochrome, boutons pilule, Inter, rayon 8 px, sans ombres.

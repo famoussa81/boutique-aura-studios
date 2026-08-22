@@ -65,6 +65,24 @@ create table if not exists public.store_revisions (
   created_by uuid default auth.uid()
 );
 
+-- Comptes explicitement autorisés à administrer cette boutique.  Une simple
+-- session Supabase ne suffit jamais : les commandes contiennent des données
+-- personnelles et les fonctions ci-dessous modifient le stock.
+create table if not exists public.admin_users (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+
+-- Limites côté serveur des formulaires publics. Elles ne sont jamais
+-- accessibles par REST : seules les fonctions atomiques les consultent.
+create table if not exists public.public_request_limits (
+  scope text not null,
+  fingerprint text not null,
+  window_started timestamptz not null default now(),
+  attempts integer not null default 0 check (attempts >= 0),
+  primary key (scope, fingerprint)
+);
+
 -- Séquence serveur des références de commande : garantit l'unicité
 -- entre tous les appareils (un compteur navigateur ne le peut pas).
 create sequence if not exists public.order_seq start with 1;
@@ -82,6 +100,8 @@ alter table public.subscribers enable row level security;
 alter table public.waitlist     enable row level security;
 alter table public.admin_drafts enable row level security;
 alter table public.store_revisions enable row level security;
+alter table public.admin_users enable row level security;
+alter table public.public_request_limits enable row level security;
 
 drop policy if exists "products_select_public" on public.products;
 drop policy if exists "settings_select_public" on public.settings;
@@ -97,6 +117,59 @@ drop policy if exists "waitlist_read_auth"        on public.waitlist;
 drop policy if exists "admin_drafts_auth"          on public.admin_drafts;
 drop policy if exists "store_revisions_auth"       on public.store_revisions;
 
+-- La fonction est SECURITY DEFINER pour pouvoir lire la liste privée sans
+-- jamais l'exposer au navigateur. Le SQL est fixe et le search_path fermé.
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path to 'public'
+as $$
+  select auth.uid() is not null
+     and exists (select 1 from public.admin_users where user_id = auth.uid());
+$$;
+revoke all on function public.is_admin() from public;
+grant execute on function public.is_admin() to authenticated;
+
+create or replace function public.enforce_public_rate_limit(
+  limit_scope text,
+  limit_fingerprint text,
+  max_attempts integer,
+  limit_window interval
+)
+returns void
+language plpgsql
+security definer
+set search_path to 'public'
+as $$
+declare v_started timestamptz; v_attempts integer;
+begin
+  if limit_fingerprint is null or length(limit_fingerprint) < 8 then
+    raise exception 'Requête invalide' using errcode = '22023';
+  end if;
+  select window_started, attempts into v_started, v_attempts
+    from public.public_request_limits
+   where scope = limit_scope and fingerprint = limit_fingerprint
+   for update;
+  if not found then
+    insert into public.public_request_limits(scope, fingerprint, attempts)
+    values (limit_scope, limit_fingerprint, 1);
+  elsif v_started <= now() - limit_window then
+    update public.public_request_limits
+       set window_started = now(), attempts = 1
+     where scope = limit_scope and fingerprint = limit_fingerprint;
+  elsif v_attempts >= max_attempts then
+    raise exception 'Trop de demandes. Réessayez plus tard.' using errcode = '22023';
+  else
+    update public.public_request_limits
+       set attempts = attempts + 1
+     where scope = limit_scope and fingerprint = limit_fingerprint;
+  end if;
+end;
+$$;
+revoke all on function public.enforce_public_rate_limit(text, text, integer, interval) from public, anon, authenticated;
+
 -- Lecture catalogue et réglages : tout le monde (la boutique en a besoin).
 -- Aucun secret ne doit être stocké dans `settings` : son contenu est public.
 create policy "products_select_public" on public.products
@@ -110,39 +183,70 @@ create policy "settings_select_public" on public.settings
 -- valide les données, recalcule les prix et décrémente le stock.
 -- (Aucune politique d'insertion publique n'est donc créée.)
 
--- Inscription newsletter : ouverte, mais la liste n'est lisible que par l'admin.
-create policy "subscribers_insert_public" on public.subscribers
-  for insert with check (
-    email ~* '^[^@[:space:]]+@[^@[:space:]]+\.[a-z]{2,}$' and length(email) <= 254
-  );
-
 create policy "subscribers_read_auth" on public.subscribers
-  for select using (auth.role() = 'authenticated');
-
--- Liste d'attente : inscription ouverte (numéro malien uniquement),
--- lecture réservée à l'administration.
-create policy "waitlist_insert_public" on public.waitlist
-  for insert with check (
-    phone ~ '^[0-9]{8}$'
-    and length(product_id) between 1 and 64
-    and length(product_name) between 1 and 200
-    and length(size) between 1 and 200
-  );
+  for select using (public.is_admin());
 
 create policy "waitlist_read_auth" on public.waitlist
-  for select using (auth.role() = 'authenticated');
+  for select using (public.is_admin());
 
 create policy "orders_read_auth" on public.orders
-  for select using (auth.role() = 'authenticated');
+  for select using (public.is_admin());
 
 -- Les écritures sensibles passent uniquement par les fonctions atomiques
 -- définies plus bas. Une requête REST authentifiée ne peut donc pas contourner
 -- les contrôles de stock, l'archivage ou la gestion des versions.
 create policy "admin_drafts_auth" on public.admin_drafts
-  for select using (auth.role() = 'authenticated');
+  for select using (public.is_admin());
 
 create policy "store_revisions_auth" on public.store_revisions
-  for select using (auth.role() = 'authenticated');
+  for select using (public.is_admin());
+
+-- Les formulaires publics passent par ces fonctions : validation et limite
+-- de débit restent alors côté serveur, même depuis un script externe.
+create or replace function public.subscribe_newsletter(raw_email text)
+returns boolean
+language plpgsql
+security definer
+set search_path to 'public'
+as $$
+declare v_email text := lower(trim(coalesce(raw_email, '')));
+begin
+  if v_email !~ '^[^@[:space:]]+@[^@[:space:]]+\.[a-z]{2,}$' or length(v_email) > 254 then
+    raise exception 'Adresse e-mail invalide' using errcode = '22023';
+  end if;
+  perform public.enforce_public_rate_limit('newsletter', md5(v_email), 3, interval '24 hours');
+  insert into public.subscribers(email) values (v_email) on conflict (email) do nothing;
+  return true;
+end;
+$$;
+revoke all on function public.subscribe_newsletter(text) from public;
+grant execute on function public.subscribe_newsletter(text) to anon, authenticated;
+
+create or replace function public.join_waitlist_request(raw_product_id text, raw_product_name text, raw_size text, raw_phone text)
+returns boolean
+language plpgsql
+security definer
+set search_path to 'public'
+as $$
+declare
+  v_product_id text := trim(coalesce(raw_product_id, ''));
+  v_product_name text := trim(coalesce(raw_product_name, ''));
+  v_size text := trim(coalesce(raw_size, ''));
+  v_phone text := regexp_replace(coalesce(raw_phone, ''), '\D', '', 'g');
+begin
+  if v_phone !~ '^[0-9]{8}$' or length(v_product_id) not between 1 and 64
+     or length(v_product_name) not between 1 and 200 or length(v_size) not between 1 and 200 then
+    raise exception 'Demande invalide' using errcode = '22023';
+  end if;
+  perform public.enforce_public_rate_limit('waitlist', md5(v_phone), 5, interval '24 hours');
+  insert into public.waitlist(product_id, product_name, size, phone)
+  values (v_product_id, v_product_name, v_size, v_phone)
+  on conflict (product_id, size, phone) do nothing;
+  return true;
+end;
+$$;
+revoke all on function public.join_waitlist_request(text, text, text, text) from public;
+grant execute on function public.join_waitlist_request(text, text, text, text) to anon, authenticated;
 
 -- ---------- Brouillons, publication et stock ----------
 
@@ -155,7 +259,7 @@ set search_path to 'public'
 as $$
 declare v_draft public.admin_drafts%rowtype;
 begin
-  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  if not public.is_admin() then raise exception 'Accès administrateur requis'; end if;
   if jsonb_typeof(payload->'settings') <> 'object' or jsonb_typeof(payload->'products') <> 'array' then
     raise exception 'Brouillon incomplet';
   end if;
@@ -208,7 +312,7 @@ declare
   v_distinct_count integer;
   v_public_settings jsonb;
 begin
-  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  if not public.is_admin() then raise exception 'Accès administrateur requis'; end if;
   select * into v_draft from public.admin_drafts where id = draft_id for update;
   if not found then raise exception 'Brouillon introuvable'; end if;
   if v_draft.version <> expected_version then
@@ -330,7 +434,7 @@ set search_path to 'public'
 as $$
 declare v_data jsonb; v_draft public.admin_drafts%rowtype;
 begin
-  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  if not public.is_admin() then raise exception 'Accès administrateur requis'; end if;
   select data into v_data from public.store_revisions where id = revision_id;
   if not found then raise exception 'Publication introuvable'; end if;
   select * into v_draft from public.admin_drafts order by updated_at desc limit 1 for update;
@@ -356,7 +460,7 @@ set search_path to 'public'
 as $$
 declare v_data jsonb; v_old jsonb; v_merged jsonb := '{}'::jsonb; v_key text; v_value jsonb; v_reserved integer; v_stock integer;
 begin
-  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  if not public.is_admin() then raise exception 'Accès administrateur requis'; end if;
   if jsonb_typeof(new_variants) <> 'object' then raise exception 'Stock invalide'; end if;
   select data into v_data from public.products where id = product_id for update;
   if not found then raise exception 'Produit introuvable'; end if;
@@ -383,7 +487,7 @@ create or replace function public.set_product_visibility(product_id text, visibl
 returns jsonb language plpgsql security definer set search_path to 'public' as $$
 declare v_data jsonb;
 begin
-  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  if not public.is_admin() then raise exception 'Accès administrateur requis'; end if;
   select data into v_data from public.products where id = product_id for update;
   if not found then raise exception 'Produit introuvable'; end if;
   v_data := jsonb_set(v_data, '{active}', to_jsonb(visible), true);
@@ -396,7 +500,7 @@ create or replace function public.archive_product(product_id text)
 returns jsonb language plpgsql security definer set search_path to 'public' as $$
 declare v_data jsonb;
 begin
-  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  if not public.is_admin() then raise exception 'Accès administrateur requis'; end if;
   select data into v_data from public.products where id = product_id for update;
   if not found then raise exception 'Produit introuvable'; end if;
   v_data := jsonb_set(jsonb_set(v_data, '{active}', 'false'::jsonb, true), '{archived}', 'true'::jsonb, true);
@@ -418,6 +522,8 @@ declare
   v_ref text := trim(coalesce(payload->>'ref', ''));
   v_old jsonb;
   v_old_status text;
+  v_old_reserved boolean;
+  v_new_reserved boolean;
   v_new_status text := coalesce(payload->>'status', '');
   v_item jsonb;
   v_old_item jsonb;
@@ -433,7 +539,7 @@ declare
   v_freefrom integer := 0;
   v_result jsonb;
 begin
-  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  if not public.is_admin() then raise exception 'Accès administrateur requis'; end if;
   if v_ref = '' then raise exception 'Référence de commande manquante'; end if;
   if v_new_status not in ('PENDING','CONFIRMED','SHIPPING','DELIVERED','CANCELLED') then
     raise exception 'Statut de commande invalide';
@@ -442,6 +548,11 @@ begin
   select data into v_old from public.orders where ref = v_ref for update;
   if not found then raise exception 'Commande introuvable'; end if;
   v_old_status := coalesce(v_old->>'status', 'PENDING');
+  -- Les commandes historiques réservaient le stock et n'ont pas ce champ :
+  -- elles restent donc traitées comme réservées jusqu'à leur résolution.
+  v_old_reserved := v_old_status = 'PENDING'
+    and coalesce((v_old->>'stockReserved')::boolean, true);
+  v_new_reserved := v_new_status = 'PENDING' and v_old_reserved;
 
   if jsonb_typeof(payload->'items') <> 'array' or jsonb_array_length(payload->'items') = 0 then
     raise exception 'Une commande doit garder au moins un article';
@@ -479,7 +590,7 @@ begin
     end if;
     v_stock := coalesce((v_prod->v_field->v_key->>'s')::integer, 0);
     v_reserved := coalesce((v_prod->v_field->v_key->>'r')::integer, 0);
-    if v_old_status = 'PENDING' then
+    if v_old_reserved then
       if v_reserved < v_qty then raise exception 'Réservation incohérente pour %', v_item->>'id'; end if;
       v_reserved := v_reserved - v_qty;
     elsif v_old_status <> 'CANCELLED' then
@@ -518,7 +629,7 @@ begin
     end if;
     v_stock := coalesce((v_prod->v_field->v_key->>'s')::integer, 0);
     v_reserved := coalesce((v_prod->v_field->v_key->>'r')::integer, 0);
-    if v_new_status = 'PENDING' then
+    if v_new_reserved then
       if v_stock - v_reserved < v_qty then raise exception 'Stock insuffisant pour %', v_old_item->>'name'; end if;
       v_reserved := v_reserved + v_qty;
     elsif v_new_status <> 'CANCELLED' then
@@ -541,7 +652,8 @@ begin
     'subtotal', v_subtotal,
     'delivery', coalesce(v_delivery, 0),
     'total', v_subtotal + coalesce(v_delivery, 0),
-    'status', v_new_status
+    'status', v_new_status,
+    'stockReserved', v_new_reserved
   );
   if length(v_result->>'client') < 2 or length(v_result->>'phone') < 8 or length(v_result->>'quartier') < 2 then
     raise exception 'Coordonnées de livraison invalides';
@@ -559,7 +671,7 @@ set search_path to 'public'
 as $$
 declare v_order jsonb;
 begin
-  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  if not public.is_admin() then raise exception 'Accès administrateur requis'; end if;
   select data into v_order from public.orders where ref = order_ref for update;
   if not found then raise exception 'Commande introuvable'; end if;
   perform public.admin_save_order(jsonb_set(v_order, '{status}', '"CANCELLED"'::jsonb, true));
@@ -583,24 +695,30 @@ set search_path to 'public'
 as $$
 declare
   v_product record;
+  v_field text;
   v_key text;
   v_value jsonb;
   v_merged jsonb;
   v_reserved integer;
   v_corrections jsonb := '[]'::jsonb;
 begin
-  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  if not public.is_admin() then raise exception 'Accès administrateur requis'; end if;
 
   for v_product in select id, data from public.products for update loop
     v_merged := '{}'::jsonb;
+    -- Les anciennes fiches portent encore `sizes`. Ne jamais leur ajouter
+    -- un `variants` vide : `place_order` le choisirait alors et la paire
+    -- deviendrait impossible à commander.
+    v_field := case when v_product.data ? 'variants' then 'variants' else 'sizes' end;
 
     for v_key, v_value in
-      select key, value from jsonb_each(coalesce(v_product.data->'variants', '{}'::jsonb))
+      select key, value from jsonb_each(coalesce(v_product.data->v_field, '{}'::jsonb))
     loop
       select coalesce(sum((item->>'qty')::integer), 0) into v_reserved
       from public.orders o,
            lateral jsonb_array_elements(coalesce(o.data->'items', '[]'::jsonb)) item
       where o.data->>'status' = 'PENDING'
+        and coalesce(o.data->>'stockReserved', 'true') = 'true'
         and item->>'id' = v_product.id
         and coalesce(item->>'variant', '') = v_key;
 
@@ -620,7 +738,7 @@ begin
     end loop;
 
     update public.products
-    set data = jsonb_set(v_product.data, '{variants}', v_merged, true), updated_at = now()
+    set data = jsonb_set(v_product.data, array[v_field], v_merged, true), updated_at = now()
     where id = v_product.id;
   end loop;
 
@@ -651,8 +769,8 @@ revoke execute on function public.rebuild_reservations() from public, anon;
 -- Résout trois problèmes que le navigateur ne peut pas résoudre seul :
 --   1. les prix sont relus depuis la table `products` (pas de manipulation
 --      des montants depuis la console) ;
---   2. le stock est vérifié puis réservé de façon atomique (pas de survente
---      quand deux clients commandent le dernier article en même temps) ;
+--   2. le stock est vérifié de façon atomique ; une demande WhatsApp ne le
+--      bloque pas avant confirmation par le commerçant ;
 --   3. la référence vient d'une séquence serveur (pas de collision entre
 --      appareils, donc pas d'écrasement de commande).
 create or replace function public.place_order(payload jsonb)
@@ -690,6 +808,11 @@ begin
   if length(v_phone) < 8 then
     raise exception 'Numéro de téléphone invalide' using errcode = '22023';
   end if;
+  -- Même si le formulaire est appelé directement, un numéro ne peut pas
+  -- créer une rafale de demandes. La limite globale borne aussi l'écriture
+  -- en base en cas de robots qui inventent des numéros.
+  perform public.enforce_public_rate_limit('order-phone', md5(v_phone), 3, interval '30 minutes');
+  perform public.enforce_public_rate_limit('order-global', md5('all'), 120, interval '1 hour');
   if length(v_quartier) < 2 then
     raise exception 'Quartier de livraison invalide' using errcode = '22023';
   end if;
@@ -776,14 +899,9 @@ begin
       'price',        v_price
     );
 
-    update public.products
-       set data = jsonb_set(
-             data,
-             array[v_champ, v_key, 'r'],
-             to_jsonb(coalesce((data->v_champ->v_key->>'r')::int, 0) + v_qty)
-           ),
-           updated_at = now()
-     where id = v_prod->>'id';
+    -- Une simple demande WhatsApp n'immobilise plus de paire. Le stock est
+    -- décrémenté atomiquement uniquement quand le commerçant la confirme via
+    -- `admin_save_order`, ce qui empêche un bot de vider le catalogue.
   end loop;
 
   if jsonb_array_length(v_lines) = 0 then
@@ -813,7 +931,8 @@ begin
     'subtotal', v_subtotal,
     'delivery', v_delivery,
     'total',    v_subtotal + v_delivery,
-    'status',   'PENDING'
+    'status',   'PENDING',
+    'stockReserved', false
   );
 
   insert into public.orders (ref, data) values (v_ref, v_order);
@@ -832,7 +951,7 @@ grant execute on function public.place_order(jsonb) to anon, authenticated;
 -- Stockage des images produits
 -- ---------------------------------------------------------------------------
 -- Bucket public en lecture (les visuels s'affichent en boutique sans session),
--- écriture réservée aux comptes authentifiés (l'administration).
+-- écriture réservée aux administrateurs explicitement autorisés.
 
 insert into storage.buckets (id, name, public)
 values ('produits', 'produits', true)
@@ -844,12 +963,13 @@ create policy "produits_read_public" on storage.objects
 
 drop policy if exists "produits_write_auth" on storage.objects;
 create policy "produits_write_auth" on storage.objects
-  for insert to authenticated with check (bucket_id = 'produits');
+  for insert to authenticated with check (bucket_id = 'produits' and public.is_admin());
 
 drop policy if exists "produits_update_auth" on storage.objects;
 create policy "produits_update_auth" on storage.objects
-  for update to authenticated using (bucket_id = 'produits');
+  for update to authenticated using (bucket_id = 'produits' and public.is_admin())
+  with check (bucket_id = 'produits' and public.is_admin());
 
 drop policy if exists "produits_delete_auth" on storage.objects;
 create policy "produits_delete_auth" on storage.objects
-  for delete to authenticated using (bucket_id = 'produits');
+  for delete to authenticated using (bucket_id = 'produits' and public.is_admin());

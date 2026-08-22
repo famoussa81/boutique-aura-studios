@@ -680,7 +680,7 @@
   <div class="toast" id="toast"></div>
 
 <script src="supabase.config.js"></script>
-<script src="supabase-client.js?v=20260824a"></script>
+<script src="supabase-client.js?v=20260825a"></script>
 <script src="catalog.js?v=20260822e"></script>
 <script>
 (function(){
@@ -1438,11 +1438,19 @@
         $("#passInput").focus();
         return;
       }
-      dbSession = true;
-      $("#passInput").value = "";
-      unlock();
-      toast("Bienvenue");
-      dbLoadAll(loadNews);
+      window.AURA_DB.isAdmin(function(adminError, allowed){
+        if (adminError || !allowed){
+          window.AURA_DB.signOut();
+          errEl.textContent = "Ce compte n'est pas autorisé à administrer cette boutique.";
+          errEl.setAttribute("data-show","true");
+          return;
+        }
+        dbSession = true;
+        $("#passInput").value = "";
+        unlock();
+        toast("Bienvenue");
+        dbLoadAll(loadNews);
+      });
     });
   }
 
@@ -2434,14 +2442,21 @@
     return null;
   }
 
+  /* Les anciennes demandes en attente réservaient déjà le stock. Les nouvelles
+     demandent seulement une confirmation WhatsApp : elles ne le bloquent pas
+     tant que le commerçant ne les confirme pas. */
+  function orderReservesStock(order){
+    return !!order && order.status === "PENDING" && order.stockReserved !== false;
+  }
+
   /* Restitue au stock ce qu'une ligne consommait, selon le statut courant :
-     une commande en attente reserve (r), une commande confirmee a deja
-     decremente (s). Sans cela, supprimer une commande fausserait le stock. */
+     une ancienne demande en attente réserve (r), une commande confirmée a
+     déjà décrémenté (s). Sans cela, supprimer une commande fausserait le stock. */
   function releaseItem(order, it){
     var pr = findProduct(it.id);
     var cle = itemKey(pr, it);
     if (cle === null) return;
-    if (order.status === "PENDING") pr.variants[cle].r -= it.qty;
+    if (orderReservesStock(order)) pr.variants[cle].r -= it.qty;
     else if (order.status !== "CANCELLED") pr.variants[cle].s += it.qty;
   }
   function requireLiveAction(){
@@ -2540,9 +2555,9 @@ function applyStatus(order, ns){
       var cle = itemKey(p, it);
       if (cle === null) return;
       var sz = p.variants[cle];
-      var hadRes = (ps === "PENDING");
+      var hadRes = orderReservesStock(order);
       var hadDec = (ps !== "PENDING" && ps !== "CANCELLED");
-      var willRes = (ns === "PENDING");
+      var willRes = (ns === "PENDING" && ps === "PENDING" && order.stockReserved !== false);
       var willDec = (ns !== "PENDING" && ns !== "CANCELLED");
       if (hadRes && !willRes) sz.r -= it.qty;
       if (!hadRes && willRes) sz.r += it.qty;
@@ -3464,9 +3479,12 @@ function applyStatus(order, ns){
   if (dbAvailable() && window.AURA_DB.hasSession()){
     window.AURA_DB.verifySession(function(er){
       if (er) return;
-      dbSession = true;
-      unlock();
-      dbLoadAll(loadNews);
+      window.AURA_DB.isAdmin(function(adminError, allowed){
+        if (adminError || !allowed){ window.AURA_DB.signOut(); return; }
+        dbSession = true;
+        unlock();
+        dbLoadAll(loadNews);
+      });
     });
   }
 })();

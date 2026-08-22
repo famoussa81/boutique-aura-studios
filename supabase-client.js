@@ -103,25 +103,23 @@
     },
     subscribe: function(email, cb){
       cb = cb || function(){};
-      req("/rest/v1/subscribers", {
+      req("/rest/v1/rpc/subscribe_newsletter", {
         method: "POST",
-        prefer: "resolution=ignore-duplicates",
-        body: { email: String(email || "").trim().toLowerCase() }
+        body: { raw_email: String(email || "").trim().toLowerCase() }
       }).then(function(){ cb(null); }).catch(function(e){ cb(e); });
     },
 
-    /* Liste d'attente sur un produit en rupture. `ignore-duplicates` évite
-       qu'un même numéro s'inscrive deux fois sur la même taille. */
+    /* Liste d'attente sur un produit en rupture. La fonction serveur évite
+       les doublons et applique la limite de demandes. */
     joinWaitlist: function(entry, cb){
       cb = cb || function(){};
-      req("/rest/v1/waitlist", {
+      req("/rest/v1/rpc/join_waitlist_request", {
         method: "POST",
-        prefer: "resolution=ignore-duplicates",
         body: {
-          product_id: String(entry.id || ""),
-          product_name: String(entry.name || ""),
-          size: String(entry.size || ""),
-          phone: String(entry.phone || "")
+          raw_product_id: String(entry.id || ""),
+          raw_product_name: String(entry.name || ""),
+          raw_size: String(entry.size || ""),
+          raw_phone: String(entry.phone || "")
         }
       }).then(function(){ cb(null); }).catch(function(e){ cb(e); });
     },
@@ -172,6 +170,13 @@
       req("/auth/v1/user", { token: session.token })
         .then(function(u){ cb(null, u); })
         .catch(function(e){ window.AURA_DB.signOut(); cb(e); });
+    },
+    isAdmin: function(cb){
+      cb = cb || function(){};
+      if (!session) return cb(new Error("non connecté"), false);
+      req("/rest/v1/rpc/is_admin", { method: "POST", token: session.token, body: {} })
+        .then(function(ok){ cb(null, ok === true); })
+        .catch(function(e){ cb(e, false); });
     },
     loadDraft: function(cb){
       cb = cb || function(){}; if (!session) return cb(new Error("non connecté"), null);
