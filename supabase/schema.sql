@@ -42,6 +42,29 @@ create table if not exists public.waitlist (
   unique (product_id, size, phone)
 );
 
+-- Brouillon privé de l'administration et dix dernières publications.
+-- Le site public ne lit jamais ces tables.
+create table if not exists public.admin_drafts (
+  id uuid primary key default gen_random_uuid(),
+  data jsonb not null default '{}'::jsonb,
+  version integer not null default 1 check (version > 0),
+  dirty boolean not null default false,
+  updated_at timestamptz not null default now(),
+  updated_by uuid default auth.uid()
+);
+
+-- `create table if not exists` ne complète pas une installation déjà en
+-- production : cette migration garde les boutiques existantes compatibles.
+alter table public.admin_drafts add column if not exists dirty boolean not null default false;
+
+create table if not exists public.store_revisions (
+  id uuid primary key default gen_random_uuid(),
+  version integer not null,
+  data jsonb not null,
+  created_at timestamptz not null default now(),
+  created_by uuid default auth.uid()
+);
+
 -- Séquence serveur des références de commande : garantit l'unicité
 -- entre tous les appareils (un compteur navigateur ne le peut pas).
 create sequence if not exists public.order_seq start with 1;
@@ -57,6 +80,8 @@ alter table public.settings    enable row level security;
 alter table public.orders      enable row level security;
 alter table public.subscribers enable row level security;
 alter table public.waitlist     enable row level security;
+alter table public.admin_drafts enable row level security;
+alter table public.store_revisions enable row level security;
 
 drop policy if exists "products_select_public" on public.products;
 drop policy if exists "settings_select_public" on public.settings;
@@ -69,6 +94,8 @@ drop policy if exists "subscribers_insert_public" on public.subscribers;
 drop policy if exists "subscribers_read_auth"     on public.subscribers;
 drop policy if exists "waitlist_insert_public"    on public.waitlist;
 drop policy if exists "waitlist_read_auth"        on public.waitlist;
+drop policy if exists "admin_drafts_auth"          on public.admin_drafts;
+drop policy if exists "store_revisions_auth"       on public.store_revisions;
 
 -- Lecture catalogue et réglages : tout le monde (la boutique en a besoin).
 -- Aucun secret ne doit être stocké dans `settings` : son contenu est public.
@@ -99,27 +126,464 @@ create policy "waitlist_insert_public" on public.waitlist
     phone ~ '^[0-9]{8}$'
     and length(product_id) between 1 and 64
     and length(product_name) between 1 and 200
-    and size in ('S','M','L','XL','XXL','TU')
+    and length(size) between 1 and 200
   );
 
 create policy "waitlist_read_auth" on public.waitlist
   for select using (auth.role() = 'authenticated');
 
--- Administration : écriture réservée aux utilisateurs authentifiés
-create policy "products_write_auth" on public.products
-  for all using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
-
-create policy "settings_write_auth" on public.settings
-  for all using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
-
 create policy "orders_read_auth" on public.orders
   for select using (auth.role() = 'authenticated');
 
-create policy "orders_write_auth" on public.orders
-  for all using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+-- Les écritures sensibles passent uniquement par les fonctions atomiques
+-- définies plus bas. Une requête REST authentifiée ne peut donc pas contourner
+-- les contrôles de stock, l'archivage ou la gestion des versions.
+create policy "admin_drafts_auth" on public.admin_drafts
+  for select using (auth.role() = 'authenticated');
+
+create policy "store_revisions_auth" on public.store_revisions
+  for select using (auth.role() = 'authenticated');
+
+-- ---------- Brouillons, publication et stock ----------
+
+drop function if exists public.save_admin_draft(uuid, integer, jsonb);
+create or replace function public.save_admin_draft(draft_id uuid, expected_version integer, payload jsonb, mark_dirty boolean default true)
+returns jsonb
+language plpgsql
+security definer
+set search_path to 'public'
+as $$
+declare v_draft public.admin_drafts%rowtype;
+begin
+  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  if jsonb_typeof(payload->'settings') <> 'object' or jsonb_typeof(payload->'products') <> 'array' then
+    raise exception 'Brouillon incomplet';
+  end if;
+  if payload::text ~ '"data:image/[^" ]+;base64,' then
+    raise exception 'Une photo locale doit être envoyée avant la synchronisation';
+  end if;
+  -- Défense en profondeur : ces clés ont existé dans d'anciennes copies
+  -- locales. Elles ne doivent jamais pouvoir rejoindre `settings`, qui est
+  -- lisible publiquement par la boutique.
+  payload := jsonb_set(
+    payload,
+    '{settings}',
+    (payload->'settings') - array['password','adminPassword','adminEmail','anonKey','serviceKey'],
+    true
+  );
+  select * into v_draft from public.admin_drafts where id = draft_id for update;
+  if found then
+    if v_draft.version <> expected_version then
+      raise exception 'Ce brouillon a été modifié sur un autre appareil';
+    end if;
+    update public.admin_drafts set data = payload, version = version + 1,
+      dirty = dirty or coalesce(mark_dirty, true),
+      updated_at = now(), updated_by = auth.uid() where id = draft_id returning * into v_draft;
+  else
+    if expected_version <> 0 then raise exception 'Ce brouillon a été supprimé ou remplacé'; end if;
+    insert into public.admin_drafts(id, data, version, dirty, updated_by)
+      values (draft_id, payload, 1, coalesce(mark_dirty, true), auth.uid()) returning * into v_draft;
+  end if;
+  return to_jsonb(v_draft);
+end;
+$$;
+
+create or replace function public.publish_store(draft_id uuid, expected_version integer)
+returns jsonb
+language plpgsql
+security definer
+set search_path to 'public'
+as $$
+declare
+  v_draft public.admin_drafts%rowtype;
+  v_snapshot jsonb;
+  v_product jsonb;
+  v_current jsonb;
+  v_revision uuid;
+  v_key text;
+  v_variant jsonb;
+  v_clean_variants jsonb;
+  v_ids text[];
+  v_product_count integer;
+  v_distinct_count integer;
+  v_public_settings jsonb;
+begin
+  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  select * into v_draft from public.admin_drafts where id = draft_id for update;
+  if not found then raise exception 'Brouillon introuvable'; end if;
+  if v_draft.version <> expected_version then
+    raise exception 'Ce brouillon a été modifié sur un autre appareil';
+  end if;
+  if jsonb_typeof(v_draft.data->'settings') <> 'object'
+     or jsonb_typeof(v_draft.data->'products') <> 'array' then
+    raise exception 'Brouillon incomplet';
+  end if;
+  if v_draft.data::text ~ '"data:image/[^" ]+;base64,' then
+    raise exception 'Une photo locale doit être envoyée avant la publication';
+  end if;
+
+  if exists (
+    select 1 from jsonb_array_elements(v_draft.data->'products') p
+    where nullif(trim(p->>'id'), '') is null
+  ) then
+    raise exception 'Produit sans identifiant';
+  end if;
+  select count(*), count(distinct p->>'id'),
+         coalesce(array_agg(p->>'id' order by p->>'id'), array[]::text[])
+    into v_product_count, v_distinct_count, v_ids
+    from jsonb_array_elements(v_draft.data->'products') p;
+  if v_product_count <> v_distinct_count then
+    raise exception 'Identifiant produit présent plusieurs fois';
+  end if;
+
+  -- La commande publique verrouille ses produits dans l'ordre du panier.
+  -- Une publication touche potentiellement tout le catalogue : ce verrou
+  -- bref la fait attendre les commandes déjà commencées et bloque les
+  -- nouvelles écritures de stock jusqu'au commit, sans interblocage entre
+  -- deux produits pris dans un ordre différent.
+  lock table public.products in share row exclusive mode;
+
+  -- Tous les verrous produits sont pris dans le même ordre pour réduire le
+  -- risque d'interblocage avec une modification de commande ou de stock.
+  perform 1 from public.products
+   where id = any(v_ids)
+   order by id
+   for update;
+
+  select jsonb_build_object(
+    'settings', coalesce((select data from public.settings where id = 1), '{}'::jsonb),
+    'products', coalesce((select jsonb_agg(data order by id) from public.products), '[]'::jsonb)
+  ) into v_snapshot;
+
+  insert into public.store_revisions(version, data, created_by)
+  values (v_draft.version, v_snapshot, auth.uid()) returning id into v_revision;
+
+  v_public_settings := (v_draft.data->'settings')
+    - array['password','adminPassword','adminEmail','anonKey','serviceKey'];
+  insert into public.settings(id, data, updated_at)
+  values (1, v_public_settings, now())
+  on conflict (id) do update set data = excluded.data, updated_at = now();
+
+  -- Une révision représente la vitrine complète. Les produits créés après
+  -- cette révision doivent donc disparaître de la vitrine quand elle est
+  -- restaurée, sans effacer leur stock ni l'historique des commandes.
+  update public.products
+     set data = jsonb_set(
+                  jsonb_set(data, '{active}', 'false'::jsonb, true),
+                  '{archived}', 'true'::jsonb, true
+                ),
+         updated_at = now()
+   where not (id = any(v_ids));
+
+  for v_product in select value from jsonb_array_elements(v_draft.data->'products') loop
+    if nullif(v_product->>'id', '') is null then raise exception 'Produit sans identifiant'; end if;
+    select data into v_current from public.products where id = v_product->>'id' for update;
+    if found then
+      for v_key, v_variant in select key, value from jsonb_each(coalesce(v_current->'variants', '{}'::jsonb)) loop
+        if coalesce((v_variant->>'r')::integer, 0) > 0
+           and not (coalesce(v_product->'variants', '{}'::jsonb) ? v_key) then
+          raise exception 'La variante % du produit % est réservée par une commande', v_key, v_product->>'name';
+        end if;
+      end loop;
+      -- Le stock, les réservations et un masquage d'urgence ne sont jamais
+      -- remplacés par une ancienne copie du brouillon.
+      v_product := jsonb_set(v_product, '{variants}', coalesce(v_current->'variants', v_product->'variants', '{}'::jsonb), true);
+      v_product := jsonb_set(v_product, '{active}', coalesce(v_current->'active', v_product->'active', 'true'::jsonb), true);
+      if v_current ? 'archived' then
+        v_product := jsonb_set(v_product, '{archived}', v_current->'archived', true);
+      end if;
+    else
+      if jsonb_typeof(v_product->'variants') <> 'object' then
+        raise exception 'Stock invalide pour le nouveau produit %', v_product->>'name';
+      end if;
+      v_clean_variants := '{}'::jsonb;
+      for v_key, v_variant in select key, value from jsonb_each(v_product->'variants') loop
+        v_clean_variants := v_clean_variants || jsonb_build_object(
+          v_key,
+          jsonb_build_object('s', greatest(0, coalesce((v_variant->>'s')::integer, 0)), 'r', 0)
+        );
+      end loop;
+      v_product := jsonb_set(v_product, '{variants}', v_clean_variants, true);
+    end if;
+    insert into public.products(id, data, updated_at)
+    values (v_product->>'id', v_product, now())
+    on conflict (id) do update set data = excluded.data, updated_at = now();
+  end loop;
+
+  update public.admin_drafts
+  set version = version + 1, dirty = false, updated_at = now(), updated_by = auth.uid()
+  where id = draft_id returning * into v_draft;
+
+  delete from public.store_revisions
+  where id not in (select id from public.store_revisions order by created_at desc limit 10);
+
+  return jsonb_build_object('revision_id', v_revision, 'version', v_draft.version, 'published_at', now());
+end;
+$$;
+
+drop function if exists public.restore_revision_as_draft(uuid);
+create or replace function public.restore_revision_as_draft(revision_id uuid, expected_version integer)
+returns jsonb
+language plpgsql
+security definer
+set search_path to 'public'
+as $$
+declare v_data jsonb; v_draft public.admin_drafts%rowtype;
+begin
+  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  select data into v_data from public.store_revisions where id = revision_id;
+  if not found then raise exception 'Publication introuvable'; end if;
+  select * into v_draft from public.admin_drafts order by updated_at desc limit 1 for update;
+  if found then
+    if v_draft.version <> expected_version then
+      raise exception 'Ce brouillon a été modifié sur un autre appareil';
+    end if;
+    update public.admin_drafts set data = v_data, version = version + 1, dirty = true,
+      updated_at = now(), updated_by = auth.uid() where id = v_draft.id returning * into v_draft;
+  else
+    if expected_version <> 0 then raise exception 'Ce brouillon a été supprimé ou remplacé'; end if;
+    insert into public.admin_drafts(data, dirty, updated_by) values (v_data, true, auth.uid()) returning * into v_draft;
+  end if;
+  return to_jsonb(v_draft);
+end;
+$$;
+
+create or replace function public.set_inventory(product_id text, new_variants jsonb)
+returns jsonb
+language plpgsql
+security definer
+set search_path to 'public'
+as $$
+declare v_data jsonb; v_old jsonb; v_merged jsonb := '{}'::jsonb; v_key text; v_value jsonb; v_reserved integer; v_stock integer;
+begin
+  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  if jsonb_typeof(new_variants) <> 'object' then raise exception 'Stock invalide'; end if;
+  select data into v_data from public.products where id = product_id for update;
+  if not found then raise exception 'Produit introuvable'; end if;
+  v_old := coalesce(v_data->'variants', '{}'::jsonb);
+  for v_key, v_value in select key, value from jsonb_each(v_old) loop
+    v_reserved := greatest(0, coalesce((v_value->>'r')::integer, 0));
+    if v_reserved > 0 and not (new_variants ? v_key) then
+      raise exception 'La variante % est réservée par une commande', v_key;
+    end if;
+  end loop;
+  for v_key, v_value in select key, value from jsonb_each(new_variants) loop
+    v_stock := greatest(0, coalesce((v_value->>'s')::integer, 0));
+    v_reserved := greatest(0, coalesce((v_old->v_key->>'r')::integer, 0));
+    if v_stock < v_reserved then raise exception 'Le stock de % est inférieur aux réservations', v_key; end if;
+    v_merged := v_merged || jsonb_build_object(v_key, jsonb_build_object('s', v_stock, 'r', v_reserved));
+  end loop;
+  v_data := jsonb_set(v_data, '{variants}', v_merged, true);
+  update public.products set data = v_data, updated_at = now() where id = product_id;
+  return v_data;
+end;
+$$;
+
+create or replace function public.set_product_visibility(product_id text, visible boolean)
+returns jsonb language plpgsql security definer set search_path to 'public' as $$
+declare v_data jsonb;
+begin
+  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  select data into v_data from public.products where id = product_id for update;
+  if not found then raise exception 'Produit introuvable'; end if;
+  v_data := jsonb_set(v_data, '{active}', to_jsonb(visible), true);
+  if visible then v_data := jsonb_set(v_data, '{archived}', 'false'::jsonb, true); end if;
+  update public.products set data = v_data, updated_at = now() where id = product_id;
+  return v_data;
+end; $$;
+
+create or replace function public.archive_product(product_id text)
+returns jsonb language plpgsql security definer set search_path to 'public' as $$
+declare v_data jsonb;
+begin
+  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  select data into v_data from public.products where id = product_id for update;
+  if not found then raise exception 'Produit introuvable'; end if;
+  v_data := jsonb_set(jsonb_set(v_data, '{active}', 'false'::jsonb, true), '{archived}', 'true'::jsonb, true);
+  update public.products set data = v_data, updated_at = now() where id = product_id;
+  return v_data;
+end; $$;
+
+-- Met à jour une commande ET son impact sur le stock dans la même
+-- transaction. Le navigateur ne réécrit jamais le catalogue complet : un
+-- brouillon de prix ou de photo ne peut donc pas partir en boutique au détour
+-- d'un changement de statut.
+create or replace function public.admin_save_order(payload jsonb)
+returns jsonb
+language plpgsql
+security definer
+set search_path to 'public'
+as $$
+declare
+  v_ref text := trim(coalesce(payload->>'ref', ''));
+  v_old jsonb;
+  v_old_status text;
+  v_new_status text := coalesce(payload->>'status', '');
+  v_item jsonb;
+  v_old_item jsonb;
+  v_prod jsonb;
+  v_field text;
+  v_key text;
+  v_qty integer;
+  v_stock integer;
+  v_reserved integer;
+  v_lines jsonb := '[]'::jsonb;
+  v_subtotal integer := 0;
+  v_delivery integer := 0;
+  v_freefrom integer := 0;
+  v_result jsonb;
+begin
+  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  if v_ref = '' then raise exception 'Référence de commande manquante'; end if;
+  if v_new_status not in ('PENDING','CONFIRMED','SHIPPING','DELIVERED','CANCELLED') then
+    raise exception 'Statut de commande invalide';
+  end if;
+
+  select data into v_old from public.orders where ref = v_ref for update;
+  if not found then raise exception 'Commande introuvable'; end if;
+  v_old_status := coalesce(v_old->>'status', 'PENDING');
+
+  if jsonb_typeof(payload->'items') <> 'array' or jsonb_array_length(payload->'items') = 0 then
+    raise exception 'Une commande doit garder au moins un article';
+  end if;
+  if exists (
+    select 1
+      from jsonb_array_elements(payload->'items') item
+     group by item->>'id', coalesce(item->>'variant', item->>'size', '')
+    having count(*) > 1
+  ) then
+    raise exception 'Une ligne de commande est présente plusieurs fois';
+  end if;
+
+  perform 1 from public.products
+   where id in (
+     select distinct item->>'id'
+       from jsonb_array_elements(coalesce(v_old->'items', '[]'::jsonb)) item
+   )
+   order by id
+   for update;
+
+  -- Annule d'abord l'impact exact de l'ancienne commande. Toute erreur plus
+  -- bas annule automatiquement ces changements grâce à la transaction SQL.
+  for v_item in select value from jsonb_array_elements(coalesce(v_old->'items', '[]'::jsonb)) loop
+    v_qty := greatest(0, coalesce((v_item->>'qty')::integer, 0));
+    select data into v_prod from public.products where id = v_item->>'id' for update;
+    if not found then raise exception 'Produit de commande introuvable : %', v_item->>'id'; end if;
+    v_field := case when v_prod ? 'variants' then 'variants' else 'sizes' end;
+    v_key := coalesce(v_item->>'variant', v_item->>'size', '');
+    if not (v_prod->v_field) ? v_key then
+      if v_key = '' and (v_prod->v_field) ? 'TU' then v_key := 'TU';
+      elsif v_key = 'TU' and (v_prod->v_field) ? '' then v_key := '';
+      else raise exception 'Variante de commande introuvable : %', v_key;
+      end if;
+    end if;
+    v_stock := coalesce((v_prod->v_field->v_key->>'s')::integer, 0);
+    v_reserved := coalesce((v_prod->v_field->v_key->>'r')::integer, 0);
+    if v_old_status = 'PENDING' then
+      if v_reserved < v_qty then raise exception 'Réservation incohérente pour %', v_item->>'id'; end if;
+      v_reserved := v_reserved - v_qty;
+    elsif v_old_status <> 'CANCELLED' then
+      v_stock := v_stock + v_qty;
+    end if;
+    v_prod := jsonb_set(v_prod, array[v_field, v_key], jsonb_build_object('s', v_stock, 'r', v_reserved), true);
+    update public.products set data = v_prod, updated_at = now() where id = v_item->>'id';
+  end loop;
+
+  -- Les lignes autorisées proviennent obligatoirement de la commande
+  -- originale. Le navigateur peut en retirer, mais pas injecter un produit,
+  -- un prix ou une quantité arbitraires.
+  for v_item in select value from jsonb_array_elements(payload->'items') loop
+    select value into v_old_item
+      from jsonb_array_elements(coalesce(v_old->'items', '[]'::jsonb))
+     where value->>'id' = v_item->>'id'
+       and coalesce(value->>'variant', value->>'size', '') = coalesce(v_item->>'variant', v_item->>'size', '')
+     limit 1;
+    if v_old_item is null then raise exception 'Article non autorisé dans la commande'; end if;
+    v_qty := greatest(0, coalesce((v_item->>'qty')::integer, 0));
+    if v_qty = 0 or v_qty > coalesce((v_old_item->>'qty')::integer, 0) then
+      raise exception 'Quantité de commande invalide';
+    end if;
+    v_old_item := jsonb_set(v_old_item, '{qty}', to_jsonb(v_qty), true);
+    v_lines := v_lines || v_old_item;
+    v_subtotal := v_subtotal + coalesce((v_old_item->>'price')::integer, 0) * v_qty;
+
+    select data into v_prod from public.products where id = v_old_item->>'id' for update;
+    v_field := case when v_prod ? 'variants' then 'variants' else 'sizes' end;
+    v_key := coalesce(v_old_item->>'variant', v_old_item->>'size', '');
+    if not (v_prod->v_field) ? v_key then
+      if v_key = '' and (v_prod->v_field) ? 'TU' then v_key := 'TU';
+      elsif v_key = 'TU' and (v_prod->v_field) ? '' then v_key := '';
+      else raise exception 'Variante de commande introuvable : %', v_key;
+      end if;
+    end if;
+    v_stock := coalesce((v_prod->v_field->v_key->>'s')::integer, 0);
+    v_reserved := coalesce((v_prod->v_field->v_key->>'r')::integer, 0);
+    if v_new_status = 'PENDING' then
+      if v_stock - v_reserved < v_qty then raise exception 'Stock insuffisant pour %', v_old_item->>'name'; end if;
+      v_reserved := v_reserved + v_qty;
+    elsif v_new_status <> 'CANCELLED' then
+      if v_stock - v_reserved < v_qty then raise exception 'Stock insuffisant pour %', v_old_item->>'name'; end if;
+      v_stock := v_stock - v_qty;
+    end if;
+    v_prod := jsonb_set(v_prod, array[v_field, v_key], jsonb_build_object('s', v_stock, 'r', v_reserved), true);
+    update public.products set data = v_prod, updated_at = now() where id = v_old_item->>'id';
+  end loop;
+
+  select coalesce((data->>'deliveryFee')::integer, 0), coalesce((data->>'freeFrom')::integer, 0)
+    into v_delivery, v_freefrom from public.settings where id = 1;
+  if v_freefrom > 0 and v_subtotal >= v_freefrom then v_delivery := 0; end if;
+
+  v_result := v_old || jsonb_build_object(
+    'client', trim(coalesce(payload->>'client', v_old->>'client')),
+    'phone', regexp_replace(coalesce(payload->>'phone', v_old->>'phone'), '\D', '', 'g'),
+    'quartier', trim(coalesce(payload->>'quartier', v_old->>'quartier')),
+    'items', v_lines,
+    'subtotal', v_subtotal,
+    'delivery', coalesce(v_delivery, 0),
+    'total', v_subtotal + coalesce(v_delivery, 0),
+    'status', v_new_status
+  );
+  if length(v_result->>'client') < 2 or length(v_result->>'phone') < 8 or length(v_result->>'quartier') < 2 then
+    raise exception 'Coordonnées de livraison invalides';
+  end if;
+  update public.orders set data = v_result where ref = v_ref;
+  return v_result;
+end;
+$$;
+
+create or replace function public.admin_delete_order(order_ref text)
+returns boolean
+language plpgsql
+security definer
+set search_path to 'public'
+as $$
+declare v_order jsonb;
+begin
+  if auth.role() <> 'authenticated' then raise exception 'Connexion requise'; end if;
+  select data into v_order from public.orders where ref = order_ref for update;
+  if not found then raise exception 'Commande introuvable'; end if;
+  perform public.admin_save_order(jsonb_set(v_order, '{status}', '"CANCELLED"'::jsonb, true));
+  delete from public.orders where ref = order_ref;
+  return true;
+end;
+$$;
+
+grant execute on function public.publish_store(uuid, integer) to authenticated;
+grant execute on function public.save_admin_draft(uuid, integer, jsonb, boolean) to authenticated;
+grant execute on function public.restore_revision_as_draft(uuid, integer) to authenticated;
+grant execute on function public.set_inventory(text, jsonb) to authenticated;
+grant execute on function public.set_product_visibility(text, boolean) to authenticated;
+grant execute on function public.archive_product(text) to authenticated;
+grant execute on function public.admin_save_order(jsonb) to authenticated;
+grant execute on function public.admin_delete_order(text) to authenticated;
+revoke execute on function public.save_admin_draft(uuid, integer, jsonb, boolean) from public, anon;
+revoke execute on function public.publish_store(uuid, integer) from public, anon;
+revoke execute on function public.restore_revision_as_draft(uuid, integer) from public, anon;
+revoke execute on function public.set_inventory(text, jsonb) from public, anon;
+revoke execute on function public.set_product_visibility(text, boolean) from public, anon;
+revoke execute on function public.archive_product(text) from public, anon;
+revoke execute on function public.admin_save_order(jsonb) from public, anon;
+revoke execute on function public.admin_delete_order(text) from public, anon;
 
 -- ---------- Passage de commande (transaction serveur) ----------
 -- Résout trois problèmes que le navigateur ne peut pas résoudre seul :

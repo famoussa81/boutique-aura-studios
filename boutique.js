@@ -42,6 +42,7 @@
     '        <div class="footer-brand">\n' +
     '          <a href="index.html" class="logo" id="logoPied" style="font-size:26px"></a>\n' +
     '          <p id="piedTexte"></p>\n' +
+    '          <p id="footerContact" class="footer-contact" hidden></p>\n' +
     '          <div class="social" id="socialRow">\n' +
     '            <a href="#" id="socialIG" target="_blank" rel="noopener" aria-label="Instagram" data-od-id="social-instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>\n' +
     '            <a href="#" id="socialTT" target="_blank" rel="noopener" aria-label="TikTok" data-od-id="social-tiktok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4c.5 2.5 2.5 4.5 5 5"/></svg></a>\n' +
@@ -49,11 +50,11 @@
     '          </div>\n' +
     '        </div>\n' +
     '        <div class="fcol" data-od-id="footer-col-boutique">\n' +
-    '          <h4>Boutique</h4>\n' +
+    '          <h2>Boutique</h2>\n' +
     '          <ul id="footShop"></ul>\n' +
     '        </div>\n' +
     '        <div class="fcol" data-od-id="footer-col-aide">\n' +
-    '          <h4>Aide</h4>\n' +
+    '          <h2>Aide</h2>\n' +
     '          <ul>\n' +
     '            <li><a href="#" id="helpDelivery" target="_blank" rel="noopener">Livraison à Bamako</a></li>\n' +
     '            <li><a href="guide-des-tailles.html">Guide des tailles</a></li>\n' +
@@ -62,17 +63,16 @@
     '          </ul>\n' +
     '        </div>\n' +
     '        <div class="fcol" data-od-id="footer-col-apropos">\n' +
-    '          <h4>À propos</h4>\n' +
+    '          <h2>À propos</h2>\n' +
     '          <ul>\n' +
-    '            <li><a href="#a-propos">Notre histoire</a></li>\n' +
-    '            <li><a href="durabilite.html">Durabilité</a></li>\n' +
+    '            <li><a href="index.html#a-propos">Notre histoire</a></li>\n' +
     '            <li><a href="#" id="helpPress" target="_blank" rel="noopener">Presse</a></li>\n' +
     '            <li><a href="admin.html">Espace vendeur</a></li>\n' +
     '          </ul>\n' +
     '        </div>\n' +
     '      </div>\n' +
     '      <div class="footer-bottom">\n' +
-    '        <p id="footerBrandLine">© 2026 AURA STUDIOS. Tous droits réservés.</p>\n' +
+    '        <p id="footerBrandLine">© 2026 SNEAK BAMAKO. Tous droits réservés.</p>\n' +
     '        <nav>\n' +
     '          <a href="cgv.html">CGV</a>\n' +
     '          <a href="confidentialite.html">Confidentialité</a>\n' +
@@ -216,7 +216,7 @@
     '        </button>\n' +
     '      </div>\n' +
     '      <div class="m-body">\n' +
-    '        <input class="search-in" id="soInput" type="search" placeholder="Hoodie, tee, cargo…" autocomplete="off" />\n' +
+    '        <input class="search-in" id="soInput" type="search" aria-label="Rechercher un produit" placeholder="Marque, modèle, pointure…" autocomplete="off" />\n' +
     '        <ul class="search-results" id="soRes"></ul>\n' +
     '      </div>\n' +
     '    </div>\n' +
@@ -243,9 +243,11 @@
 })();
 
 (function(){
-  var KEY = "aura_store_v3";
+  var KEY = "aura_store_v9";
   var CKEY = "aura_cart_v1";
   var WKEY = "aura_wish_v1";
+  var LOCAL_DEMO = (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
+    (/[?&](?:demo|preview)=1(?:&|$)/.test(location.search) || sessionStorage.getItem("aura_preview_active") === "1");
   var VSEP = window.AURA_CATALOG.VSEP || "::";
 
   /* ---------------- Variantes ----------------
@@ -358,6 +360,18 @@
 
   function readStore(){
     try {
+      var previewRequested = /[?&]preview=1(?:&|$)/.test(location.search);
+      if (previewRequested) sessionStorage.setItem("aura_preview_active", "1");
+      if (previewRequested || sessionStorage.getItem("aura_preview_active") === "1"){
+        var preview = JSON.parse(sessionStorage.getItem("aura_preview_store") || "null");
+        if (preview && preview.products && preview.settings){
+          document.documentElement.setAttribute("data-preview", "true");
+          preview.products = normalizeProducts(preview.products);
+          return preview;
+        }
+      }
+    } catch(e){}
+    try {
       var raw = localStorage.getItem(KEY);
       if (raw){
         var s = JSON.parse(raw);
@@ -373,7 +387,43 @@
   function persistCart(){ try { localStorage.setItem(CKEY, JSON.stringify(cart)); } catch(e){} }
 
   var store = readStore();
+  if (document.documentElement.getAttribute("data-preview") === "true"){
+    var previewBar = document.createElement("div");
+    previewBar.className = "preview-bar";
+    previewBar.setAttribute("role", "status");
+    previewBar.innerHTML = '<span>APERÇU — les clients ne voient pas encore ces changements</span><a href="admin.html' + (LOCAL_DEMO ? '?demo=1' : '') + '">Retour au dashboard</a>';
+    document.body.insertBefore(previewBar, document.body.firstChild);
+    previewBar.querySelector("a").addEventListener("click", function(){
+      try { sessionStorage.removeItem("aura_preview_active"); sessionStorage.removeItem("aura_preview_store"); } catch(e){}
+    });
+  }
   var cart = readCart();
+
+  function reconcileCart(){
+    var before="";
+    try{before=JSON.stringify(cart);}catch(e){}
+    var next=[];
+    (Array.isArray(cart)?cart:[]).forEach(function(it){
+      var p=findProduct(it&&it.id);
+      if(!p||p.active===false||p.archived||p.stockout||!p.variants)return;
+      var key=it.variant!=null?String(it.variant):String(it.size||"");
+      if(!(key in p.variants)){
+        if((key==="TU"||key==="")&&("" in p.variants))key="";
+        else if((key==="TU"||key==="")&&("TU" in p.variants))key="TU";
+        else return;
+      }
+      var qty=Math.min(Math.max(0,Number(it.qty)||0),Math.max(0,availFor(p,key)));
+      if(qty<1)return;
+      next.push({
+        id:p.id,variant:key,variantLabel:variantLabel(p,key),qty:qty,
+        name:p.name,brand:marqueDe(p),cat:CATS[p.cat]||p.cat,
+        price:Number(p.price)||0,img:p.img||""
+      });
+    });
+    cart=next;
+    var after="";try{after=JSON.stringify(cart);}catch(e){}
+    if(before!==after)persistCart();
+  }
 
   /* ---------------- Utilitaires ---------------- */
   function $(s){ return document.querySelector(s); }
@@ -398,7 +448,12 @@
     if (p && p.variants) for (var k in p.variants) t += p.variants[k].s;
     return t;
   }
-  function isOut(p){ if (p.stockout) return true; return totalFor(p) <= 0; }
+  function availableTotalFor(p){
+    var t=0;
+    if(p&&p.variants)for(var k in p.variants)t+=Math.max(0,(Number(p.variants[k].s)||0)-(Number(p.variants[k].r)||0));
+    return t;
+  }
+  function isOut(p){ if (p.stockout) return true; return availableTotalFor(p) <= 0; }
   function waLink(phone, text){ return "https://wa.me/" + digits(phone) + "?text=" + encodeURIComponent(text); }
 
   var toastTimer;
@@ -497,7 +552,7 @@
     el.textContent = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Store",
-      "name": store.settings.shopName || "AURA STUDIOS",
+      "name": store.settings.shopName || "SNEAK BAMAKO",
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": (sum / rated.length).toFixed(1),
@@ -568,7 +623,12 @@
   }
   function poserCanonique(url){
     var l = document.head.querySelector('link[rel="canonical"]');
-    if (l) l.setAttribute("href", url);
+    if (!l){
+      l=document.createElement("link");
+      l.setAttribute("rel","canonical");
+      document.head.appendChild(l);
+    }
+    l.setAttribute("href", url);
   }
 
   /* Marques mises en avant sur l'accueil : bandeau large puis rangée de
@@ -604,7 +664,7 @@
       return '<div class="mband">' +
         '<a class="mband-top" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
           ' aria-label="Voir les ' + n + ' modèle' + (n > 1 ? 's' : '') + ' ' + esc(c.label) + '">' +
-          (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="1600" height="500" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' : '') +
+          (c.logo ? '<img class="brand-logo" src="' + esc(c.logo) + '" alt="Logo ' + esc(c.label) + '" loading="lazy" decoding="async" />' : '<span class="brand-wordmark">' + esc(c.label) + '</span>') +
           '<span class="mband-in">' +
             '<span>' +
               (c.tagline ? '<span class="mband-tag"' + (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' + esc(c.tagline) + '</span>' : '') +
@@ -664,8 +724,8 @@
       if (reste) reste.hidden = !colls.length;
       if (!colls.length){ grille.innerHTML = ""; return; }
       grille.innerHTML = colls.map(function(c){
-        return '<a href="collection.html?c=' + encodeURIComponent(c.key) + '" class="cat-card">' +
-          (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600" loading="lazy" decoding="async" onerror="this.style.opacity=0" />' : '') +
+        return '<a href="collection.html?c=' + encodeURIComponent(c.key) + '" class="cat-card brand-card">' +
+          (c.logo ? '<img class="brand-logo" src="' + esc(c.logo) + '" alt="Logo ' + esc(c.label) + '" loading="lazy" decoding="async" />' : '<span class="brand-wordmark">' + esc(c.label) + '</span>') +
           '<div class="cat-body">' +
             '<span class="cat-label">' + esc(c.label) + '</span>' +
             '<span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
@@ -696,9 +756,10 @@
     var c = curColl ? collById(curColl) : null;
     if (!c){ box.hidden = true; return; }
     box.hidden = false;
+    box.classList.toggle("has-brand-logo", !!c.logo);
     var img = $("#collImage");
     if (img){
-      if (c.cover){ img.src = c.cover; img.hidden = false; }
+      if (c.logo){ img.src = c.logo; img.alt = "Logo " + c.label; img.classList.add("brand-logo"); img.hidden = false; }
       else { img.removeAttribute("src"); img.hidden = true; }
     }
     var k = $("#collKicker");
@@ -731,9 +792,9 @@
     var tete = i > 0 ? nom.slice(0, i) : nom;
     var reste = i > 0 ? nom.slice(i + 1) : "";
     var nav = $("#logoNav");
-    if (nav) nav.innerHTML = esc(tete) + (reste ? '<span>' + esc(reste) + '</span>' : '');
+    if (nav) nav.innerHTML = store.settings.logo ? '<img src="'+esc(store.settings.logo)+'" alt="'+esc(nom)+'" class="store-logo" />' : esc(tete) + (reste ? '<span>' + esc(reste) + '</span>' : '');
     var pied = $("#logoPied");
-    if (pied) pied.innerHTML = esc(tete) + (reste ? '<span style="font-size:11px">' + esc(reste) + '</span>' : '');
+    if (pied) pied.innerHTML = store.settings.logo ? '<img src="'+esc(store.settings.logo)+'" alt="'+esc(nom)+'" class="store-logo store-logo-foot" />' : esc(tete) + (reste ? '<span style="font-size:11px">' + esc(reste) + '</span>' : '');
   }
 
   /* Contenu éditorial. Chaque bloc a son interrupteur : masquer vaut mieux
@@ -833,7 +894,7 @@
     var he = $("#heroExchange"); if (he) he.textContent = ex ? "Échange sous " + ex : "Échange possible";
     var hd = $("#heroDelay"); if (hd) hd.textContent = libelle;
     var wa = $("#waFloat");
-    if (wa) wa.href = waLink(s.whatsapp, "Bonjour " + (s.shopName || "AURA STUDIOS") + " 👋 J'ai une question sur un article.");
+    if (wa) wa.href = waLink(s.whatsapp, "Bonjour " + (s.shopName || "SNEAK BAMAKO") + " 👋 J'ai une question sur un article.");
     renderLogo();
     renderContenu();
     renderReviews();
@@ -863,7 +924,7 @@
       var prod = vid ? findProduct(vid) : null;
       /* Produit retiré du catalogue ou lien périmé : le catalogue vaut mieux
          qu'une page vide, et garde le client dans la boutique. */
-      if (!prod || !prod.active){ location.replace("catalogue.html"); return; }
+      if (!prod || !prod.active || prod.archived){ location.replace("catalogue.html"); return; }
       openPV(prod.id);
       return;
     }
@@ -888,6 +949,11 @@
   }
   function applySettings(){
     var s = store.settings;
+    var accents=["#000000","#0759ea","#c2410c","#15803d"];
+    document.documentElement.style.setProperty("--accent",accents.indexOf(s.accent)>=0?s.accent:"#000000");
+    if(s.shareImage){var og=document.querySelector('meta[property="og:image"]');if(og)og.setAttribute("content",s.shareImage);}
+    document.body.classList.toggle("product-visuals-ready", s.productVisualsReady === true);
+    document.body.classList.toggle("brand-covers-ready", s.brandCoversReady === true);
     /* Le nom de la boutique est modifiable et le titre le suit. Sur une page
        de marque, c'est la marque qui prime : le titre y est posé au
        démarrage, une fois la marque connue. */
@@ -902,6 +968,10 @@
     var pt = $("#piedTexte");
     if (pt) pt.textContent = (s.footerText || "").toString().trim() ||
       (s.shopName + " — vente en ligne à Bamako. Paiement à la livraison.");
+    var fc=$("#footerContact"),contact=[];
+    if(s.address)contact.push(String(s.address).trim());
+    if(s.hours)contact.push(String(s.hours).trim());
+    if(fc){fc.textContent=contact.join(" · ");fc.hidden=!contact.length;}
     var free = Number(s.freeFrom) || 0;
     var note = $("#cartDeliveryNote");
     if (note){
@@ -924,28 +994,50 @@
 
   /* ---------------- Hydratation Supabase (catalogue + réglages) ---------------- */
   function hydrate(){
+    if (document.documentElement.getAttribute("data-preview") === "true") return;
+    /* En local, montrer exactement le catalogue du dépôt en cours d'édition.
+       La production continue de lire Supabase, sa source de vérité. */
+    if (location.hostname === "127.0.0.1" || location.hostname === "localhost") return;
     if (typeof window.AURA_DB === "undefined" || !window.AURA_DB.ready()) return;
     window.AURA_DB.loadSettings(function(es, s){
       if (es || !s) return;
+      var defaults=SEED().settings;
+      store.settings={};
+      for(var dk in defaults)store.settings[dk]=defaults[dk];
       for (var k in s) store.settings[k] = s[k];
       saveStore(store);
       applySettings();
+      reconcileCart();
+      renderCount();
       renderCart();
     });
     window.AURA_DB.loadProducts(function(ep, rows){
-      if (ep || !rows || !rows.length) return;
+      if (ep || !rows) return;
       store.products = normalizeProducts(rows);
       saveStore(store);
+      reconcileCart();
+      renderCount();
       renderGrid();
       renderCart();
+      if(typePage()==="produit"){
+        var currentId="";
+        try{var foundId=location.search.match(/[?&]id=([^&]+)/);currentId=foundId?decodeURIComponent(foundId[1]):"";}catch(e){}
+        var fresh=currentId?findProduct(currentId):null;
+        if(!fresh||fresh.active===false||fresh.archived){location.replace("catalogue.html");return;}
+        openPV(fresh.id);
+      }
     });
   }
+
+  /* L'état de la fiche doit exister avant le premier applySettings() :
+     une page produit peut appeler openPV() pendant ce premier rendu. */
+  var pvProduct = null, pvSel = [], pvQty = 1, pvBuy = false, pvImgs = [], pvPhotoChoice = false;
+  var curFilter = "tous", curQuery = "", curColl = "";
 
   /* ---------------- Initialisation ---------------- */
   applySettings();
 
   /* ---------------- Grille produits ---------------- */
-  var curFilter = "tous", curQuery = "", curColl = "";
 
   /* ---------------- Collections ----------------
      Seconde taxonomie : la catégorie dit le type de produit et porte les
@@ -972,12 +1064,15 @@
      ligne. L'ancien prix perd sa devise : barré et suivi du prix courant en
      FCFA, il reste parfaitement lisible. */
   function priceHTML(p){
-    if (p.oldPrice > 0) return '<span class="old">' + fmtShort(p.oldPrice) + '</span><span class="sale">' + fmt(p.price) + '</span>';
+    if (p.oldPrice > p.price) return '<span class="old">' + fmtShort(p.oldPrice) + '</span><span class="sale">' + fmt(p.price) + '</span>';
     return fmt(p.price);
   }
   function badgeHTML(p){
     if (isOut(p)) return '<span class="badge">Rupture de stock</span>';
-    if (p.oldPrice > 0) return '<span class="badge badge-sale">-20 %</span>';
+    if (p.oldPrice > p.price){
+      var remise = Math.max(1, Math.round((p.oldPrice - p.price) * 100 / p.oldPrice));
+      return '<span class="badge badge-sale">-' + remise + ' %</span>';
+    }
     if (p.badge) return '<span class="badge">' + esc(p.badge) + '</span>';
     return "";
   }
@@ -1201,7 +1296,9 @@
                s: (x.s || "").toString().trim() || def.s };
     });
   }
+  function garantiesVisibles(){ return contenu().garantiesOn !== false; }
   function ficheGarantiesHTML(){
+    if(!garantiesVisibles())return "";
     return garantiesListe().map(function(x){
       return '<div class="trust-item"><b>' + esc(x.t) + '</b><span>' + esc(x.s) + '</span></div>';
     }).join("");
@@ -1211,6 +1308,8 @@
   function renderTrustBar(){
     var host = document.querySelector(".trust-grid");
     if (!host) return;
+    var section=host.closest(".trust");if(section)section.hidden=!garantiesVisibles();
+    if(!garantiesVisibles()){host.innerHTML="";return;}
     host.innerHTML = garantiesListe().slice(0, 3).map(function(x){
       return '<div class="trust-item"><b>' + esc(x.t) + '</b><span>' + esc(x.s) + '</span></div>';
     }).join("");
@@ -1272,9 +1371,9 @@
     }
 
     var sp = $("#ficheSpecs");
-    if (sp) sp.innerHTML = ficheGarantiesHTML();
+    if (sp){sp.innerHTML = ficheGarantiesHTML();sp.hidden=!garantiesVisibles();}
     var tr = $("#ficheTrust");
-    if (tr) tr.innerHTML = '<div class="wrap"><div class="trust-grid">' + ficheGarantiesHTML() + '</div></div>';
+    if (tr){tr.innerHTML = garantiesVisibles()?'<div class="wrap"><div class="trust-grid">' + ficheGarantiesHTML() + '</div></div>':"";tr.hidden=!garantiesVisibles();}
 
     var sugg = ficheSuggestions(p);
     var host = $("#ficheSugg");
@@ -1314,17 +1413,16 @@
   }
 
   /* ---------------- Fiche produit ---------------- */
-  var pvProduct = null, pvSel = [], pvQty = 1, pvBuy = false, pvImgs = [];
   function pvKey(){ return keyOf(pvSel); }
   function openPV(id){
     var p = findProduct(id); if (!p) return;
-    pvProduct = p; pvSel = valuesOf(firstAvailableKey(p)); pvQty = 1; pvBuy = false; pvImgs = [];
+    pvProduct = p; pvSel = valuesOf(firstAvailableKey(p)); pvQty = 1; pvBuy = false; pvImgs = []; pvPhotoChoice = false;
     var imgs = (p.imgs && p.imgs.length) ? p.imgs : (p.img ? [p.img] : []);
     pvImgs = imgs;
     var media = '<img class="pv-main" src="' + esc(imgs[0] || "") + '" onerror="this.style.opacity=0" alt="' + esc(p.name) + '" />';
     if (imgs.length > 1){
       media += '<div class="pv-thumbs" id="pvThumbs">' + imgs.map(function(src, i){
-        return '<button type="button" data-thumb="' + i + '"' + (i === 0 ? ' class="active"' : '') + '><img src="' + esc(src) + '" onerror="this.style.opacity=0" alt="" /></button>';
+        return '<button type="button" data-thumb="' + i + '" aria-label="Voir la photo ' + (i + 1) + ' sur ' + imgs.length + '"' + (i === 0 ? ' class="active"' : '') + '><img src="' + esc(src) + '" onerror="this.style.opacity=0" alt="" /></button>';
       }).join("") + '</div>';
     }
     $("#pvMedia").innerHTML = media;
@@ -1356,9 +1454,11 @@
      n'a pas de photo propre. */
   function photoDeSelection(){
     var p = pvProduct;
-    if (!p) return "";
+    if (!p || !pvPhotoChoice) return "";
     var axes = prodAxes(p);
     for (var i = axes.length - 1; i >= 0; i--){
+      var propre = p.valueImages && p.valueImages[axes[i].name + "::" + pvSel[i]];
+      if (propre) return propre;
       var meta = catAxisValue(p.cat, axes[i].name, pvSel[i]);
       if (meta && meta.img) return meta.img;
     }
@@ -1388,14 +1488,18 @@
         var dispo = valueHasStock(p, i, val);
         var choisi = pvSel[i] === val;
         var meta = catAxisValue(p.cat, ax.name, val) || {};
-        var pastille = meta.hex
+        var photo = p.valueImages && p.valueImages[ax.name + "::" + val];
+        var visuel = photo
+          ? '<img class="choice-photo" src="' + esc(photo) + '" alt="" loading="lazy" decoding="async" />'
+          : '';
+        var pastille = !photo && meta.hex
           ? '<span class="swatch" style="background:' + esc(meta.hex) + '"></span>'
           : '';
-        return '<button type="button" class="size-btn' + (pastille ? " has-swatch" : "") +
+        return '<button type="button" class="size-btn' + (photo ? " has-photo" : "") + (pastille ? " has-swatch" : "") +
                (choisi ? " selected" : "") + (dispo ? "" : " soldout") +
                '" data-axe="' + i + '" data-val="' + esc(val) + '"' +
-               (dispo ? "" : ' aria-label="' + esc(val) + ' — épuisé, être prévenu du retour"') +
-               '>' + pastille + esc(val) + '</button>';
+               ' title="' + esc(val) + '" aria-label="' + esc(val) + (dispo ? '"' : ' — épuisé, être prévenu du retour"') +
+               '>' + visuel + (photo ? '<span class="sr-only">' + esc(val) + '</span>' : pastille + esc(val)) + '</button>';
       }).join("");
       return '<div class="axe-bloc">' +
                '<span class="size-label">' + esc(ax.name) + '</span>' +
@@ -1791,7 +1895,7 @@
     /* Quand Supabase est configuré, la commande est créée par la fonction
        serveur : elle recalcule les montants, vérifie le stock et attribue
        la référence. Le navigateur ne décide plus de rien. */
-    if (typeof window.AURA_DB !== "undefined" && window.AURA_DB.ready()){
+    if (!LOCAL_DEMO && typeof window.AURA_DB !== "undefined" && window.AURA_DB.ready()){
       sending = true;
       btn.disabled = true;
       btn.textContent = "Envoi en cours…";
@@ -1911,7 +2015,11 @@
 
     var sz = t.closest("#pvAxes [data-val]");
     if (sz){
-      pvSel[parseInt(sz.getAttribute("data-axe"), 10)] = sz.getAttribute("data-val");
+      var axeChoisi = parseInt(sz.getAttribute("data-axe"), 10);
+      var valeurChoisie = sz.getAttribute("data-val");
+      pvSel[axeChoisi] = valeurChoisie;
+      var axeMeta = prodAxes(pvProduct)[axeChoisi];
+      if (axeMeta && pvProduct.valueImages && pvProduct.valueImages[axeMeta.name + "::" + valeurChoisie]) pvPhotoChoice = true;
       renderAxes();
       majPhotoPrincipale();
       updateStockLine();
@@ -2150,6 +2258,7 @@
 
   renderGrid();
   animerApparitions();
+  reconcileCart();
   renderCount();
   renderCart();
   hydrate();

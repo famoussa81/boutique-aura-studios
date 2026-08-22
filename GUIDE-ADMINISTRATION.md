@@ -45,8 +45,8 @@ Quelques points importants :
 - Mot de passe perdu : il faut le réinitialiser depuis le compte technique du
   site. Prévenez la personne qui vous a livré la boutique.
 
-Une fois connecté, vous voyez neuf onglets en haut. Ce guide les parcourt
-dans l'ordre où vous les utiliserez au quotidien.
+Une fois connecté, vous voyez cinq espaces : **Aujourd'hui, Commandes,
+Produits, Site et Plus**. Sur téléphone, ils restent en bas de l'écran.
 
 ---
 
@@ -56,8 +56,9 @@ dans l'ordre où vous les utiliserez au quotidien.
 
 C'est volontaire, et c'est ce qui protège votre boutique. Vous pouvez
 remplacer tous les textes, toutes les photos, tous les prix, ajouter et
-retirer autant de produits et de marques que vous voulez. Vous ne pouvez pas
-changer les couleurs, les polices ni la disposition — et c'est une bonne
+retirer autant de produits et de marques que vous voulez. Vous pouvez choisir
+la couleur des boutons parmi quatre teintes vérifiées. Vous ne pouvez pas
+changer les polices ni la disposition — et c'est une bonne
 nouvelle : c'est ce qui garantit que votre boutique restera aussi soignée
 dans six mois qu'aujourd'hui.
 
@@ -74,10 +75,10 @@ Trois protections travaillent pour vous en permanence :
   écrire dans un bloc, éteignez-le. Un bloc vide fait plus de mal qu'un bloc
   absent.
 
-**Enregistrement :** il n'y a pas de bouton « Enregistrer » général. Chaque
-modification est enregistrée dès que vous quittez le champ ou cochez la case.
-Un petit message de confirmation apparaît en bas de l'écran. Rafraîchissez la
-boutique dans un autre onglet pour voir le résultat.
+**Enregistrement :** les textes, photos, prix et réglages restent d'abord dans
+un **brouillon**. Appuyez sur **Voir le brouillon**, puis sur **Publier** quand
+tout est prêt. Les clients ne voient rien avant cette publication. Les
+commandes, le stock et le bouton **Masquer** restent immédiats.
 
 ---
 
@@ -88,15 +89,14 @@ question : **où en suis-je aujourd'hui ?**
 
 | Indicateur | Ce qu'il signifie |
 |---|---|
-| **Commandes en attente** | Les commandes que vous n'avez pas encore traitées. C'est votre liste de choses à faire. |
-| **Chiffre d'affaires estimé** | Le total des commandes confirmées, en cours de livraison et livrées. Les commandes en attente et annulées n'y sont pas comptées. |
-| **Montant en attente** | Ce que représentent les commandes pas encore confirmées. De l'argent potentiel, pas encore acquis. |
-| **Produits en rupture** | Les modèles dont plus aucune pointure n'est disponible. À réapprovisionner ou à masquer. |
+| **À confirmer** | Les commandes auxquelles vous devez répondre sur WhatsApp. |
+| **À livrer** | Les commandes confirmées ou déjà confiées au livreur. |
+| **Stock faible** | Les produits qu'il faut réapprovisionner. |
+| **Brouillon** | Les changements qui ne sont pas encore visibles par les clients. |
 
-Le mot **estimé** est important : ce chiffre reflète ce qui est enregistré
-dans la boutique, pas ce qui est réellement encaissé. Une commande marquée
-« Livrée & Payée » mais jamais payée en vrai gonflerait ce chiffre. Soyez
-honnête avec vous-même dans les statuts, sinon l'indicateur ne sert à rien.
+Plus bas, **Ventes encaissées** compte uniquement les commandes marquées
+« Livrée & Payée ». **Argent attendu** compte les commandes confirmées ou en
+livraison.
 
 ---
 
@@ -170,8 +170,8 @@ vous voyez dans l'administration, la commande enregistrée fait foi.
 
 Deux chemins mènent au même formulaire :
 
-- Onglet **Produits**, formulaire en bas de page.
-- Onglet **Catégories & marques**, bouton **Produits** d'une catégorie, puis
+- Espace **Produits**, bouton **Ajouter un produit**.
+- Espace **Site**, puis **Marques et catégories**, bouton **Produits** d'une catégorie, puis
   **Créer un produit dans « … »**. Le formulaire s'ouvre déjà rangé dans la
   bonne catégorie — c'est le chemin le plus court quand vous savez d'avance
   où va le produit.
@@ -180,6 +180,11 @@ Le même panneau liste les produits déjà dans la catégorie, et permet d'y
 **déplacer un produit existant**.
 
 ### Ajouter un produit
+
+L'assistant pose une seule question principale à la fois : **Produit**,
+**Prix**, **Choix**, puis **Quantités**. Utilisez **Retour** ou **Continuer**.
+Si vous le fermez par erreur, le brouillon du nouveau produit reste sur ce
+téléphone.
 
 1. **Nom du modèle** — court et reconnaissable : « Claquette Monogramme »,
    « Mule Cuir ». N'y mettez pas la marque, elle se choisit juste en dessous
@@ -222,10 +227,10 @@ Chaque produit a un interrupteur **Actif / Masqué**.
 - **Masqué** : le produit disparaît de la boutique mais reste dans votre
   administration, avec son stock et ses photos. Réactivez-le en un clic quand
   il revient.
-- **Supprimé** : tout est perdu, il faut tout ressaisir.
+- **Archivé** : le produit disparaît mais reste récupérable.
 
-**Pour une rupture temporaire, masquez.** Ne supprimez que ce que vous ne
-vendrez plus jamais.
+**Pour une rupture temporaire, masquez.** Archivez seulement ce que vous ne
+vendez plus.
 
 ---
 
@@ -240,7 +245,7 @@ Deux classements coexistent, et ils ne servent pas à la même chose.
 | Porte | Les pointures et les coloris | L'identité visuelle |
 | Où ça s'affiche | Les onglets de filtre du catalogue | Les bandeaux et les pages de marque |
 
-Tout se passe dans l'onglet **Catégories & marques**.
+Tout se passe dans **Site → Marques et catégories**.
 
 ### Les catégories
 

@@ -65,6 +65,13 @@
     for (var k in s) if (!blocked[k]) out[k] = s[k];
     return out;
   }
+  function publicDraft(d){
+    d = d || {};
+    return {
+      settings: publicSettings(d.settings || {}),
+      products: Array.isArray(d.products) ? d.products : []
+    };
+  }
 
   window.AURA_DB = {
     ready: can,
@@ -165,22 +172,61 @@
         .then(function(u){ cb(null, u); })
         .catch(function(e){ window.AURA_DB.signOut(); cb(e); });
     },
-    saveProducts: function(products, cb){
-      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"));
-      var rows = (products || []).map(function(p){ return { id: p.id, data: p }; });
-      if (!rows.length) return cb(null);
-      req("/rest/v1/products", { method: "POST", token: session.token, prefer: "resolution=merge-duplicates", body: rows })
-        .then(function(){ cb(null); }).catch(function(e){ cb(e); });
+    loadDraft: function(cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"), null);
+      req("/rest/v1/admin_drafts?select=*&order=updated_at.desc&limit=1", { token: session.token })
+        .then(function(rows){ cb(null, rows && rows[0] || null); })
+        .catch(function(e){ cb(e, null); });
     },
-    deleteProduct: function(id, cb){
-      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"));
-      req("/rest/v1/products?id=eq." + encodeURIComponent(id), { method: "DELETE", token: session.token })
-        .then(function(){ cb(null); }).catch(function(e){ cb(e); });
+    saveDraft: function(draft, cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"), null);
+      req("/rest/v1/rpc/save_admin_draft", {
+        method: "POST", token: session.token,
+        body: {
+          draft_id: draft.id || "00000000-0000-0000-0000-000000000001",
+          expected_version: Number(draft.version) || 0,
+          payload: publicDraft(draft.data),
+          mark_dirty: draft.dirty !== false
+        }
+      }).then(function(row){ cb(null, row); }).catch(function(e){ cb(e, null); });
     },
-    saveSettings: function(settings, cb){
-      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"));
-      req("/rest/v1/settings?on_conflict=id", { method: "POST", token: session.token, prefer: "resolution=merge-duplicates", body: { id: 1, data: publicSettings(settings) } })
-        .then(function(){ cb(null); }).catch(function(e){ cb(e); });
+    publishDraft: function(id, version, cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"), null);
+      req("/rest/v1/rpc/publish_store", {
+        method: "POST", token: session.token,
+        body: { draft_id: id, expected_version: Number(version) || 1 }
+      }).then(function(result){ cb(null, result); }).catch(function(e){ cb(e, null); });
+    },
+    loadRevisions: function(cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"), null);
+      req("/rest/v1/store_revisions?select=id,version,created_at,created_by&order=created_at.desc&limit=10", { token: session.token })
+        .then(function(rows){ cb(null, rows || []); }).catch(function(e){ cb(e, null); });
+    },
+    restoreRevisionAsDraft: function(id, version, cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"), null);
+      req("/rest/v1/rpc/restore_revision_as_draft", {
+        method: "POST", token: session.token, body: { revision_id: id, expected_version: Number(version) || 0 }
+      }).then(function(result){ cb(null, result); }).catch(function(e){ cb(e, null); });
+    },
+    setInventory: function(id, variants, cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"), null);
+      req("/rest/v1/rpc/set_inventory", {
+        method: "POST", token: session.token,
+        body: { product_id: id, new_variants: variants || {} }
+      }).then(function(result){ cb(null, result); }).catch(function(e){ cb(e, null); });
+    },
+    setProductVisibility: function(id, visible, cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"), null);
+      req("/rest/v1/rpc/set_product_visibility", {
+        method: "POST", token: session.token,
+        body: { product_id: id, visible: !!visible }
+      }).then(function(result){ cb(null, result); }).catch(function(e){ cb(e, null); });
+    },
+    archiveProduct: function(id, cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"), null);
+      req("/rest/v1/rpc/archive_product", {
+        method: "POST", token: session.token, body: { product_id: id }
+      }).then(function(result){ cb(null, result); }).catch(function(e){ cb(e, null); });
     },
     loadOrders: function(cb){
       if (!session) return cb(new Error("non connecté"), null);
@@ -202,16 +248,18 @@
     },
     deleteOrder: function(ref, cb){
       cb = cb || function(){}; if (!session) return cb(new Error("non connecté"));
-      req("/rest/v1/orders?ref=eq." + encodeURIComponent(ref), { method: "DELETE", token: session.token })
-        .then(function(){ cb(null); }).catch(function(e){ cb(e); });
+      req("/rest/v1/rpc/admin_delete_order", {
+        method: "POST", token: session.token, body: { order_ref: ref }
+      }).then(function(result){ cb(null, result); }).catch(function(e){ cb(e); });
     },
 
     /* Mise à jour d'une seule commande (changement de statut) : on n'envoie
        que la ligne concernée, jamais tout l'historique. */
     updateOrder: function(order, cb){
       cb = cb || function(){}; if (!session) return cb(new Error("non connecté"));
-      req("/rest/v1/orders?ref=eq." + encodeURIComponent(order.ref), { method: "PATCH", token: session.token, body: { data: order } })
-        .then(function(){ cb(null); }).catch(function(e){ cb(e); });
+      req("/rest/v1/rpc/admin_save_order", {
+        method: "POST", token: session.token, body: { payload: order }
+      }).then(function(result){ cb(null, result); }).catch(function(e){ cb(e); });
     }
   };
 })();

@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex,nofollow" />
-<title>AURA STUDIOS — Administration</title>
+<title>SNEAK BAMAKO — Administration</title>
 <link rel="preconnect" href="https://vgzvavlmmqbxtuhanaqj.supabase.co" crossorigin />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -213,12 +213,13 @@
   .ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
     padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 </style>
+<link rel="stylesheet" href="admin-dashboard.css?v=20260821c" />
 </head>
 <body>
 
   <div class="gate" id="gate">
     <div class="gate-card">
-      <div class="logo">AURA<small>ADMINISTRATION</small></div>
+      <div class="logo">SNEAK<small>ADMINISTRATION</small></div>
       <p>Espace réservé au propriétaire de la boutique.</p>
       <form id="loginForm" novalidate>
         <div class="field" style="text-align:left">
@@ -241,39 +242,62 @@
     </div>
   </div>
 
+  <div class="mobile-admin-head" aria-hidden="true">
+    <strong id="brandAdminMobile">SNEAK BAMAKO</strong>
+    <span class="publish-dot"><i></i><span id="mobilePublishState">Publiée</span></span>
+  </div>
+
   <header class="top">
     <div class="top-inner">
-      <div class="brand" id="brandAdmin">AURA STUDIOS<small>PANEL ADMINISTRATION</small></div>
-      <nav class="nav-admin">
-        <button class="tab active" data-view="dashboard">Tableau de bord</button>
-        <button class="tab" data-view="orders">Commandes</button>
-        <button class="tab" data-view="products">Produits</button>
-        <button class="tab" data-view="catalogue">Catégories &amp; marques</button>
-        <button class="tab" data-view="settings">Réglages</button>
-        <button class="tab" data-view="contenu">Contenu du site</button>
-        <button class="tab" data-view="news">Newsletter</button>
-        <button class="tab" data-view="wait">Liste d'attente</button>
-        <button class="tab" data-view="reviews">Avis</button>
+      <div class="brand" id="brandAdmin">SNEAK BAMAKO<small>PANEL ADMINISTRATION</small></div>
+      <nav class="nav-admin" aria-label="Administration">
+        <button class="tab active" data-view="dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V21h-6v-6H9v6H3Z"/></svg><span>Aujourd'hui</span></button>
+        <button class="tab" data-view="orders"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7V5a6 6 0 0 1 12 0v2h3v14H3V7Zm3 0h6V5a3 3 0 0 0-6 0Z"/></svg><span>Commandes</span></button>
+        <button class="tab" data-view="products"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 8 9-5 9 5v9l-9 5-9-5Zm9-1.55L6.25 9.64 12 12.8l5.75-3.16ZM6 12.2v3.05l4.5 2.5V14.7Zm7.5 5.55 4.5-2.5V12.2l-4.5 2.5Z"/></svg><span>Produits</span></button>
+        <button class="tab" data-view="site"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h16v18H4Zm3 3v3h10V6Zm0 6v6h5v-6Zm8 0v2h2v-2Zm0 4v2h2v-2Z"/></svg><span>Site</span></button>
+        <button class="tab" data-view="more"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/></svg><span>Plus</span></button>
       </nav>
       <div class="top-actions">
-        <a class="icon-link" href="index.html">Voir la boutique</a>
+        <div class="sidebar-publish"><span class="publish-dot"><i></i><span id="sidebarPublishState">Boutique publiée</span></span><small id="lastPublishedAt">En ligne</small></div>
+        <a class="icon-link" href="index.html">Voir ma boutique</a>
         <button class="icon-link" id="logoutBtn">Déconnexion</button>
       </div>
     </div>
   </header>
 
+  <div class="connection-banner" id="connectionBanner" role="status" hidden>
+    <span id="connectionBannerText">Internet coupé — votre brouillon reste sur cet appareil. Publication et stock sont bloqués.</span>
+    <span class="conflict-actions" id="draftConflictActions" hidden>
+      <button type="button" id="keepLocalDraft">Garder ce téléphone</button>
+      <button type="button" id="loadRemoteDraft">Charger l’autre version</button>
+    </span>
+  </div>
+
   <main class="main">
 
     <section class="view active" id="view-dashboard">
       <div class="view-head">
-        <div><h1>Tableau de bord</h1><p id="dashDate"></p></div>
-        <a class="btn btn-primary" href="index.html">Aperçu de la boutique</a>
+        <div><h1>Bonjour, voici ce qu'il faut faire</h1><p id="dashDate"></p></div>
+        <a class="btn btn-primary" href="index.html">Voir ma boutique</a>
       </div>
-      <div class="grid4" id="stats"></div>
-      <div class="card">
-        <h2>Activité des 7 derniers jours (FCFA)</h2>
-        <div class="chart" id="chart"></div>
+      <div class="today-layout">
+        <div class="today-main">
+          <h2 class="section-title">À faire aujourd'hui</h2>
+          <div class="today-actions" id="todayActions"></div>
+          <h2 class="section-title quick-title">Vue rapide</h2>
+          <div class="quick-stats" id="stats"></div>
+        </div>
+        <aside class="today-side">
+          <section class="publish-panel">
+            <h2>Ma boutique</h2>
+            <div class="publish-state"><i></i><div><strong id="draftStateTitle">Boutique publiée</strong><span id="draftStateText">Aucun changement en attente</span></div></div>
+            <button type="button" class="btn btn-primary btn-full" id="publishStoreBtn">Publier</button>
+            <button type="button" class="btn btn-ghost btn-full" id="previewDraftBtn">Voir le brouillon</button>
+          </section>
+          <section class="help-panel"><h2>Besoin d'aide ?</h2><button type="button" data-view="help">Ouvrir le guide simple</button></section>
+        </aside>
       </div>
+      <div id="chart" hidden></div>
     </section>
 
     <section class="view" id="view-orders">
@@ -290,10 +314,10 @@
           <label for="ordStatus">Statut</label>
           <select id="ordStatus">
             <option value="">Tous les statuts</option>
-            <option value="PENDING">🟡 En attente</option>
-            <option value="CONFIRMED">🟢 Confirmée</option>
-            <option value="SHIPPING">🔵 En cours de livraison</option>
-            <option value="DELIVERED">⚪ Livrée &amp; Payée</option>
+            <option value="PENDING">À confirmer</option>
+            <option value="CONFIRMED">À livrer</option>
+            <option value="SHIPPING">En livraison</option>
+            <option value="DELIVERED">Terminées</option>
             <option value="CANCELLED">🔴 Annulée</option>
           </select>
         </div>
@@ -306,36 +330,43 @@
               <th>Référence</th><th>Date</th><th>Client</th><th>Numéro</th><th>Quartier</th><th>Total</th><th>Statut</th><th>Contact</th><th>Gérer</th>
             </tr>
           </thead>
-          <tbody id="ordersBody"></tbody>
+        <tbody id="ordersBody"></tbody>
         </table>
       </div>
+      <div class="order-cards" id="ordersCards"></div>
     </section>
 
     <section class="view" id="view-products">
       <div class="view-head">
-        <div><h1>Catalogue produits</h1><p>Ajoutez, modifiez, masquez ou supprimez vos produits. Les changements sont visibles immédiatement en boutique.</p></div>
+        <div><h1>Produits</h1><p>Le contenu reste en brouillon. Le stock et le masquage d'urgence sont immédiats.</p></div>
+        <button type="button" class="btn btn-primary" id="openProductWizard">Ajouter un produit</button>
+      </div>
+      <div class="product-tools card">
+        <div class="field"><label for="productSearch">Rechercher un produit</label><input type="search" id="productSearch" placeholder="Nom, marque ou catégorie" /></div>
+        <div class="field"><label for="productFilter">Afficher</label><select id="productFilter"><option value="">Tous les produits</option><option value="active">Visibles</option><option value="hidden">Masqués</option><option value="out">En rupture</option><option value="low">Stock faible</option><option value="archived">Archivés</option></select></div>
       </div>
       <div class="prod-grid">
         <div class="card" id="productCardList">
           <h2>Produits en boutique</h2>
           <div id="prodList"></div>
         </div>
-        <div class="card">
+        <div class="card product-editor" id="productEditor" role="dialog" aria-modal="true" aria-labelledby="formTitle" aria-hidden="true" tabindex="-1">
+          <button type="button" class="editor-close" id="closeProductWizard" aria-label="Fermer">×</button>
           <h2 id="formTitle">Ajouter un produit</h2>
+          <div class="wizard-progress" id="wizardProgress" aria-label="Progression"><button type="button" data-step="1"><b>1</b><span>Produit</span></button><button type="button" data-step="2"><b>2</b><span>Prix</span></button><button type="button" data-step="3"><b>3</b><span>Choix</span></button><button type="button" data-step="4"><b>4</b><span>Quantités</span></button></div>
+          <p class="wizard-counter" id="wizardCounter">Étape 1 sur 4</p>
           <form id="prodForm" novalidate>
             <input type="hidden" id="fId" />
             <div class="grid2">
               <div class="field">
                 <label for="fName">Nom du produit</label>
-                <input type="text" id="fName" placeholder="Hoodie Aura Tech" />
+                <input type="text" id="fName" placeholder="Claquette modèle" />
               </div>
               <div class="field">
                 <label for="fCat">Catégorie</label>
                 <select id="fCat">
-                  <option value="hoodies">Hoodies</option>
-                  <option value="tees">T-shirts</option>
-                  <option value="pants">Cargos</option>
-                  <option value="accessoires">Accessoires</option>
+                  <option value="claquettes">Claquettes</option>
+                  <option value="mules">Mules &amp; sabots</option>
                 </select>
               </div>
             <div class="field">
@@ -360,7 +391,6 @@
                 <option value="">Aucun</option>
                 <option value="Nouveau">Nouveau</option>
                 <option value="Top vente">Top vente</option>
-                <option value="-20 %">-20 %</option>
               </select>
             </div>
             <div class="field" id="fAxesField">
@@ -401,16 +431,54 @@
               <textarea id="fDesc" placeholder="Décrivez la pièce, ses matières, sa coupe…"></textarea>
             </div>
             <div class="grid2">
-              <div class="toggle"><input type="checkbox" id="fActive" checked /><span>Visible en boutique</span></div>
-              <div class="toggle"><input type="checkbox" id="fOut" /><span>Marquer en rupture de stock</span></div>
+              <label class="toggle"><input type="checkbox" id="fActive" checked /><span>Visible en boutique</span></label>
+              <label class="toggle"><input type="checkbox" id="fOut" /><span>Marquer en rupture de stock</span></label>
             </div>
             <div style="display:flex;gap:10px;margin-top:18px">
               <button type="submit" class="btn btn-primary" style="flex:1">Enregistrer le produit</button>
               <button type="button" class="btn btn-ghost" id="prodReset">Annuler</button>
             </div>
           </form>
+          <div class="wizard-nav"><button type="button" class="btn btn-ghost" id="wizardBack">Retour</button><button type="button" class="btn btn-primary" id="wizardNext">Continuer</button></div>
         </div>
       </div>
+    </section>
+
+    <section class="view" id="view-site">
+      <div class="view-head"><div><h1>Modifier le site</h1><p>Choisissez la partie que vous voulez changer.</p></div><button type="button" class="btn btn-primary" id="sitePublishBtn">Publier</button></div>
+      <div class="hub-grid">
+        <button class="hub-item" data-view="settings"><b>Identité et livraison</b><span>Nom, logo, WhatsApp, adresse, délais et réseaux sociaux.</span></button>
+        <button class="hub-item" data-view="contenu"><b>Page d'accueil</b><span>Textes, photos, garanties et boutons de la boutique.</span></button>
+        <button class="hub-item" data-view="catalogue"><b>Marques et catégories</b><span>Rangez vos produits et choisissez les marques mises en avant.</span></button>
+        <button class="hub-item" data-view="legal"><b>Informations légales</b><span>Société, adresse, RCCM, NIF, e-mail et guide des tailles.</span></button>
+      </div>
+      <section class="publish-history card"><h2>Publications récentes</h2><div id="revisionList"><p class="hint">L'historique apparaîtra après votre première publication.</p></div></section>
+    </section>
+
+    <section class="view" id="view-more">
+      <div class="view-head"><div><h1>Plus</h1><p>Clients, exports, sécurité et aide.</p></div></div>
+      <div class="hub-grid">
+        <button class="hub-item" data-view="wait"><b>Clients à prévenir</b><span>Personnes qui attendent le retour d'une pointure.</span></button>
+        <button class="hub-item" data-view="news"><b>Adresses e-mail</b><span>Clients inscrits pour recevoir les nouveautés.</span></button>
+        <button class="hub-item" data-view="reviews"><b>Avis clients</b><span>Publiez uniquement les vrais messages reçus.</span></button>
+        <button class="hub-item" data-view="help"><b>Guide simple</b><span>Les gestes importants expliqués pas à pas.</span></button>
+      </div>
+    </section>
+
+    <section class="view" id="view-legal">
+      <div class="view-head"><div><h1>Informations légales</h1><p>Ces informations apparaissent dans les pages obligatoires de la boutique.</p></div><button class="btn btn-ghost" type="button" data-view="site">Retour au site</button></div>
+      <form class="card simple-form" id="legalForm">
+        <div class="grid2"><div class="field"><label for="legalForme">Forme juridique</label><input id="legalForme" placeholder="Exemple : SARL" /></div><div class="field"><label for="legalEmail">E-mail</label><input id="legalEmail" type="email" /></div></div>
+        <div class="field"><label for="legalAdresse">Adresse du siège</label><input id="legalAdresse" /></div>
+        <div class="grid2"><div class="field"><label for="legalRccm">Numéro RCCM</label><input id="legalRccm" /></div><div class="field"><label for="legalNif">Numéro NIF</label><input id="legalNif" /></div></div>
+        <div class="field"><label for="legalSizes">Conseil pour les pointures</label><textarea id="legalSizes" maxlength="500" placeholder="Expliquez simplement comment choisir sa pointure."></textarea></div>
+        <button class="btn btn-primary" type="submit">Enregistrer le brouillon</button>
+      </form>
+    </section>
+
+    <section class="view" id="view-help">
+      <div class="view-head"><div><h1>Guide simple</h1><p>Les six gestes à connaître pour gérer la boutique.</p></div><button class="btn btn-ghost" type="button" data-view="more">Retour</button></div>
+      <ol class="training-list"><li><b>Répondre à une commande</b><span>Ouvrez Commandes puis appuyez sur Traiter.</span></li><li><b>Changer un stock</b><span>Ouvrez Produits, choisissez le modèle puis les quantités.</span></li><li><b>Ajouter une paire</b><span>Suivez les quatre étapes. Une seule question à la fois.</span></li><li><b>Modifier la boutique</b><span>Changez les textes ou les photos dans Site.</span></li><li><b>Vérifier avant</b><span>Appuyez sur Voir le brouillon.</span></li><li><b>Mettre en ligne</b><span>Appuyez sur Publier seulement quand tout est prêt.</span></li></ol>
     </section>
 
     <section class="view" id="view-news">
@@ -464,7 +532,7 @@
             <div class="grid2">
               <div class="field">
                 <label for="rProduct">Produit concerné (facultatif)</label>
-                <input type="text" id="rProduct" placeholder="Hoodie Urban Flow" />
+                <input type="text" id="rProduct" placeholder="Claquette Bande LV" />
               </div>
               <div class="field">
                 <label for="rRating">Note</label>
@@ -483,7 +551,8 @@
               <textarea id="rText" placeholder="Reprenez les mots exacts du client."></textarea>
               <p class="hint">N'inventez jamais un témoignage : un faux avis se repère et détruit la confiance. Demandez l'accord du client avant publication.</p>
             </div>
-            <button type="submit" class="btn btn-primary btn-full">Publier l'avis</button>
+            <label class="chk" style="margin-bottom:14px"><input type="checkbox" id="rConsent" /> Le client a accepté que son message soit affiché.</label>
+            <button type="submit" class="btn btn-primary btn-full">Ajouter au brouillon</button>
           </form>
         </div>
       </div>
@@ -506,6 +575,7 @@
         <div id="catList"></div>
         <div class="or">Ajouter</div>
         <form id="catForm" novalidate>
+          <label for="catLabel">Nom de la nouvelle catégorie</label>
           <div class="cat-row">
             <input type="text" id="catLabel" placeholder="Nom de la catégorie (ex. Sacs)" />
             <button type="submit" class="btn btn-primary">Ajouter</button>
@@ -519,6 +589,7 @@
         <div id="collList"></div>
         <div class="or">Ajouter</div>
         <form id="collForm" novalidate>
+          <label for="collLabel">Nom de la nouvelle marque</label>
           <div class="cat-row">
             <input type="text" id="collLabel" placeholder="Nom de la marque (ex. Louis Vuitton)" />
             <button type="submit" class="btn btn-primary">Ajouter</button>
@@ -529,7 +600,7 @@
 
     <section class="view" id="view-settings">
       <div class="view-head">
-        <div><h1>Réglages de la boutique</h1><p>Modifiez ces réglages sans toucher au code — ils s'appliquent instantanément à la boutique.</p></div>
+        <div><h1>Identité et livraison</h1><p>Vos changements restent en brouillon jusqu'à ce que vous les publiiez.</p></div>
       </div>
       <div class="card" style="max-width:640px">
         <form id="settingsForm" novalidate>
@@ -542,6 +613,13 @@
             <label for="sName">Nom de la boutique</label>
             <input type="text" id="sName" />
           </div>
+          <div class="field">
+            <label for="sLogo">Logo de la boutique</label>
+            <input type="url" id="sLogo" placeholder="Adresse du logo" />
+            <label class="filebtn" style="margin-top:8px"><b>Choisir un logo</b><span>PNG ou WebP, fond transparent conseillé</span><input type="file" id="sLogoFile" accept="image/*" /></label>
+          </div>
+          <div class="field"><label for="sAccent">Couleur des boutons</label><select id="sAccent"><option value="#000000">Noir</option><option value="#0759ea">Bleu</option><option value="#c2410c">Orange</option><option value="#15803d">Vert</option></select><p class="hint">Quatre couleurs vérifiées. La disposition et les polices restent protégées.</p></div>
+          <div class="grid2"><div class="field"><label for="sAddress">Adresse</label><input id="sAddress" placeholder="Quartier, Bamako" maxlength="120" /></div><div class="field"><label for="sHours">Horaires</label><input id="sHours" placeholder="Lun–Sam, 9h–19h" maxlength="80" /></div></div>
           <div class="field">
             <label for="sFee">Frais de livraison à Bamako (FCFA)</label>
             <input type="number" id="sFee" min="0" step="100" />
@@ -584,8 +662,9 @@
             <label for="sYT">Lien YouTube</label>
             <input type="url" id="sYT" placeholder="https://youtube.com/@votre-chaine" />
           </div>
+          <div class="field"><label for="sShareImage">Image utilisée quand le site est partagé</label><input type="url" id="sShareImage" placeholder="Adresse de l'image" /><label class="filebtn" style="margin-top:8px"><b>Choisir une image</b><span>Format horizontal</span><input type="file" id="sShareFile" accept="image/*" /></label></div>
           <p class="hint" style="margin-bottom:14px">Le mot de passe d'administration se change dans Supabase → Authentication → Users. Il n'est jamais stocké dans ce site.</p>
-          <button type="submit" class="btn btn-primary btn-full">Enregistrer les réglages</button>
+          <button type="submit" class="btn btn-primary btn-full">Enregistrer dans le brouillon</button>
         </form>
       </div>
 
@@ -593,14 +672,25 @@
 
   </main>
 
+  <div class="draft-bar" id="draftBar" hidden><span id="draftBarText">Brouillon enregistré</span><button type="button" class="btn btn-ghost" id="draftPreviewBottom">Voir avant</button><button type="button" class="btn btn-primary" id="draftPublishBottom">Publier</button></div>
+
   <div class="toast" id="toast"></div>
 
 <script src="supabase.config.js"></script>
-<script src="supabase-client.js"></script>
-<script src="catalog.js"></script>
+<script src="supabase-client.js?v=20260821c"></script>
+<script src="catalog.js?v=20260821c"></script>
 <script>
 (function(){
-  var KEY = "aura_store_v3";
+  var KEY = "aura_store_v9";
+  var DRAFT_KEY = KEY + "_admin_draft";
+  var DRAFT_META_KEY = KEY + "_admin_draft_meta";
+  var DRAFT_ID = "00000000-0000-0000-0000-000000000001";
+  var draftMeta = { id:DRAFT_ID, version:0, dirty:false, conflict:false, savedAt:null, publishedAt:null };
+  var draftTimer = null, draftSaving = false, draftQueued = false;
+  var remoteConflictDraft = null;
+
+  function clone(v){ return JSON.parse(JSON.stringify(v)); }
+  function draftPayload(){ return { settings:clone(store.settings || {}), products:clone(store.products || []) }; }
 
   /* Catalogue et réglages : définition unique partagée avec la boutique
      (catalog.js). Aucune commande de démonstration n'est injectée. */
@@ -611,11 +701,19 @@
       var raw = localStorage.getItem(KEY);
       if (raw){
         var s = JSON.parse(raw);
-        if (s && s.products && s.settings){ s.products = normalizeProducts(s.products); return s; }
+        if (s && s.products && s.settings){
+          try {
+            var dm = JSON.parse(localStorage.getItem(DRAFT_META_KEY) || "null");
+            if (dm) for (var mk in dm) draftMeta[mk] = dm[mk];
+            var dr = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+            if (dr && dr.products && dr.settings){ s.settings = dr.settings; s.products = dr.products; }
+          } catch(ignore){}
+          s.products = normalizeProducts(s.products); return s;
+        }
       }
     } catch(e){}
     var s = SEED();
-    saveStoreWith(s);
+    saveStoreWith(s, KEY);
     return s;
   }
   /* Sauvegarde locale + synchronisation ciblée : on n'envoie que ce qui
@@ -628,61 +726,299 @@
      boutique. Le remède tient ici, à la source, plutôt qu'en ajoutant un
      appel dans chacun des vingt endroits qui modifient les réglages —
      dont le prochain aurait été oublié à son tour. */
-  function saveStore(){ saveStoreWith(store); syncSettings(); }
-  function saveStoreWith(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
+  function saveStore(){
+    saveStoreWith(draftPayload(), DRAFT_KEY);
+    draftMeta.dirty = true;
+    draftMeta.savedAt = new Date().toISOString();
+    saveDraftMeta();
+    updateDraftUI();
+    scheduleDraftSave();
+  }
+  function saveStoreWith(s, key){ try { localStorage.setItem(key || KEY, JSON.stringify(s)); } catch(e){} }
+  function saveDraftMeta(){ try { localStorage.setItem(DRAFT_META_KEY, JSON.stringify(draftMeta)); } catch(e){} }
+  function saveOperationalState(){
+    try {
+      var published=JSON.parse(localStorage.getItem(KEY)||"null")||SEED();
+      var liveById={};
+      (store.products||[]).forEach(function(p){liveById[p.id]=p;});
+      published.products=(published.products||[]).map(function(p){
+        var live=liveById[p.id]; if(!live)return p;
+        p.variants=clone(live.variants||{});
+        if(live.sizes)p.sizes=clone(live.sizes);
+        p.active=live.active; p.archived=!!live.archived;
+        return p;
+      });
+      published.orders=clone(store.orders||[]);
+      saveStoreWith(published,KEY); saveStoreWith(draftPayload(),DRAFT_KEY);
+    } catch(e){}
+  }
 
   var store = readStore();
 
   /* ---------------- Supabase (admin) ---------------- */
   var dbSession = false;
-  function dbAvailable(){ return typeof window.AURA_DB !== "undefined" && window.AURA_DB.ready(); }
+  var LOCAL_DEMO=(location.hostname==="127.0.0.1"||location.hostname==="localhost")&&/[?&]demo=1(?:&|$)/.test(location.search);
+  function dbAvailable(){ return !LOCAL_DEMO && typeof window.AURA_DB !== "undefined" && window.AURA_DB.ready(); }
   function online(){ return dbAvailable() && dbSession; }
 
+  function scheduleDraftSave(){
+    if (!online()) return;
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(function(){ persistDraft(); }, 700);
+  }
+  function localImageRefs(root){
+    var refs=[];
+    function walk(value,parent,key){
+      if(typeof value==="string"){
+        if(/^data:image\/[a-z0-9.+-]+;base64,/i.test(value))refs.push({parent:parent,key:key,url:value});
+        return;
+      }
+      if(!value||typeof value!=="object")return;
+      Object.keys(value).forEach(function(k){walk(value[k],value,k);});
+    }
+    walk(root,null,null);
+    return refs;
+  }
+  function dataImageBlob(url){
+    try{
+      var split=url.indexOf(","),head=url.slice(0,split),raw=atob(url.slice(split+1));
+      var match=/^data:([^;]+)/i.exec(head),bytes=new Uint8Array(raw.length);
+      for(var i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+      return new Blob([bytes],{type:match?match[1]:"image/webp"});
+    }catch(e){return null;}
+  }
+  /* Une photo prise hors connexion vit temporairement en base64 dans le
+     brouillon local. Dès que Supabase revient, elle doit rejoindre Storage
+     avant le JSON du brouillon : aucune image lourde ou privée n'est publiée
+     directement dans la table `products` ou `settings`. */
+  function uploadLocalDraftImages(cb){
+    var refs=localImageRefs({settings:store.settings,products:store.products});
+    if(!refs.length)return cb();
+    var index=0;
+    function next(){
+      if(index>=refs.length)return cb();
+      var ref=refs[index++],blob=dataImageBlob(ref.url);
+      if(!blob)return cb(new Error("Une photo locale est invalide"));
+      window.AURA_DB.uploadImage(blob,function(er,url){
+        if(er||!url)return cb(er||new Error("La photo locale n'a pas pu être envoyée"));
+        ref.parent[ref.key]=url;
+        saveStoreWith(draftPayload(),DRAFT_KEY);
+        next();
+      });
+    }
+    next();
+  }
+  function persistDraft(cb){
+    cb = cb || function(){};
+    if (!online()) return cb(new Error("Internet coupé"));
+    if (draftMeta.conflict) return cb(new Error("Choisissez d’abord quelle version du brouillon conserver"));
+    if (draftSaving){ draftQueued = true; return setTimeout(function(){persistDraft(cb);},250); }
+    draftSaving = true;
+    uploadLocalDraftImages(function(imageError){
+      if(imageError){
+        draftSaving=false;
+        updateDraftUI("offline");
+        toast("Une photo attend encore la connexion. Réessayez quand Internet revient.");
+        cb(imageError,null);
+        return;
+      }
+      window.AURA_DB.saveDraft({ id:draftMeta.id, version:draftMeta.version, dirty:draftMeta.dirty, data:draftPayload() }, function(er, row){
+      draftSaving = false;
+      if (!er && row){
+        draftMeta.version = Number(row.version) || draftMeta.version;
+        draftMeta.savedAt = row.updated_at || new Date().toISOString();
+        saveDraftMeta(); updateDraftUI();
+      } else if (er){
+        var isConflict=er.status === 409 || /autre appareil|modifi/i.test(er.message || "");
+        if(isConflict){draftMeta.conflict=true;saveDraftMeta();updateDraftUI("conflict");dbLoadAll();}
+        else updateDraftUI("offline");
+      }
+      if (draftQueued){ draftQueued = false; scheduleDraftSave(); }
+      cb(er, row);
+      });
+    });
+  }
+
+  function mergeDraftProducts(draftProducts, liveProducts){
+    var liveById={};
+    (liveProducts||[]).forEach(function(p){liveById[p.id]=p;});
+    return normalizeProducts(clone(draftProducts||[])).map(function(p){
+      var live=liveById[p.id];
+      if(!live)return p;
+      /* Le brouillon porte le contenu. Le stock, les réservations et le
+         masquage d'urgence viennent toujours de la ligne publiée fraîchement
+         relue : ils ne doivent jamais être remplacés par une vieille copie. */
+      p.variants=clone(live.variants||{});
+      if(live.sizes)p.sizes=clone(live.sizes);else delete p.sizes;
+      p.active=live.active;
+      p.archived=!!live.archived;
+      return p;
+    });
+  }
   function dbLoadAll(cb){
     cb = cb || function(){};
     if (!online()) return cb();
-    var pending = 3;
+    var localDirty=!!draftMeta.dirty, localVersion=Number(draftMeta.version)||0, localDraft=null;
+    try{if(localDirty)localDraft=JSON.parse(localStorage.getItem(DRAFT_KEY)||"null");}catch(e){}
+    var pending = 4, published = { settings:null, products:null }, loadedDraft=null, needsInitialDraft=false;
     /* Copie locale seulement : ce qui vient d'être lu depuis la base n'a pas
        à y être renvoyé. Si l'une des trois lectures a échoué, un renvoi
        réécrirait la base avec une copie incomplète. */
-    function step(){ if (--pending === 0){ saveStoreWith(store); renderAll(); cb(); } }
+    function step(){ if (--pending === 0){
+      if(loadedDraft){
+        if(loadedDraft.settings)store.settings=loadedDraft.settings;
+        if(loadedDraft.products)store.products=mergeDraftProducts(loadedDraft.products,published.products||store.products);
+      }
+      saveStoreWith({ settings:published.settings || clone(store.settings), products:published.products || clone(store.products), orders:store.orders || [] }, KEY);
+      saveStoreWith(draftPayload(),DRAFT_KEY);saveDraftMeta();renderAll(); updateDraftUI(); loadRevisions(); if(needsInitialDraft)scheduleDraftSave(); cb();
+    } }
     window.AURA_DB.loadProducts(function(ep, rows){
-      if (!ep && rows && rows.length) store.products = normalizeProducts(rows);
+      if (!ep && Array.isArray(rows)){ published.products = normalizeProducts(rows); store.products = normalizeProducts(clone(rows)); }
       step();
     });
     window.AURA_DB.loadSettings(function(es, s){
-      if (!es && s) for (var k in s) store.settings[k] = s[k];
+      if (!es && s){ published.settings = clone(s); for (var k in s) store.settings[k] = s[k]; }
       step();
     });
     window.AURA_DB.loadOrders(function(eo, ords){
       if (!eo && ords) store.orders = ords;
       step();
     });
-  }
-  function syncProducts(){
-    if (!online()) return;
-    window.AURA_DB.saveProducts(store.products, function(er){
-      if (er) toast("Vos produits n'ont pas pu être envoyés au site. Vérifiez votre connexion et réessayez.");
-    });
-  }
-  function syncSettings(){
-    if (!online()) return;
-    window.AURA_DB.saveSettings(store.settings, function(er){
-      if (er) toast("Vos réglages n'ont pas pu être envoyés au site. Vérifiez votre connexion et réessayez.");
+    window.AURA_DB.loadDraft(function(ed, dr){
+      if (!ed && dr && dr.data){
+        var remoteVersion=Number(dr.version)||0;
+        draftMeta.id = dr.id; draftMeta.version = remoteVersion;
+        draftMeta.savedAt = dr.updated_at || null;
+        if(localDraft){
+          loadedDraft=localDraft;
+          draftMeta.dirty=true;
+          if(localVersion!==remoteVersion){
+            draftMeta.conflict=true;
+            remoteConflictDraft=dr;
+          }else{
+            draftMeta.conflict=false;
+            needsInitialDraft=true;
+          }
+        }else{
+          draftMeta.dirty = dr.dirty === true;
+          draftMeta.conflict=false;
+          loadedDraft=dr.data;
+        }
+      } else if (!ed && !dr){
+        draftMeta.version = 0;
+        draftMeta.conflict=false;
+        if(localDraft)loadedDraft=localDraft;else draftMeta.dirty = false;
+        needsInitialDraft=true;
+      }
+      step();
     });
   }
   function syncOrder(order){
     if (!online()) return;
-    window.AURA_DB.updateOrder(order, function(er){
-      if (er) toast("La commande n'a pas pu être mise à jour sur le site. Vérifiez votre connexion et réessayez.");
+    window.AURA_DB.updateOrder(order, function(er, saved){
+      if (er){
+        toast("La commande n'a pas pu être mise à jour. Les données vont être rechargées.");
+        dbLoadAll();
+      } else if(saved && saved.ref){
+        for(var i=0;i<store.orders.length;i++)if(store.orders[i].ref===saved.ref){store.orders[i]=saved;break;}
+        saveOperationalState();renderAll();
+      }
     });
   }
-  function syncDeleteProduct(id){
-    if (!online()) return;
-    window.AURA_DB.deleteProduct(id, function(er){
-      if (er) toast("Le produit est retiré ici mais toujours visible sur le site. Vérifiez votre connexion et réessayez.");
+
+  function updateDraftUI(mode){
+    /* `navigator.onLine` peut rester vrai quand le Wi-Fi est présent mais que
+       Supabase est inaccessible. Les appels réseau passent alors explicitement
+       le mode `offline` : l'interface doit le croire et ne pas afficher une
+       fausse confirmation de synchronisation. */
+    var disconnected = mode === "offline" || !navigator.onLine;
+    var banner = $("#connectionBanner");
+    var conflict = mode === "conflict" || !!draftMeta.conflict;
+    if (banner){ banner.hidden = false; banner.classList.toggle("show", disconnected || conflict); }
+    var bannerText=$("#connectionBannerText");
+    if(bannerText)bannerText.textContent=conflict ? "Deux appareils ont modifié le brouillon. Choisissez la version à conserver." : "Internet coupé — votre brouillon reste sur cet appareil. Publication et stock sont bloqués.";
+    var conflictActions=$("#draftConflictActions");if(conflictActions)conflictActions.hidden=!conflict;
+    var title = draftMeta.dirty ? "Brouillon à publier" : "Boutique publiée";
+    var detail = draftMeta.dirty ? "Vos changements ne sont pas encore visibles par les clients." : "Aucun changement en attente";
+    if (conflict){ title = "Modification sur un autre appareil"; detail = "Choisissez la version à conserver avant de continuer."; }
+    if (disconnected){ title = "Brouillon sur cet appareil"; detail = "Internet coupé : rien ne sera publié pour le moment."; }
+    ["#draftStateTitle"].forEach(function(id){ var n=$(id); if(n) n.textContent=title; });
+    ["#draftStateText"].forEach(function(id){ var n=$(id); if(n) n.textContent=detail; });
+    ["#mobilePublishState","#sidebarPublishState"].forEach(function(id){ var n=$(id); if(n) n.textContent=draftMeta.dirty ? "Brouillon" : "Publiée"; });
+    var bar = $("#draftBar"); if (bar){ bar.hidden = false; bar.classList.toggle("show", !!draftMeta.dirty); }
+    var barText = $("#draftBarText"); if (barText) barText.textContent = disconnected ? "Brouillon gardé sur ce téléphone" : "Brouillon enregistré";
+    ["#publishStoreBtn","#sitePublishBtn","#draftPublishBottom"].forEach(function(id){ var n=$(id); if(n) n.disabled = disconnected || conflict || !draftMeta.dirty; });
+    var last = $("#lastPublishedAt");
+    if (last && draftMeta.publishedAt){
+      try { last.textContent = "Publié le " + new Date(draftMeta.publishedAt).toLocaleDateString("fr-FR", {day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}); } catch(e){}
+    }
+  }
+  $("#keepLocalDraft").addEventListener("click",function(){
+    if(!remoteConflictDraft)return;
+    draftMeta.version=Number(remoteConflictDraft.version)||draftMeta.version;
+    draftMeta.id=remoteConflictDraft.id||draftMeta.id;
+    draftMeta.conflict=false;draftMeta.dirty=true;remoteConflictDraft=null;
+    saveDraftMeta();updateDraftUI();scheduleDraftSave();toast("Le brouillon de ce téléphone sera conservé");
+  });
+  $("#loadRemoteDraft").addEventListener("click",function(){
+    if(!remoteConflictDraft||!remoteConflictDraft.data)return;
+    var dr=remoteConflictDraft;
+    store.settings=clone(dr.data.settings||store.settings);
+    store.products=mergeDraftProducts(dr.data.products||store.products,store.products);
+    draftMeta.id=dr.id||draftMeta.id;draftMeta.version=Number(dr.version)||draftMeta.version;
+    draftMeta.dirty=dr.dirty===true;draftMeta.savedAt=dr.updated_at||null;draftMeta.conflict=false;
+    remoteConflictDraft=null;saveStoreWith(draftPayload(),DRAFT_KEY);saveDraftMeta();renderAll();updateDraftUI();toast("Version de l’autre appareil chargée");
+  });
+
+  function previewDraft(){
+    try { sessionStorage.setItem("aura_preview_store", JSON.stringify(draftPayload())); } catch(e){}
+    location.href = "index.html?preview=1";
+  }
+  function publishDraft(){
+    if (!navigator.onLine || !online()){ toast("Internet est nécessaire pour publier"); return; }
+    if (!draftMeta.dirty){ toast("La boutique est déjà à jour"); return; }
+    if (!confirm("Publier maintenant tous les changements sur la boutique ?")) return;
+    var buttons = [$("#publishStoreBtn"),$("#sitePublishBtn"),$("#draftPublishBottom")];
+    buttons.forEach(function(b){ if(b){ b.disabled=true; b.textContent="Publication…"; } });
+    persistDraft(function(er){
+      if (er){ buttons.forEach(function(b){ if(b) b.textContent="Publier"; }); toast("Le brouillon n'a pas pu être enregistré"); return; }
+      window.AURA_DB.publishDraft(draftMeta.id, draftMeta.version, function(ep, result){
+        buttons.forEach(function(b){ if(b) b.textContent="Publier"; });
+        if (ep){ updateDraftUI(/autre appareil|modifi/i.test(ep.message||"") ? "conflict" : "offline"); toast(ep.message || "Publication impossible"); return; }
+        draftMeta.version = Number(result && result.version) || draftMeta.version;
+        draftMeta.publishedAt = result && result.published_at || new Date().toISOString();
+        draftMeta.dirty = false; saveDraftMeta();
+        saveStoreWith({ settings:clone(store.settings), products:clone(store.products), orders:clone(store.orders || []) }, KEY);
+        updateDraftUI(); loadRevisions(); renderDash();
+        toast("Boutique publiée");
+      });
     });
   }
+  function loadRevisions(){
+    var host = $("#revisionList"); if (!host || !online()) return;
+    window.AURA_DB.loadRevisions(function(er, rows){
+      if (er || !rows || !rows.length){ host.innerHTML='<p class="hint">Aucune ancienne publication pour le moment.</p>'; return; }
+      host.innerHTML = rows.map(function(r){
+        var date=""; try { date=new Date(r.created_at).toLocaleString("fr-FR",{dateStyle:"medium",timeStyle:"short"}); } catch(e){}
+        return '<div class="revision-row"><span><b>Publication</b><small>'+esc(date)+'</small></span><button type="button" class="sbtn" data-restore="'+esc(r.id)+'">Restaurer en brouillon</button></div>';
+      }).join("");
+    });
+  }
+  window.addEventListener("online", function(){ updateDraftUI(); scheduleDraftSave(); });
+  window.addEventListener("offline", function(){ updateDraftUI(); });
+  ["#publishStoreBtn","#sitePublishBtn","#draftPublishBottom"].forEach(function(id){ var n=$(id); if(n) n.addEventListener("click", publishDraft); });
+  ["#previewDraftBtn","#draftPreviewBottom"].forEach(function(id){ var n=$(id); if(n) n.addEventListener("click", previewDraft); });
+  var revisionsHost = $("#revisionList");
+  if (revisionsHost) revisionsHost.addEventListener("click", function(e){
+    var b=e.target.closest("[data-restore]"); if(!b || !online()) return;
+    if(!confirm("Remettre cette ancienne publication dans votre brouillon ? La boutique en ligne ne changera pas encore.")) return;
+    window.AURA_DB.restoreRevisionAsDraft(b.getAttribute("data-restore"), draftMeta.version, function(er,row){
+      if(er){ toast(er.message || "Restauration impossible"); return; }
+      if(row && row.data){ store.settings=row.data.settings||store.settings; store.products=mergeDraftProducts(row.data.products||store.products,store.products); }
+      draftMeta.version=Number(row && row.version)||draftMeta.version; draftMeta.dirty=true;
+      saveStoreWith(draftPayload(),DRAFT_KEY); saveDraftMeta(); renderAll(); updateDraftUI(); toast("Ancienne publication restaurée dans le brouillon");
+    });
+  });
 
   var STATUS = {
     PENDING:   {label:"En attente",          emoji:"🟡"},
@@ -998,7 +1334,8 @@
   function findProduct(id){ for (var i=0;i<store.products.length;i++) if (store.products[i].id === id) return store.products[i]; return null; }
   function availFor(p, key){ var v = p && p.variants ? p.variants[key] : null; return v ? v.s - v.r : 0; }
   function totalFor(p){ var t = 0; if (p && p.variants) for (var k in p.variants) t += p.variants[k].s; return t; }
-  function isOut(p){ if (p.stockout) return true; return totalFor(p) <= 0; }
+  function availableTotalFor(p){var t=0;if(p&&p.variants)for(var k in p.variants)t+=Math.max(0,(Number(p.variants[k].s)||0)-(Number(p.variants[k].r)||0));return t;}
+  function isOut(p){ if (p.stockout) return true; return availableTotalFor(p) <= 0; }
   function waLink(phone, text){ return "https://wa.me/" + digits(phone) + "?text=" + encodeURIComponent(text); }
 
   var toastTimer;
@@ -1128,14 +1465,16 @@
   function showView(name){
     $$(".view").forEach(function(v){ v.classList.toggle("active", v.id === "view-" + name); });
     $$(".tab").forEach(function(t){ t.classList.toggle("active", t.getAttribute("data-view") === name); });
+    if (name === "news") loadNews();
+    if (name === "wait") loadWait();
+    if (name === "site") loadRevisions();
+    window.scrollTo({ top:0, behavior:"smooth" });
   }
-  $$(".tab").forEach(function(t){
-    t.addEventListener("click", function(){
-      var v = t.getAttribute("data-view");
-      showView(v);
-      if (v === "news") loadNews();
-      if (v === "wait") loadWait();
-    });
+  document.addEventListener("click", function(e){
+    var target = e.target.closest("[data-view]");
+    if (!target) return;
+    e.preventDefault();
+    showView(target.getAttribute("data-view"));
   });
   $("#logoutBtn").addEventListener("click", function(){
     lock();
@@ -1144,42 +1483,30 @@
 
   /* ---------------- Dashboard ---------------- */
   function renderDash(){
-    var ca = 0, pending = 0;
+    var paid = 0, expected = 0, pending = 0, shipping = 0, delivered = 0;
     store.orders.forEach(function(o){
-      if (o.status === "CONFIRMED" || o.status === "SHIPPING" || o.status === "DELIVERED") ca += o.total;
+      if (o.status === "DELIVERED"){ paid += o.total || 0; delivered++; }
+      if (o.status === "CONFIRMED" || o.status === "SHIPPING") expected += o.total || 0;
       if (o.status === "PENDING") pending += 1;
+      if (o.status === "CONFIRMED" || o.status === "SHIPPING") shipping += 1;
     });
-    var out = store.products.filter(isOut).length;
-    var active = store.products.filter(function(p){ return p.active; }).length;
-    var pd = 0;
-    store.orders.forEach(function(o){
-      if (o.status === "PENDING") pd += (o.total || 0);
-    });
-    $("#stats").innerHTML =
-      '<div class="card stat"><div class="num">' + fmt(ca) + '</div><div class="lbl">Chiffre d\'affaires estimé</div><div class="sub">Commandes confirmées, en cours et livrées</div></div>' +
-      '<div class="card stat"><div class="num">' + pending + '</div><div class="lbl">Commandes en attente WhatsApp</div><div class="sub">' + fmt(pd) + ' réservés</div></div>' +
-      '<div class="card stat"><div class="num">' + out + '</div><div class="lbl">Produits en rupture</div><div class="sub">' + active + ' produits visibles</div></div>' +
-      '<div class="card stat"><div class="num">' + store.products.length + '</div><div class="lbl">Produits au catalogue</div><div class="sub">Total toutes catégories</div></div>';
-    $("#dashDate").textContent = new Date().toLocaleDateString("fr-FR", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
-
-    var days = [], now = new Date();
-    for (var i=6;i>=0;i--){
-      var d = new Date(now); d.setDate(now.getDate() - i);
-      var key = d.toDateString();
-      var sum = 0;
-      store.orders.forEach(function(o){
-        if (o.status === "CANCELLED") return;
-        var od = new Date(o.date);
-        if (od.toDateString() === key) sum += (o.total || 0);
-      });
-      days.push({ label: d.toLocaleDateString("fr-FR", { weekday:"short" }), sum: sum });
-    }
-    var max = 1;
-    days.forEach(function(x){ if (x.sum > max) max = x.sum; });
-    $("#chart").innerHTML = days.map(function(x){
-      var h = Math.max(4, Math.round(x.sum / max * 100));
-      return '<div class="col"><span class="vc">' + (x.sum ? Math.round(x.sum/1000) + "k" : "0") + '</span><div class="bar" style="height:' + h + 'px"></div><span class="dv">' + x.label + '</span></div>';
+    var low = store.products.filter(function(p){ var n=availableTotalFor(p); return p.active !== false && n > 0 && n <= 5; }).length;
+    var actions = [
+      {n:pending, one:"commande attend votre réponse", many:"commandes attendent votre réponse", sub:"Confirmez avec le client sur WhatsApp.", view:"orders", label:"Répondre"},
+      {n:shipping, one:"commande doit être livrée", many:"commandes doivent être livrées", sub:"Vérifiez les adresses et le suivi.", view:"orders", label:"Voir"},
+      {n:low, one:"produit a peu de stock", many:"produits ont peu de stock", sub:"Ajoutez les quantités avant la rupture.", view:"products", label:"Gérer le stock"},
+      {n:draftMeta.dirty ? 1 : 0, text:draftMeta.dirty ? "Votre modification n'est pas encore publiée" : "Votre boutique est à jour", sub:draftMeta.dirty ? "Vérifiez le brouillon avant de publier." : "Aucun changement en attente.", view:"site", label:draftMeta.dirty ? "Vérifier" : "Voir le site"}
+    ];
+    $("#todayActions").innerHTML = actions.map(function(a,i){
+      var text=a.text || a.n+" "+(a.n===1?a.one:a.many);
+      return '<div class="today-action'+(a.n===0?' is-clear':'')+'"><span class="today-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 5v5.2l3.3 2-1 1.6-4.3-2.6V7Z"/></svg></span><span class="today-action-copy"><strong>'+esc(text)+'</strong><span>'+esc(a.sub)+'</span></span><button type="button" class="btn btn-primary" data-view="'+a.view+'">'+esc(a.label)+'</button></div>';
     }).join("");
+    $("#stats").innerHTML =
+      '<div class="quick-stat"><div class="lbl">Ventes encaissées</div><div class="num">'+fmt(paid)+'</div><div class="sub">Commandes livrées et payées</div></div>'+
+      '<div class="quick-stat"><div class="lbl">Argent attendu</div><div class="num">'+fmt(expected)+'</div><div class="sub">Commandes confirmées ou en livraison</div></div>'+
+      '<div class="quick-stat"><div class="lbl">Commandes terminées</div><div class="num">'+delivered+'</div><div class="sub">Depuis le début</div></div>';
+    $("#dashDate").textContent = new Date().toLocaleDateString("fr-FR", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+    updateDraftUI();
   }
 
   /* ---------------- Commandes ---------------- */
@@ -1188,7 +1515,7 @@
       var sel = s === o.status ? " selected" : "";
       return '<option value="' + s + '"' + sel + '>' + STATUS[s].emoji + " " + STATUS[s].label + '</option>';
     }).join("");
-    return '<select class="status" data-status="' + esc(o.ref) + '">' + opts + '</select>';
+    return '<select class="status" aria-label="Statut de la commande ' + esc(o.ref) + '" data-status="' + esc(o.ref) + '">' + opts + '</select>';
   }
   var ordQuery = "", ordStatus = "";
   function filteredOrders(){
@@ -1202,6 +1529,7 @@
   }
   function renderOrders(){
     var body = $("#ordersBody");
+    var cards = $("#ordersCards");
     var list = filteredOrders();
     var counter = $("#ordCount");
     if (counter){
@@ -1211,17 +1539,25 @@
     }
     if (!store.orders.length){
       body.innerHTML = '<tr><td colspan="9" class="no-orders">Aucune commande pour le moment.</td></tr>';
+      if(cards) cards.innerHTML='<p class="no-orders">Aucune commande pour le moment.</p>';
       return;
     }
     if (!list.length){
       body.innerHTML = '<tr><td colspan="9" class="no-orders">Aucune commande ne correspond à ce filtre.</td></tr>';
+      if(cards) cards.innerHTML='<p class="no-orders">Aucune commande ne correspond à ce filtre.</p>';
       return;
     }
+    if(cards) cards.innerHTML=list.map(function(o){
+      var st=STATUS[o.status]||STATUS.PENDING;
+      var msg="Bonjour "+o.client+" 👋\n\nVotre commande *"+o.ref+"* ("+st.label+") est enregistrée chez *"+(store.settings.shopName||"la boutique")+"*.\nLivraison prévue à *Bamako, "+o.quartier+"*.";
+      var items=(o.items||[]).map(function(it){ var lib=it.variantLabel||it.size||""; return it.qty+" × "+(it.brand?it.brand+" ":"")+it.name+(lib?" ("+lib+")":""); }).join(" · ");
+      return '<article class="order-card"><div class="order-card-head"><div><span class="ref">'+esc(o.ref)+'</span><h3>'+esc(o.client)+'</h3></div><b>'+fmt(o.total)+'</b></div><div class="order-card-info"><div><span>Téléphone</span>'+esc(localPhone(o.phone))+'</div><div><span>Livraison</span>'+esc(o.quartier)+'</div></div><div class="order-card-items">'+esc(items)+'</div><div class="order-card-actions">'+orderStatusHTML(o)+'<a class="btn btn-ghost" href="tel:+223'+esc(digits(o.phone).slice(-8))+'">Appeler</a><a class="btn btn-primary" target="_blank" rel="noopener" href="'+esc(waLink("223"+digits(o.phone).slice(-8),msg))+'">WhatsApp</a><button type="button" class="btn btn-ghost" data-mobile-ordedit="'+esc(o.ref)+'">Détails</button></div>'+(editingOrder===o.ref?orderEditCardHTML(o):'')+'</article>';
+    }).join("");
     body.innerHTML = list.map(function(o){
       var st = STATUS[o.status] || STATUS.PENDING;
       var date = "—";
       try { date = new Date(o.date).toLocaleDateString("fr-FR", { day:"2-digit", month:"2-digit", year:"2-digit" }) + " " + new Date(o.date).toLocaleTimeString("fr-FR", { hour:"2-digit", minute:"2-digit" }); } catch(e){}
-      var shop = store.settings.shopName || "AURA STUDIOS";
+      var shop = store.settings.shopName || "SNEAK BAMAKO";
       var msg = "Bonjour " + o.client + " 👋\n\nVotre commande *" + o.ref + "* (" + st.label + ") est enregistrée chez *" + shop + "*.\nLivraison prévue à *Bamako, " + o.quartier + "*.\nMerci de confirmer votre disponibilité. 🙏";
       var href = waLink("223" + digits(o.phone), msg);
       var items = o.items.map(function(it){
@@ -1247,6 +1583,43 @@
   }
   $("#ordSearch").addEventListener("input", function(){ ordQuery = this.value; renderOrders(); });
   $("#ordStatus").addEventListener("change", function(){ ordStatus = this.value; renderOrders(); });
+  $("#ordersCards").addEventListener("change", function(e){
+    var sel=e.target.closest("[data-status]"); if(!sel) return;
+    var o=findOrder(sel.getAttribute("data-status")); if(o) applyStatus(o,sel.value);
+  });
+  $("#ordersCards").addEventListener("click", function(e){
+    var edit=e.target.closest("[data-mobile-ordedit]");
+    if(edit){editingOrder=editingOrder===edit.getAttribute("data-mobile-ordedit")?null:edit.getAttribute("data-mobile-ordedit");renderOrders();return;}
+    if(e.target.closest("[data-mobile-ordcancel]")){editingOrder=null;renderOrders();return;}
+    var remove=e.target.closest("[data-mobile-orditem]");
+    if(remove){
+      if(!requireLiveAction())return;
+      var order=findOrder(editingOrder), index=parseInt(remove.getAttribute("data-mobile-orditem"),10);
+      if(!order||!order.items[index]||order.items.length<2)return;
+      if(!confirm("Retirer « "+order.items[index].name+" » de la commande "+order.ref+" ?"))return;
+      releaseItem(order,order.items[index]);order.items.splice(index,1);recomputeTotals(order);
+      saveOperationalState();syncOrder(order);renderAll();toast("Article retiré de la commande");return;
+    }
+    var save=e.target.closest("[data-mobile-ordsave]");
+    if(save){
+      if(!requireLiveAction())return;
+      var order2=findOrder(save.getAttribute("data-mobile-ordsave"));if(!order2)return;
+      var card=save.closest(".mobile-order-edit"), name=card.querySelector("[data-mobile-name]").value.trim();
+      var phone=digits(card.querySelector("[data-mobile-phone]").value), quartier=card.querySelector("[data-mobile-area]").value.trim();
+      if(phone.length===11&&phone.slice(0,3)==="223")phone=phone.slice(3);
+      if(name.length<2){toast("Écrivez le nom du client");return;}if(phone.length!==8){toast("Le numéro doit avoir 8 chiffres");return;}if(quartier.length<2){toast("Écrivez le quartier de livraison");return;}
+      order2.client=name;order2.phone=phone;order2.quartier=quartier;saveOperationalState();syncOrder(order2);editingOrder=null;renderAll();toast("Commande "+order2.ref+" mise à jour");return;
+    }
+    var del=e.target.closest("[data-mobile-orddel]");
+    if(del){
+      if(!requireLiveAction())return;
+      var order3=findOrder(del.getAttribute("data-mobile-orddel"));if(!order3)return;
+      if(!confirm("Supprimer définitivement la commande "+order3.ref+" ?\n\nLe stock qu'elle immobilise sera restitué."))return;
+      order3.items.forEach(function(x){releaseItem(order3,x);});store.orders=store.orders.filter(function(x){return x.ref!==order3.ref;});editingOrder=null;saveOperationalState();
+      window.AURA_DB.deleteOrder(order3.ref,function(er){if(er){toast("La commande n'a pas pu être supprimée. Les données vont être rechargées.");dbLoadAll();}});
+      renderAll();toast("Commande supprimée");
+    }
+  });
 
   /* ---------------- Export CSV ----------------
      Séparateur point-virgule et BOM UTF-8 : Excel en français ouvre le
@@ -1368,7 +1741,27 @@
       var nom = axn.value.trim();
       if (!nom){ renderCatSettings(); return; }
       var l = catList();
-      l[parseInt(r[0], 10)].axes[parseInt(r[1], 10)].name = nom;
+      var catIndex = parseInt(r[0], 10), axisIndex = parseInt(r[1], 10);
+      var categorie = l[catIndex], ancienNom = categorie.axes[axisIndex].name;
+      categorie.axes[axisIndex].name = nom;
+      /* Le nom de l'axe fait aussi partie des clés de photo des coloris.
+         Le renommer seulement dans la catégorie laisserait les produits avec
+         un ancien axe et leurs photos deviendraient introuvables à l'édition. */
+      if (ancienNom !== nom){
+        store.products.filter(function(p){ return p.cat === categorie.key; }).forEach(function(p){
+          if (!Array.isArray(p.axes) || !p.axes[axisIndex]) return;
+          var nomProduit = p.axes[axisIndex].name || ancienNom;
+          p.axes[axisIndex].name = nom;
+          if (!p.valueImages || typeof p.valueImages !== "object") return;
+          Object.keys(p.valueImages).forEach(function(cle){
+            var prefixe = nomProduit + VSEP;
+            if (cle.indexOf(prefixe) !== 0) return;
+            var nouvelleCle = nom + VSEP + cle.slice(prefixe.length);
+            if (!p.valueImages[nouvelleCle]) p.valueImages[nouvelleCle] = p.valueImages[cle];
+            delete p.valueImages[cle];
+          });
+        });
+      }
       majCategories(l);
       return;
     }
@@ -1406,6 +1799,7 @@
       $("#fCat").value = cn;
       $("#fCat").dispatchEvent(new Event("change"));
       $("#formTitle").textContent = "Ajouter un produit — " + (CATS[cn] || cn);
+      openProductEditor(1);
       $("#fName").focus();
       return;
     }
@@ -1420,11 +1814,17 @@
       var texte = "Déplacer « " + prod.name + " » vers « " + (CATS[dest] || dest) + " » ?";
       if (!memeAxes) texte += "\n\nLes pointures et couleurs ne sont pas les mêmes : le stock de ce produit sera remis à zéro.";
       if (!confirm(texte)) return;
-      prod.cat = dest;
-      if (!memeAxes){ prod.axes = []; prod.variants = {}; }
-      saveStore(); syncProducts();
-      renderCatSettings(); renderProducts(); renderDash();
-      toast(memeAxes ? "Produit déplacé" : "Produit déplacé — stock à ressaisir");
+      if(!memeAxes){
+        if(!requireLiveAction())return;
+        window.AURA_DB.setInventory(prod.id,{},function(er,data){
+          if(er){toast(er.message||"Le stock n’a pas pu être remis à zéro");return;}
+          prod.cat=dest;prod.axes=[];prod.variants=(data&&data.variants)||{};
+          saveStore();renderCatSettings();renderProducts();renderDash();
+          toast("Produit déplacé — stock à ressaisir");
+        });
+      }else{
+        prod.cat=dest;saveStore();renderCatSettings();renderProducts();renderDash();toast("Produit déplacé");
+      }
       return;
     }
     var ouvre = e.target.closest("[data-axopen]");
@@ -1587,7 +1987,7 @@
     if (!host) return;
     var c = contenu();
     host.innerHTML = BLOCS_CONTENU.map(function(b){
-      var d = c[b.cle] || {};
+      var d = b.garanties ? {on:c.garantiesOn} : (c[b.cle] || {});
       var actif = d.on !== false;
       var champs = b.champs.map(function(f){
         var id = "ct-" + b.cle + "-" + f.k;
@@ -1617,8 +2017,8 @@
             var gv = lg[i] || {};
             return '<div class="field"><label>' + esc(repere[i]) + '</label>' +
               '<div class="cat-row" style="grid-template-columns:1fr 2fr">' +
-                '<input type="text" maxlength="34" placeholder="Titre court" value="' + esc(gv.t || "") + '" data-ctg="' + i + '.t" />' +
-                '<input type="text" maxlength="110" placeholder="Explication" value="' + esc(gv.s || "") + '" data-ctg="' + i + '.s" />' +
+                '<input type="text" maxlength="34" aria-label="Titre ' + esc(repere[i]) + '" placeholder="Titre court" value="' + esc(gv.t || "") + '" data-ctg="' + i + '.t" />' +
+                '<input type="text" maxlength="110" aria-label="Explication ' + esc(repere[i]) + '" placeholder="Explication" value="' + esc(gv.s || "") + '" data-ctg="' + i + '.s" />' +
               '</div></div>';
           }).join("");
       }
@@ -1631,21 +2031,17 @@
           [0,1,2].map(function(i){
             var pv = liste[i] || {};
             return '<div class="cat-row" style="grid-template-columns:1fr 2fr">' +
-              '<input type="text" maxlength="30" placeholder="Titre" value="' + esc(pv.title || "") + '" data-ctp="' + i + '.title" />' +
-              '<input type="text" maxlength="120" placeholder="Explication" value="' + esc(pv.text || "") + '" data-ctp="' + i + '.text" />' +
+              '<input type="text" maxlength="30" aria-label="Titre du point fort ' + (i + 1) + '" placeholder="Titre" value="' + esc(pv.title || "") + '" data-ctp="' + i + '.title" />' +
+              '<input type="text" maxlength="120" aria-label="Explication du point fort ' + (i + 1) + '" placeholder="Explication" value="' + esc(pv.text || "") + '" data-ctp="' + i + '.text" />' +
             '</div>';
           }).join("") + '</div>';
       }
 
-      return '<div class="card" style="max-width:640px;margin-bottom:20px">' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">' +
-          '<h2 style="margin:0">' + esc(b.titre) + '</h2>' +
-          '<label class="toggle"><input type="checkbox" data-cton="' + b.cle + '"' + (actif ? ' checked' : '') + ' />' +
-            '<span>' + (actif ? "Affiché" : "Masqué") + '</span></label>' +
-        '</div>' +
+      return '<details class="card content-block">' +
+        '<summary><span><b>' + esc(b.titre) + '</b><small>'+(actif?'Affiché':'Masqué')+'</small></span><span aria-hidden="true">Modifier →</span></summary>'+
+        '<div class="content-block-fields"><label class="toggle"><input type="checkbox" data-cton="' + b.cle + '"' + (actif ? ' checked' : '') + ' /><span>' + (actif ? "Afficher ce bloc" : "Bloc masqué") + '</span></label>'+
         '<p class="hint" style="margin:8px 0 16px">' + esc(b.aide) + '</p>' +
-        champs + garanties + piliers + image +
-      '</div>';
+        champs + garanties + piliers + image +'<button type="button" class="btn btn-ghost" data-preview-content>Voir immédiatement</button></div></details>';
     }).join("");
   }
 
@@ -1655,8 +2051,8 @@
     var on = e.target.closest("[data-cton]");
     if (on){
       var k = on.getAttribute("data-cton");
-      c[k] = c[k] || {};
-      c[k].on = on.checked;
+      if(k==="garanties")c.garantiesOn=on.checked;
+      else{c[k] = c[k] || {};c[k].on = on.checked;}
       majContenu();
       toast(on.checked ? "Bloc affiché" : "Bloc masqué");
       return;
@@ -1943,6 +2339,7 @@
     var text = $("#rText").value.trim();
     if (name.length < 2){ toast("Écrivez le nom du client"); $("#rName").focus(); return; }
     if (text.length < 10){ toast("L'avis est trop court, écrivez une phrase complète"); $("#rText").focus(); return; }
+    if (!$("#rConsent").checked){ toast("Confirmez l'accord du client avant d'ajouter son avis"); $("#rConsent").focus(); return; }
     if (!Array.isArray(store.settings.reviews)) store.settings.reviews = [];
     store.settings.reviews.push({
       name: name,
@@ -1954,7 +2351,7 @@
     saveStore();
     $("#revForm").reset();
     renderReviews();
-    toast("Avis publié");
+    toast("Avis ajouté au brouillon");
   });
 
   /* ---------------- Liste d'attente ---------------- */
@@ -1970,7 +2367,7 @@
       if (w.created_at){ try { d = new Date(w.created_at).toLocaleString("fr-FR"); } catch(e){} }
       var msg = "Bonjour 👋 Bonne nouvelle : « " + (w.product_name || "") +
                 " » est de nouveau disponible en taille " + (w.size || "") +
-                " chez " + (store.settings.shopName || "AURA STUDIOS") + ".";
+                " chez " + (store.settings.shopName || "SNEAK BAMAKO") + ".";
       var href = waLink("223" + digits(w.phone), msg);
       return '<tr>' +
         '<td>' + esc(w.product_name || w.product_id || "—") + '</td>' +
@@ -2040,6 +2437,13 @@
     '</td></tr>';
   }
 
+  function orderEditCardHTML(o){
+    var items=o.items.map(function(it,i){
+      return '<div class="ord-item"><span>'+it.qty+' × '+esc(it.brand?it.brand+' '+it.name:it.name)+(it.variantLabel||it.size?' <small>('+esc(it.variantLabel||it.size)+')</small>':'')+'</span><span>'+fmt(it.price*it.qty)+(o.items.length>1?' <button type="button" class="sbtn danger" data-mobile-orditem="'+i+'">Retirer</button>':'')+'</span></div>';
+    }).join('');
+    return '<div class="mobile-order-edit"><div class="field"><label>Nom du client</label><input data-mobile-name type="text" value="'+esc(o.client)+'" /></div><div class="field"><label>Numéro</label><input data-mobile-phone type="tel" value="'+esc(o.phone)+'" /></div><div class="field"><label>Quartier</label><input data-mobile-area type="text" value="'+esc(o.quartier)+'" /></div><div class="ord-items">'+items+'</div><div class="mobile-order-edit-actions"><button type="button" class="btn btn-primary" data-mobile-ordsave="'+esc(o.ref)+'">Enregistrer</button><button type="button" class="btn btn-ghost" data-mobile-ordcancel>Fermer</button><button type="button" class="btn btn-ghost danger" data-mobile-orddel="'+esc(o.ref)+'">Supprimer</button></div></div>';
+  }
+
   function findOrder(ref){
     for (var i = 0; i < store.orders.length; i++) if (store.orders[i].ref === ref) return store.orders[i];
     return null;
@@ -2054,6 +2458,11 @@
     if (cle === null) return;
     if (order.status === "PENDING") pr.variants[cle].r -= it.qty;
     else if (order.status !== "CANCELLED") pr.variants[cle].s += it.qty;
+  }
+  function requireLiveAction(){
+    if (navigator.onLine && online()) return true;
+    toast("Internet est nécessaire pour modifier une commande ou le stock");
+    updateDraftUI(); return false;
   }
 
   function recomputeTotals(o){
@@ -2076,6 +2485,7 @@
 
     var rm = e.target.closest("[data-orditem]");
     if (rm){
+      if(!requireLiveAction()) return;
       var o1 = findOrder(editingOrder);
       if (!o1) return;
       var idx = parseInt(rm.getAttribute("data-orditem"), 10);
@@ -2088,13 +2498,14 @@
       /* `releaseItem` a modifié le stock du produit : il faut renvoyer les
          produits, pas seulement la commande, sinon la paire reste
          immobilisée sur la boutique. */
-      saveStore(); syncOrder(o1); syncProducts(); renderAll();
+      saveOperationalState(); syncOrder(o1); renderAll();
       toast("Article retiré de la commande");
       return;
     }
 
     var sv = e.target.closest("[data-ordsave]");
     if (sv){
+      if(!requireLiveAction()) return;
       var o2 = findOrder(sv.getAttribute("data-ordsave"));
       if (!o2) return;
       var name = $("#oeName").value.trim();
@@ -2105,7 +2516,7 @@
       if (phone.length !== 8){ toast("Le numéro doit avoir 8 chiffres"); $("#oePhone").focus(); return; }
       if (quartier.length < 2){ toast("Écrivez le quartier de livraison"); $("#oeQuartier").focus(); return; }
       o2.client = name; o2.phone = phone; o2.quartier = quartier;
-      saveStore(); syncOrder(o2);
+      saveOperationalState(); syncOrder(o2);
       editingOrder = null;
       renderAll();
       toast("Commande " + o2.ref + " mise à jour");
@@ -2114,6 +2525,7 @@
 
     var dl = e.target.closest("[data-orddel]");
     if (dl){
+      if(!requireLiveAction()) return;
       var o3 = findOrder(dl.getAttribute("data-orddel"));
       if (!o3) return;
       if (!confirm("Supprimer définitivement la commande " + o3.ref + " ?\n\nLe stock qu'elle immobilise sera restitué.")) return;
@@ -2122,9 +2534,9 @@
       editingOrder = null;
       /* Le message de confirmation promet la restitution du stock : sans cet
          envoi, elle n'avait lieu que dans le navigateur du commerçant. */
-      saveStore(); syncProducts();
+      saveOperationalState();
       if (online()) window.AURA_DB.deleteOrder(o3.ref, function(er){
-        if (er) console.warn("Suppression non synchronisée", er);
+        if (er){ toast("La commande n'a pas pu être supprimée. Les données vont être rechargées."); dbLoadAll(); }
       });
       renderAll();
       toast("Commande supprimée");
@@ -2132,14 +2544,8 @@
     }
   });
 
-  /* Envoi cible d'une seule commande. */
-  function syncOrder(o){
-    if (online()) window.AURA_DB.updateOrder(o, function(er){
-      if (er) console.warn("Commande non synchronisée", er);
-    });
-  }
-
 function applyStatus(order, ns){
+    if(!requireLiveAction()){ renderOrders(); return; }
     var ps = order.status;
     if (ns === ps) return;
     order.items.forEach(function(it){
@@ -2157,9 +2563,8 @@ function applyStatus(order, ns){
       if (!hadDec && willDec) sz.s -= it.qty;
     });
     order.status = ns;
-    saveStore();
+    saveOperationalState();
     syncOrder(order);
-    syncProducts();
     renderAll();
     toast("Commandes " + order.ref + " : " + (STATUS[ns] || {}).label);
   }
@@ -2182,30 +2587,53 @@ function applyStatus(order, ns){
     if (!sizes.length) return "Aucun stock défini";
     return sizes.join(" · ");
   }
+  var productQuery="", productFilter="";
+  function filteredProducts(){
+    var q=productQuery.trim().toLowerCase();
+    return store.products.filter(function(p){
+      var total=availableTotalFor(p), archived=!!p.archived;
+      if(productFilter==="active" && (p.active===false||archived)) return false;
+      if(productFilter==="hidden" && (p.active!==false||archived)) return false;
+      if(productFilter==="out" && total>0) return false;
+      if(productFilter==="low" && !(total>0&&total<=5)) return false;
+      if(productFilter==="archived" && !archived) return false;
+      if(!productFilter && archived) return false;
+      if(!q) return true;
+      var coll=collList().filter(function(c){return c.key===p.collection;})[0];
+      return [p.name,CATS[p.cat]||p.cat,coll&&coll.label||p.collection].join(" ").toLowerCase().indexOf(q)>=0;
+    });
+  }
   function renderProducts(){
     var el = $("#prodList");
     if (!store.products.length){ el.innerHTML = '<p class="no-orders">Aucun produit. Ajoutez-en un à droite.</p>'; return; }
-    el.innerHTML = store.products.map(function(p){
+    var list=filteredProducts();
+    if(!list.length){ el.innerHTML='<p class="no-orders">Aucun produit ne correspond à votre recherche.</p>'; return; }
+    el.innerHTML = list.map(function(p){
       var chips = "";
+      if (p.archived) chips += '<span class="chip">Archivé</span>';
       if (!p.active) chips += '<span class="chip">Masqué</span>';
-      if (p.stockout || totalFor(p) <= 0) chips += '<span class="chip dark">Rupture</span>';
-      if (p.oldPrice > 0) chips += '<span class="chip dark">-20 %</span>';
+      if (isOut(p)) chips += '<span class="chip dark">Rupture</span>';
+      if (p.oldPrice > p.price) chips += '<span class="chip dark">-' + Math.max(1,Math.round((p.oldPrice-p.price)*100/p.oldPrice)) + ' %</span>';
       var img = p.img ? '<img class="thumb" src="' + esc(p.img) + '" onerror="this.style.opacity=0" alt="" />' : '<span class="thumb" style="display:block"></span>';
       return '<div class="prod-item">' +
         img +
         '<div class="pi-info">' +
           '<div class="pi-name">' + esc(p.name) + chips + '</div>' +
           '<div class="pi-meta">' + esc(CATS[p.cat]||p.cat) + ' · ' + fmt(p.price) + '</div>' +
-          '<div class="pi-stock">' + esc(prodStockText(p)) + '</div>' +
+          '<div class="pi-stock">' + totalFor(p) + ' en stock' + (reservedForProduct(p) ? ' · '+reservedForProduct(p)+' réservé(s)' : '') + '</div>' +
         '</div>' +
         '<div class="row-actions">' +
           '<button class="sbtn" data-edit="' + esc(p.id) + '">Modifier</button>' +
+          '<button class="sbtn" data-stock="' + esc(p.id) + '">Stock</button>' +
           '<button class="sbtn' + (p.active ? "" : " on") + '" data-toggle="' + esc(p.id) + '">' + (p.active ? "Masquer" : "Afficher") + '</button>' +
-          '<button class="sbtn danger" data-del="' + esc(p.id) + '">Supprimer</button>' +
+          '<button class="sbtn danger" data-del="' + esc(p.id) + '">' + (p.archived ? 'Récupérer' : 'Archiver') + '</button>' +
         '</div>' +
       '</div>';
     }).join("");
   }
+  function reservedForProduct(p){ var n=0; for(var k in (p.variants||{})) n+=Number(p.variants[k].r)||0; return n; }
+  $("#productSearch").addEventListener("input",function(){productQuery=this.value;renderProducts();});
+  $("#productFilter").addEventListener("change",function(){productFilter=this.value;renderProducts();});
   /* Cases à cocher construites depuis les axes de la catégorie choisie.
      Aucune valeur n'est écrite dans le code : elles viennent des réglages. */
   function renderAxeChecks(selection){
@@ -2248,16 +2676,16 @@ function applyStatus(order, ns){
       return valeursExistantes && valeursExistantes[cle] != null ? valeursExistantes[cle] : 0;
     };
     if (!sel.length){
-      host.innerHTML = '<div class="stock-cell"><b>Stock</b>' +
-        '<input type="number" data-cle="" min="0" value="' + lu("") + '" aria-label="Stock" /></div>';
+      host.innerHTML = '<div class="stock-cell"><b>Stock</b><span class="stock-quantity"><button type="button" data-stock-minus aria-label="Retirer une unité">−</button>' +
+        '<input type="number" data-cle="" min="0" value="' + lu("") + '" aria-label="Stock" /><button type="button" data-stock-plus aria-label="Ajouter une unité">+</button></span></div>';
       return;
     }
     var a1 = sel[0] || [], a2 = sel[1] || null;
     if (!a1.length){ host.innerHTML = '<p class="hint">Cochez au moins une valeur.</p>'; return; }
     if (!a2 || !a2.length){
       host.innerHTML = '<div class="stock-grid">' + a1.map(function(v){
-        return '<div class="stock-cell"><b>' + esc(v) + '</b>' +
-          '<input type="number" data-cle="' + esc(v) + '" min="0" value="' + lu(v) + '" aria-label="Stock ' + esc(v) + '" /></div>';
+        return '<div class="stock-cell"><b>' + esc(v) + '</b><span class="stock-quantity"><button type="button" data-stock-minus aria-label="Retirer une unité">−</button>' +
+          '<input type="number" data-cle="' + esc(v) + '" min="0" value="' + lu(v) + '" aria-label="Stock ' + esc(v) + '" /><button type="button" data-stock-plus aria-label="Ajouter une unité">+</button></span></div>';
       }).join("") + '</div>';
       return;
     }
@@ -2267,7 +2695,7 @@ function applyStatus(order, ns){
       a1.map(function(l){
         return '<tr><th>' + esc(l) + '</th>' + a2.map(function(c){
           var cle = l + VSEP + c;
-          return '<td><input type="number" data-cle="' + esc(cle) + '" min="0" value="' + lu(cle) + '" aria-label="Stock ' + esc(l + " " + c) + '" /></td>';
+          return '<td><span class="stock-quantity"><button type="button" data-stock-minus aria-label="Retirer une unité">−</button><input type="number" data-cle="' + esc(cle) + '" min="0" value="' + lu(cle) + '" aria-label="Stock ' + esc(l + " " + c) + '" /><button type="button" data-stock-plus aria-label="Ajouter une unité">+</button></span></td>';
         }).join("") +
         '<td><button type="button" class="sbtn" data-report="' + esc(l) + '" title="Reporter la première valeur sur toute la ligne">=</button></td></tr>';
       }).join("") + '</tbody></table></div>';
@@ -2276,6 +2704,38 @@ function applyStatus(order, ns){
      reste `#fImg` ; celle-ci vient toujours en tête de `imgs`, donc la
      galerie ne la répète pas. */
   var galerieForm = [];
+  var valueImagesForm = {};
+
+  function colorAxisSelection(){
+    var axes=catAxes($("#fCat").value),selection=selectionCourante();
+    for(var i=0;i<axes.length;i++){
+      if(/couleur|coloris|color/i.test(axes[i].name||"")) return {name:axes[i].name,values:selection[i]||[]};
+    }
+    return null;
+  }
+  function cleanValueImages(){
+    var info=colorAxisSelection(),out={};
+    if(!info)return out;
+    info.values.forEach(function(v){var key=info.name+VSEP+v,url=String(valueImagesForm[key]||"").trim();if(url)out[key]=url;});
+    return out;
+  }
+  function renderValueImagesForm(){
+    var field=$("#fValueImagesField"),host=$("#fValueImages");if(!field||!host)return;
+    var info=colorAxisSelection();
+    if(!info||!info.values.length){field.hidden=true;host.innerHTML="";return;}
+    field.hidden=false;
+    if(info.values.length===1){
+      var onlyKey=info.name+VSEP+info.values[0];
+      if(!valueImagesForm[onlyKey]&&$("#fImg").value.trim())valueImagesForm[onlyKey]=$("#fImg").value.trim();
+    }
+    host.innerHTML=info.values.map(function(v){
+      var key=info.name+VSEP+v,url=String(valueImagesForm[key]||"");
+      return '<div class="color-image-row">'+
+        (url?'<img src="'+esc(url)+'" alt="Aperçu '+esc(v)+'" />':'<span class="color-image-empty">Photo</span>')+
+        '<div><strong>'+esc(v)+'</strong><input type="url" data-color-url="'+esc(key)+'" value="'+esc(url)+'" placeholder="Adresse de la photo" />'+
+        '<label class="filebtn"><b>Choisir la photo</b><input type="file" accept="image/*" data-color-file="'+esc(key)+'" /></label></div></div>';
+    }).join("");
+  }
 
   function renderGalerieForm(){
     var host = $("#fGalerie");
@@ -2316,14 +2776,17 @@ function applyStatus(order, ns){
     $("#fOut").checked = !!p.stockout;
     galerieForm = (Array.isArray(p.imgs) ? p.imgs : []).slice(1)
                     .filter(function(u){ return u && u !== p.img; });
+    valueImagesForm=clone(p.valueImages||{});
     renderGalerieForm();
     var axesProd = prodAxes(p);
     renderAxeChecks(axesProd.map(function(a){ return a.values; }));
+    renderValueImagesForm();
     var quantites = {};
     for (var cle in p.variants) quantites[cle] = p.variants[cle].s;
     renderStockGrid(quantites);
+    var ri=$("#stockReservationInfo");if(ri)ri.textContent=reservedForProduct(p)?reservedForProduct(p)+" article(s) réservé(s) par des commandes en attente.":"Aucune réservation en cours.";
     $("#formTitle").textContent = "Modifier le produit";
-    window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
+    openProductEditor(1);
   }
 
   function resetForm(){
@@ -2345,21 +2808,113 @@ function applyStatus(order, ns){
     $("#fActive").checked = true;
     $("#fOut").checked = false;
     galerieForm = [];
+    valueImagesForm = {};
     renderGalerieForm();
     renderAxeChecks(null);
     renderStockGrid(null);
+    var ri=$("#stockReservationInfo");if(ri)ri.textContent="Aucune réservation en cours.";
     $("#formTitle").textContent = "Ajouter un produit";
   }
+
+  var wizardStep=1;
+  var PRODUCT_FORM_KEY=KEY+"_product_form", productFormTimer=null;
+  function setupProductWizard(){
+    var form=$("#prodForm"); if(!form||form.querySelector(".wizard-step")) return;
+    var steps=[1,2,3,4].map(function(n){var d=document.createElement("section");d.className="wizard-step";d.setAttribute("data-wizard-step",n);form.appendChild(d);return d;});
+    function field(id){var n=$(id);return n&&n.closest(".field");}
+    function grid(fields){var g=document.createElement("div");g.className="grid2";fields.forEach(function(f){if(f)g.appendChild(f);});return g;}
+    steps[0].appendChild(field("#imgDrop"));
+    steps[0].appendChild(grid([field("#fName"),field("#fCat")]));
+    steps[0].appendChild(field("#fColl"));
+    var urlField=field("#fImg"); if(urlField){var details=document.createElement("details");details.className="advanced-field";details.innerHTML="<summary>J’ai déjà un lien vers la photo</summary>";details.appendChild(urlField);steps[0].appendChild(details);}
+    steps[1].appendChild(grid([field("#fPrice"),field("#fOld")]));
+    steps[1].appendChild(field("#fBadge")); steps[1].appendChild(field("#fDesc"));
+    var axes=field("#fAxesField"), stock=$("#fStockGrid"); if(stock) stock.remove();
+    if(axes) steps[2].appendChild(axes);
+    var colorImages=document.createElement("div");colorImages.className="field";colorImages.id="fValueImagesField";colorImages.hidden=true;colorImages.innerHTML='<label>Une photo pour chaque coloris</label><p class="hint">Le client choisira son coloris en touchant sa vraie photo.</p><div id="fValueImages"></div>';steps[2].appendChild(colorImages);
+    steps[2].appendChild(field("#fGalFile"));
+    var stockField=document.createElement("div");stockField.className="field";stockField.innerHTML='<label>Quantités disponibles</label><p class="hint" id="stockReservationInfo">Aucune réservation en cours.</p><button type="button" class="btn btn-ghost" data-stock-all>Mettre la même quantité partout</button>';if(stock)stockField.appendChild(stock);steps[3].appendChild(stockField);
+    var toggles=$("#fActive")&&$("#fActive").closest(".grid2");if(toggles)steps[3].appendChild(toggles);
+    var actions=$("#prodReset")&&$("#prodReset").parentElement;if(actions)steps[3].appendChild(actions);
+    Array.prototype.slice.call(form.children).forEach(function(n){if(n!==$("#fId")&&!n.classList.contains("wizard-step")&&n.children.length===0)n.remove();});
+    setWizardStep(1);
+  }
+  function setWizardStep(step){
+    wizardStep=Math.max(1,Math.min(4,step));
+    $$(".wizard-step").forEach(function(s){s.classList.toggle("active",Number(s.getAttribute("data-wizard-step"))===wizardStep);});
+    $$("#wizardProgress [data-step]").forEach(function(b){var n=Number(b.getAttribute("data-step"));b.classList.toggle("active",n===wizardStep);b.classList.toggle("done",n<wizardStep);});
+    $("#wizardCounter").textContent="Étape "+wizardStep+" sur 4";
+    $("#wizardBack").disabled=wizardStep===1;
+    $("#wizardNext").style.display=wizardStep===4?"none":"inline-flex";
+  }
+  var productEditorLastFocus = null;
+  function openProductEditor(step){
+    productEditorLastFocus=document.activeElement;
+    $("#productEditor").classList.add("open");
+    $("#productEditor").setAttribute("aria-hidden","false");
+    document.body.style.overflow="hidden";
+    setWizardStep(step||1);
+    setTimeout(function(){$("#closeProductWizard").focus();},0);
+  }
+  function closeProductEditor(){
+    $("#productEditor").classList.remove("open");
+    $("#productEditor").setAttribute("aria-hidden","true");
+    document.body.style.overflow="";
+    if(productEditorLastFocus&&typeof productEditorLastFocus.focus==="function")productEditorLastFocus.focus();
+    productEditorLastFocus=null;
+  }
+  document.addEventListener("keydown",function(e){
+    var editor=$("#productEditor");
+    if(!editor.classList.contains("open"))return;
+    if(e.key==="Escape"||e.key==="Esc"){e.preventDefault();closeProductEditor();return;}
+    if(e.key!=="Tab")return;
+    var focusables=$$('#productEditor button:not([disabled]),#productEditor input:not([disabled]),#productEditor select:not([disabled]),#productEditor textarea:not([disabled])').filter(function(n){return n.offsetParent!==null;});
+    if(!focusables.length)return;
+    var first=focusables[0],last=focusables[focusables.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+    else if(!editor.contains(document.activeElement)){e.preventDefault();first.focus();}
+  });
+  function fieldError(selector,message){var n=$(selector);if(!n)return;var f=n.closest(".field")||n.parentElement;var old=f.querySelector(".field-error");if(!old){old=document.createElement("p");old.className="field-error";old.setAttribute("role","alert");f.appendChild(old);}old.textContent=message;n.setAttribute("aria-invalid","true");}
+  function clearFieldErrors(){$$("#prodForm .field-error").forEach(function(n){n.remove();});$$("#prodForm [aria-invalid]").forEach(function(n){n.removeAttribute("aria-invalid");});}
+  function wizardCanContinue(){
+    clearFieldErrors();
+    if(wizardStep===1){if(!$("#fName").value.trim()){fieldError("#fName","Écrivez le nom du produit.");$("#fName").focus();return false;}if(!$("#fImg").value.trim()){fieldError("#imgDrop","Ajoutez une photo du produit.");$("#imgDrop").focus();return false;}}
+    if(wizardStep===2){var p=parseInt($("#fPrice").value,10);if(!p||p<=0){fieldError("#fPrice","Écrivez un prix supérieur à zéro.");$("#fPrice").focus();return false;}}
+    if(wizardStep===3){var axes=catAxes($("#fCat").value),sel=selectionCourante();for(var i=0;i<axes.length;i++)if(!sel[i]||!sel[i].length){fieldError("#fAxesField","Choisissez au moins une valeur pour « "+axes[i].name+" ».");var first=$("#fAxesField").querySelector("input");if(first)first.focus();return false;}var ci=colorAxisSelection();if(ci){for(var j=0;j<ci.values.length;j++){var ck=ci.name+VSEP+ci.values[j];if(!String(valueImagesForm[ck]||"").trim()){fieldError("#fValueImages","Ajoutez une photo pour le coloris « "+ci.values[j]+" ».");var cf=$$("#fValueImages [data-color-file]").filter(function(n){return n.getAttribute("data-color-file")===ck;})[0];if(cf)cf.focus();return false;}}}}
+    return true;
+  }
+  setupProductWizard();
+  function saveProductFormDraft(){
+    if($("#fId").value)return;
+    var data={name:$("#fName").value,cat:$("#fCat").value,coll:$("#fColl").value,price:$("#fPrice").value,old:$("#fOld").value,badge:$("#fBadge").value,desc:$("#fDesc").value,img:$("#fImg").value,active:$("#fActive").checked,out:$("#fOut").checked,axes:selectionCourante(),stock:stockActuel(),gallery:galerieForm,valueImages:valueImagesForm};
+    try{localStorage.setItem(PRODUCT_FORM_KEY,JSON.stringify(data));}catch(e){}
+  }
+  function restoreProductFormDraft(){
+    var d=null;try{d=JSON.parse(localStorage.getItem(PRODUCT_FORM_KEY)||"null");}catch(e){}if(!d)return;
+    $("#fName").value=d.name||"";$("#fCat").value=d.cat||$("#fCat").value;fillCollSelect();$("#fColl").value=d.coll||"";$("#fPrice").value=d.price||"";$("#fOld").value=d.old||"";$("#fBadge").value=d.badge||"";$("#fDesc").value=d.desc||"";$("#fImg").value=d.img||"";$("#fActive").checked=d.active!==false;$("#fOut").checked=!!d.out;galerieForm=d.gallery||[];valueImagesForm=d.valueImages||{};renderGalerieForm();renderAxeChecks(d.axes||null);renderValueImagesForm();renderStockGrid(d.stock||null);if(d.img){$("#fImgPrev").src=d.img;$("#fImgPrev").style.display="block";}
+  }
+  $("#prodForm").addEventListener("input",function(){clearTimeout(productFormTimer);productFormTimer=setTimeout(saveProductFormDraft,350);});
+  $("#prodForm").addEventListener("change",function(){clearTimeout(productFormTimer);productFormTimer=setTimeout(saveProductFormDraft,100);});
+  $("#openProductWizard").addEventListener("click",function(){resetForm();restoreProductFormDraft();openProductEditor(1);});
+  $("#closeProductWizard").addEventListener("click",closeProductEditor);
+  $("#wizardBack").addEventListener("click",function(){setWizardStep(wizardStep-1);});
+  $("#wizardNext").addEventListener("click",function(){if(wizardCanContinue())setWizardStep(wizardStep+1);});
+  $("#wizardProgress").addEventListener("click",function(e){var b=e.target.closest("[data-step]");if(b&&Number(b.getAttribute("data-step"))<wizardStep)setWizardStep(Number(b.getAttribute("data-step")));});
   $("#fAxes").addEventListener("change", function(){
     renderStockGrid(stockActuel());
+    renderValueImagesForm();
   });
   $("#fCat").addEventListener("change", function(){
     renderAxeChecks(null);
     renderStockGrid(null);
+    renderValueImagesForm();
   });
   /* Report d'une quantité sur toute la ligne : le stock est souvent le même
      d'une couleur à l'autre, autant ne pas le saisir dix fois. */
   $("#fStockGrid").addEventListener("click", function(e){
+    var step=e.target.closest("[data-stock-minus],[data-stock-plus]");
+    if(step){var input=step.parentElement.querySelector("input");var n=Math.max(0,(parseInt(input.value,10)||0)+(step.hasAttribute("data-stock-plus")?1:-1));input.value=n;return;}
     var b = e.target.closest("[data-report]");
     if (!b) return;
     var ligne = b.getAttribute("data-report");
@@ -2488,6 +3043,7 @@ function applyStatus(order, ns){
     var prev = $("#fImgPrev");
     prev.src = url; prev.style.display = "block";
     setImageStatus("Image prête — " + w + "×" + h + " px, " + ko + " Ko, enregistrée " + where + ".", false);
+    renderValueImagesForm();
     toast("Image ajoutée");
   }
 
@@ -2531,12 +3087,22 @@ function applyStatus(order, ns){
     renderGalerieForm();
     toast("Photo retirée — enregistrez le produit");
   });
+  $("#fValueImages").addEventListener("input",function(e){
+    var input=e.target.closest("[data-color-url]");if(!input)return;
+    valueImagesForm[input.getAttribute("data-color-url")]=input.value.trim();
+  });
+  $("#fValueImages").addEventListener("change",function(e){
+    var input=e.target.closest("[data-color-file]");if(!input)return;
+    var key=input.getAttribute("data-color-file"),file=input.files&&input.files[0];input.value="";if(!file)return;
+    envoyerImage(file,3/4,function(url){valueImagesForm[key]=url;renderValueImagesForm();toast("Photo du coloris ajoutée");});
+  });
   $("#fImg").addEventListener("input", function(){
     var url = $("#fImg").value.trim();
     var prev = $("#fImgPrev");
     if (url){ prev.src = url; prev.style.display = "block"; } else prev.style.display = "none";
+    renderValueImagesForm();
   });
-  $("#prodReset").addEventListener("click", function(){ resetForm(); });
+  $("#prodReset").addEventListener("click", function(){ try{localStorage.removeItem(PRODUCT_FORM_KEY);}catch(e){} resetForm(); closeProductEditor(); });
   $("#prodList").addEventListener("click", function(e){
     var t = e.target;
     var ed = t.closest("[data-edit]");
@@ -2544,25 +3110,33 @@ function applyStatus(order, ns){
       ouvrirProduit(ed.getAttribute("data-edit"));
       return;
     }
+    var stockButton=t.closest("[data-stock]");
+    if(stockButton){ouvrirProduit(stockButton.getAttribute("data-stock"));setWizardStep(4);return;}
     var tg = t.closest("[data-toggle]");
     if (tg){
       var p2 = findProduct(tg.getAttribute("data-toggle"));
-      if (p2){ p2.active = p2.active === false ? true : false; saveStore(); syncProducts(); renderProducts(); toast(p2.active ? "Produit affiché" : "Produit masqué"); }
+      if (p2 && requireLiveAction()){
+        var next=p2.active===false;
+        window.AURA_DB.setProductVisibility(p2.id,next,function(er){
+          if(er){toast(er.message||"Le produit n'a pas pu être modifié");renderProducts();return;}
+          p2.active=next; if(next)p2.archived=false; saveStoreWith(draftPayload(),DRAFT_KEY); renderProducts(); renderDash(); toast(next?"Produit affiché":"Produit masqué immédiatement");
+        });
+      }
       return;
     }
     var dl = t.closest("[data-del]");
     if (dl){
       var p3 = findProduct(dl.getAttribute("data-del"));
-      if (p3 && confirm("Supprimer « " + p3.name + " » définitivement ?")){
-        store.products = store.products.filter(function(x){ return x.id !== p3.id; });
-        saveStore(); syncDeleteProduct(p3.id); renderProducts(); renderDash();
-        toast("Produit supprimé");
+      if (p3 && requireLiveAction() && confirm((p3.archived?"Récupérer":"Archiver")+" « " + p3.name + " » ?")){
+        var done=function(er,data){ if(er){toast(er.message||"Action impossible");return;} p3.archived=!!(data&&data.archived); p3.active=!!(data&&data.active); saveStoreWith(draftPayload(),DRAFT_KEY); renderProducts();renderDash();toast(p3.archived?"Produit archivé":"Produit récupéré"); };
+        if(p3.archived) window.AURA_DB.setProductVisibility(p3.id,true,done); else window.AURA_DB.archiveProduct(p3.id,done);
       }
       return;
     }
   });
   $("#prodForm").addEventListener("submit", function(e){
     e.preventDefault();
+    clearFieldErrors();
     var name = $("#fName").value.trim();
     var price = parseInt($("#fPrice").value, 10);
     var oldP = parseInt($("#fOld").value, 10) || 0;
@@ -2570,15 +3144,25 @@ function applyStatus(order, ns){
     var badge = $("#fBadge").value;
     var img = $("#fImg").value.trim();
     var desc = $("#fDesc").value.trim();
-    if (!name){ toast("Nom du produit requis"); return; }
-    if (!price || isNaN(price) || price <= 0){ toast("Prix invalide en FCFA"); return; }
-    if (!img){ toast("Ajoutez une photo du produit avant d'enregistrer"); return; }
+    if (!name){ fieldError("#fName","Écrivez le nom du produit."); setWizardStep(1); $("#fName").focus(); return; }
+    if (!price || isNaN(price) || price <= 0){ fieldError("#fPrice","Écrivez un prix supérieur à zéro."); setWizardStep(2); $("#fPrice").focus(); return; }
+    if (oldP > 0 && oldP <= price){ fieldError("#fOld","L'ancien prix doit être supérieur au prix actuel."); setWizardStep(2); $("#fOld").focus(); return; }
+    if (!img){ fieldError("#imgDrop","Ajoutez une photo du produit."); setWizardStep(1); $("#imgDrop").focus(); return; }
     var axesCat = catAxes(cat);
     var sel = selectionCourante();
     for (var ia=0; ia<axesCat.length; ia++){
       if (!sel[ia] || !sel[ia].length){
-        toast("Cochez au moins une valeur pour « " + axesCat[ia].name + " »");
+        fieldError("#fAxesField","Choisissez au moins une valeur pour « " + axesCat[ia].name + " »."); setWizardStep(3);
         return;
+      }
+    }
+    var colorInfo=colorAxisSelection();
+    if(colorInfo){
+      for(var ic=0;ic<colorInfo.values.length;ic++){
+        var colorKey=colorInfo.name+VSEP+colorInfo.values[ic];
+        if(!String(valueImagesForm[colorKey]||"").trim()){
+          fieldError("#fValueImages","Ajoutez une photo pour le coloris « "+colorInfo.values[ic]+" ».");setWizardStep(3);return;
+        }
       }
     }
     var axesProduit = axesCat.map(function(ax, i){ return { name: ax.name, values: sel[i] }; })
@@ -2589,13 +3173,27 @@ function applyStatus(order, ns){
       if (isNaN(v) || v < 0){ ok = false; return; }
       variants[i.getAttribute("data-cle")] = { s:v, r:0 };
     });
-    if (!ok){ toast("Stock invalide"); return; }
-    if (!Object.keys(variants).length){ toast("Aucun stock à enregistrer"); return; }
+    if (!ok){ fieldError("#fStockGrid","Chaque quantité doit être égale ou supérieure à zéro."); setWizardStep(4); return; }
+    if (!Object.keys(variants).length){ fieldError("#fStockGrid","Ajoutez au moins une quantité."); setWizardStep(4); return; }
     var editing = $("#fId").value;
     var pr;
     if (editing){
       pr = findProduct(editing);
       if (!pr) return;
+      var previousActive=pr.active;
+      var previousAxes=clone(pr.axes||[]);
+      var previousVariants=clone(pr.variants||{});
+      var keysBefore=Object.keys(previousVariants).sort(),keysAfter=Object.keys(variants).sort();
+      var stockChanged=keysBefore.join("\u0000")!==keysAfter.join("\u0000") || keysAfter.some(function(k){
+        return (Number((previousVariants[k]||{}).s)||0) !== (Number((variants[k]||{}).s)||0);
+      });
+      var visibilityChanged=(previousActive!==false)!==$("#fActive").checked;
+      if((stockChanged||visibilityChanged)&&!online()){
+        if(stockChanged){fieldError("#fStockGrid","Reconnectez Internet pour modifier le stock.");setWizardStep(4);}
+        else{fieldError("#fActive","Reconnectez Internet pour afficher ou masquer ce produit.");setWizardStep(4);}
+        toast("Cette action immédiate est bloquée sans Internet");
+        return;
+      }
       pr.name = name; pr.price = price; pr.oldPrice = oldP; pr.cat = cat; pr.badge = badge;
       pr.collection = $("#fColl").value || "";
       pr.img = img; pr.desc = desc; pr.active = $("#fActive").checked; pr.stockout = $("#fOut").checked;
@@ -2603,6 +3201,7 @@ function applyStatus(order, ns){
          ligne, remplacer la photo changeait la carte mais laissait la galerie
          sur l'ancienne image : le commerçant croyait sa photo refusée. */
       pr.imgs = [img].concat(galerieForm.filter(function(u){ return u && u !== img; }));
+      pr.valueImages=cleanValueImages();
       /* Les réservations en cours sont conservées : modifier un stock ne doit
          pas libérer une quantité déjà promise à une commande en attente. */
       var neuf = {};
@@ -2614,23 +3213,40 @@ function applyStatus(order, ns){
       pr.variants = neuf;
       delete pr.sizes;
       saveStore();
-      syncProducts();
-      toast("Produit mis à jour");
+      if(stockChanged) window.AURA_DB.setInventory(pr.id,pr.variants,function(er,data){
+        if(er){
+          pr.axes=previousAxes;pr.variants=previousVariants;
+          saveStore();renderProducts();renderDash();
+          toast(er.message||"Le contenu est en brouillon, mais le stock n'a pas changé");
+        }else if(data&&data.variants){
+          pr.variants=data.variants;saveStoreWith(draftPayload(),DRAFT_KEY);renderProducts();renderDash();
+        }
+      });
+      if(visibilityChanged) window.AURA_DB.setProductVisibility(pr.id,$("#fActive").checked,function(er,data){
+        if(er){
+          pr.active=previousActive;saveStore();renderProducts();renderDash();
+          toast(er.message||"La visibilité du produit n'a pas changé");
+        }else if(data){
+          pr.active=data.active!==false;pr.archived=!!data.archived;
+          saveStoreWith(draftPayload(),DRAFT_KEY);renderProducts();renderDash();
+        }
+      });
     } else {
       store.products.push({ id:"p" + Date.now(), name:name, cat:cat,
         collection:$("#fColl").value || "", price:price,
         oldPrice:oldP, badge:badge, img:img,
         imgs:[img].concat(galerieForm.filter(function(u){ return u && u !== img; })),
+        valueImages:cleanValueImages(),
         desc:desc,
         axes:axesProduit, variants:variants,
         active:$("#fActive").checked, stockout:$("#fOut").checked });
       saveStore();
-      syncProducts();
-      toast("Produit ajouté");
+      toast("Produit ajouté au brouillon");
     }
     renderProducts(); renderDash();
+    try{localStorage.removeItem(PRODUCT_FORM_KEY);}catch(ignore){}
     resetForm();
-    window.scrollTo({ top: 0, behavior:"smooth" });
+    closeProductEditor();
   });
 
   /* ---------------- Réglages ---------------- */
@@ -2638,12 +3254,18 @@ function applyStatus(order, ns){
     var s = store.settings;
     $("#sWhats").value = s.whatsapp || "";
     $("#sName").value = s.shopName || "";
+    $("#sLogo").value = s.logo || "";
+    $("#sAccent").value = ["#000000","#0759ea","#c2410c","#15803d"].indexOf(s.accent)>=0?s.accent:"#000000";
+    $("#sAddress").value = s.address || "";
+    $("#sHours").value = s.hours || "";
+    $("#sShareImage").value = s.shareImage || "";
     /* Le commerçant a renommé sa boutique : son administration doit porter le
        nouveau nom, pas celui du modèle de départ. */
-    var nom = s.shopName || "AURA STUDIOS";
+    var nom = s.shopName || "SNEAK BAMAKO";
     document.title = nom + " — Administration";
     var enseigne = $("#brandAdmin");
     if (enseigne) enseigne.childNodes[0].nodeValue = nom;
+    var enseigneMobile=$("#brandAdminMobile"); if(enseigneMobile) enseigneMobile.textContent=nom;
     $("#sFee").value = s.deliveryFee != null ? s.deliveryFee : "";
     $("#sFree").value = s.freeFrom != null ? s.freeFrom : 0;
     $("#sDelay").value = s.deliveryTime || "";
@@ -2675,7 +3297,12 @@ function applyStatus(order, ns){
       }
     }
     store.settings.whatsapp = wa;
-    store.settings.shopName = $("#sName").value.trim() || "AURA STUDIOS";
+    store.settings.shopName = $("#sName").value.trim() || "SNEAK BAMAKO";
+    store.settings.logo = $("#sLogo").value.trim();
+    store.settings.accent = $("#sAccent").value;
+    store.settings.address = $("#sAddress").value.trim();
+    store.settings.hours = $("#sHours").value.trim();
+    store.settings.shareImage = $("#sShareImage").value.trim();
     store.settings.deliveryFee = fee;
     store.settings.freeFrom = free;
     store.settings.deliveryTime = $("#sDelay").value.trim();
@@ -2689,8 +3316,31 @@ function applyStatus(order, ns){
        lisible publiquement par la boutique. */
     delete store.settings.password;
     saveStore();
-    syncSettings();
-    toast("Réglages enregistrés");
+    fillSettings();
+    toast("Réglages enregistrés dans le brouillon");
+  });
+  $("#contenuBlocs").addEventListener("click",function(e){if(e.target.closest("[data-preview-content]"))previewDraft();});
+  $("#prodForm").addEventListener("click",function(e){
+    var all=e.target.closest("[data-stock-all]");if(!all)return;
+    var value=prompt("Quelle quantité mettre partout ?","1");if(value===null)return;var n=parseInt(value,10);if(isNaN(n)||n<0){toast("Quantité invalide");return;}
+    $$("#fStockGrid input[data-cle]").forEach(function(i){i.value=n;});toast("Même quantité appliquée partout");
+  });
+  [["#sLogoFile","#sLogo","logo",0],["#sShareFile","#sShareImage","shareImage",16/9]].forEach(function(cfg){
+    var input=$(cfg[0]); if(!input)return; input.addEventListener("change",function(){
+      var file=this.files&&this.files[0];this.value="";if(!file)return;
+      envoyerImage(file,cfg[3],function(url){$(cfg[1]).value=url;store.settings[cfg[2]]=url;saveStore();toast("Image ajoutée au brouillon");});
+    });
+  });
+
+  function fillLegal(){
+    var l=store.settings.legal||{};
+    $("#legalForme").value=l.forme||"";$("#legalEmail").value=l.email||"";$("#legalAdresse").value=l.adresse||"";
+    $("#legalRccm").value=l.rccm||"";$("#legalNif").value=l.nif||"";$("#legalSizes").value=store.settings.sizeGuideText||"";
+  }
+  $("#legalForm").addEventListener("submit",function(e){e.preventDefault();
+    var email=$("#legalEmail").value.trim();if(email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast("Vérifiez l'adresse e-mail");$("#legalEmail").focus();return;}
+    store.settings.legal={forme:$("#legalForme").value.trim(),email:email,adresse:$("#legalAdresse").value.trim(),rccm:$("#legalRccm").value.trim(),nif:$("#legalNif").value.trim()};
+    store.settings.sizeGuideText=$("#legalSizes").value.trim();saveStore();toast("Informations légales enregistrées dans le brouillon");
   });
 
   function renderAll(){
@@ -2705,6 +3355,7 @@ function applyStatus(order, ns){
     renderCatSettings();
     renderReviews();
     fillSettings();
+    fillLegal();
     renderNews();
   }
 

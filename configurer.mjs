@@ -17,10 +17,10 @@
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
-const DOMAINE_DEMO = 'https://aura-studios.vercel.app';
+const DOMAINE_DEMO = 'https://boutique-aura-studios.vercel.app';
 
 const FICHIERS_DOMAINE = [
-  'index.html', 'catalogue.html', 'collection.html',
+  'index.html', 'catalogue.html', 'collection.html', 'produit.html', '404.html',
   'cgv.html', 'confidentialite.html',
   'guide-des-tailles.html', 'durabilite.html',
   'robots.txt', 'sitemap.xml',
@@ -30,11 +30,11 @@ const FICHIERS_DOMAINE = [
    commerçant ne peut pas modifier depuis l'administration : ce sont elles qui
    composent l'aperçu affiché quand il envoie le lien de sa boutique sur
    WhatsApp. Sans ce passage, il enverrait le nom du modèle de départ. */
-const ENSEIGNE_DEMO = 'AURA STUDIOS';
-const IMAGE_DEMO = 'imagery/cover-0.webp';
+const ENSEIGNE_DEMO = 'SNEAK BAMAKO';
+const IMAGE_DEMO = '/assets/hero.webp';
 
 const FICHIERS_ENSEIGNE = [
-  'index.html', 'catalogue.html', 'collection.html', '404.html',
+  'index.html', 'catalogue.html', 'collection.html', 'produit.html', '404.html',
   'cgv.html', 'confidentialite.html', 'guide-des-tailles.html', 'durabilite.html',
 ];
 
@@ -109,11 +109,15 @@ if (o.image) {
     console.error(`Image de partage introuvable : ${o.image}`);
     process.exit(1);
   }
-  for (const f of FICHIERS_ENSEIGNE) {
+  /* Les balises Open Graph pointent désormais vers `/api/share-image`.
+     L'option configure donc uniquement son image de repli ; elle ne doit
+     jamais remplacer par accident le hero visible de la page d'accueil. */
+  const imagePublique = '/' + o.image.replace(/^\.?[\\/]+/, '').replace(/\\/g, '/');
+  for (const f of ['api/share-image.js']) {
     const s = lire(f);
     if (s === null || !s.includes(IMAGE_DEMO)) continue;
     const n = (s.match(new RegExp(IMAGE_DEMO.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
-    writeFileSync(f, s.split(IMAGE_DEMO).join(o.image), 'utf8');
+    writeFileSync(f, s.split(IMAGE_DEMO).join(imagePublique), 'utf8');
     modifs.push(`${f} — ${n} référence${n > 1 ? 's' : ''} à l'image de partage`);
   }
 }
@@ -125,7 +129,7 @@ const LEGAL = [
   ['rccm',     /Registre du commerce \(RCCM\) : \[à compléter\]/,      v => `Registre du commerce (RCCM) : ${v}`],
   ['nif',      /Numéro d'identification fiscale \(NIF\) : \[à compléter\]/, v => `Numéro d'identification fiscale (NIF) : ${v}`],
   ['email',    /— \[adresse e-mail\]/,                                 v => `— ${v}`],
-  ['enseigne', /Dénomination : AURA STUDIOS/,                          v => `Dénomination : ${v}`],
+  ['enseigne', /Dénomination : SNEAK BAMAKO/,                          v => `Dénomination : ${v}`],
 ];
 
 let cgv = lire('cgv.html');
