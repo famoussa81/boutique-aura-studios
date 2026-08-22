@@ -182,7 +182,6 @@
   .val-liste{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
   .val-chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg);
     border:1px solid var(--line);border-radius:30px;padding:5px 6px 5px 10px;font-size:12.5px;font-weight:700}
-  .val-chip i{width:14px;height:14px;border-radius:50%;border:1px solid var(--line);display:inline-block}
   .val-chip img{width:22px;height:22px;border-radius:4px;object-fit:cover;
     border:1px solid var(--line)}
   .val-chip.a-image{padding-left:5px}
@@ -196,10 +195,6 @@
   .val-ajout{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
   .val-ajout input[type=text]{flex:1;min-width:140px;height:38px;border:1px solid var(--line);
     border-radius:var(--radius);padding:0 10px;font:inherit;font-size:13px;background:var(--bg);color:var(--ink)}
-  .val-ajout .teinte{display:inline-flex;align-items:center;gap:5px;font-size:12px;
-    color:var(--muted);white-space:nowrap}
-  .val-ajout input[type=color]{width:38px;height:38px;padding:2px;border:1px solid var(--line);
-    border-radius:var(--radius);background:var(--bg);cursor:pointer}
   .cat-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
   .cat-row input{height:40px;border:1px solid var(--line);border-radius:var(--radius);padding:0 10px;
     font:inherit;font-size:13px;background:var(--bg);color:var(--ink)}
@@ -213,7 +208,7 @@
   .ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
     padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 </style>
-<link rel="stylesheet" href="admin-dashboard.css?v=20260822e" />
+<link rel="stylesheet" href="admin-dashboard.css?v=20260823f" />
 </head>
 <body>
 
@@ -266,7 +261,7 @@
   </header>
 
   <div class="connection-banner" id="connectionBanner" role="status" hidden>
-    <span id="connectionBannerText">Internet coupé — votre brouillon reste sur cet appareil. Publication et stock sont bloqués.</span>
+    <span id="connectionBannerText">Internet coupé — vos changements restent sur cet appareil. Mise en ligne et stock bloqués.</span>
     <span class="conflict-actions" id="draftConflictActions" hidden>
       <button type="button" id="keepLocalDraft">Garder ce téléphone</button>
       <button type="button" id="loadRemoteDraft">Charger l’autre version</button>
@@ -292,7 +287,7 @@
             <h2>Ma boutique</h2>
             <div class="publish-state"><i></i><div><strong id="draftStateTitle">Boutique publiée</strong><span id="draftStateText">Aucun changement en attente</span></div></div>
             <button type="button" class="btn btn-primary btn-full" id="publishStoreBtn">Publier</button>
-            <button type="button" class="btn btn-ghost btn-full" id="previewDraftBtn">Voir le brouillon</button>
+            <button type="button" class="btn btn-ghost btn-full" id="previewDraftBtn">Voir avant de publier</button>
           </section>
           <section class="help-panel"><h2>Besoin d'aide ?</h2><button type="button" data-view="help">Ouvrir le guide simple</button></section>
         </aside>
@@ -302,8 +297,8 @@
 
     <section class="view" id="view-orders">
       <div class="view-head">
-        <div><h1>Commandes</h1><p>Passez une commande en attente à « Confirmée » pour décrémenter réellement le stock. Annulée libère la réservation.</p></div>
-        <button type="button" class="btn btn-primary" id="exportOrders">Exporter en CSV</button>
+        <div><h1>Commandes</h1><p>Quand vous confirmez une commande, les quantités sont retirées du stock. Si vous l’annulez, elles sont remises.</p></div>
+        <button type="button" class="btn btn-primary" id="exportOrders">Télécharger la liste</button>
       </div>
       <div class="card" style="margin-bottom:14px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
         <div class="field" style="margin:0;flex:1;min-width:200px">
@@ -311,9 +306,9 @@
           <input type="search" id="ordSearch" placeholder="Référence, client, téléphone, quartier…" />
         </div>
         <div class="field" style="margin:0;min-width:180px">
-          <label for="ordStatus">Statut</label>
+          <label for="ordStatus">Afficher</label>
           <select id="ordStatus">
-            <option value="">Tous les statuts</option>
+            <option value="">Toutes les commandes</option>
             <option value="PENDING">À confirmer</option>
             <option value="CONFIRMED">À livrer</option>
             <option value="SHIPPING">En livraison</option>
@@ -327,7 +322,7 @@
         <table>
           <thead>
             <tr>
-              <th>Référence</th><th>Date</th><th>Client</th><th>Numéro</th><th>Quartier</th><th>Total</th><th>Statut</th><th>Contact</th><th>Gérer</th>
+              <th>Numéro</th><th>Date</th><th>Client</th><th>Téléphone</th><th>Quartier</th><th>Total</th><th>État</th><th>Contact</th><th>Gérer</th>
             </tr>
           </thead>
         <tbody id="ordersBody"></tbody>
@@ -338,7 +333,7 @@
 
     <section class="view" id="view-products">
       <div class="view-head">
-        <div><h1>Produits</h1><p>Le contenu reste en brouillon. Le stock et le masquage d'urgence sont immédiats.</p></div>
+        <div><h1>Produits</h1><p>Noms, prix et photos attendent votre publication. Stock et visibilité changent immédiatement.</p></div>
         <button type="button" class="btn btn-primary" id="openProductWizard">Ajouter un produit</button>
       </div>
       <div class="product-tools card">
@@ -353,7 +348,7 @@
         <div class="card product-editor" id="productEditor" role="dialog" aria-modal="true" aria-labelledby="formTitle" aria-hidden="true" tabindex="-1">
           <button type="button" class="editor-close" id="closeProductWizard" aria-label="Fermer">×</button>
           <h2 id="formTitle">Ajouter un produit</h2>
-          <div class="wizard-progress" id="wizardProgress" aria-label="Progression"><button type="button" data-step="1"><b>1</b><span>Produit</span></button><button type="button" data-step="2"><b>2</b><span>Prix</span></button><button type="button" data-step="3"><b>3</b><span>Choix</span></button><button type="button" data-step="4"><b>4</b><span>Quantités</span></button></div>
+          <div class="wizard-progress" id="wizardProgress" aria-label="Progression"><button type="button" data-step="1"><b>1</b><span>Produit</span></button><button type="button" data-step="2"><b>2</b><span>Prix</span></button><button type="button" data-step="3"><b>3</b><span>Modèles</span></button><button type="button" data-step="4"><b>4</b><span>Stock</span></button></div>
           <p class="wizard-counter" id="wizardCounter">Étape 1 sur 4</p>
           <form id="prodForm" novalidate>
             <input type="hidden" id="fId" />
@@ -386,7 +381,7 @@
               </div>
             </div>
             <div class="field">
-              <label for="fBadge">Badge</label>
+              <label for="fBadge">Petit texte sur la photo</label>
               <select id="fBadge">
                 <option value="">Aucun</option>
                 <option value="Nouveau">Nouveau</option>
@@ -394,7 +389,7 @@
               </select>
             </div>
             <div class="field" id="fAxesField">
-              <label>Pointures et couleurs</label>
+              <label>Choix proposés au client</label>
               <p class="hint" id="fAxesHint"></p>
               <div id="fAxes"></div>
               <div id="fStockGrid"></div>
@@ -403,7 +398,7 @@
               <label>Image du produit</label>
               <label class="drop" id="imgDrop">
                 <b>Choisir une photo</b>
-                <span>Depuis votre téléphone ou votre ordinateur — JPG ou PNG</span>
+                <span>Depuis votre téléphone ou votre ordinateur</span>
                 <input type="file" id="fFile" accept="image/*" />
               </label>
               <p class="hint" id="imgStatus" style="margin-top:8px"></p>
@@ -432,7 +427,7 @@
             </div>
             <div class="grid2">
               <label class="toggle"><input type="checkbox" id="fActive" checked /><span>Visible en boutique</span></label>
-              <label class="toggle"><input type="checkbox" id="fOut" /><span>Marquer en rupture de stock</span></label>
+              <label class="toggle"><input type="checkbox" id="fOut" /><span>Afficher comme épuisé</span></label>
             </div>
             <div style="display:flex;gap:10px;margin-top:18px">
               <button type="submit" class="btn btn-primary" style="flex:1">Enregistrer le produit</button>
@@ -472,19 +467,19 @@
         <div class="field"><label for="legalAdresse">Adresse du siège</label><input id="legalAdresse" /></div>
         <div class="grid2"><div class="field"><label for="legalRccm">Numéro RCCM</label><input id="legalRccm" /></div><div class="field"><label for="legalNif">Numéro NIF</label><input id="legalNif" /></div></div>
         <div class="field"><label for="legalSizes">Conseil pour les pointures</label><textarea id="legalSizes" maxlength="500" placeholder="Expliquez simplement comment choisir sa pointure."></textarea></div>
-        <button class="btn btn-primary" type="submit">Enregistrer le brouillon</button>
+        <button class="btn btn-primary" type="submit">Enregistrer les changements</button>
       </form>
     </section>
 
     <section class="view" id="view-help">
       <div class="view-head"><div><h1>Guide simple</h1><p>Les six gestes à connaître pour gérer la boutique.</p></div><button class="btn btn-ghost" type="button" data-view="more">Retour</button></div>
-      <ol class="training-list"><li><b>Répondre à une commande</b><span>Ouvrez Commandes puis appuyez sur Traiter.</span></li><li><b>Changer un stock</b><span>Ouvrez Produits, choisissez le modèle puis les quantités.</span></li><li><b>Ajouter une paire</b><span>Suivez les quatre étapes. Une seule question à la fois.</span></li><li><b>Modifier la boutique</b><span>Changez les textes ou les photos dans Site.</span></li><li><b>Vérifier avant</b><span>Appuyez sur Voir le brouillon.</span></li><li><b>Mettre en ligne</b><span>Appuyez sur Publier seulement quand tout est prêt.</span></li></ol>
+      <ol class="training-list"><li><b>Répondre à une commande</b><span>Ouvrez Commandes puis appuyez sur Traiter.</span></li><li><b>Changer un stock</b><span>Ouvrez Produits, choisissez le modèle puis les quantités.</span></li><li><b>Ajouter une paire</b><span>Suivez les quatre étapes. Une seule question à la fois.</span></li><li><b>Modifier la boutique</b><span>Changez les textes ou les photos dans Site.</span></li><li><b>Vérifier avant</b><span>Appuyez sur Voir avant de publier.</span></li><li><b>Mettre en ligne</b><span>Appuyez sur Publier seulement quand tout est prêt.</span></li></ol>
     </section>
 
     <section class="view" id="view-news">
       <div class="view-head">
-        <div><h1>Newsletter</h1><p>Adresses collectées par le formulaire de la boutique.</p></div>
-        <button type="button" class="btn btn-primary" id="exportNews">Exporter en CSV</button>
+        <div><h1>Clients inscrits aux nouveautés</h1><p>Adresses laissées dans le formulaire de la boutique.</p></div>
+        <button type="button" class="btn btn-primary" id="exportNews">Télécharger la liste</button>
       </div>
       <div class="card" style="overflow-x:auto">
         <table>
@@ -496,8 +491,8 @@
 
     <section class="view" id="view-wait">
       <div class="view-head">
-        <div><h1>Liste d'attente</h1><p>Clients qui ont demandé à être prévenus du retour d'une taille épuisée. Ce sont des ventes déjà acquises : contactez-les dès le réassort.</p></div>
-        <button type="button" class="btn btn-primary" id="exportWait">Exporter en CSV</button>
+        <div><h1>Clients à prévenir</h1><p>Clients qui attendent le retour d’une pointure. Contactez-les dès que le produit revient.</p></div>
+        <button type="button" class="btn btn-primary" id="exportWait">Télécharger la liste</button>
       </div>
       <div class="card" style="overflow-x:auto">
         <table>
@@ -552,7 +547,7 @@
               <p class="hint">N'inventez jamais un témoignage : un faux avis se repère et détruit la confiance. Demandez l'accord du client avant publication.</p>
             </div>
             <label class="chk" style="margin-bottom:14px"><input type="checkbox" id="rConsent" /> Le client a accepté que son message soit affiché.</label>
-            <button type="submit" class="btn btn-primary btn-full">Ajouter au brouillon</button>
+            <button type="submit" class="btn btn-primary btn-full">Ajouter l’avis</button>
           </form>
         </div>
       </div>
@@ -567,11 +562,11 @@
 
     <section class="view" id="view-catalogue">
       <div class="view-head">
-        <div><h1>Catégories &amp; marques</h1><p>Comment votre marchandise est rangée. Une <b>catégorie</b> dit ce qu'est un produit — elle porte ses pointures et ses coloris. Une <b>marque</b> dit de qui il est — elle lui donne sa page sur le site.</p></div>
+        <div><h1>Catégories &amp; marques</h1><p>Rangez simplement la boutique. Une <b>catégorie</b> est un type de produit, comme « Claquettes ». Une <b>marque</b> est le nom affiché avec le produit.</p></div>
       </div>
       <div class="card" style="max-width:640px">
         <h2>Catégories de la boutique</h2>
-        <p class="hint" style="margin-bottom:16px">Elles alimentent les onglets, la navigation et le pied de page. Une catégorie utilisée par des produits ne peut pas être supprimée.</p>
+        <p class="hint" style="margin-bottom:16px">Elles rangent les produits dans le menu. Une catégorie déjà utilisée ne peut pas être supprimée.</p>
         <div id="catList"></div>
         <div class="or">Ajouter</div>
         <form id="catForm" novalidate>
@@ -600,43 +595,37 @@
 
     <section class="view" id="view-settings">
       <div class="view-head">
-        <div><h1>Identité et livraison</h1><p>Vos changements restent en brouillon jusqu'à ce que vous les publiiez.</p></div>
+        <div><h1>Identité et livraison</h1><p>Enregistrez ici. Puis utilisez Publier pour mettre les changements en ligne.</p></div>
       </div>
       <div class="card" style="max-width:640px">
         <form id="settingsForm" novalidate>
-          <div class="field">
-            <label for="sWhats">Numéro WhatsApp du commerçant</label>
-            <input type="tel" id="sWhats" placeholder="22376123456" />
-            <p class="hint">Format international sans le + : 223 (Mali) puis le numéro.</p>
-          </div>
+          <h2 class="form-section-title">Boutique</h2>
           <div class="field">
             <label for="sName">Nom de la boutique</label>
             <input type="text" id="sName" />
           </div>
           <div class="field">
-            <label for="sLogo">Logo de la boutique</label>
-            <input type="url" id="sLogo" placeholder="Adresse du logo" />
-            <label class="filebtn" style="margin-top:8px"><b>Choisir un logo</b><span>PNG ou WebP, fond transparent conseillé</span><input type="file" id="sLogoFile" accept="image/*" /></label>
+            <label>Logo de la boutique</label>
+            <input type="hidden" id="sLogo" />
+            <label class="filebtn"><b>Choisir un logo</b><span>Fond transparent conseillé</span><input type="file" id="sLogoFile" accept="image/*" /></label>
           </div>
-          <div class="field"><label for="sAccent">Couleur des boutons</label><select id="sAccent"><option value="#000000">Noir</option><option value="#0759ea">Bleu</option><option value="#c2410c">Orange</option><option value="#15803d">Vert</option></select><p class="hint">Quatre couleurs vérifiées. La disposition et les polices restent protégées.</p></div>
+          <div class="field"><label for="sAccent">Couleur des boutons</label><select id="sAccent"><option value="#000000">Noir</option><option value="#0759ea">Bleu</option><option value="#c2410c">Orange</option><option value="#15803d">Vert</option></select><p class="hint">Choisissez seulement la couleur. Le reste du design reste protégé.</p></div>
+
+          <h2 class="form-section-title">Commandes et livraison</h2>
+          <div class="field">
+            <label for="sWhats">Numéro WhatsApp du commerçant</label>
+            <input type="tel" id="sWhats" placeholder="22376123456" />
+            <p class="hint">Format international sans le + : 223 (Mali) puis le numéro.</p>
+          </div>
           <div class="grid2"><div class="field"><label for="sAddress">Adresse</label><input id="sAddress" placeholder="Quartier, Bamako" maxlength="120" /></div><div class="field"><label for="sHours">Horaires</label><input id="sHours" placeholder="Lun–Sam, 9h–19h" maxlength="80" /></div></div>
           <div class="field">
             <label for="sFee">Frais de livraison à Bamako (FCFA)</label>
             <input type="number" id="sFee" min="0" step="100" />
           </div>
           <div class="field">
-            <label for="sFoot">Phrase de présentation (bas de page)</label>
-            <input type="text" id="sFoot" maxlength="160" />
-            <p class="hint">Une ou deux lignes sous votre nom, tout en bas du site. Dites ce que vous vendez et où.</p>
-          </div>
-          <div class="field">
-            <label for="sAnn">Bannière d'annonce (haut de site)</label>
-            <input type="text" id="sAnn" />
-            <p class="hint">Si vous y annoncez un seuil de livraison offerte, vérifiez qu'il correspond au champ ci-dessus.</p>
-          </div>
-          <div class="field">
             <label for="sFree">Livraison offerte à partir de (FCFA)</label>
             <input type="number" id="sFree" min="0" step="1000" placeholder="50000" />
+            <p class="hint">Écrivez 0 si vous n’offrez pas la livraison.</p>
           </div>
           <div class="field">
             <label for="sDelay">Délai de livraison annoncé</label>
@@ -647,24 +636,38 @@
             <label for="sExchange">Délai d'échange annoncé</label>
             <input type="text" id="sExchange" placeholder="48h" maxlength="40" />
             <p class="hint">Laissez vide si vous ne souhaitez pas annoncer de délai — la mention devient simplement « Échange possible ». N'annoncez que ce que vous pouvez tenir : une promesse non honorée sur les premières commandes se paie en bouche-à-oreille.</p>
-            <p class="hint">0 = pas de livraison offerte. Ce seuil est appliqué au calcul du panier.</p>
+          </div>
+
+          <h2 class="form-section-title">Textes affichés sur le site</h2>
+          <div class="field">
+            <label for="sFoot">Présentation en bas de page</label>
+            <input type="text" id="sFoot" maxlength="160" />
+            <p class="hint">Dites en une ou deux lignes ce que vous vendez et où.</p>
           </div>
           <div class="field">
-            <label for="sIG">Lien Instagram</label>
-            <input type="url" id="sIG" placeholder="https://instagram.com/votre-compte" />
-            <p class="hint">Laisser vide masque l'icône dans le pied de page de la boutique.</p>
+            <label for="sAnn">Message tout en haut du site</label>
+            <input type="text" id="sAnn" />
+            <p class="hint">Exemple : « Livraison offerte dès 50 000 FCFA ». Vérifiez que le montant correspond au réglage ci-dessus.</p>
           </div>
-          <div class="field">
-            <label for="sTT">Lien TikTok</label>
-            <input type="url" id="sTT" placeholder="https://tiktok.com/@votre-compte" />
-          </div>
-          <div class="field">
-            <label for="sYT">Lien YouTube</label>
-            <input type="url" id="sYT" placeholder="https://youtube.com/@votre-chaine" />
-          </div>
-          <div class="field"><label for="sShareImage">Image utilisée quand le site est partagé</label><input type="url" id="sShareImage" placeholder="Adresse de l'image" /><label class="filebtn" style="margin-top:8px"><b>Choisir une image</b><span>Format horizontal</span><input type="file" id="sShareFile" accept="image/*" /></label></div>
-          <p class="hint" style="margin-bottom:14px">Le mot de passe d'administration se change dans Supabase → Authentication → Users. Il n'est jamais stocké dans ce site.</p>
-          <button type="submit" class="btn btn-primary btn-full">Enregistrer dans le brouillon</button>
+          <details class="advanced-field settings-more">
+            <summary>Réseaux sociaux et image de partage</summary>
+            <div class="field">
+              <label for="sIG">Lien Instagram</label>
+              <input type="url" id="sIG" placeholder="https://instagram.com/votre-compte" />
+              <p class="hint">Laissez vide pour ne pas afficher Instagram.</p>
+            </div>
+            <div class="field">
+              <label for="sTT">Lien TikTok</label>
+              <input type="url" id="sTT" placeholder="https://tiktok.com/@votre-compte" />
+            </div>
+            <div class="field">
+              <label for="sYT">Lien YouTube</label>
+              <input type="url" id="sYT" placeholder="https://youtube.com/@votre-chaine" />
+            </div>
+            <div class="field"><label>Image affichée quand le site est partagé</label><input type="hidden" id="sShareImage" /><label class="filebtn"><b>Choisir une image</b><span>Photo horizontale conseillée</span><input type="file" id="sShareFile" accept="image/*" /></label></div>
+          </details>
+          <p class="hint" style="margin-bottom:14px">Pour changer votre mot de passe, contactez la personne qui a installé la boutique.</p>
+          <button type="submit" class="btn btn-primary btn-full">Enregistrer les changements</button>
         </form>
       </div>
 
@@ -672,7 +675,7 @@
 
   </main>
 
-  <div class="draft-bar" id="draftBar" hidden><span id="draftBarText">Brouillon enregistré</span><button type="button" class="btn btn-ghost" id="draftPreviewBottom">Voir avant</button><button type="button" class="btn btn-primary" id="draftPublishBottom">Publier</button></div>
+  <div class="draft-bar" id="draftBar" hidden><span id="draftBarText">Changements enregistrés</span><button type="button" class="btn btn-ghost" id="draftPreviewBottom">Voir avant de publier</button><button type="button" class="btn btn-primary" id="draftPublishBottom">Publier</button></div>
 
   <div class="toast" id="toast"></div>
 
@@ -816,7 +819,7 @@
   function persistDraft(cb){
     cb = cb || function(){};
     if (!online()) return cb(new Error("Internet coupé"));
-    if (draftMeta.conflict) return cb(new Error("Choisissez d’abord quelle version du brouillon conserver"));
+    if (draftMeta.conflict) return cb(new Error("Choisissez d’abord quels changements conserver"));
     if (draftSaving){ draftQueued = true; return setTimeout(function(){persistDraft(cb);},250); }
     draftSaving = true;
     uploadLocalDraftImages(function(imageError){
@@ -941,17 +944,17 @@
     var conflict = mode === "conflict" || !!draftMeta.conflict;
     if (banner){ banner.hidden = false; banner.classList.toggle("show", disconnected || conflict); }
     var bannerText=$("#connectionBannerText");
-    if(bannerText)bannerText.textContent=conflict ? "Deux appareils ont modifié le brouillon. Choisissez la version à conserver." : "Internet coupé — votre brouillon reste sur cet appareil. Publication et stock sont bloqués.";
+    if(bannerText)bannerText.textContent=conflict ? "Deux appareils ont fait des changements. Choisissez ceux à conserver." : "Internet coupé — vos changements restent sur cet appareil. Mise en ligne et stock bloqués.";
     var conflictActions=$("#draftConflictActions");if(conflictActions)conflictActions.hidden=!conflict;
-    var title = draftMeta.dirty ? "Brouillon à publier" : "Boutique publiée";
+    var title = draftMeta.dirty ? "Changements prêts" : "Boutique publiée";
     var detail = draftMeta.dirty ? "Vos changements ne sont pas encore visibles par les clients." : "Aucun changement en attente";
     if (conflict){ title = "Modification sur un autre appareil"; detail = "Choisissez la version à conserver avant de continuer."; }
-    if (disconnected){ title = "Brouillon sur cet appareil"; detail = "Internet coupé : rien ne sera publié pour le moment."; }
+    if (disconnected){ title = "Changements sur cet appareil"; detail = "Internet coupé : rien ne sera publié pour le moment."; }
     ["#draftStateTitle"].forEach(function(id){ var n=$(id); if(n) n.textContent=title; });
     ["#draftStateText"].forEach(function(id){ var n=$(id); if(n) n.textContent=detail; });
-    ["#mobilePublishState","#sidebarPublishState"].forEach(function(id){ var n=$(id); if(n) n.textContent=draftMeta.dirty ? "Brouillon" : "Publiée"; });
+    ["#mobilePublishState","#sidebarPublishState"].forEach(function(id){ var n=$(id); if(n) n.textContent=draftMeta.dirty ? "À publier" : "Publiée"; });
     var bar = $("#draftBar"); if (bar){ bar.hidden = false; bar.classList.toggle("show", !!draftMeta.dirty); }
-    var barText = $("#draftBarText"); if (barText) barText.textContent = disconnected ? "Brouillon gardé sur ce téléphone" : "Brouillon enregistré";
+    var barText = $("#draftBarText"); if (barText) barText.textContent = disconnected ? "Changements gardés sur ce téléphone" : "Changements enregistrés";
     ["#publishStoreBtn","#sitePublishBtn","#draftPublishBottom"].forEach(function(id){ var n=$(id); if(n) n.disabled = disconnected || conflict || !draftMeta.dirty; });
     var last = $("#lastPublishedAt");
     if (last && draftMeta.publishedAt){
@@ -963,7 +966,7 @@
     draftMeta.version=Number(remoteConflictDraft.version)||draftMeta.version;
     draftMeta.id=remoteConflictDraft.id||draftMeta.id;
     draftMeta.conflict=false;draftMeta.dirty=true;remoteConflictDraft=null;
-    saveDraftMeta();updateDraftUI();scheduleDraftSave();toast("Le brouillon de ce téléphone sera conservé");
+    saveDraftMeta();updateDraftUI();scheduleDraftSave();toast("Les changements de ce téléphone seront conservés");
   });
   $("#loadRemoteDraft").addEventListener("click",function(){
     if(!remoteConflictDraft||!remoteConflictDraft.data)return;
@@ -986,7 +989,7 @@
     var buttons = [$("#publishStoreBtn"),$("#sitePublishBtn"),$("#draftPublishBottom")];
     buttons.forEach(function(b){ if(b){ b.disabled=true; b.textContent="Publication…"; } });
     persistDraft(function(er){
-      if (er){ buttons.forEach(function(b){ if(b) b.textContent="Publier"; }); toast("Le brouillon n'a pas pu être enregistré"); return; }
+      if (er){ buttons.forEach(function(b){ if(b) b.textContent="Publier"; }); toast("Les changements n'ont pas pu être enregistrés"); return; }
       window.AURA_DB.publishDraft(draftMeta.id, draftMeta.version, function(ep, result){
         buttons.forEach(function(b){ if(b) b.textContent="Publier"; });
         if (ep){ updateDraftUI(/autre appareil|modifi/i.test(ep.message||"") ? "conflict" : "offline"); toast(ep.message || "Publication impossible"); return; }
@@ -1005,7 +1008,7 @@
       if (er || !rows || !rows.length){ host.innerHTML='<p class="hint">Aucune ancienne publication pour le moment.</p>'; return; }
       host.innerHTML = rows.map(function(r){
         var date=""; try { date=new Date(r.created_at).toLocaleString("fr-FR",{dateStyle:"medium",timeStyle:"short"}); } catch(e){}
-        return '<div class="revision-row"><span><b>Publication</b><small>'+esc(date)+'</small></span><button type="button" class="sbtn" data-restore="'+esc(r.id)+'">Restaurer en brouillon</button></div>';
+        return '<div class="revision-row"><span><b>Publication</b><small>'+esc(date)+'</small></span><button type="button" class="sbtn" data-restore="'+esc(r.id)+'">Réutiliser cette version</button></div>';
       }).join("");
     });
   }
@@ -1016,12 +1019,12 @@
   var revisionsHost = $("#revisionList");
   if (revisionsHost) revisionsHost.addEventListener("click", function(e){
     var b=e.target.closest("[data-restore]"); if(!b || !online()) return;
-    if(!confirm("Remettre cette ancienne publication dans votre brouillon ? La boutique en ligne ne changera pas encore.")) return;
+    if(!confirm("Réutiliser cette ancienne version ? La boutique en ligne ne changera pas avant votre prochaine publication.")) return;
     window.AURA_DB.restoreRevisionAsDraft(b.getAttribute("data-restore"), draftMeta.version, function(er,row){
       if(er){ toast(er.message || "Restauration impossible"); return; }
       if(row && row.data){ store.settings=row.data.settings||store.settings; store.products=mergeDraftProducts(row.data.products||store.products,store.products); }
       draftMeta.version=Number(row && row.version)||draftMeta.version; draftMeta.dirty=true;
-      saveStoreWith(draftPayload(),DRAFT_KEY); saveDraftMeta(); renderAll(); updateDraftUI(); toast("Ancienne publication restaurée dans le brouillon");
+      saveStoreWith(draftPayload(),DRAFT_KEY); saveDraftMeta(); renderAll(); updateDraftUI(); toast("Ancienne version prête à être modifiée");
     });
   });
 
@@ -1178,39 +1181,28 @@
     var blocs = axes.map(function(ax, j){
       var valeurs = (ax.values || []).map(function(v, k){
         var val = v && v.v ? v.v : v;
-        var hex = (v && v.hex) || "";
-        var aImg = !!(v && v.img);
-        return '<span class="val-chip' + (aImg ? ' a-image' : '') + '">' +
-          (v && v.img ? '<img src="' + esc(v.img) + '" alt="" />'
-                      : (hex ? '<i style="background:' + esc(hex) + '"></i>' : '')) +
-          esc(val) +
-          '<label class="val-photo" title="' + (aImg ? 'Remplacer la photo' : 'Ajouter une photo pour ce coloris') + '">' +
-            (aImg ? '⟳' : '＋') +
-            '<input type="file" accept="image/*" data-valimg="' + i + '.' + j + '.' + k + '" />' +
-          '</label>' +
+        return '<span class="val-chip">' + esc(val) +
           '<button type="button" data-valdel="' + i + '.' + j + '.' + k + '" aria-label="Retirer ' + esc(val) + '">×</button>' +
         '</span>';
       }).join("");
       return '<div class="axe-edit">' +
         '<div class="axe-tete">' +
-          '<input type="text" data-axname="' + i + '.' + j + '" value="' + esc(ax.name) + '" placeholder="Taille, Pointure, Couleur…" aria-label="Nom de la déclinaison" />' +
+          '<input type="text" data-axname="' + i + '.' + j + '" value="' + esc(ax.name) + '" placeholder="Pointure, coloris, taille…" aria-label="Nom de la liste" />' +
           '<button type="button" class="sbtn danger" data-axdel="' + i + '.' + j + '">Retirer</button>' +
         '</div>' +
         '<div class="val-liste">' + (valeurs || '<span class="hint">Aucune valeur.</span>') + '</div>' +
         '<div class="val-ajout">' +
-          '<input type="text" data-valnew="' + i + '.' + j + '" placeholder="Ajouter une valeur" aria-label="Nouvelle valeur" />' +
-          '<label class="chk teinte"><input type="checkbox" data-valuse="' + i + '.' + j + '" /> teinte</label>' +
-          '<input type="color" data-valhex="' + i + '.' + j + '" value="#111111" aria-label="Teinte" title="Teinte affichée en pastille" />' +
+          '<input type="text" data-valnew="' + i + '.' + j + '" placeholder="Ex. 42 ou Noir" aria-label="Nouveau choix" />' +
           '<button type="button" class="sbtn" data-valadd="' + i + '.' + j + '">Ajouter</button>' +
         '</div>' +
       '</div>';
     }).join("");
     return '<div class="axes-editeur">' + couverture +
-      '<p class="hint">Ce qui fait varier ce type de produit : les pointures, les couleurs. Deux listes au maximum — au-delà, le tableau des stocks devient impossible à remplir.</p>' +
+      '<p class="hint">Préparez ici les choix proposés lors de l’ajout d’un produit. Exemple : une liste « Pointure » et une liste « Coloris ».</p>' +
       blocs +
       (axes.length < 2
-        ? '<button type="button" class="btn btn-ghost" data-axadd="' + i + '">Ajouter une déclinaison</button>'
-        : '<p class="hint">Deux listes : c\'est le maximum.</p>') +
+        ? '<button type="button" class="btn btn-ghost" data-axadd="' + i + '">Ajouter une liste de choix</button>'
+        : '<p class="hint">Deux listes suffisent pour garder la saisie simple.</p>') +
     '</div>';
   }
 
@@ -1291,7 +1283,7 @@
       var axes = Array.isArray(c.axes) ? c.axes : [];
       var resume = axes.length
         ? axes.map(function(a){ return esc(a.name) + ' (' + (a.values || []).length + ')'; }).join(' · ')
-        : 'aucune déclinaison';
+        : 'aucun choix proposé';
       return '<div class="cat-bloc">' +
         '<div class="cat-row">' +
           '<div><input type="text" data-catlabel="' + i + '" value="' + esc(c.label) + '" aria-label="Nom de la catégorie" />' +
@@ -1304,7 +1296,7 @@
         '<button type="button" class="sbtn" data-catprod="' + esc(c.key) + '">' +
           (prodOuverts === c.key ? 'Masquer les produits' : 'Produits (' + used + ')') + '</button> ' +
         '<button type="button" class="sbtn" data-axopen="' + i + '">' +
-          (catOuverte === i ? 'Masquer' : 'Pointures et couleurs') + '</button>' +
+            (catOuverte === i ? 'Masquer' : 'Choix proposés') + '</button>' +
         (prodOuverts === c.key ? produitsDeCategorieHTML(c) : '') +
         (catOuverte === i ? axesEditorHTML(c, i) : '') +
       '</div>';
@@ -1390,8 +1382,7 @@
     var hint = $("#gateHint");
     var emailField = $("#emailInput").closest(".field");
     if (dbAvailable()){
-      hint.innerHTML = "Identifiants remis par votre prestataire. En cas d'oubli, " +
-        "le mot de passe se réinitialise depuis le tableau de bord Supabase.";
+      hint.innerHTML = "Utilisez les identifiants remis lors de l’installation. En cas d’oubli, contactez la personne qui a installé la boutique.";
     } else if (window.AURA_DB && window.AURA_DB.misconfigured()){
       hint.innerHTML = "Supabase est activé mais l'URL du projet n'est pas renseignée dans <code>supabase.config.js</code>. Corrigez-la pour activer la boutique en ligne.";
       emailField.style.display = "none";
@@ -1505,7 +1496,7 @@
       {n:pending, one:"commande attend votre réponse", many:"commandes attendent votre réponse", sub:"Confirmez avec le client sur WhatsApp.", view:"orders", label:"Répondre"},
       {n:shipping, one:"commande doit être livrée", many:"commandes doivent être livrées", sub:"Vérifiez les adresses et le suivi.", view:"orders", label:"Voir"},
       {n:low, one:"produit a peu de stock", many:"produits ont peu de stock", sub:"Ajoutez les quantités avant la rupture.", view:"products", label:"Gérer le stock"},
-      {n:draftMeta.dirty ? 1 : 0, text:draftMeta.dirty ? "Votre modification n'est pas encore publiée" : "Votre boutique est à jour", sub:draftMeta.dirty ? "Vérifiez le brouillon avant de publier." : "Aucun changement en attente.", view:"site", label:draftMeta.dirty ? "Vérifier" : "Voir le site"}
+      {n:draftMeta.dirty ? 1 : 0, text:draftMeta.dirty ? "Vos changements ne sont pas encore en ligne" : "Votre boutique est à jour", sub:draftMeta.dirty ? "Vérifiez-les avant de publier." : "Aucun changement en attente.", view:"site", label:draftMeta.dirty ? "Vérifier" : "Voir le site"}
     ];
     $("#todayActions").innerHTML = actions.map(function(a,i){
       var text=a.text || a.n+" "+(a.n===1?a.one:a.many);
@@ -1525,7 +1516,7 @@
       var sel = s === o.status ? " selected" : "";
       return '<option value="' + s + '"' + sel + '>' + STATUS[s].emoji + " " + STATUS[s].label + '</option>';
     }).join("");
-    return '<select class="status" aria-label="Statut de la commande ' + esc(o.ref) + '" data-status="' + esc(o.ref) + '">' + opts + '</select>';
+    return '<select class="status" aria-label="État de la commande ' + esc(o.ref) + '" data-status="' + esc(o.ref) + '">' + opts + '</select>';
   }
   var ordQuery = "", ordStatus = "";
   function filteredOrders(){
@@ -1860,7 +1851,7 @@
       var l1 = catList(), i1 = parseInt(axAdd.getAttribute("data-axadd"), 10);
       l1[i1].axes = l1[i1].axes || [];
       if (l1[i1].axes.length >= 2) return;
-      l1[i1].axes.push({ name: l1[i1].axes.length ? "Couleur" : "Taille", values: [] });
+      l1[i1].axes.push({ name: l1[i1].axes.length ? "Coloris" : "Pointure", values: [] });
       majCategories(l1);
       return;
     }
@@ -1868,7 +1859,7 @@
     if (axDel){
       var r1 = axDel.getAttribute("data-axdel").split(".");
       var l2 = catList(), c2 = l2[parseInt(r1[0], 10)];
-      if (!confirm("Retirer la déclinaison « " + c2.axes[parseInt(r1[1], 10)].name + " » ?\n\nLes produits déjà enregistrés gardent leur stock : seule la saisie des prochains changera.")) return;
+      if (!confirm("Retirer la liste « " + c2.axes[parseInt(r1[1], 10)].name + " » ?\n\nLes produits déjà enregistrés gardent leur stock : seule la saisie des prochains changera.")) return;
       c2.axes.splice(parseInt(r1[1], 10), 1);
       majCategories(l2);
       return;
@@ -1877,19 +1868,13 @@
     if (valAdd){
       var r2 = valAdd.getAttribute("data-valadd").split(".");
       var champ = $('[data-valnew="' + r2[0] + '.' + r2[1] + '"]');
-      var teinte = $('[data-valhex="' + r2[0] + '.' + r2[1] + '"]');
       var val = (champ.value || "").trim();
-      if (!val){ toast("Écrivez d'abord la pointure ou la couleur"); champ.focus(); return; }
+      if (!val){ toast("Écrivez d'abord la pointure ou le coloris"); champ.focus(); return; }
       if (val.indexOf(VSEP) >= 0){ toast("Le signe « " + VSEP + " » n'est pas autorisé ici"); return; }
       var l3 = catList(), ax3 = l3[parseInt(r2[0], 10)].axes[parseInt(r2[1], 10)];
       ax3.values = ax3.values || [];
-      if (ax3.values.some(function(v){ return (v && v.v) === val; })){ toast("Cette valeur existe déjà"); return; }
-      var entree = { v: val };
-      /* La teinte n'est enregistrée que si la case est cochée : une taille ou
-         une pointure n'a pas de pastille, une couleur en a une. */
-      var coche = $('[data-valuse="' + r2[0] + '.' + r2[1] + '"]');
-      if (coche && coche.checked && teinte && teinte.value) entree.hex = teinte.value;
-      ax3.values.push(entree);
+      if (ax3.values.some(function(v){ return String(v && v.v ? v.v : v).toLowerCase() === val.toLowerCase(); })){ toast("Ce choix existe déjà"); return; }
+      ax3.values.push({ v: val });
       majCategories(l3);
       return;
     }
@@ -1944,7 +1929,7 @@
     { cle: "hero", titre: "En-tête", ratio: 16/10,
       aide: "La première chose que voit un visiteur. Gardez le titre court : il s'affiche très grand.",
       champs: [
-        { k: "badge",  l: "Pastille",   max: 40 },
+        { k: "badge",  l: "Petit texte au-dessus", max: 40 },
         { k: "kicker", l: "Sur-titre",  max: 50 },
         { k: "title",  l: "Titre",      max: 60 },
         { k: "sub",    l: "Sous-titre", max: 160, long: true },
@@ -1984,7 +1969,7 @@
         { k: "title",  l: "Titre",     max: 60 },
         { k: "sub",    l: "Texte",     max: 200, long: true }
       ] },
-    { cle: "newsletter", titre: "Newsletter", ratio: 0,
+    { cle: "newsletter", titre: "Inscription aux nouveautés", ratio: 0,
       aide: "Le bloc de collecte d'adresses, en bas de page.",
       champs: [
         { k: "kicker", l: "Sur-titre", max: 50 },
@@ -2173,10 +2158,6 @@
           '<span>Recadrée automatiquement au format de la carte</span>' +
           '<input type="file" data-clcover="' + i + '" accept="image/*" />' +
         '</label></div>' +
-      '<div class="field"><label class="chk teinte" style="gap:8px">' +
-          '<input type="checkbox" data-clusehex="' + i + '"' + (c.accent ? ' checked' : '') + ' /> Couleur d\'accent</label>' +
-        '<input type="color" data-clhex="' + i + '" value="' + esc(c.accent || "#111111") + '" style="width:56px;height:38px;padding:2px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);margin-top:8px" />' +
-        '<p class="hint">Elle ne colore que le filet au-dessus du nom de la marque. Ni fond, ni bouton : dix marques ne peuvent pas se contredire à l\'écran.</p></div>' +
     '</div>';
   }
 
@@ -2275,23 +2256,6 @@
       return;
     }
 
-    var use = e.target.closest("[data-clusehex]");
-    if (use){
-      var i2 = parseInt(use.getAttribute("data-clusehex"), 10);
-      var teinte = $('[data-clhex="' + i2 + '"]');
-      if (use.checked && teinte) list[i2].accent = teinte.value;
-      else delete list[i2].accent;
-      majCollections(list);
-      return;
-    }
-    var hex = e.target.closest("[data-clhex]");
-    if (hex){
-      var i3 = parseInt(hex.getAttribute("data-clhex"), 10);
-      var coche = $('[data-clusehex="' + i3 + '"]');
-      if (coche && coche.checked){ list[i3].accent = hex.value; majCollections(list); }
-      return;
-    }
-
     var cov = e.target.closest("[data-clcover]");
     if (cov){
       var i4 = parseInt(cov.getAttribute("data-clcover"), 10);
@@ -2372,7 +2336,7 @@
     saveStore();
     $("#revForm").reset();
     renderReviews();
-    toast("Avis ajouté au brouillon");
+    toast("Avis enregistré. Publiez pour le mettre en ligne.");
   });
 
   /* ---------------- Liste d'attente ---------------- */
@@ -2638,16 +2602,24 @@ function applyStatus(order, ns){
       if (isOut(p)) chips += '<span class="chip dark">Rupture</span>';
       if (p.oldPrice > p.price) chips += '<span class="chip dark">-' + Math.max(1,Math.round((p.oldPrice-p.price)*100/p.oldPrice)) + ' %</span>';
       var img = p.img ? '<img class="thumb" src="' + esc(p.img) + '" onerror="this.style.opacity=0" alt="" />' : '<span class="thumb" style="display:block"></span>';
+      var axesProduit=prodAxes(p),details=[];
+      axesProduit.forEach(function(ax){
+        var n=(ax.values||[]).length;if(!n)return;
+        if(/pointure|taille|size/i.test(ax.name||""))details.push(n+' pointure'+(n>1?'s':''));
+        else if(/couleur|coloris|color/i.test(ax.name||""))details.push(n+' coloris');
+        else details.push(n+' choix '+String(ax.name||'').toLowerCase());
+      });
+      details.push(totalFor(p)+' en stock');
       return '<div class="prod-item">' +
         img +
         '<div class="pi-info">' +
           '<div class="pi-name">' + esc(p.name) + chips + '</div>' +
           '<div class="pi-meta">' + esc(CATS[p.cat]||p.cat) + ' · ' + fmt(p.price) + '</div>' +
-          '<div class="pi-stock">' + totalFor(p) + ' en stock' + (reservedForProduct(p) ? ' · '+reservedForProduct(p)+' réservé(s)' : '') + '</div>' +
+          '<div class="pi-stock">' + details.join(' · ') + (reservedForProduct(p) ? ' · '+reservedForProduct(p)+' réservé(s)' : '') + '</div>' +
         '</div>' +
         '<div class="row-actions">' +
           '<button class="sbtn" data-edit="' + esc(p.id) + '">Modifier</button>' +
-          '<button class="sbtn" data-stock="' + esc(p.id) + '">Stock</button>' +
+          '<button class="sbtn" data-stock="' + esc(p.id) + '">Changer le stock</button>' +
           '<button class="sbtn' + (p.active ? "" : " on") + '" data-toggle="' + esc(p.id) + '">' + (p.active ? "Masquer" : "Afficher") + '</button>' +
           '<button class="sbtn danger" data-del="' + esc(p.id) + '">' + (p.archived ? 'Récupérer' : 'Archiver') + '</button>' +
         '</div>' +
@@ -2657,28 +2629,40 @@ function applyStatus(order, ns){
   function reservedForProduct(p){ var n=0; for(var k in (p.variants||{})) n+=Number(p.variants[k].r)||0; return n; }
   $("#productSearch").addEventListener("input",function(){productQuery=this.value;renderProducts();});
   $("#productFilter").addEventListener("change",function(){productFilter=this.value;renderProducts();});
-  /* Cases à cocher construites depuis les axes de la catégorie choisie.
-     Aucune valeur n'est écrite dans le code : elles viennent des réglages. */
+  /* Choix construits depuis la catégorie. Les pointures restent de gros
+     boutons lisibles ; les coloris sélectionnés sont montrés plus bas avec
+     leurs vraies photos, jamais avec une pastille inventée. */
   function renderAxeChecks(selection){
     var axes = catAxes($("#fCat").value);
     var hint = $("#fAxesHint"), host = $("#fAxes");
     if (!axes.length){
-      hint.textContent = "Cette catégorie n'a ni pointures ni couleurs : un seul stock à saisir.";
+      hint.textContent = "Ce produit n'a pas de pointure ni de coloris : vous saisirez un seul stock.";
+      hint.hidden = false;
       host.innerHTML = "";
       return;
     }
-    hint.textContent = "Cochez les valeurs de " +
-      axes.map(function(a){ return a.name; }).join(" et de ") +
-      " que ce produit possède réellement.";
+    hint.textContent = "";
+    hint.hidden = true;
     host.innerHTML = axes.map(function(ax, i){
       var choisies = (selection && selection[i]) || [];
+      var estColoris=/couleur|coloris|color/i.test(ax.name||"");
+      var estTaille=/pointure|taille|size/i.test(ax.name||"");
+      if(estColoris){
+        return '<div class="color-choice-source" hidden>'+(ax.values||[]).map(function(v){
+          var val=v&&v.v?v.v:v,coche=choisies.indexOf(val)>=0?' checked':'';
+          return '<input type="checkbox" data-axe="'+i+'" value="'+esc(val)+'"'+coche+' />';
+        }).join('')+'</div>';
+      }
       return '<div class="axe-groupe">' +
-        '<b>' + esc(ax.name) + '</b>' +
+        '<div class="choice-heading"><b>' + esc(estTaille&&!/s$/i.test(ax.name||"")?ax.name+'s':ax.name) + ' disponibles</b>'+
+          (estTaille?'<span><button type="button" data-axis-all="'+i+'">Tout choisir</button><button type="button" data-axis-clear="'+i+'">Effacer</button></span>':'')+'</div>' +
         '<div class="checks">' + ax.values.map(function(v){
           var val = v && v.v ? v.v : v;
           var coche = choisies.indexOf(val) >= 0 ? ' checked' : '';
-          return '<label class="chk"><input type="checkbox" data-axe="' + i + '" value="' + esc(val) + '"' + coche + '/> ' + esc(val) + '</label>';
-        }).join("") + '</div></div>';
+          return '<label class="chk'+(estTaille?' size-choice':'')+'"><input type="checkbox" data-axe="' + i + '" value="' + esc(val) + '"' + coche + '/><span>' + esc(val) + '</span></label>';
+        }).join("") + '</div>'+
+        (estTaille?'<div class="axis-quick-add"><label for="fAxisNew'+i+'">Autre '+esc(String(ax.name||'choix').toLowerCase())+'</label><div><input id="fAxisNew'+i+'" data-axis-new="'+i+'" placeholder="Ex. 46" maxlength="30" /><button type="button" class="btn btn-ghost" data-axis-confirm="'+i+'">Ajouter</button></div></div>':'')+
+        '</div>';
     }).join("");
   }
 
@@ -2690,38 +2674,63 @@ function applyStatus(order, ns){
     });
   }
 
-  /* Tableau de stock : le premier axe en lignes, le second en colonnes.
-     Pas de matrice brute — une ligne par valeur, défilable si nécessaire. */
+  var stockFormCache={};
+  function stockStepper(cle, libelle, valeur){
+    var n=Math.max(0,parseInt(valeur,10)||0);
+    return '<div class="stock-size-item"><b>'+esc(libelle)+'</b><span class="stock-quantity">'+
+      '<button type="button" data-stock-minus aria-label="Retirer une unité pour '+esc(libelle)+'">−</button>'+
+      '<input type="number" data-cle="'+esc(cle)+'" min="0" value="'+n+'" aria-label="Stock '+esc(libelle)+'" />'+
+      '<button type="button" data-stock-plus aria-label="Ajouter une unité pour '+esc(libelle)+'">+</button></span>'+
+      '<small class="stock-empty"'+(n?' hidden':'')+'>Épuisé</small></div>';
+  }
+  function refreshStockPresentation(){
+    $$('#fStockGrid .stock-size-item').forEach(function(item){
+      var input=item.querySelector('input[data-cle]'),empty=item.querySelector('.stock-empty');
+      if(empty)empty.hidden=(parseInt(input&&input.value,10)||0)>0;
+    });
+    $$('#fStockGrid .stock-color-group').forEach(function(group){
+      var total=0;group.querySelectorAll('input[data-cle]').forEach(function(input){total+=Math.max(0,parseInt(input.value,10)||0);});
+      var out=group.querySelector('[data-color-total]');if(out)out.textContent=total+' paire'+(total>1?'s':'');
+    });
+  }
+  /* Le stock est regroupé par photo de coloris. Le commerçant lit « Noir,
+     pointure 42, quantité 3 » sans croiser une ligne et une colonne. */
   function renderStockGrid(valeursExistantes){
     var sel = selectionCourante();
     var host = $("#fStockGrid");
+    if(valeursExistantes)Object.keys(valeursExistantes).forEach(function(k){stockFormCache[k]=Math.max(0,parseInt(valeursExistantes[k],10)||0);});
     var lu = function(cle){
-      return valeursExistantes && valeursExistantes[cle] != null ? valeursExistantes[cle] : 0;
+      return stockFormCache[cle] != null ? stockFormCache[cle] : 0;
     };
     if (!sel.length){
-      host.innerHTML = '<div class="stock-cell"><b>Stock</b><span class="stock-quantity"><button type="button" data-stock-minus aria-label="Retirer une unité">−</button>' +
-        '<input type="number" data-cle="" min="0" value="' + lu("") + '" aria-label="Stock" /><button type="button" data-stock-plus aria-label="Ajouter une unité">+</button></span></div>';
+      host.innerHTML = '<div class="stock-single">'+stockStepper('', 'Produit', lu(''))+'</div>';
       return;
     }
     var a1 = sel[0] || [], a2 = sel[1] || null;
+    var axes=catAxes($('#fCat').value),colorIndex=-1;
+    for(var ci=0;ci<axes.length;ci++)if(/couleur|coloris|color/i.test(axes[ci].name||'')){colorIndex=ci;break;}
     if (!a1.length){ host.innerHTML = '<p class="hint">Cochez au moins une valeur.</p>'; return; }
     if (!a2 || !a2.length){
-      host.innerHTML = '<div class="stock-grid">' + a1.map(function(v){
-        return '<div class="stock-cell"><b>' + esc(v) + '</b><span class="stock-quantity"><button type="button" data-stock-minus aria-label="Retirer une unité">−</button>' +
-          '<input type="number" data-cle="' + esc(v) + '" min="0" value="' + lu(v) + '" aria-label="Stock ' + esc(v) + '" /><button type="button" data-stock-plus aria-label="Ajouter une unité">+</button></span></div>';
-      }).join("") + '</div>';
+      if(colorIndex===0){
+        host.innerHTML='<div class="stock-groups">'+a1.map(function(color){var key=axes[0].name+VSEP+color,photo=String(valueImagesForm[key]||'');return '<section class="stock-color-group"><header>'+(photo?'<img src="'+esc(photo)+'" alt="" />':'<span class="stock-photo-empty">Photo</span>')+'<strong>'+esc(color)+'</strong><span data-color-total>0 paire</span></header><div class="stock-size-list">'+stockStepper(color,'Produit',lu(color))+'</div></section>';}).join('')+'</div>';
+        refreshStockPresentation();return;
+      }
+      host.innerHTML = '<div class="stock-size-list">' + a1.map(function(v){return stockStepper(v,v,lu(v));}).join('') + '</div>';
+      refreshStockPresentation();
       return;
     }
-    host.innerHTML = '<div class="stock-table"><table><thead><tr><th></th>' +
-      a2.map(function(c){ return '<th>' + esc(c) + '</th>'; }).join("") +
-      '<th></th></tr></thead><tbody>' +
-      a1.map(function(l){
-        return '<tr><th>' + esc(l) + '</th>' + a2.map(function(c){
-          var cle = l + VSEP + c;
-          return '<td><span class="stock-quantity"><button type="button" data-stock-minus aria-label="Retirer une unité">−</button><input type="number" data-cle="' + esc(cle) + '" min="0" value="' + lu(cle) + '" aria-label="Stock ' + esc(l + " " + c) + '" /><button type="button" data-stock-plus aria-label="Ajouter une unité">+</button></span></td>';
-        }).join("") +
-        '<td><button type="button" class="sbtn" data-report="' + esc(l) + '" title="Reporter la première valeur sur toute la ligne">=</button></td></tr>';
-      }).join("") + '</tbody></table></div>';
+    var groupes=colorIndex===0?a1:a2,options=colorIndex===0?a2:a1;
+    host.innerHTML='<div class="stock-groups">'+groupes.map(function(g){
+      var colorKey=colorIndex>=0?axes[colorIndex].name+VSEP+g:'',photo=colorKey?String(valueImagesForm[colorKey]||''):'';
+      var cells=options.map(function(opt){
+        var vals=colorIndex===0?[g,opt]:[opt,g],cle=vals.join(VSEP);
+        return stockStepper(cle,(axes[colorIndex===0?1:0]&&axes[colorIndex===0?1:0].name?axes[colorIndex===0?1:0].name+' ':'')+opt,lu(cle));
+      }).join('');
+      return '<section class="stock-color-group"><header>'+
+        (photo?'<img src="'+esc(photo)+'" alt="" />':'<span class="stock-photo-empty">Photo</span>')+
+        '<strong>'+esc(g)+'</strong><span data-color-total>0 paire</span></header><div class="stock-size-list">'+cells+'</div></section>';
+    }).join('')+'</div>';
+    refreshStockPresentation();
   }
   /* Photos secondaires du produit en cours d'édition. La photo principale
      reste `#fImg` ; celle-ci vient toujours en tête de `imgs`, donc la
@@ -2732,7 +2741,7 @@ function applyStatus(order, ns){
   function colorAxisSelection(){
     var axes=catAxes($("#fCat").value),selection=selectionCourante();
     for(var i=0;i<axes.length;i++){
-      if(/couleur|coloris|color/i.test(axes[i].name||"")) return {name:axes[i].name,values:selection[i]||[]};
+      if(/couleur|coloris|color/i.test(axes[i].name||"")) return {name:axes[i].name,values:selection[i]||[],index:i,axis:axes[i]};
     }
     return null;
   }
@@ -2745,19 +2754,25 @@ function applyStatus(order, ns){
   function renderValueImagesForm(){
     var field=$("#fValueImagesField"),host=$("#fValueImages");if(!field||!host)return;
     var info=colorAxisSelection();
-    if(!info||!info.values.length){field.hidden=true;host.innerHTML="";return;}
+    if(!info){field.hidden=true;host.innerHTML="";return;}
     field.hidden=false;
     if(info.values.length===1){
       var onlyKey=info.name+VSEP+info.values[0];
       if(!valueImagesForm[onlyKey]&&$("#fImg").value.trim())valueImagesForm[onlyKey]=$("#fImg").value.trim();
     }
-    host.innerHTML=info.values.map(function(v){
+    var rows=info.values.map(function(v){
       var key=info.name+VSEP+v,url=String(valueImagesForm[key]||"");
       return '<div class="color-image-row">'+
-        (url?'<img src="'+esc(url)+'" alt="Aperçu '+esc(v)+'" />':'<span class="color-image-empty">Photo</span>')+
-        '<div><strong>'+esc(v)+'</strong><input type="url" data-color-url="'+esc(key)+'" value="'+esc(url)+'" placeholder="Adresse de la photo" />'+
-        '<label class="filebtn"><b>Choisir la photo</b><input type="file" accept="image/*" data-color-file="'+esc(key)+'" /></label></div></div>';
+        (url?'<img src="'+esc(url)+'" alt="Aperçu '+esc(v)+'" />':'<span class="color-image-empty">Photo requise</span>')+
+        '<strong>'+esc(v)+'</strong><div class="color-image-actions"><label class="filebtn"><b>'+(url?'Changer la photo':'Choisir la photo')+'</b><input type="file" accept="image/*" data-color-file="'+esc(key)+'" /></label>'+
+        '<button type="button" class="sbtn danger" data-color-remove="'+esc(v)+'">Retirer</button></div></div>';
     }).join("");
+    var suggestions=(info.axis.values||[]).map(function(v){return v&&v.v?v.v:v;}).filter(function(v){return info.values.indexOf(v)<0;});
+    host.innerHTML=(rows||'<p class="color-empty-help">Aucun coloris ajouté. Commencez par le premier modèle vendu.</p>')+
+      '<button type="button" class="color-add-button" data-color-add>+ Ajouter un coloris</button>'+
+      '<div class="color-add-form" hidden><label for="fNewColor">Nom du coloris</label><div><input type="text" id="fNewColor" list="fColorSuggestions" placeholder="Ex. Noir, beige, bleu ciel" maxlength="40" />'+
+      '<datalist id="fColorSuggestions">'+suggestions.map(function(v){return '<option value="'+esc(v)+'"></option>';}).join('')+'</datalist>'+
+      '<button type="button" class="btn btn-primary" data-color-confirm>Ajouter</button><button type="button" class="btn btn-ghost" data-color-cancel>Annuler</button></div></div>';
   }
 
   function renderGalerieForm(){
@@ -2804,7 +2819,7 @@ function applyStatus(order, ns){
     var axesProd = prodAxes(p);
     renderAxeChecks(axesProd.map(function(a){ return a.values; }));
     renderValueImagesForm();
-    var quantites = {};
+    var quantites = {};stockFormCache={};
     for (var cle in p.variants) quantites[cle] = p.variants[cle].s;
     renderStockGrid(quantites);
     var ri=$("#stockReservationInfo");if(ri)ri.textContent=reservedForProduct(p)?reservedForProduct(p)+" article(s) réservé(s) par des commandes en attente.":"Aucune réservation en cours.";
@@ -2832,6 +2847,7 @@ function applyStatus(order, ns){
     $("#fOut").checked = false;
     galerieForm = [];
     valueImagesForm = {};
+    stockFormCache = {};
     renderGalerieForm();
     renderAxeChecks(null);
     renderStockGrid(null);
@@ -2852,13 +2868,14 @@ function applyStatus(order, ns){
     var urlField=field("#fImg"); if(urlField){var details=document.createElement("details");details.className="advanced-field";details.innerHTML="<summary>J’ai déjà un lien vers la photo</summary>";details.appendChild(urlField);steps[0].appendChild(details);}
     steps[1].appendChild(grid([field("#fPrice"),field("#fOld")]));
     steps[1].appendChild(field("#fBadge")); steps[1].appendChild(field("#fDesc"));
+    var galleryField=field("#fGalFile");if(galleryField){var galleryDetails=document.createElement("details");galleryDetails.className="advanced-field";galleryDetails.innerHTML='<summary>Ajouter d’autres photos du produit</summary>';galleryDetails.appendChild(galleryField);steps[0].appendChild(galleryDetails);}
     var axes=field("#fAxesField"), stock=$("#fStockGrid"); if(stock) stock.remove();
+    var modelsIntro=document.createElement("div");modelsIntro.className="wizard-intro";modelsIntro.innerHTML='<h3>Quels modèles vendez-vous ?</h3><p>Choisissez les pointures, puis ajoutez une vraie photo pour chaque coloris.</p>';steps[2].appendChild(modelsIntro);
     if(axes) steps[2].appendChild(axes);
-    var colorImages=document.createElement("div");colorImages.className="field";colorImages.id="fValueImagesField";colorImages.hidden=true;colorImages.innerHTML='<label>Une photo pour chaque coloris</label><p class="hint">Le client choisira son coloris en touchant sa vraie photo.</p><div id="fValueImages"></div>';steps[2].appendChild(colorImages);
-    steps[2].appendChild(field("#fGalFile"));
-    var stockField=document.createElement("div");stockField.className="field";stockField.innerHTML='<label>Quantités disponibles</label><p class="hint" id="stockReservationInfo">Aucune réservation en cours.</p><button type="button" class="btn btn-ghost" data-stock-all>Mettre la même quantité partout</button>';if(stock)stockField.appendChild(stock);steps[3].appendChild(stockField);
+    var colorImages=document.createElement("div");colorImages.className="field";colorImages.id="fValueImagesField";colorImages.hidden=true;colorImages.innerHTML='<div id="fValueImages"></div>';steps[2].appendChild(colorImages);
+    var stockField=document.createElement("div");stockField.className="field stock-editor";stockField.innerHTML='<div class="wizard-intro"><h3>Combien avez-vous en stock ?</h3><p>Écrivez la quantité disponible pour chaque pointure. Zéro signifie épuisé.</p></div><p class="hint" id="stockReservationInfo">Aucune réservation en cours.</p><div class="stock-apply"><label for="stockAllValue">Même quantité partout</label><input type="number" id="stockAllValue" min="0" value="0" inputmode="numeric" /><button type="button" class="btn btn-ghost" data-stock-all>Appliquer</button></div>';if(stock)stockField.appendChild(stock);steps[3].appendChild(stockField);
     var toggles=$("#fActive")&&$("#fActive").closest(".grid2");if(toggles)steps[3].appendChild(toggles);
-    var actions=$("#prodReset")&&$("#prodReset").parentElement;if(actions)steps[3].appendChild(actions);
+    var actions=$("#prodReset")&&$("#prodReset").parentElement;if(actions){actions.classList.add("original-product-actions");steps[3].appendChild(actions);}
     Array.prototype.slice.call(form.children).forEach(function(n){if(n!==$("#fId")&&!n.classList.contains("wizard-step")&&n.children.length===0)n.remove();});
     setWizardStep(1);
   }
@@ -2868,7 +2885,9 @@ function applyStatus(order, ns){
     $$("#wizardProgress [data-step]").forEach(function(b){var n=Number(b.getAttribute("data-step"));b.classList.toggle("active",n===wizardStep);b.classList.toggle("done",n<wizardStep);});
     $("#wizardCounter").textContent="Étape "+wizardStep+" sur 4";
     $("#wizardBack").disabled=wizardStep===1;
-    $("#wizardNext").style.display=wizardStep===4?"none":"inline-flex";
+    $("#wizardBack").textContent=wizardStep===4?"Retour aux modèles":"Retour";
+    $("#wizardNext").style.display="inline-flex";
+    $("#wizardNext").textContent=wizardStep===4?"Enregistrer le produit":(wizardStep===3?"Continuer vers le stock":"Continuer");
   }
   var productEditorLastFocus = null;
   function openProductEditor(step){
@@ -2922,13 +2941,32 @@ function applyStatus(order, ns){
   $("#openProductWizard").addEventListener("click",function(){resetForm();restoreProductFormDraft();openProductEditor(1);});
   $("#closeProductWizard").addEventListener("click",closeProductEditor);
   $("#wizardBack").addEventListener("click",function(){setWizardStep(wizardStep-1);});
-  $("#wizardNext").addEventListener("click",function(){if(wizardCanContinue())setWizardStep(wizardStep+1);});
+  $("#wizardNext").addEventListener("click",function(){if(wizardStep===4){$("#prodForm").requestSubmit();return;}if(wizardCanContinue())setWizardStep(wizardStep+1);});
   $("#wizardProgress").addEventListener("click",function(e){var b=e.target.closest("[data-step]");if(b&&Number(b.getAttribute("data-step"))<wizardStep)setWizardStep(Number(b.getAttribute("data-step")));});
   $("#fAxes").addEventListener("change", function(){
     renderStockGrid(stockActuel());
     renderValueImagesForm();
   });
+  $("#fAxes").addEventListener("click",function(e){
+    var all=e.target.closest("[data-axis-all]"),clear=e.target.closest("[data-axis-clear]"),confirmAxis=e.target.closest("[data-axis-confirm]");
+    if(confirmAxis){
+      var axisIndex=parseInt(confirmAxis.getAttribute("data-axis-confirm"),10),input=$('[data-axis-new="'+axisIndex+'"]'),nom=(input.value||'').trim();
+      if(!nom){fieldError('[data-axis-new="'+axisIndex+'"]','Écrivez la pointure ou la taille.');input.focus();return;}
+      if(nom.indexOf(VSEP)>=0){fieldError('[data-axis-new="'+axisIndex+'"]','Ce signe n’est pas autorisé.');return;}
+      var stockBefore=stockActuel(),selectionBefore=selectionCourante(),cats=catList(),cat=cats.filter(function(c){return c.key===$("#fCat").value;})[0],axis=cat&&cat.axes&&cat.axes[axisIndex];
+      if(!axis)return;
+      var found=(axis.values||[]).filter(function(v){var x=v&&v.v?v.v:v;return String(x).toLowerCase()===nom.toLowerCase();})[0],canon=found?(found.v||found):nom;
+      if(!found){axis.values=axis.values||[];axis.values.push({v:nom});store.settings.categories=cats;saveStore();}
+      selectionBefore[axisIndex]=selectionBefore[axisIndex]||[];if(selectionBefore[axisIndex].indexOf(canon)<0)selectionBefore[axisIndex].push(canon);
+      renderAxeChecks(selectionBefore);renderValueImagesForm();renderStockGrid(stockBefore);return;
+    }
+    if(!all&&!clear)return;
+    var stock=stockActuel(),index=(all||clear).getAttribute(all?"data-axis-all":"data-axis-clear");
+    $$('#fAxes input[data-axe="'+index+'"]').forEach(function(input){input.checked=!!all;});
+    renderStockGrid(stock);renderValueImagesForm();
+  });
   $("#fCat").addEventListener("change", function(){
+    stockFormCache={};
     renderAxeChecks(null);
     renderStockGrid(null);
     renderValueImagesForm();
@@ -2937,7 +2975,7 @@ function applyStatus(order, ns){
      d'une couleur à l'autre, autant ne pas le saisir dix fois. */
   $("#fStockGrid").addEventListener("click", function(e){
     var step=e.target.closest("[data-stock-minus],[data-stock-plus]");
-    if(step){var input=step.parentElement.querySelector("input");var n=Math.max(0,(parseInt(input.value,10)||0)+(step.hasAttribute("data-stock-plus")?1:-1));input.value=n;return;}
+    if(step){var input=step.parentElement.querySelector("input");var n=Math.max(0,(parseInt(input.value,10)||0)+(step.hasAttribute("data-stock-plus")?1:-1));input.value=n;refreshStockPresentation();return;}
     var b = e.target.closest("[data-report]");
     if (!b) return;
     var ligne = b.getAttribute("data-report");
@@ -2945,13 +2983,16 @@ function applyStatus(order, ns){
     if (!champs.length) return;
     var v = champs[0].value;
     champs.forEach(function(c){ c.value = v; });
+    refreshStockPresentation();
     toast("Quantité mise à jour");
   });
+  $("#fStockGrid").addEventListener("input",refreshStockPresentation);
   /* Relit les quantités saisies pour ne pas les perdre à chaque redessin. */
   function stockActuel(){
     var out = {};
     $$('#fStockGrid input[data-cle]').forEach(function(i){
-      out[i.getAttribute("data-cle")] = parseInt(i.value, 10) || 0;
+      var key=i.getAttribute("data-cle"),value=parseInt(i.value,10)||0;
+      out[key]=value;stockFormCache[key]=value;
     });
     return out;
   }
@@ -3114,10 +3155,36 @@ function applyStatus(order, ns){
     var input=e.target.closest("[data-color-url]");if(!input)return;
     valueImagesForm[input.getAttribute("data-color-url")]=input.value.trim();
   });
+  $("#fValueImages").addEventListener("click",function(e){
+    var add=e.target.closest("[data-color-add]"),cancel=e.target.closest("[data-color-cancel]"),confirmAdd=e.target.closest("[data-color-confirm]"),remove=e.target.closest("[data-color-remove]");
+    var form=$("#fValueImages .color-add-form");
+    if(add){form.hidden=false;add.hidden=true;setTimeout(function(){$("#fNewColor").focus();},0);return;}
+    if(cancel){form.hidden=true;var addButton=$("#fValueImages [data-color-add]");if(addButton)addButton.hidden=false;return;}
+    if(remove){
+      var info=colorAxisSelection(),stock=stockActuel(),selection=selectionCourante(),val=remove.getAttribute("data-color-remove");
+      if(!info)return;
+      selection[info.index]=(selection[info.index]||[]).filter(function(x){return x!==val;});
+      delete valueImagesForm[info.name+VSEP+val];
+      renderAxeChecks(selection);renderValueImagesForm();renderStockGrid(stock);return;
+    }
+    if(confirmAdd){
+      var input=$("#fNewColor"),nom=(input.value||"").trim();
+      if(!nom){fieldError("#fNewColor","Écrivez le nom du coloris.");input.focus();return;}
+      if(nom.indexOf(VSEP)>=0){fieldError("#fNewColor","Ce signe n’est pas autorisé.");return;}
+      var info2=colorAxisSelection(),stock2=stockActuel(),selection2=selectionCourante();if(!info2)return;
+      var cats=catList(),cat=cats.filter(function(c){return c.key===$("#fCat").value;})[0],axis=cat&&cat.axes&&cat.axes[info2.index];
+      var canon=nom,found=(axis&&axis.values||[]).filter(function(v){var x=v&&v.v?v.v:v;return String(x).toLowerCase()===nom.toLowerCase();})[0];
+      if(found)canon=found&&found.v?found.v:found;
+      else if(axis){axis.values=axis.values||[];axis.values.push({v:nom});store.settings.categories=cats;saveStore();}
+      selection2[info2.index]=selection2[info2.index]||[];
+      if(selection2[info2.index].indexOf(canon)<0)selection2[info2.index].push(canon);
+      renderAxeChecks(selection2);renderValueImagesForm();renderStockGrid(stock2);return;
+    }
+  });
   $("#fValueImages").addEventListener("change",function(e){
     var input=e.target.closest("[data-color-file]");if(!input)return;
     var key=input.getAttribute("data-color-file"),file=input.files&&input.files[0];input.value="";if(!file)return;
-    envoyerImage(file,3/4,function(url){valueImagesForm[key]=url;renderValueImagesForm();toast("Photo du coloris ajoutée");});
+    envoyerImage(file,3/4,function(url){var stock=stockActuel();valueImagesForm[key]=url;renderValueImagesForm();renderStockGrid(stock);toast("Photo du coloris ajoutée");});
   });
   $("#fImg").addEventListener("input", function(){
     var url = $("#fImg").value.trim();
@@ -3249,7 +3316,7 @@ function applyStatus(order, ns){
         if(er){
           pr.axes=previousAxes;pr.variants=previousVariants;
           saveStore();renderProducts();renderDash();
-          toast(er.message||"Le contenu est en brouillon, mais le stock n'a pas changé");
+          toast(er.message||"Produit enregistré, mais stock non modifié");
         }else if(data&&data.variants){
           pr.variants=data.variants;saveStoreWith(draftPayload(),DRAFT_KEY);renderProducts();renderDash();
         }
@@ -3273,7 +3340,7 @@ function applyStatus(order, ns){
         axes:axesProduit, variants:variants,
         active:$("#fActive").checked, stockout:$("#fOut").checked });
       saveStore();
-      toast("Produit ajouté au brouillon");
+      toast("Produit enregistré. Publiez pour le mettre en ligne.");
     }
     renderProducts(); renderDash();
     try{localStorage.removeItem(PRODUCT_FORM_KEY);}catch(ignore){}
@@ -3349,18 +3416,18 @@ function applyStatus(order, ns){
     delete store.settings.password;
     saveStore();
     fillSettings();
-    toast("Réglages enregistrés dans le brouillon");
+    toast("Changements enregistrés. Publiez pour les mettre en ligne.");
   });
   $("#contenuBlocs").addEventListener("click",function(e){if(e.target.closest("[data-preview-content]"))previewDraft();});
   $("#prodForm").addEventListener("click",function(e){
     var all=e.target.closest("[data-stock-all]");if(!all)return;
-    var value=prompt("Quelle quantité mettre partout ?","1");if(value===null)return;var n=parseInt(value,10);if(isNaN(n)||n<0){toast("Quantité invalide");return;}
-    $$("#fStockGrid input[data-cle]").forEach(function(i){i.value=n;});toast("Même quantité appliquée partout");
+    var field=$("#stockAllValue"),n=parseInt(field&&field.value,10);if(isNaN(n)||n<0){fieldError("#stockAllValue","Écrivez zéro ou une quantité positive.");if(field)field.focus();return;}
+    $$("#fStockGrid input[data-cle]").forEach(function(i){i.value=n;});refreshStockPresentation();toast("Même quantité appliquée partout");
   });
   [["#sLogoFile","#sLogo","logo",0],["#sShareFile","#sShareImage","shareImage",16/9]].forEach(function(cfg){
     var input=$(cfg[0]); if(!input)return; input.addEventListener("change",function(){
       var file=this.files&&this.files[0];this.value="";if(!file)return;
-      envoyerImage(file,cfg[3],function(url){$(cfg[1]).value=url;store.settings[cfg[2]]=url;saveStore();toast("Image ajoutée au brouillon");});
+      envoyerImage(file,cfg[3],function(url){$(cfg[1]).value=url;store.settings[cfg[2]]=url;saveStore();toast("Image enregistrée. Publiez pour la mettre en ligne.");});
     });
   });
 
@@ -3372,7 +3439,7 @@ function applyStatus(order, ns){
   $("#legalForm").addEventListener("submit",function(e){e.preventDefault();
     var email=$("#legalEmail").value.trim();if(email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast("Vérifiez l'adresse e-mail");$("#legalEmail").focus();return;}
     store.settings.legal={forme:$("#legalForme").value.trim(),email:email,adresse:$("#legalAdresse").value.trim(),rccm:$("#legalRccm").value.trim(),nif:$("#legalNif").value.trim()};
-    store.settings.sizeGuideText=$("#legalSizes").value.trim();saveStore();toast("Informations légales enregistrées dans le brouillon");
+    store.settings.sizeGuideText=$("#legalSizes").value.trim();saveStore();toast("Informations enregistrées. Publiez pour les mettre en ligne.");
   });
 
   function renderAll(){
