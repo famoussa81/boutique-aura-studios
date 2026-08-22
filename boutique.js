@@ -257,7 +257,10 @@ window.AURA_IMG = function (img) {
 };
 
 (function(){
-  var KEY = "aura_store_v9";
+  /* Nouvelle clé après le remplacement des visuels : un téléphone revenu
+     plusieurs jours plus tard ne doit pas repeindre l'ancien catalogue
+     depuis son stockage local avant la réponse du serveur. */
+  var KEY = "aura_store_v10";
   var CKEY = "aura_cart_v1";
   var WKEY = "aura_wish_v1";
   var LOCAL_DEMO = (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
@@ -519,6 +522,50 @@ window.AURA_IMG = function (img) {
   function $(s){ return document.querySelector(s); }
   function $$(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
   function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+  /* Les médias statiques sont servis un an en cache. Cette révision change
+     leur URL à chaque livraison : le téléphone reçoit immédiatement la
+     nouvelle image, puis la garde sans refaire de téléchargement inutile. */
+  var MEDIA_REV = "20260823a";
+  function mediaUrl(src){
+    src = String(src || "");
+    if (!/^(?:\.\/)?(?:assets|logos)\//.test(src)) return src;
+    return src + (src.indexOf("?") >= 0 ? "&" : "?") + "v=" + MEDIA_REV;
+  }
+  function lazyAttrs(src){
+    return 'data-src="' + esc(mediaUrl(src)) + '" loading="lazy" decoding="async"';
+  }
+
+  /* Le lazy-loading natif commence parfois plusieurs écrans trop tôt sur
+     mobile. Ici les images sous la ligne de flottaison ne sont demandées
+     qu'à 280 px de l'écran ; leur cadre et leur qualité restent inchangés. */
+  var lazyObserver = "IntersectionObserver" in window ? new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (!entry.isIntersecting) return;
+      var img = entry.target, src = img.getAttribute("data-src");
+      if (src) img.setAttribute("src", src);
+      img.removeAttribute("data-src");
+      lazyObserver.unobserve(img);
+    });
+  }, { rootMargin: "280px 0px" }) : null;
+  function observeLazy(root){
+    var imgs = (root || document).querySelectorAll("img[data-src]");
+    for (var i = 0; i < imgs.length; i++){
+      if (lazyObserver) lazyObserver.observe(imgs[i]);
+      else {
+        imgs[i].setAttribute("src", imgs[i].getAttribute("data-src"));
+        imgs[i].removeAttribute("data-src");
+      }
+    }
+  }
+  new MutationObserver(function(records){
+    records.forEach(function(record){
+      for (var i = 0; i < record.addedNodes.length; i++){
+        var node = record.addedNodes[i];
+        if (node.nodeType === 1) observeLazy(node.matches && node.matches("img[data-src]") ? node.parentNode : node);
+      }
+    });
+  }).observe(document.documentElement, { childList:true, subtree:true });
   function fmtShort(n){ return (Math.round(Number(n)||0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g," "); }
   function fmt(n){ return (Math.round(Number(n)||0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g," ") + " FCFA"; }
   function digits(s){ return String(s||"").replace(/\D/g,""); }
@@ -758,7 +805,7 @@ window.AURA_IMG = function (img) {
         (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' +
         '<a class="mband-top" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
           ' aria-label="' + (n > 1 ? 'Voir les ' + n + ' modèles ' : 'Voir le modèle ') + esc(c.label) + '">' +
-          (c.cover ? '<img class="mband-cover" src="' + esc(c.cover) + '" alt="" loading="lazy" decoding="async" onerror="AURA_IMG(this)" />' : '') +
+          (c.cover ? '<img class="mband-cover" ' + lazyAttrs(c.cover) + ' alt="" onerror="AURA_IMG(this)" />' : '') +
           '<span class="mband-in">' +
             '<span>' +
               (c.tagline ? '<span class="mband-tag">' + esc(c.tagline) + '</span>' : '') +
@@ -835,7 +882,7 @@ window.AURA_IMG = function (img) {
     if (titre) titre.textContent = "Explorez les collections";
     grille.innerHTML = catList().map(function(c){
       return '<a href="catalogue.html?cat=' + encodeURIComponent(c.key) + '" class="cat-card" data-goto="' + esc(c.key) + '">' +
-        (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600" loading="lazy" decoding="async" onerror="AURA_IMG(this)" />' : '') +
+        (c.cover ? '<img ' + lazyAttrs(c.cover) + ' alt="" width="800" height="600" onerror="AURA_IMG(this)" />' : '') +
         '<div class="cat-body">' +
           '<span class="cat-label">' + esc(c.label) + '</span>' +
           '<span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
@@ -848,8 +895,7 @@ window.AURA_IMG = function (img) {
     return '<a class="brand-directory-card" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
       (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') +
       ' aria-label="Voir les modèles ' + esc(c.label) + '">' +
-        (c.cover ? '<img src="' + esc(c.cover) + '" alt="" width="800" height="600"' +
-          (i < 6 ? '' : ' loading="lazy"') + ' decoding="async" onerror="AURA_IMG(this)" />' : '') +
+        (c.cover ? '<img ' + lazyAttrs(c.cover) + ' alt="" width="800" height="600" onerror="AURA_IMG(this)" />' : '') +
         '<span class="brand-directory-shade"></span>' +
         '<span class="brand-directory-copy">' +
           (c.tagline ? '<span>' + esc(c.tagline) + '</span>' : '') +
@@ -886,8 +932,8 @@ window.AURA_IMG = function (img) {
     var img = $("#collImage");
     if (img){
       img.classList.remove("brand-logo");
-      if (c.cover){ img.src = c.cover; img.alt = ""; img.hidden = false; }
-      else if (c.logo){ img.src = c.logo; img.alt = "Logo " + c.label; img.classList.add("brand-logo"); img.hidden = false; }
+      if (c.cover){ img.src = mediaUrl(c.cover); img.alt = ""; img.hidden = false; }
+      else if (c.logo){ img.src = mediaUrl(c.logo); img.alt = "Logo " + c.label; img.classList.add("brand-logo"); img.hidden = false; }
       else { img.removeAttribute("src"); img.hidden = true; }
     }
     var k = $("#collKicker");
@@ -920,9 +966,9 @@ window.AURA_IMG = function (img) {
     var tete = i > 0 ? nom.slice(0, i) : nom;
     var reste = i > 0 ? nom.slice(i + 1) : "";
     var nav = $("#logoNav");
-    if (nav) nav.innerHTML = store.settings.logo ? '<img src="'+esc(store.settings.logo)+'" alt="'+esc(nom)+'" class="store-logo" />' : esc(tete) + (reste ? '<span>' + esc(reste) + '</span>' : '');
+    if (nav) nav.innerHTML = store.settings.logo ? '<img src="'+esc(mediaUrl(store.settings.logo))+'" alt="'+esc(nom)+'" class="store-logo" />' : esc(tete) + (reste ? '<span>' + esc(reste) + '</span>' : '');
     var pied = $("#logoPied");
-    if (pied) pied.innerHTML = store.settings.logo ? '<img src="'+esc(store.settings.logo)+'" alt="'+esc(nom)+'" class="store-logo store-logo-foot" />' : esc(tete) + (reste ? '<span style="font-size:11px">' + esc(reste) + '</span>' : '');
+    if (pied) pied.innerHTML = store.settings.logo ? '<img src="'+esc(mediaUrl(store.settings.logo))+'" alt="'+esc(nom)+'" class="store-logo store-logo-foot" />' : esc(tete) + (reste ? '<span style="font-size:11px">' + esc(reste) + '</span>' : '');
   }
 
   /* Contenu éditorial. Chaque bloc a son interrupteur : masquer vaut mieux
@@ -939,11 +985,21 @@ window.AURA_IMG = function (img) {
     e.textContent = v;
     e.hidden = !v;
   }
-  function poserImage(sel, url){
+  function poserImage(sel, url, prioritaire){
     var e = $(sel);
     if (!e) return;
-    if (url){ e.src = url; e.hidden = false; }
-    else { e.removeAttribute("src"); e.hidden = true; }
+    if (url){
+      if (prioritaire){
+        e.removeAttribute("data-src");
+        e.src = mediaUrl(url);
+      } else {
+        e.removeAttribute("src");
+        e.setAttribute("data-src", mediaUrl(url));
+        observeLazy(e.parentNode || document);
+      }
+      e.hidden = false;
+    }
+    else { e.removeAttribute("src"); e.removeAttribute("data-src"); e.hidden = true; }
   }
   function poserBouton(sel, texte){
     var e = $(sel);
@@ -959,7 +1015,7 @@ window.AURA_IMG = function (img) {
     var h = c.hero || {};
     var hs = $("#heroSection");
     if (hs) hs.hidden = h.on === false;
-    poserImage("#heroImage", h.image);
+    poserImage("#heroImage", h.image, true);
     poser("#heroBadge", h.badge);
     poser("#heroKicker", h.kicker);
     poser("#heroTitre", h.title);
@@ -970,7 +1026,7 @@ window.AURA_IMG = function (img) {
     var b = c.banner || {};
     var bs = $("#bannerSection");
     if (bs) bs.hidden = b.on === false;
-    poserImage("#bannerImage", b.image);
+    poserImage("#bannerImage", b.image, false);
     poser("#bannerKicker", b.kicker);
     poser("#bannerTitre", b.title);
     poser("#bannerTexte", b.text);
@@ -980,7 +1036,7 @@ window.AURA_IMG = function (img) {
     var e = c.editorial || {};
     var es = $("#a-propos");
     if (es) es.hidden = e.on === false;
-    poserImage("#edImage", e.image);
+    poserImage("#edImage", e.image, false);
     poser("#edKicker", e.kicker);
     poser("#edTitre", e.title);
     poser("#edTexte", e.text);
@@ -1278,7 +1334,7 @@ window.AURA_IMG = function (img) {
     var out = isOut(p);
     return '<article class="pcard" data-card="' + esc(p.id) + '">' +
       '<div class="pmedia">' +
-        '<img src="' + img + '" alt="' + alt + '" width="600" height="800" loading="lazy" decoding="async" onerror="AURA_IMG(this)" />' +
+        '<img ' + lazyAttrs(p.img) + ' alt="' + alt + '" width="600" height="800" onerror="AURA_IMG(this)" />' +
         /* Lien en surimpression plutot qu'un <a> autour du bloc : le bouton
            favori est un vrai bouton, et un bouton dans un lien n'est pas du
            HTML valide. Le favori passe au-dessus par son z-index. */
@@ -1801,10 +1857,10 @@ window.AURA_IMG = function (img) {
     pvProduct = p; pvSel = valuesOf(firstAvailableKey(p)); pvQty = 1; pvBuy = false; pvImgs = []; pvPhotoChoice = false;
     var imgs = (p.imgs && p.imgs.length) ? p.imgs : (p.img ? [p.img] : []);
     pvImgs = imgs;
-    var media = '<img class="pv-main" src="' + esc(imgs[0] || "") + '" onerror="AURA_IMG(this)" alt="' + esc(p.name) + '" />';
+    var media = '<img class="pv-main" src="' + esc(mediaUrl(imgs[0] || "")) + '" onerror="AURA_IMG(this)" alt="' + esc(p.name) + '" />';
     if (imgs.length > 1){
       media += '<div class="pv-thumbs" id="pvThumbs">' + imgs.map(function(src, i){
-        return '<button type="button" data-thumb="' + i + '" aria-label="Voir la photo ' + (i + 1) + ' sur ' + imgs.length + '"' + (i === 0 ? ' class="active"' : '') + '><img src="' + esc(src) + '" onerror="AURA_IMG(this)" alt="" /></button>';
+        return '<button type="button" data-thumb="' + i + '" aria-label="Voir la photo ' + (i + 1) + ' sur ' + imgs.length + '"' + (i === 0 ? ' class="active"' : '') + '><img ' + lazyAttrs(src) + ' onerror="AURA_IMG(this)" alt="" /></button>';
       }).join("") + '</div>';
     }
     $("#pvMedia").innerHTML = media;
@@ -1851,7 +1907,7 @@ window.AURA_IMG = function (img) {
     if (!img) return;
     var voulue = photoDeSelection();
     var defaut = pvImgs[0] || "";
-    var cible = voulue || defaut;
+    var cible = mediaUrl(voulue || defaut);
     if (cible && img.getAttribute("src") !== cible) img.src = cible;
     /* La miniature active suit, sinon l'état affiché se contredit. */
     var vignettes = $$("#pvThumbs [data-thumb]");
@@ -1876,7 +1932,7 @@ window.AURA_IMG = function (img) {
            seule sa vraie photo est montrée au client. */
         if (estColoris && !photo) return "";
         var visuel = photo
-          ? '<img class="choice-photo" src="' + esc(photo) + '" alt="" loading="lazy" decoding="async" />'
+          ? '<img class="choice-photo" ' + lazyAttrs(photo) + ' alt="" />'
           : '';
         return '<button type="button" class="size-btn' + (photo ? " has-photo" : "") +
                (choisi ? " selected" : "") + (dispo ? "" : " soldout") +
@@ -2006,7 +2062,7 @@ window.AURA_IMG = function (img) {
     $("#cartTotal").textContent = fmt(sub + del);
     body.innerHTML = cart.map(function(it){
       return '<div class="cart-item" data-key="' + esc(it.id + "|" + it.variant) + '">' +
-        '<img src="' + esc(it.img) + '" alt="' + esc(it.name) + '" onerror="AURA_IMG(this)" />' +
+        '<img ' + lazyAttrs(it.img) + ' alt="' + esc(it.name) + '" onerror="AURA_IMG(this)" />' +
         '<div>' +
           '<div class="ci-name">' + esc(it.name) + '</div>' +
           /* `brand` manque aux paniers enregistrés avant cette version : la
@@ -2067,7 +2123,7 @@ window.AURA_IMG = function (img) {
     return '<div class="xsell"><h4>Complétez votre tenue</h4>' +
       list.map(function(p){
         return '<div class="xsell-item">' +
-          '<img src="' + esc(p.img) + '" alt="" width="48" height="60" loading="lazy" decoding="async" onerror="AURA_IMG(this)" />' +
+          '<img ' + lazyAttrs(p.img) + ' alt="" width="48" height="60" onerror="AURA_IMG(this)" />' +
           '<div><div class="xsell-name">' + esc(marqueDe(p) ? marqueDe(p) + ' ' + p.name : p.name) + '</div>' +
           '<div class="xsell-price">' + fmt(p.price) + '</div></div>' +
           '<button type="button" class="xsell-add" data-openp="' + esc(p.id) + '">Ajouter</button>' +
@@ -2326,7 +2382,7 @@ window.AURA_IMG = function (img) {
     if (!list.length){ el.innerHTML = '<p class="none-msg" style="margin:0">Aucun résultat.</p>'; return; }
     el.innerHTML = list.map(function(p){
       return '<li><button type="button" data-openp="' + esc(p.id) + '">' +
-        '<img class="s-thumb" src="' + esc(p.img) + '" onerror="AURA_IMG(this)" alt="" />' +
+        '<img class="s-thumb" ' + lazyAttrs(p.img) + ' onerror="AURA_IMG(this)" alt="" />' +
         '<span><span class="s-name" style="display:block">' + esc(p.name) + '</span><span class="s-cat">' + esc([marqueDe(p), CATS[p.cat]||p.cat].filter(Boolean).join(' · ')) + '</span></span>' +
         '<span class="s-price">' + fmt(p.price) + '</span>' +
       '</button></li>';
@@ -2390,7 +2446,7 @@ window.AURA_IMG = function (img) {
       var idx = parseInt(thumb.getAttribute("data-thumb"), 10);
       if (pvImgs[idx]){
         var main = document.querySelector("#pvMedia .pv-main");
-        if (main) main.src = pvImgs[idx];
+        if (main) main.src = mediaUrl(pvImgs[idx]);
         $$("#pvThumbs [data-thumb]").forEach(function(b, i){ b.classList.toggle("active", i === idx); });
       }
       return;
@@ -2678,6 +2734,7 @@ window.AURA_IMG = function (img) {
   }
 
   renderGrid();
+  observeLazy(document);
   animerApparitions();
   reconcileCart();
   renderCount();
