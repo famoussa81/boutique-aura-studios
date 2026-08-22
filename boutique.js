@@ -897,7 +897,7 @@ window.AURA_IMG = function (img) {
       choisies = choisies.slice(0, 6);
       var reste = $("#marquesReste");
       if (reste) reste.hidden = !choisies.length;
-      grille.innerHTML = choisies.map(function(c, i){ return carteMarqueHTML(c, i); }).join("");
+      grille.innerHTML = choisies.map(function(c){ return carteMarqueLogoHTML(c); }).join("");
       var tout = $("#homeBrandsAll");
       if (tout) tout.textContent = disponibles.length ? "Voir les " + disponibles.length + " marques" : "Voir toutes les marques";
       return;
