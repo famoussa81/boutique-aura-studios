@@ -930,6 +930,25 @@ window.AURA_IMG = function (img) {
       '</a>';
   }
 
+  /* Le répertoire dédié utilise les vrais logos fournis, sur un fond calme.
+     Cette carte reste séparée de carteMarqueHTML : l'accueil conserve ses
+     photos et ses bannières, comme demandé. */
+  function carteMarqueLogoHTML(c){
+    var logosVerifies = {
+      "hugo": "assets/logos/hugo-fashion.svg",
+      "tommy-jeans": "assets/logos/tommy-hilfiger-flag.svg"
+    };
+    var logo = logosVerifies[c.key] || c.logo || "";
+    return '<a class="brand-logo-card" data-brand="' + esc(c.key) + '" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
+      ' aria-label="Voir les modèles ' + esc(c.label) + '">' +
+        '<span class="brand-logo-visual">' +
+          (logo ? '<img class="brand-logo-img" ' + lazyAttrs(logo) + ' alt="' + esc(c.label) + '" onerror="this.hidden=true;this.nextElementSibling.hidden=false" />' : '') +
+          '<strong class="brand-logo-fallback"' + (logo ? ' hidden' : '') + '>' + esc(c.label) + '</strong>' +
+        '</span>' +
+        '<span class="brand-logo-action">' + esc(c.label) + '</span>' +
+      '</a>';
+  }
+
   /* Répertoire dédié : aucune paire dans cette grille, seulement les maisons.
      Sur mobile deux colonnes restent visibles d'un regard, sans carrousel ni
      défilement horizontal. Le nombre vient du catalogue réel et disparaît si
@@ -941,7 +960,7 @@ window.AURA_IMG = function (img) {
       var n = store.products.filter(function(p){ return p.active && p.collection === c.key; }).length;
       return { marque:c, nombre:n };
     }).filter(function(x){ return x.nombre > 0; });
-    host.innerHTML = marques.map(function(x, i){ return carteMarqueHTML(x.marque, i); }).join("");
+    host.innerHTML = marques.map(function(x){ return carteMarqueLogoHTML(x.marque); }).join("");
   }
 
   /* Bannière de la collection ouverte. L'accent, s'il est défini, ne touche
