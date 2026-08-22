@@ -732,6 +732,11 @@
     draftMeta.savedAt = new Date().toISOString();
     saveDraftMeta();
     updateDraftUI();
+    /* La carte « à faire » de l'accueil lit le même indicateur que le panneau
+       latéral. Sans ce rafraîchissement, l'accueil annonçait « Aucun
+       changement en attente » pendant que le panneau affichait « Brouillon à
+       publier » : deux réponses contraires sur le même écran. */
+    if (unlocked) renderDash();
     scheduleDraftSave();
   }
   function saveStoreWith(s, key){ try { localStorage.setItem(key || KEY, JSON.stringify(s)); } catch(e){} }
@@ -3189,9 +3194,18 @@ function applyStatus(order, ns){
       });
       var visibilityChanged=(previousActive!==false)!==$("#fActive").checked;
       if((stockChanged||visibilityChanged)&&!online()){
-        if(stockChanged){fieldError("#fStockGrid","Reconnectez Internet pour modifier le stock.");setWizardStep(4);}
-        else{fieldError("#fActive","Reconnectez Internet pour afficher ou masquer ce produit.");setWizardStep(4);}
-        toast("Cette action immédiate est bloquée sans Internet");
+        /* Deux causes distinctes mènent ici : la base n'est pas branchée
+           (mode local), ou elle l'est mais la connexion est tombée. Un seul
+           message pour les deux envoyait le commerçant vérifier son Wi-Fi
+           alors que le problème venait de la configuration. */
+        var raison=dbAvailable()
+          ? "Reconnectez Internet"
+          : "Connectez la boutique à sa base de données";
+        if(stockChanged){fieldError("#fStockGrid",raison+" pour modifier le stock.");setWizardStep(4);}
+        else{fieldError("#fActive",raison+" pour afficher ou masquer ce produit.");setWizardStep(4);}
+        toast(dbAvailable()
+          ? "Cette action immédiate est bloquée sans Internet"
+          : "Cette action immédiate demande la base de données");
         return;
       }
       pr.name = name; pr.price = price; pr.oldPrice = oldP; pr.cat = cat; pr.badge = badge;

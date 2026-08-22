@@ -16,6 +16,11 @@
       seller.replaceChildren();
       ["Dénomination : "+escText(name),"Forme juridique : "+escText(l.forme||"À compléter"),"Siège social : "+escText(l.adresse||s.address||"À compléter"),"Registre du commerce (RCCM) : "+escText(l.rccm||"À compléter"),"Numéro d'identification fiscale (NIF) : "+escText(l.nif||"À compléter"),"Contact : WhatsApp "+escText(s.whatsapp||"")+" — "+escText(l.email||"À compléter")].forEach(function(line,i){if(i)seller.appendChild(document.createElement("br"));seller.appendChild(document.createTextNode(line));});
     }
+    /* L'avertissement des CGV disparaît dès que les mentions obligatoires
+       sont renseignées : laissé visible, il annonce au client que le
+       document qu'il est en train d'accepter n'est pas terminé. */
+    var sellerNote=document.getElementById("sellerCompletionNote");
+    if(sellerNote)sellerNote.hidden=!!(l.forme&&(l.adresse||s.address)&&l.rccm&&l.nif&&l.email);
     var privacy=document.getElementById("privacyIdentity");
     if(privacy)privacy.textContent=name+", "+escText(l.adresse||s.address||"adresse à compléter")+", Bamako, Mali. Contact : WhatsApp "+escText(s.whatsapp||"à compléter")+" — "+escText(l.email||"adresse e-mail à compléter")+".";
     var privacyNote=document.getElementById("privacyCompletionNote");

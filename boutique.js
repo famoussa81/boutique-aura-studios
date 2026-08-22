@@ -663,14 +663,14 @@
       var n = produits.length;
       return '<div class="mband">' +
         '<a class="mband-top" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
-          ' aria-label="Voir les ' + n + ' modèle' + (n > 1 ? 's' : '') + ' ' + esc(c.label) + '">' +
+          ' aria-label="' + (n > 1 ? 'Voir les ' + n + ' modèles ' : 'Voir le modèle ') + esc(c.label) + '">' +
           (c.logo ? '<img class="brand-logo" src="' + esc(c.logo) + '" alt="Logo ' + esc(c.label) + '" loading="lazy" decoding="async" />' : '<span class="brand-wordmark">' + esc(c.label) + '</span>') +
           '<span class="mband-in">' +
             '<span>' +
               (c.tagline ? '<span class="mband-tag"' + (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' + esc(c.tagline) + '</span>' : '') +
               '<span class="mband-name">' + esc(c.label) + '</span>' +
             '</span>' +
-            '<span class="mband-go"><span>Voir les ' + n + ' modèle' + (n > 1 ? 's' : '') + '</span>' +
+            '<span class="mband-go"><span>' + (n > 1 ? 'Voir les ' + n + ' modèles' : 'Voir le modèle') + '</span>' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
           '</span>' +
         '</a>' +
