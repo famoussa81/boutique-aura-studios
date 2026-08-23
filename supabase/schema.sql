@@ -83,6 +83,37 @@ create table if not exists public.public_request_limits (
   primary key (scope, fingerprint)
 );
 
+-- Dossiers de finalisation accessibles par lien privé. Seule l'empreinte du
+-- jeton est stockée ; les données passent par l'Edge Function.
+create table if not exists public.client_intakes (
+  id uuid primary key default gen_random_uuid(),
+  token_hash text not null unique check (length(token_hash) = 64),
+  client_name text not null check (char_length(client_name) between 1 and 100),
+  client_phone text not null default '' check (char_length(client_phone) <= 30),
+  status text not null default 'draft' check (status in ('draft', 'submitted', 'disabled')),
+  current_step integer not null default 0 check (current_step between 0 and 9),
+  data jsonb not null default '{}'::jsonb,
+  expires_at timestamptz not null,
+  submitted_at timestamptz,
+  created_by uuid references auth.users(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.client_intake_files (
+  id uuid primary key default gen_random_uuid(),
+  intake_id uuid not null references public.client_intakes(id) on delete cascade,
+  storage_path text not null unique,
+  original_name text not null check (char_length(original_name) between 1 and 180),
+  mime_type text not null check (char_length(mime_type) <= 100),
+  size_bytes bigint not null check (size_bytes between 1 and 12582912),
+  category text not null default 'autre' check (char_length(category) <= 80),
+  created_at timestamptz not null default now()
+);
+create index if not exists client_intakes_updated_idx on public.client_intakes(updated_at desc);
+create index if not exists client_intakes_created_by_idx on public.client_intakes(created_by);
+create index if not exists client_intake_files_intake_idx on public.client_intake_files(intake_id);
+
 -- Séquence serveur des références de commande : garantit l'unicité
 -- entre tous les appareils (un compteur navigateur ne le peut pas).
 create sequence if not exists public.order_seq start with 1;
@@ -102,6 +133,10 @@ alter table public.admin_drafts enable row level security;
 alter table public.store_revisions enable row level security;
 alter table public.admin_users enable row level security;
 alter table public.public_request_limits enable row level security;
+alter table public.client_intakes enable row level security;
+alter table public.client_intake_files enable row level security;
+revoke all on table public.client_intakes from anon, authenticated;
+revoke all on table public.client_intake_files from anon, authenticated;
 
 drop policy if exists "products_select_public" on public.products;
 drop policy if exists "settings_select_public" on public.settings;
@@ -956,6 +991,14 @@ grant execute on function public.place_order(jsonb) to anon, authenticated;
 insert into storage.buckets (id, name, public)
 values ('produits', 'produits', true)
 on conflict (id) do nothing;
+
+-- Pièces jointes des dossiers clients : bucket privé. Les téléchargements
+-- utilisent des liens signés temporaires créés pour l'administrateur.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('client-intakes', 'client-intakes', false, 12582912,
+  array['image/jpeg','image/png','image/webp','image/heic','image/heif','application/pdf'])
+on conflict (id) do update set public = false, file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
 
 drop policy if exists "produits_read_public" on storage.objects;
 create policy "produits_read_public" on storage.objects

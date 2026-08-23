@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Finalisation de votre boutique</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="step-sidebar" aria-label="Étapes du dossier">
+      <div class="wordmark">DOSSIER BOUTIQUE</div>
+      <nav id="stepNav" class="step-nav"></nav>
+      <button class="sidebar-help" type="button" data-action="show-help">
+        <span aria-hidden="true">?</span>
+        Comment ça marche ?
+      </button>
+    </aside>
+
+    <div class="app-main">
+      <header class="topbar">
+        <button class="mobile-menu" type="button" data-action="toggle-nav" aria-label="Afficher les étapes">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="topbar-title">
+          <h1>Finalisons votre boutique</h1>
+          <p>Une étape à la fois. Vos réponses sont sauvegardées automatiquement.</p>
+        </div>
+        <div class="save-indicator" id="saveIndicator" aria-live="polite">
+          <span class="save-dot" aria-hidden="true">✓</span>
+          <span>Sauvegardé</span>
+        </div>
+        <button class="button button-primary continue-top" type="button" data-action="next">
+          Continuer
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </header>
+
+      <main class="workspace">
+        <section class="form-region" id="formRegion" aria-live="polite"></section>
+        <aside class="progress-rail" id="progressRail"></aside>
+      </main>
+
+      <footer class="bottom-bar">
+        <div class="local-note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v12H4zM2 20h20M9 17v3m6-3v3"/></svg>
+          <span>Lien privé · sauvegarde automatique</span>
+        </div>
+        <div class="bottom-actions">
+          <button class="button button-secondary" type="button" data-action="prev">Précédent</button>
+          <button class="button button-primary" type="button" data-action="next">
+            Continuer
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="helpDialog" class="dialog">
+    <button class="dialog-close" type="button" data-action="close-help" aria-label="Fermer">×</button>
+    <h2>Vos réponses sont protégées</h2>
+    <p>Chaque modification est enregistrée automatiquement dans votre dossier privé.</p>
+    <ol>
+      <li>Remplissez les dix étapes, à votre rythme.</li>
+      <li>Ajoutez vos vrais fichiers : logo, photos et documents.</li>
+      <li>À la fin, cliquez sur <strong>Envoyer mon dossier</strong>.</li>
+    </ol>
+    <p class="dialog-note">Vous pourrez fermer la page et reprendre plus tard avec le même lien, tant que le dossier n’a pas été envoyé.</p>
+  </dialog>
+
+  <input id="importInput" type="file" accept="application/json,.json" hidden>
+  <script src="../supabase.config.js"></script>
+  <script src="../catalog.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

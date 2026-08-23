@@ -25,8 +25,11 @@ assets-candidats/
 # Ne doit jamais être publiée.
 admin-essai.html
 
-# Outil de rendez-vous client : données locales, jamais publié.
-outil-finalisation-client/
+# Le formulaire client mobile est volontairement publié. Ses réponses restent
+# privées dans Supabase et son accès exige un lien individuel secret.
+outil-finalisation-client/design-*.png
+outil-finalisation-client/OUVRIR-OUTIL.bat
+outil-finalisation-client/README.md
 
 # Document de reprise : usage interne, pas une page du site.
 AGENTS.md

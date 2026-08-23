@@ -6,5 +6,8 @@ assets-candidats/
 # Ne doit jamais être publiée.
 admin-essai.html
 
-# Outil de rendez-vous client : données locales, jamais publié.
-outil-finalisation-client/
+# Les fichiers du formulaire sont publiés, mais aucune réponse client n'est
+# enregistrée dans le dépôt : toutes les données vont dans Supabase.
+outil-finalisation-client/design-*.png
+outil-finalisation-client/OUVRIR-OUTIL.bat
+outil-finalisation-client/README.md

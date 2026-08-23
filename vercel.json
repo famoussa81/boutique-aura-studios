@@ -106,6 +106,13 @@
           "value": "no-store"
         }
       ]
+    },
+    {
+      "source": "/outil-finalisation-client/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
     }
   ]
 }

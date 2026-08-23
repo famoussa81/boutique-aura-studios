@@ -65,6 +65,25 @@
     for (var k in s) if (!blocked[k]) out[k] = s[k];
     return out;
   }
+
+  function edge(body, opt){
+    opt = opt || {};
+    var headers = { "apikey": anon, "Authorization": "Bearer " + (opt.admin && session ? session.token : anon) };
+    if (opt.intakeToken) headers["x-intake-token"] = opt.intakeToken;
+    var request = { method: "POST", headers: headers };
+    if (opt.file){
+      var form = new FormData(); form.append("file", opt.file); form.append("category", opt.category || "autre"); request.body = form;
+    } else {
+      headers["Content-Type"] = "application/json"; request.body = JSON.stringify(body || {});
+    }
+    return fetch(base + "/functions/v1/client-intake", request).then(function(r){
+      return r.text().then(function(raw){
+        var data = {}; try { data = raw ? JSON.parse(raw) : {}; } catch(e){}
+        if (!r.ok) throw new Error(data.error || "La demande a échoué");
+        return data;
+      });
+    });
+  }
   function publicDraft(d){
     d = d || {};
     return {
@@ -257,6 +276,27 @@
       req("/rest/v1/rpc/admin_delete_order", {
         method: "POST", token: session.token, body: { order_ref: ref }
       }).then(function(result){ cb(null, result); }).catch(function(e){ cb(e); });
+    },
+
+    createClientIntake: function(info, cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"));
+      edge({ action:"admin-create", clientName:info.name, clientPhone:info.phone, validDays:info.days }, { admin:true }).then(function(x){cb(null,x);}).catch(function(e){cb(e);});
+    },
+    loadClientIntakes: function(cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"));
+      edge({ action:"admin-list" }, { admin:true }).then(function(x){cb(null,x.intakes||[]);}).catch(function(e){cb(e);});
+    },
+    getClientIntake: function(id, cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"));
+      edge({ action:"admin-get", id:id }, { admin:true }).then(function(x){cb(null,x);}).catch(function(e){cb(e);});
+    },
+    setClientIntakeStatus: function(id, status, cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"));
+      edge({ action:"admin-status", id:id, status:status }, { admin:true }).then(function(x){cb(null,x);}).catch(function(e){cb(e);});
+    },
+    renewClientIntake: function(id, cb){
+      cb = cb || function(){}; if (!session) return cb(new Error("non connecté"));
+      edge({ action:"admin-renew", id:id }, { admin:true }).then(function(x){cb(null,x);}).catch(function(e){cb(e);});
     },
 
     /* Mise à jour d'une seule commande (changement de statut) : on n'envoie
