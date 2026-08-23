@@ -25,5 +25,8 @@ assets-candidats/
 # Ne doit jamais être publiée.
 admin-essai.html
 
+# Outil de rendez-vous client : données locales, jamais publié.
+outil-finalisation-client/
+
 # Document de reprise : usage interne, pas une page du site.
 AGENTS.md

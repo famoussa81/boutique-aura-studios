@@ -5,3 +5,6 @@ assets-candidats/
 # Copie de recette : ouvre le panneau sans mot de passe (mode local).
 # Ne doit jamais être publiée.
 admin-essai.html
+
+# Outil de rendez-vous client : données locales, jamais publié.
+outil-finalisation-client/

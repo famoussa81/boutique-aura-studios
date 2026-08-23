@@ -800,6 +800,12 @@ window.AURA_IMG = function (img) {
      Plafonné à quatre : au-delà, l'accueil devient un catalogue déguisé et
      plus personne ne descend jusqu'aux autres marques. */
   var MAX_BANDES = 4, MAX_MODELES = 8;
+  function imageMarque(c, desktopKey, mobileKey){
+    var mobile = false;
+    try { mobile = !!(mobileKey && window.matchMedia && window.matchMedia("(max-width:640px)").matches); } catch(e){}
+    if (mobile && c[mobileKey]) return c[mobileKey];
+    return c[desktopKey] || c.cover || "";
+  }
   function marquesEnAvant(colls){
     var actifs = {};
     store.products.forEach(function(p){
@@ -819,6 +825,7 @@ window.AURA_IMG = function (img) {
     if (!host) return [];
     var choisies = marquesEnAvant(colls);
     host.innerHTML = choisies.map(function(c){
+      var bandCover=imageMarque(c,"homeCover","homeCoverMobile");
       var produits = store.products.filter(function(p){
         return p.active && p.collection === c.key;
       }).slice(0, MAX_MODELES);
@@ -826,11 +833,11 @@ window.AURA_IMG = function (img) {
       /* Chaque maison tient sa bande : sa photo d'ambiance en fond, sa couleur
          sur le filet et le lien. Tant qu'aucune photo n'est fournie, la
          couleur remplit la bande — jamais un trou, jamais un fond gris. */
-      return '<div class="mband' + (c.cover ? ' a-photo' : '') + '"' +
+      return '<div class="mband' + (bandCover ? ' a-photo' : '') + '"' +
         (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' +
         '<a class="mband-top" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
           ' aria-label="' + (n > 1 ? 'Voir les ' + n + ' modèles ' : 'Voir le modèle ') + esc(c.label) + '">' +
-          (c.cover ? '<img class="mband-cover" ' + lazyAttrs(c.cover) + ' alt="" onerror="AURA_IMG(this)" />' : '') +
+          (bandCover ? '<img class="mband-cover" ' + lazyAttrs(bandCover) + ' alt="" onerror="AURA_IMG(this)" />' : '') +
           '<span class="mband-in">' +
             '<span>' +
               (c.tagline ? '<span class="mband-tag">' + esc(c.tagline) + '</span>' : '') +
@@ -917,10 +924,11 @@ window.AURA_IMG = function (img) {
   }
 
   function carteMarqueHTML(c, i){
+    var gridCover=imageMarque(c,"gridCover","");
     return '<a class="brand-directory-card" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
       (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') +
       ' aria-label="Voir les modèles ' + esc(c.label) + '">' +
-        (c.cover ? '<img ' + lazyAttrs(brandCardThumbUrl(c.cover)) + ' alt="" width="400" height="300" onerror="AURA_IMG(this)" />' : '') +
+        (gridCover ? '<img ' + lazyAttrs(brandCardThumbUrl(gridCover)) + ' alt="" width="400" height="300" onerror="AURA_IMG(this)" />' : '') +
         '<span class="brand-directory-shade"></span>' +
         '<span class="brand-directory-copy">' +
           (c.tagline ? '<span>' + esc(c.tagline) + '</span>' : '') +
@@ -970,13 +978,14 @@ window.AURA_IMG = function (img) {
     if (!box) return;
     var c = curColl ? collById(curColl) : null;
     if (!c){ box.hidden = true; return; }
+    var pageCover=imageMarque(c,"pageCover","pageCoverMobile");
     box.hidden = false;
-    box.classList.toggle("has-brand-cover", !!c.cover);
-    box.classList.toggle("has-brand-logo", !c.cover && !!c.logo);
+    box.classList.toggle("has-brand-cover", !!pageCover);
+    box.classList.toggle("has-brand-logo", !pageCover && !!c.logo);
     var img = $("#collImage");
     if (img){
       img.classList.remove("brand-logo");
-      if (c.cover){ img.src = mediaUrl(c.cover); img.alt = ""; img.hidden = false; }
+      if (pageCover){ img.src = mediaUrl(pageCover); img.alt = ""; img.hidden = false; }
       else if (c.logo){ img.src = mediaUrl(c.logo); img.alt = "Logo " + c.label; img.classList.add("brand-logo"); img.hidden = false; }
       else { img.removeAttribute("src"); img.hidden = true; }
     }

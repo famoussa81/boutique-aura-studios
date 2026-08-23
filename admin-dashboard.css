@@ -160,9 +160,13 @@ textarea{min-height:110px}
 .training-list li{display:grid;grid-template-columns:240px 1fr;gap:24px;padding:22px 4px;border-bottom:1px solid var(--admin-line)}
 .training-list span{color:var(--admin-muted)}
 
-.draft-bar{position:fixed;left:248px;right:0;bottom:0;min-height:64px;background:#0b0b0c;color:#fff;z-index:55;display:flex;align-items:center;justify-content:center;gap:16px;padding:8px 20px;font-size:13px;transform:translateY(110%);opacity:0;visibility:hidden;pointer-events:none;transition:transform .2s ease,opacity .2s ease}
+.draft-bar{position:fixed;left:248px;right:0;bottom:0;min-height:72px;background:#9a4c18;color:#fff;z-index:55;display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 20px;font-size:13px;transform:translateY(110%);opacity:0;visibility:hidden;pointer-events:none;transition:transform .2s ease,opacity .2s ease}
 .draft-bar.show{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto}
-.draft-bar button{min-height:48px;border:1px solid #fff;border-radius:7px;background:#fff;color:#000;font-weight:850;padding:0 18px}
+.draft-bar-copy{display:flex;flex-direction:column;line-height:1.25;margin-right:8px}.draft-bar-copy strong{font-size:14px}.draft-bar-copy small{color:rgba(255,255,255,.82);margin-top:3px}
+.draft-bar button{min-height:46px;border:1px solid rgba(255,255,255,.85);border-radius:7px;background:#fff;color:#000;font-weight:850;padding:0 16px;white-space:nowrap}
+.draft-bar .draft-preview{background:#fff;color:#111}.draft-bar .draft-discard{background:transparent;color:#fff}.draft-bar .draft-publish{background:#111;color:#fff;border-color:#111}
+.draft-bar .draft-close{width:46px;padding:0;background:transparent;color:#fff;border-color:transparent;font-size:25px;font-weight:400;line-height:1}
+.brand-media-manager{display:grid;gap:10px;margin-top:16px}.brand-media-row{display:grid;grid-template-columns:minmax(145px,.85fr) minmax(180px,1.2fr) minmax(170px,.9fr);gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--admin-line)}.brand-media-row:first-child{border-top:0}.brand-media-copy b{display:block;font-size:13px}.brand-media-copy small{display:block;color:var(--admin-muted);font-size:11.5px;line-height:1.45;margin-top:4px}.brand-media-preview{height:92px;border:1px solid var(--admin-line);border-radius:8px;background:#fff;display:grid;place-items:center;overflow:hidden}.brand-media-preview img{width:100%;height:100%;object-fit:cover}.brand-media-preview.is-logo img{object-fit:contain;padding:12px}.brand-media-preview span{font-size:12px;color:var(--admin-muted);text-align:center;padding:10px}.brand-media-actions{display:flex;flex-wrap:wrap;gap:8px}.brand-media-actions .filebtn{min-height:44px;padding:8px 12px;flex:1;display:flex;align-items:center;justify-content:center}.brand-media-actions .filebtn b{font-size:12px}.brand-media-actions .filebtn span{display:none}.brand-media-actions .sbtn{min-height:44px}.brand-media-mobile{margin-top:12px;padding-top:12px;border-top:1px dashed var(--admin-line)}
 .connection-banner{position:fixed;left:248px;right:0;top:0;z-index:60;background:#fff3cd;color:#6b4d00;padding:10px 18px;text-align:center;font-size:13px;font-weight:800;display:none;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
 .connection-banner.show{display:block}
 .connection-banner.show:has(.conflict-actions:not([hidden])){display:flex}
@@ -214,9 +218,11 @@ textarea{min-height:110px}
   .hub-grid{grid-template-columns:1fr}
   .hub-item{min-height:112px;padding:19px}
   .training-list li{grid-template-columns:1fr;gap:6px;padding:18px 2px}
-  .draft-bar{left:0;bottom:76px;justify-content:space-between;padding:8px 12px}
+  .draft-bar{left:0;bottom:76px;justify-content:flex-start;padding:9px 10px;gap:7px;overflow-x:auto}.draft-bar-copy{min-width:150px}.draft-bar-copy small{display:none}.draft-bar button{min-height:44px;padding:0 11px;font-size:11px}.draft-bar .draft-publish{display:none}.draft-bar .draft-close{min-width:44px}
   .connection-banner{left:0;top:64px}
 }
+
+@media(max-width:720px){.brand-media-row{grid-template-columns:1fr}.brand-media-preview{height:130px}.brand-media-actions{width:100%}}
 
 @media (max-width:360px){
   .nav-admin .tab{font-size:9px}

@@ -208,7 +208,7 @@
   .ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
     padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 </style>
-<link rel="stylesheet" href="admin-dashboard.css?v=20260823f" />
+<link rel="stylesheet" href="admin-dashboard.css?v=20260823media1" />
 </head>
 <body>
 
@@ -675,7 +675,13 @@
 
   </main>
 
-  <div class="draft-bar" id="draftBar" hidden><span id="draftBarText">Changements enregistrés</span><button type="button" class="btn btn-ghost" id="draftPreviewBottom">Voir avant de publier</button><button type="button" class="btn btn-primary" id="draftPublishBottom">Publier</button></div>
+  <div class="draft-bar" id="draftBar" hidden role="status" aria-live="polite">
+    <span class="draft-bar-copy"><strong id="draftBarText">Modifications non publiées</strong><small>Vérifiez-les avant de les mettre en ligne.</small></span>
+    <button type="button" class="draft-preview" id="draftPreviewBottom">Voir sur le site</button>
+    <button type="button" class="draft-discard" id="draftDiscardBottom">Annuler les modifications</button>
+    <button type="button" class="draft-publish" id="draftPublishBottom">Publier</button>
+    <button type="button" class="draft-close" id="draftCloseBottom" aria-label="Masquer ce message" title="Masquer">×</button>
+  </div>
 
   <div class="toast" id="toast"></div>
 
@@ -690,6 +696,7 @@
   var DRAFT_ID = "00000000-0000-0000-0000-000000000001";
   var draftMeta = { id:DRAFT_ID, version:0, dirty:false, conflict:false, savedAt:null, publishedAt:null };
   var draftTimer = null, draftSaving = false, draftQueued = false;
+  var draftBarDismissed = false;
   var remoteConflictDraft = null;
 
   function clone(v){ return JSON.parse(JSON.stringify(v)); }
@@ -732,6 +739,10 @@
   function saveStore(){
     saveStoreWith(draftPayload(), DRAFT_KEY);
     draftMeta.dirty = true;
+    /* Si le commerçant a masqué la bannière, une nouvelle modification la
+       fait revenir : elle ne doit jamais disparaître définitivement alors
+       qu'il reste quelque chose à publier. */
+    draftBarDismissed = false;
     draftMeta.savedAt = new Date().toISOString();
     saveDraftMeta();
     updateDraftUI();
@@ -953,8 +964,8 @@
     ["#draftStateTitle"].forEach(function(id){ var n=$(id); if(n) n.textContent=title; });
     ["#draftStateText"].forEach(function(id){ var n=$(id); if(n) n.textContent=detail; });
     ["#mobilePublishState","#sidebarPublishState"].forEach(function(id){ var n=$(id); if(n) n.textContent=draftMeta.dirty ? "À publier" : "Publiée"; });
-    var bar = $("#draftBar"); if (bar){ bar.hidden = false; bar.classList.toggle("show", !!draftMeta.dirty); }
-    var barText = $("#draftBarText"); if (barText) barText.textContent = disconnected ? "Changements gardés sur ce téléphone" : "Changements enregistrés";
+    var bar = $("#draftBar"); if (bar){ bar.hidden = false; bar.classList.toggle("show", !!draftMeta.dirty && !draftBarDismissed); }
+    var barText = $("#draftBarText"); if (barText) barText.textContent = disconnected ? "Modifications gardées sur ce téléphone" : "Modifications non publiées";
     ["#publishStoreBtn","#sitePublishBtn","#draftPublishBottom"].forEach(function(id){ var n=$(id); if(n) n.disabled = disconnected || conflict || !draftMeta.dirty; });
     var last = $("#lastPublishedAt");
     if (last && draftMeta.publishedAt){
@@ -981,6 +992,32 @@
   function previewDraft(){
     try { sessionStorage.setItem("aura_preview_store", JSON.stringify(draftPayload())); } catch(e){}
     location.href = "index.html?preview=1";
+  }
+  /* Revient exactement à la dernière version publiée. Les stocks et le
+     masquage opérationnel restent ceux relus aujourd'hui : annuler un texte
+     ou une photo ne doit jamais remettre une ancienne quantité en rayon. */
+  function discardDraft(){
+    if (!draftMeta.dirty){ toast("Aucune modification à annuler"); return; }
+    if (dbAvailable() && !online()){ toast("Internet est nécessaire pour annuler partout"); return; }
+    if (!confirm("Annuler toutes les modifications non publiées et revenir à la boutique actuellement en ligne ?")) return;
+    var published = null;
+    try { published = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e){}
+    if (!published || !published.settings || !published.products){ toast("La version publiée n'est pas disponible. Rechargez le dashboard."); return; }
+    store.settings = clone(published.settings);
+    store.products = mergeDraftProducts(published.products, store.products);
+    draftMeta.dirty = false;
+    draftMeta.conflict = false;
+    remoteConflictDraft = null;
+    draftBarDismissed = false;
+    saveStoreWith(draftPayload(), DRAFT_KEY);
+    saveDraftMeta();
+    function done(){ renderAll(); updateDraftUI(); renderDash(); toast("Modifications annulées"); }
+    if (!online()){ done(); return; }
+    window.AURA_DB.saveDraft({ id:draftMeta.id, version:draftMeta.version, dirty:false, data:draftPayload() }, function(er,row){
+      if (er){ draftMeta.dirty=true; saveDraftMeta(); updateDraftUI(); toast(er.message || "Annulation impossible"); return; }
+      if (row){ draftMeta.version=Number(row.version)||draftMeta.version; draftMeta.savedAt=row.updated_at||new Date().toISOString(); }
+      saveDraftMeta(); done();
+    });
   }
   function publishDraft(){
     if (!navigator.onLine || !online()){ toast("Internet est nécessaire pour publier"); return; }
@@ -1016,6 +1053,8 @@
   window.addEventListener("offline", function(){ updateDraftUI(); });
   ["#publishStoreBtn","#sitePublishBtn","#draftPublishBottom"].forEach(function(id){ var n=$(id); if(n) n.addEventListener("click", publishDraft); });
   ["#previewDraftBtn","#draftPreviewBottom"].forEach(function(id){ var n=$(id); if(n) n.addEventListener("click", previewDraft); });
+  var discardBottom=$("#draftDiscardBottom");if(discardBottom)discardBottom.addEventListener("click",discardDraft);
+  var closeBottom=$("#draftCloseBottom");if(closeBottom)closeBottom.addEventListener("click",function(){draftBarDismissed=true;updateDraftUI();toast("Message masqué — vos modifications restent enregistrées");});
   var revisionsHost = $("#revisionList");
   if (revisionsHost) revisionsHost.addEventListener("click", function(e){
     var b=e.target.closest("[data-restore]"); if(!b || !online()) return;
@@ -2145,6 +2184,24 @@
     return collList().filter(function(c){ return c.featured; }).length;
   }
 
+  function collMediaValue(c, key){
+    if (c[key]) return c[key];
+    if (key === "gridCover" || key === "homeCover" || key === "pageCover") return c.cover || "";
+    return "";
+  }
+  function collMediaRow(c, i, key, title, ratio, usage){
+    var value=collMediaValue(c,key),direct=!!c[key],isLogo=key==="logo";
+    return '<div class="brand-media-row">' +
+      '<div class="brand-media-copy"><b>'+esc(title)+'</b><small>'+esc(ratio)+' · '+esc(usage)+'</small></div>' +
+      '<div class="brand-media-preview'+(isLogo?' is-logo':'')+'">'+
+        (value?'<img src="'+esc(value)+'" alt="Aperçu '+esc(title)+'" />':'<span>Aucune image définie</span>')+
+      '</div>' +
+      '<div><div class="brand-media-actions"><label class="filebtn"><b>'+(value?'Remplacer':'Choisir une image')+'</b><span>'+esc(ratio)+'</span><input type="file" data-clmedia="'+esc(key)+'.'+i+'" accept="image/*" /></label>'+
+        (direct?'<button type="button" class="sbtn danger" data-clmediaclear="'+esc(key)+'.'+i+'">Retirer</button>':'')+
+      '</div><small class="hint">'+(direct?'Image réservée à cet emplacement':value?'Image actuelle réutilisée ici':'À compléter')+'</small></div>'+
+    '</div>';
+  }
+
   function collEditorHTML(c, i){
     var plein = !c.featured && collEnAvant() >= 4;
     return '<div class="axes-editeur">' +
@@ -2160,12 +2217,17 @@
         '<p class="hint">Deux ou trois mots, affichés au-dessus du nom sur la bannière.</p></div>' +
       '<div class="field"><label for="clDesc' + i + '">Description</label>' +
         '<textarea id="clDesc' + i + '" data-clfield="desc.' + i + '" maxlength="180" rows="2" placeholder="Ce qui distingue cette marque.">' + esc(c.desc || "") + '</textarea></div>' +
-      '<div class="field"><label>Image de couverture</label>' +
-        (c.cover ? '<img class="img-preview" src="' + esc(c.cover) + '" alt="" style="display:block;margin-bottom:8px" />' : '') +
-        '<label class="drop"><b>Choisir une photo</b>' +
-          '<span>Recadrée automatiquement au format de la carte</span>' +
-          '<input type="file" data-clcover="' + i + '" accept="image/*" />' +
-        '</label></div>' +
+      '<div class="field"><label>Images de la marque</label><p class="hint">Chaque image a une place précise. Si vous ne choisissez rien, l’ancienne couverture reste utilisée.</p>'+
+        '<div class="brand-media-manager">'+
+          collMediaRow(c,i,"logo","Logo officiel","PNG ou SVG","toutes les grilles de marques")+
+          collMediaRow(c,i,"homeCover","Bannière de l’accueil","16/5","marque mise en avant sur l’accueil")+
+          collMediaRow(c,i,"pageCover","Page de la marque","16/9","grand en-tête de sa page")+
+        '</div>'+
+        '<details class="brand-media-mobile"><summary>Images mobiles différentes (facultatif)</summary>'+
+          '<p class="hint">Laissez vide pour utiliser automatiquement la même image sur téléphone.</p>'+
+          collMediaRow(c,i,"homeCoverMobile","Accueil sur téléphone","4/5","bannière d’accueil mobile")+
+          collMediaRow(c,i,"pageCoverMobile","Page marque sur téléphone","4/5","en-tête mobile de la marque")+
+        '</details></div>' +
     '</div>';
   }
 
@@ -2183,7 +2245,7 @@
         '<div class="cat-row">' +
           '<div><input type="text" data-cllabel="' + i + '" value="' + esc(c.label) + '" aria-label="Nom de la marque" />' +
             '<div class="cat-count">' + used + ' produit' + (used > 1 ? 's' : '') +
-              (c.cover ? ' · couverture' : ' · sans couverture') +
+              ((c.cover||c.logo||c.homeCover||c.pageCover) ? ' · visuels configurés' : ' · visuels à compléter') +
               (c.featured ? ' · en avant sur l\'accueil' : '') + '</div></div>' +
           /* L'identifiant technique ne s'affiche plus : le commerçant ne le
              saisit plus et n'a jamais à s'en servir. */
@@ -2220,6 +2282,13 @@
       collOuverte = (collOuverte === i) ? null : i;
       renderCollSettings();
       return;
+    }
+    var clearMedia=e.target.closest("[data-clmediaclear]");
+    if(clearMedia){
+      var parts=clearMedia.getAttribute("data-clmediaclear").split("."),listMedia=collList(),indexMedia=parseInt(parts[1],10);
+      if(!listMedia[indexMedia])return;
+      delete listMedia[indexMedia][parts[0]];
+      majCollections(listMedia);toast("Image retirée de cet emplacement");return;
     }
     var del = e.target.closest("[data-clldel]");
     if (del && !del.disabled){
@@ -2261,6 +2330,15 @@
       majCollections(list);
       toast(star.checked ? "« " + list[i5].label + " » mise en avant"
                          : "« " + list[i5].label + " » retirée de l'accueil");
+      return;
+    }
+
+    var mediaInput=e.target.closest("[data-clmedia]");
+    if(mediaInput){
+      var mediaParts=mediaInput.getAttribute("data-clmedia").split("."),mediaKey=mediaParts[0],mediaIndex=parseInt(mediaParts[1],10);
+      var mediaFile=mediaInput.files&&mediaInput.files[0];mediaInput.value="";if(!mediaFile)return;
+      var mediaRatios={logo:0,gridCover:4/3,homeCover:16/5,pageCover:16/9,homeCoverMobile:4/5,pageCoverMobile:4/5};
+      envoyerImage(mediaFile,mediaRatios[mediaKey]||0,function(url){var mediaList=collList();if(!mediaList[mediaIndex])return;mediaList[mediaIndex][mediaKey]=url;majCollections(mediaList);toast("Image enregistrée pour cet emplacement");});
       return;
     }
 
