@@ -129,7 +129,7 @@ as $$
   select auth.uid() is not null
      and exists (select 1 from public.admin_users where user_id = auth.uid());
 $$;
-revoke all on function public.is_admin() from public;
+revoke all on function public.is_admin() from public, anon;
 grant execute on function public.is_admin() to authenticated;
 
 create or replace function public.enforce_public_rate_limit(
@@ -184,22 +184,22 @@ create policy "settings_select_public" on public.settings
 -- (Aucune politique d'insertion publique n'est donc créée.)
 
 create policy "subscribers_read_auth" on public.subscribers
-  for select using (public.is_admin());
+  for select to authenticated using ((select public.is_admin()));
 
 create policy "waitlist_read_auth" on public.waitlist
-  for select using (public.is_admin());
+  for select to authenticated using ((select public.is_admin()));
 
 create policy "orders_read_auth" on public.orders
-  for select using (public.is_admin());
+  for select to authenticated using ((select public.is_admin()));
 
 -- Les écritures sensibles passent uniquement par les fonctions atomiques
 -- définies plus bas. Une requête REST authentifiée ne peut donc pas contourner
 -- les contrôles de stock, l'archivage ou la gestion des versions.
 create policy "admin_drafts_auth" on public.admin_drafts
-  for select using (public.is_admin());
+  for select to authenticated using ((select public.is_admin()));
 
 create policy "store_revisions_auth" on public.store_revisions
-  for select using (public.is_admin());
+  for select to authenticated using ((select public.is_admin()));
 
 -- Les formulaires publics passent par ces fonctions : validation et limite
 -- de débit restent alors côté serveur, même depuis un script externe.
@@ -963,13 +963,13 @@ create policy "produits_read_public" on storage.objects
 
 drop policy if exists "produits_write_auth" on storage.objects;
 create policy "produits_write_auth" on storage.objects
-  for insert to authenticated with check (bucket_id = 'produits' and public.is_admin());
+  for insert to authenticated with check (bucket_id = 'produits' and (select public.is_admin()));
 
 drop policy if exists "produits_update_auth" on storage.objects;
 create policy "produits_update_auth" on storage.objects
-  for update to authenticated using (bucket_id = 'produits' and public.is_admin())
-  with check (bucket_id = 'produits' and public.is_admin());
+  for update to authenticated using (bucket_id = 'produits' and (select public.is_admin()))
+  with check (bucket_id = 'produits' and (select public.is_admin()));
 
 drop policy if exists "produits_delete_auth" on storage.objects;
 create policy "produits_delete_auth" on storage.objects
-  for delete to authenticated using (bucket_id = 'produits' and public.is_admin());
+  for delete to authenticated using (bucket_id = 'produits' and (select public.is_admin()));
