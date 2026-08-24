@@ -201,7 +201,7 @@
       content: {
         hero: {
           on: true,
-          image: "assets/hero-navy-20260824.webp",
+          image: "assets/hero-hugo-20260824.webp",
           badge: "Collection 2026 · Bamako",
           kicker: "Claquettes · Mules · Sabots",
           title: "Les modèles qui comptent",

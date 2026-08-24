@@ -1081,7 +1081,8 @@ window.AURA_IMG = function (img) {
         var sourceMobile = e.id === "heroImage" ? $("#heroMobileSource") : null;
         var heroMobiles = {
           "assets/hero.webp": "assets/hero-960.webp",
-          "assets/hero-navy-20260824.webp": "assets/hero-navy-mobile-20260824.webp"
+          "assets/hero-navy-20260824.webp": "assets/hero-navy-mobile-20260824.webp",
+          "assets/hero-hugo-20260824.webp": "assets/hero-hugo-mobile-20260824.webp"
         };
         var heroKey = String(url).replace(/^\.\//, "");
         if (e.id === "heroImage" && heroMobiles[heroKey]){
