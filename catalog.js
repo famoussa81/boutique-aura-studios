@@ -50,8 +50,8 @@
         ],
         valueImages: valueImages,
         variants: variants,
-        active: true,
-        stockout: false
+        active: spec.active !== false,
+        stockout: !!spec.stockout
       };
     }
     return [
@@ -117,6 +117,14 @@
       make({ id: "hermes-chypre", name: "Sandale H Cuir", brand: "hermes", price: 55000,
         img: "assets/products/hermes-chypre-orange.webp", colors: ["Orange"],
         desc: "Sandale à double bride en cuir orange, découpe H et semelle noire crantée." }),
+      make({ id: "hermes-croisee-bicolore", name: "Sandale Croisée Bicolore", brand: "hermes", price: 55000, badge: "Nouveau",
+        img: "assets/products/hermes-croisee-bicolore-white-20260824.webp", colors: ["Noir et camel"],
+        stock: [0, 0, 0, 0, 0, 0, 0], stockout: true,
+        desc: "Sandale noire à brides croisées contrastées camel, assise souple et ligne habillée." }),
+      make({ id: "hermes-h-double-noir", name: "Sandale H Double Bride", brand: "hermes", price: 55000, badge: "Nouveau",
+        img: "assets/products/hermes-h-double-noir-white-20260824.webp", colors: ["Noir"],
+        stock: [0, 0, 0, 0, 0, 0, 0], stockout: true,
+        desc: "Sandale noire à double bride, large découpe H et semelle intérieure rembourrée." }),
       make({ id: "bb-check", name: "Claquette Vintage Check", brand: "burberry", price: 38000,
         img: "assets/products/burberry-check-beige-white-v2.webp", imgs: ["assets/products/burberry-check-beige-white-v2.webp", "assets/products/burberry-check-vert-white-v2.webp", "assets/products/burberry-check-paire-bleu-ciel-white-v2.webp", "assets/products/burberry-check-paire-noir-white-v2.webp"],
         colors: ["Beige", "Vert", "Bleu ciel", "Noir"], valueImages: { "Coloris::Beige": "assets/products/burberry-check-beige-white-v2.webp", "Coloris::Vert": "assets/products/burberry-check-vert-white-v2.webp", "Coloris::Bleu ciel": "assets/products/burberry-check-paire-bleu-ciel-white-v2.webp", "Coloris::Noir": "assets/products/burberry-check-paire-noir-white-v2.webp" },
