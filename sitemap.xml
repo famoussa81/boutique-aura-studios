@@ -124,24 +124,6 @@
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://boutique-aura-studios.vercel.app/produit?id=ck-pool</loc>
-    <lastmod>2026-08-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://boutique-aura-studios.vercel.app/produit?id=lv-mule</loc>
-    <lastmod>2026-08-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://boutique-aura-studios.vercel.app/produit?id=lv-bande</loc>
-    <lastmod>2026-08-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://boutique-aura-studios.vercel.app/produit?id=bb-check</loc>
     <lastmod>2026-08-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -161,12 +143,6 @@
   </url>
   <url>
     <loc>https://boutique-aura-studios.vercel.app/produit?id=bl-mold</loc>
-    <lastmod>2026-08-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://boutique-aura-studios.vercel.app/produit?id=hg-match</loc>
     <lastmod>2026-08-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
