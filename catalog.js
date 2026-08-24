@@ -98,7 +98,7 @@
       });
       spec.colors.forEach(function (coloris) {
         pointures.forEach(function (pointure, i) {
-          variants[pointure + "::" + coloris] = v(stock[i]);
+          variants[pointure + "::" + coloris] = v((spec.stock || stock)[i]);
         });
       });
       return {
@@ -108,7 +108,7 @@
         collection: spec.brand,
         price: spec.price,
         oldPrice: 0,
-        badge: "",
+        badge: spec.badge || "",
         /* La grille utilise une vue studio uniforme ; les photos fournies par
            le vendeur restent dans la galerie et pilotent les coloris. */
         img: studio,
@@ -125,6 +125,46 @@
       };
     }
     return [
+      make({ id: "ferragamo-gancini", name: "Claquette Gancini Croisée", brand: "ferragamo", price: 42000, badge: "Nouveau",
+        img: "assets/products/ferragamo-croisee-vert.webp", imgs: ["assets/products/ferragamo-croisee-vert.webp", "assets/products/ferragamo-croisee-marron.webp"],
+        colors: ["Vert olive", "Marron cognac"], valueImages: { "Coloris::Vert olive": "assets/products/ferragamo-croisee-vert.webp", "Coloris::Marron cognac": "assets/products/ferragamo-croisee-marron.webp" },
+        stock: [2, 3, 5, 5, 4, 3, 1], desc: "Claquette à larges brides croisées, détail Gancini et semelle intérieure contrastée." }),
+      make({ id: "bally-sangle-croisee", name: "Claquette Sangle Croisée", brand: "bally", price: 40000, badge: "Nouveau",
+        img: "assets/products/bally-croisee-marine.webp", imgs: ["assets/products/bally-croisee-marine.webp", "assets/products/bally-croisee-noir.webp"],
+        colors: ["Bleu marine", "Noir"], valueImages: { "Coloris::Bleu marine": "assets/products/bally-croisee-marine.webp", "Coloris::Noir": "assets/products/bally-croisee-noir.webp" },
+        stock: [1, 3, 4, 5, 4, 2, 1], desc: "Brides textiles croisées, lettrage Bally en relief et assise souple." }),
+      make({ id: "ck-double-bride", name: "Claquette Double Bride", brand: "calvin-klein", price: 25000, badge: "Nouveau",
+        img: "assets/products/ck-jeans-double-noir.webp", imgs: ["assets/products/ck-jeans-double-noir.webp", "assets/products/ck-jeans-double-kaki.webp"],
+        colors: ["Noir", "Kaki"], valueImages: { "Coloris::Noir": "assets/products/ck-jeans-double-noir.webp", "Coloris::Kaki": "assets/products/ck-jeans-double-kaki.webp" },
+        stock: [2, 4, 5, 6, 4, 3, 1], desc: "Deux brides rembourrées et réglables, signature Calvin Klein Jeans brodée." }),
+      make({ id: "lv-monogramme-textile", name: "Claquette Monogramme Textile", brand: "louis-vuitton", price: 48000, badge: "Nouveau",
+        img: "assets/products/lv-monogram-noir.webp", colors: ["Noir et blanc"],
+        valueImages: { "Coloris::Noir et blanc": "assets/products/lv-monogram-noir.webp" },
+        stock: [1, 3, 4, 5, 4, 2, 1], desc: "Large bride textile à motif monogramme contrasté sur semelle noire." }),
+      make({ id: "lv-damier", name: "Claquette Damier", brand: "louis-vuitton", price: 48000, badge: "Nouveau",
+        img: "assets/products/lv-damier-noir.webp", colors: ["Noir et gris"],
+        valueImages: { "Coloris::Noir et gris": "assets/products/lv-damier-noir.webp" },
+        stock: [2, 3, 4, 5, 3, 2, 1], desc: "Bride large à motif damier noir et gris, montée sur une semelle noire souple." }),
+      make({ id: "lv-v-croisee", name: "Claquette V Croisée", brand: "louis-vuitton", price: 46000, badge: "Nouveau",
+        img: "assets/products/lv-v-croisee-noir.webp", imgs: ["assets/products/lv-v-croisee-noir.webp", "assets/products/lv-v-croisee-marron.webp", "assets/products/lv-v-croisee-marine.webp"],
+        colors: ["Noir", "Marron", "Bleu marine"], valueImages: { "Coloris::Noir": "assets/products/lv-v-croisee-noir.webp", "Coloris::Marron": "assets/products/lv-v-croisee-marron.webp", "Coloris::Bleu marine": "assets/products/lv-v-croisee-marine.webp" },
+        stock: [2, 4, 5, 5, 4, 3, 1], desc: "Bride graphique en V avec liseré contrasté et semelle matelassée." }),
+      make({ id: "lv-denim", name: "Claquette Denim Monogramme", brand: "louis-vuitton", price: 47000, badge: "Nouveau",
+        img: "assets/products/lv-denim-bleu.webp", imgs: ["assets/products/lv-denim-bleu.webp", "assets/products/lv-denim-noir.webp"],
+        colors: ["Denim bleu", "Denim noir et doré"], valueImages: { "Coloris::Denim bleu": "assets/products/lv-denim-bleu.webp", "Coloris::Denim noir et doré": "assets/products/lv-denim-noir.webp" },
+        stock: [1, 3, 5, 5, 4, 2, 1], desc: "Bride en denim à grand monogramme brodé et semelle rembourrée." }),
+      make({ id: "lv-autruche", name: "Claquette V Effet Autruche", brand: "louis-vuitton", price: 52000, badge: "Nouveau",
+        img: "assets/products/lv-autruche-caramel.webp", imgs: ["assets/products/lv-autruche-caramel.webp", "assets/products/lv-autruche-marron.webp"],
+        colors: ["Caramel", "Marron foncé"], valueImages: { "Coloris::Caramel": "assets/products/lv-autruche-caramel.webp", "Coloris::Marron foncé": "assets/products/lv-autruche-marron.webp" },
+        stock: [1, 2, 4, 5, 4, 2, 1], desc: "Bride découpée en V à texture grainée effet autruche, ton sur ton." }),
+      make({ id: "lv-croco", name: "Claquette V Effet Croco", brand: "louis-vuitton", price: 50000, badge: "Nouveau",
+        img: "assets/products/lv-croco-ivoire.webp", imgs: ["assets/products/lv-croco-ivoire.webp", "assets/products/lv-croco-bordeaux.webp"],
+        colors: ["Ivoire", "Bordeaux"], valueImages: { "Coloris::Ivoire": "assets/products/lv-croco-ivoire.webp", "Coloris::Bordeaux": "assets/products/lv-croco-bordeaux.webp" },
+        stock: [2, 3, 4, 5, 4, 2, 1], desc: "Bride large à texture croco et motif V ton sur ton, sur semelle contrastée." }),
+      make({ id: "lv-epi", name: "Claquette V Cuir Épi", brand: "louis-vuitton", price: 49000, badge: "Nouveau",
+        img: "assets/products/lv-eppi-marine.webp", imgs: ["assets/products/lv-eppi-marine.webp", "assets/products/lv-eppi-noir.webp"],
+        colors: ["Bleu marine", "Noir"], valueImages: { "Coloris::Bleu marine": "assets/products/lv-eppi-marine.webp", "Coloris::Noir": "assets/products/lv-eppi-noir.webp" },
+        stock: [2, 4, 5, 5, 3, 2, 1], desc: "Bride texturée façon cuir Épi, monogramme en relief et semelle matelassée." }),
       make({ id: "ck-ribbed", name: "Claquette Logo Relief", brand: "calvin-klein", price: 22000,
         img: "assets/products/ck-ribbed-noir.webp", imgs: ["assets/products/ck-ribbed-noir.webp", "assets/products/ck-ribbed-blanc.webp"],
         colors: ["Noir", "Blanc"], valueImages: { "Coloris::Noir": "assets/products/ck-ribbed-noir.webp", "Coloris::Blanc": "assets/products/ck-ribbed-blanc.webp" },
@@ -264,6 +304,10 @@
       collections: [
         { key: "calvin-klein", label: "Calvin Klein", logo: "assets/logos/calvin-klein.svg", tagline: "Minimalisme américain", accent: "#2E3A46", cover: "assets/brand-banners/calvin-klein.webp",
           desc: "Le logo embossé sur bride large. Une claquette qui se reconnaît de loin." },
+        { key: "ferragamo", featured: true, label: "Ferragamo", logo: "assets/logos/ferragamo.svg", tagline: "Gancini", accent: "#4F5730", cover: "assets/brand-banners/ferragamo.webp",
+          desc: "Bride croisée et détail Gancini. Une ligne souple aux tons naturels." },
+        { key: "bally", featured: true, label: "Bally", logo: "assets/logos/bally.svg", tagline: "Swiss heritage", accent: "#15233A", cover: "assets/brand-banners/bally.webp",
+          desc: "Brides croisées et contraste graphique. Une silhouette nette et confortable." },
         { key: "louis-vuitton", featured: true, label: "Louis Vuitton", logo: "assets/logos/louis-vuitton.png", tagline: "Monogram", accent: "#6b4f2a", cover: "assets/brand-banners/louis-vuitton.webp",
           desc: "Cuir embossé et bande signature. La pièce que tout le monde identifie." },
         { key: "hermes", featured: true, label: "Hermès", logo: "assets/logos/hermes.png", tagline: "H signature", accent: "#d86f25", cover: "assets/brand-banners/hermes.webp",

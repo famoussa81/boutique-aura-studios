@@ -1311,6 +1311,8 @@ window.AURA_IMG = function (img) {
        éviter toute lecture avant affectation au démarrage. */
     var bannieres = {
       "calvin-klein":"assets/brand-banners/calvin-klein.webp",
+      "ferragamo":"assets/brand-banners/ferragamo.webp",
+      "bally":"assets/brand-banners/bally.webp",
       "louis-vuitton":"assets/brand-banners/louis-vuitton.webp",
       "hermes":"assets/brand-banners/hermes.webp",
       "burberry":"assets/brand-banners/burberry.webp",
