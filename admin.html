@@ -223,7 +223,7 @@
   .ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
     padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 </style>
-<link rel="stylesheet" href="admin-dashboard.css?v=20260824featured1" />
+<link rel="stylesheet" href="admin-dashboard.css?v=20260824brandorder1" />
 </head>
 <body>
 
@@ -2300,8 +2300,9 @@
           /* L'identifiant technique ne s'affiche plus : le commerçant ne le
              saisit plus et n'a jamais à s'en servir. */
           '<div class="brand-order-actions">'+
-            '<button type="button" class="sbtn" data-clmove="'+i+'" data-cldirection="-1"'+(i===0?' disabled':'')+' aria-label="Monter '+esc(c.label)+'">↑</button>'+
-            '<button type="button" class="sbtn" data-clmove="'+i+'" data-cldirection="1"'+(i===list.length-1?' disabled':'')+' aria-label="Descendre '+esc(c.label)+'">↓</button>'+
+            '<span class="brand-position">Position '+(i+1)+'</span>'+
+            '<button type="button" class="sbtn" data-clmove="'+i+'" data-cldirection="-1"'+(i===0?' disabled':'')+' aria-label="Monter '+esc(c.label)+' à la position '+i+'">↑</button>'+
+            '<button type="button" class="sbtn" data-clmove="'+i+'" data-cldirection="1"'+(i===list.length-1?' disabled':'')+' aria-label="Descendre '+esc(c.label)+' à la position '+(i+2)+'">↓</button>'+
             '<button type="button" class="sbtn danger" data-clldel="' + i + '"' +
               (used ? ' disabled title="Marque utilisée par ' + used + ' produit(s)"' : '') + '>Supprimer</button>'+
           '</div>' +
@@ -2336,7 +2337,7 @@
       if(!moveList[from]||!moveList[to])return;
       var moved=moveList.splice(from,1)[0];moveList.splice(to,0,moved);
       if(collOuverte===from)collOuverte=to;else collOuverte=null;
-      majCollections(moveList);toast("Ordre des marques modifié");return;
+      majCollections(moveList);toast("« "+moved.label+" » est maintenant en position "+(to+1));return;
     }
     var ouvre = e.target.closest("[data-clopen]");
     if (ouvre){

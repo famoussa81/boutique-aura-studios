@@ -257,10 +257,10 @@ window.AURA_IMG = function (img) {
 };
 
 (function(){
-  /* Nouvelle clé après le remplacement des visuels : un téléphone revenu
-     plusieurs jours plus tard ne doit pas repeindre l'ancien catalogue
-     depuis son stockage local avant la réponse du serveur. */
-  var KEY = "aura_store_v10";
+  /* Une nouvelle clé empêche un téléphone revenu plusieurs jours plus tard
+     de repeindre un ancien catalogue depuis son stockage local avant la
+     réponse de Supabase. */
+  var KEY = "aura_store_v11";
   var CKEY = "aura_cart_v1";
   var WKEY = "aura_wish_v1";
   var LOCAL_DEMO = (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
@@ -1282,6 +1282,13 @@ window.AURA_IMG = function (img) {
       applySettings();
       reconcileCart();
       renderCount();
+      /* Produits et réglages arrivent par deux requêtes parallèles. Si les
+         produits répondaient les premiers, l'accueil gardait l'ancien ordre
+         des marques jusqu'au prochain rechargement. Toute zone dépendant des
+         réglages doit donc être repeinte ici aussi. */
+      renderUnivers();
+      renderToutesMarques();
+      renderGrid();
       renderCart();
     });
     window.AURA_DB.loadProducts(function(ep, rows){
