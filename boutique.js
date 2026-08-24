@@ -263,7 +263,8 @@ window.AURA_IMG = function (img) {
   var KEY = "aura_store_v11";
   var CKEY = "aura_cart_v1";
   var WKEY = "aura_wish_v1";
-  var LOCAL_DEMO = (location.hostname === "127.0.0.1" || location.hostname === "localhost") &&
+  var LOCAL_HOST = location.hostname === "127.0.0.1" || location.hostname === "localhost";
+  var LOCAL_DEMO = LOCAL_HOST &&
     (/[?&](?:demo|preview)=1(?:&|$)/.test(location.search) || sessionStorage.getItem("aura_preview_active") === "1");
   var VSEP = window.AURA_CATALOG.VSEP || "::";
 
@@ -460,6 +461,18 @@ window.AURA_IMG = function (img) {
         }
       }
     } catch(e){}
+    /* En production, Supabase est l'unique source de vérité. Une ancienne
+       copie locale ne doit jamais pouvoir remettre un ancien numéro WhatsApp,
+       un ancien nom ou un ancien ordre de marques sur le téléphone d'un
+       visiteur. Le catalogue embarqué sert seulement pendant les quelques
+       instants nécessaires à la lecture de la version publiée. Le panier et
+       les favoris utilisent leurs propres clés et restent donc conservés. */
+    if (!LOCAL_HOST){
+      var fresh = SEED();
+      fresh.products = normalizeProducts(fresh.products);
+      if (!Array.isArray(fresh.orders)) fresh.orders = [];
+      return fresh;
+    }
     try {
       var raw = localStorage.getItem(KEY);
       if (raw){
@@ -1270,7 +1283,7 @@ window.AURA_IMG = function (img) {
     if (document.documentElement.getAttribute("data-preview") === "true") return;
     /* En local, montrer exactement le catalogue du dépôt en cours d'édition.
        La production continue de lire Supabase, sa source de vérité. */
-    if (location.hostname === "127.0.0.1" || location.hostname === "localhost") return;
+    if (LOCAL_HOST) return;
     if (typeof window.AURA_DB === "undefined" || !window.AURA_DB.ready()) return;
     window.AURA_DB.loadSettings(function(es, s){
       if (es || !s) return;

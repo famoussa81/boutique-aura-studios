@@ -227,7 +227,7 @@
 
   function settings() {
     return {
-      whatsapp: "22393249365",
+      whatsapp: "22376759515",
       shopName: "T&K SHOES",
       logo: "assets/brand/tk-shoes-nav.png",
       shareImage: "https://boutique-aura-studios.vercel.app/assets/brand/tk-shoes-share.jpg",
