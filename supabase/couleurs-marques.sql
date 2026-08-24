@@ -1,5 +1,5 @@
 -- ============================================================
--- SNEAK BAMAKO — Identité visuelle par marque
+-- T&K SHOES — Identité visuelle par marque
 -- Colle ce bloc dans Supabase → SQL Editor puis clic "Run".
 --
 -- Donne à chaque marque sa couleur et son motif de couverture.

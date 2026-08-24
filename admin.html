@@ -4,14 +4,15 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex,nofollow" />
-<title>SNEAK BAMAKO — Administration</title>
+<title>T&amp;K SHOES — Administration</title>
 <link rel="preconnect" href="https://vgzvavlmmqbxtuhanaqj.supabase.co" crossorigin />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap"
       media="print" onload="this.media='all';this.onload=null" />
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" /></noscript>
-<link rel="icon" href="logos/favicon.ico" sizes="any" />
+<link rel="icon" href="assets/brand/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
 <style>
   :root{
     --bg:#ffffff;--ink:#111111;--accent:#000000;--surface:#28282a;--gray:#f5f5f5;--line:#cacacb;--muted:#707072;
@@ -228,7 +229,7 @@
 
   <div class="gate" id="gate">
     <div class="gate-card">
-      <div class="logo">SNEAK<small>ADMINISTRATION</small></div>
+      <div class="logo">T&amp;K SHOES<small>ADMINISTRATION</small></div>
       <p>Espace réservé au propriétaire de la boutique.</p>
       <form id="loginForm" novalidate>
         <div class="field" style="text-align:left">
@@ -252,13 +253,13 @@
   </div>
 
   <div class="mobile-admin-head" aria-hidden="true">
-    <strong id="brandAdminMobile">SNEAK BAMAKO</strong>
+    <strong id="brandAdminMobile">T&amp;K SHOES</strong>
     <span class="publish-dot"><i></i><span id="mobilePublishState">Publiée</span></span>
   </div>
 
   <header class="top">
     <div class="top-inner">
-      <div class="brand" id="brandAdmin">SNEAK BAMAKO<small>PANEL ADMINISTRATION</small></div>
+      <div class="brand" id="brandAdmin">T&amp;K SHOES<small>PANEL ADMINISTRATION</small></div>
       <nav class="nav-admin" aria-label="Administration">
         <button class="tab active" data-view="dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V21h-6v-6H9v6H3Z"/></svg><span>Aujourd'hui</span></button>
         <button class="tab" data-view="orders"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7V5a6 6 0 0 1 12 0v2h3v14H3V7Zm3 0h6V5a3 3 0 0 0-6 0Z"/></svg><span>Commandes</span></button>
@@ -1636,7 +1637,7 @@
       var st = STATUS[o.status] || STATUS.PENDING;
       var date = "—";
       try { date = new Date(o.date).toLocaleDateString("fr-FR", { day:"2-digit", month:"2-digit", year:"2-digit" }) + " " + new Date(o.date).toLocaleTimeString("fr-FR", { hour:"2-digit", minute:"2-digit" }); } catch(e){}
-      var shop = store.settings.shopName || "SNEAK BAMAKO";
+      var shop = store.settings.shopName || "T&K SHOES";
       var msg = "Bonjour " + o.client + " 👋\n\nVotre commande *" + o.ref + "* (" + st.label + ") est enregistrée chez *" + shop + "*.\nLivraison prévue à *Bamako, " + o.quartier + "*.\nMerci de confirmer votre disponibilité. 🙏";
       var href = waLink("223" + digits(o.phone), msg);
       var items = o.items.map(function(it){
@@ -2469,7 +2470,7 @@
       if (w.created_at){ try { d = new Date(w.created_at).toLocaleString("fr-FR"); } catch(e){} }
       var msg = "Bonjour 👋 Bonne nouvelle : « " + (w.product_name || "") +
                 " » est de nouveau disponible en taille " + (w.size || "") +
-                " chez " + (store.settings.shopName || "SNEAK BAMAKO") + ".";
+                " chez " + (store.settings.shopName || "T&K SHOES") + ".";
       var href = waLink("223" + digits(w.phone), msg);
       return '<tr>' +
         '<td>' + esc(w.product_name || w.product_id || "—") + '</td>' +
@@ -3484,7 +3485,7 @@ function applyStatus(order, ns){
     $("#sShareImage").value = s.shareImage || "";
     /* Le commerçant a renommé sa boutique : son administration doit porter le
        nouveau nom, pas celui du modèle de départ. */
-    var nom = s.shopName || "SNEAK BAMAKO";
+    var nom = s.shopName || "T&K SHOES";
     document.title = nom + " — Administration";
     var enseigne = $("#brandAdmin");
     if (enseigne) enseigne.childNodes[0].nodeValue = nom;
@@ -3520,7 +3521,7 @@ function applyStatus(order, ns){
       }
     }
     store.settings.whatsapp = wa;
-    store.settings.shopName = $("#sName").value.trim() || "SNEAK BAMAKO";
+    store.settings.shopName = $("#sName").value.trim() || "T&K SHOES";
     store.settings.logo = $("#sLogo").value.trim();
     store.settings.accent = $("#sAccent").value;
     store.settings.address = $("#sAddress").value.trim();

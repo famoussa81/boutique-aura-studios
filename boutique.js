@@ -73,7 +73,7 @@
     '        </div>\n' +
     '      </div>\n' +
     '      <div class="footer-bottom">\n' +
-    '        <p id="footerBrandLine">© 2026 SNEAK BAMAKO. Tous droits réservés.</p>\n' +
+    '        <p id="footerBrandLine">© 2026 T&amp;K SHOES. Tous droits réservés.</p>\n' +
     '        <nav>\n' +
     '          <a href="cgv.html">CGV</a>\n' +
     '          <a href="confidentialite.html">Confidentialité</a>\n' +
@@ -113,7 +113,7 @@
     '      </div>\n' +
     '      <div class="subtotal-row"><span>Sous-total</span><strong id="cartSubtotal">0 FCFA</strong></div>\n' +
     '      <div class="subtotal-row" id="cartDeliveryRow"><span>Livraison</span><strong id="cartDelivery">0 FCFA</strong></div>\n' +
-    '      <div class="subtotal-row" style="font-size:15px"><span>Total</span><strong id="cartTotal">0 FCFA</strong></div>\n' +
+    '      <div class="subtotal-row" style="font-size:15px"><span id="cartTotalLabel">Total</span><strong id="cartTotal">0 FCFA</strong></div>\n' +
     '      <p class="delivery-note" id="cartDeliveryNote"></p>\n' +
     '      <button class="btn btn-primary btn-full" data-od-id="cart-checkout" id="checkoutBtn">Passer commande</button>\n' +
     '      <button class="btn btn-ghost-dark btn-full" id="cartContinue" data-od-id="cart-continue">Continuer mes achats</button>\n' +
@@ -186,7 +186,7 @@
     '          </div>\n' +
     '          <div class="wa-note">\n' +
     '            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;flex-shrink:0"><path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 7.8 19.4Z"/></svg>\n' +
-    '            <span>Aucun paiement en ligne. Vous serez redirigé vers WhatsApp : un agent confirme votre commande et la livraison.</span>\n' +
+    '            <span>Paiement à la livraison, au retrait ou par Orange Money après confirmation sur WhatsApp.</span>\n' +
     '          </div>\n' +
     '          <button type="submit" class="btn btn-primary btn-full" id="coSubmit">Commander via WhatsApp</button>\n' +
     '        </form>\n' +
@@ -647,6 +647,16 @@ window.AURA_IMG = function (img) {
     if (free > 0 && sub >= free) return 0;
     return Number(store.settings.deliveryFee) || 0;
   }
+  function deliveryFeeLabel(sub){
+    var fee = deliveryFor(sub);
+    if (fee === 0) return "Offerte";
+    var min = Number(store.settings.deliveryFeeMin) || fee;
+    return min > 0 && min < fee ? fmt(min) + " à " + fmt(fee) : fmt(fee);
+  }
+  function variableDelivery(sub){
+    var fee = deliveryFor(sub), min = Number(store.settings.deliveryFeeMin) || fee;
+    return fee > 0 && min > 0 && min < fee;
+  }
 
   /* ---------------- Liens issus des réglages ---------------- */
   function helpLink(msg){ return waLink(store.settings.whatsapp, msg); }
@@ -714,7 +724,7 @@ window.AURA_IMG = function (img) {
     el.textContent = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Store",
-      "name": store.settings.shopName || "SNEAK BAMAKO",
+      "name": store.settings.shopName || "T&K SHOES",
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": (sum / rated.length).toFixed(1),
@@ -1137,7 +1147,7 @@ window.AURA_IMG = function (img) {
     var he = $("#heroExchange"); if (he) he.textContent = ex ? "Échange sous " + ex : "Échange possible";
     var hd = $("#heroDelay"); if (hd) hd.textContent = libelle;
     var wa = $("#waFloat");
-    if (wa) wa.href = waLink(s.whatsapp, "Bonjour " + (s.shopName || "SNEAK BAMAKO") + " 👋 J'ai une question sur un article.");
+    if (wa) wa.href = waLink(s.whatsapp, "Bonjour " + (s.shopName || "T&K SHOES") + " 👋 J'ai une question sur un article.");
     renderLogo();
     renderContenu();
     renderReviews();
@@ -1222,13 +1232,14 @@ window.AURA_IMG = function (img) {
     var fc=$("#footerContact"),contact=[];
     if(s.address)contact.push(String(s.address).trim());
     if(s.hours)contact.push(String(s.hours).trim());
+    if(s.legal&&s.legal.email)contact.push(String(s.legal.email).trim());
     if(fc){fc.textContent=contact.join(" · ");fc.hidden=!contact.length;}
     var free = Number(s.freeFrom) || 0;
     var note = $("#cartDeliveryNote");
     if (note){
       note.textContent = free > 0
-        ? "Livraison à Bamako : " + fmt(s.deliveryFee) + " · offerte dès " + fmt(free)
-        : "Livraison à Bamako : " + fmt(s.deliveryFee);
+        ? "Livraison à Bamako : " + deliveryFeeLabel(0) + " selon le quartier · offerte dès " + fmt(free) + " · tarif confirmé avant l'envoi"
+        : "Livraison à Bamako : " + deliveryFeeLabel(0) + " selon le quartier · tarif confirmé avant l'envoi";
     }
     var wa = waLink(s.whatsapp, "Bonjour " + s.shopName + " 👋");
     ["#contactBtn","#helpContact"].forEach(function(sel){ var e = $(sel); if (e) e.href = wa; });
@@ -2149,7 +2160,9 @@ window.AURA_IMG = function (img) {
     var sub = subtotal(), del = deliveryFor(sub);
     renderFreeShip(sub);
     $("#cartSubtotal").textContent = fmt(sub);
-    $("#cartDelivery").textContent = del === 0 ? "Offerte" : fmt(del);
+    $("#cartDelivery").textContent = deliveryFeeLabel(sub);
+    var totalLabel = $("#cartTotalLabel");
+    if (totalLabel) totalLabel.textContent = variableDelivery(sub) ? "Total maximum" : "Total";
     $("#cartTotal").textContent = fmt(sub + del);
     body.innerHTML = cart.map(function(it){
       return '<div class="cart-item" data-key="' + esc(it.id + "|" + it.variant) + '">' +
@@ -2329,8 +2342,8 @@ window.AURA_IMG = function (img) {
         cart.map(function(it){
           return '<div class="co-item"><span>' + esc(it.brand ? it.brand + ' ' + it.name : it.name) + ' <small>' + (it.variantLabel ? esc(it.variantLabel) + ' · ' : '') + it.qty + ' x</small></span><strong>' + fmt(it.price * it.qty) + '</strong></div>';
         }).join("") +
-        '<div class="co-line"><span>Livraison (Bamako)</span><strong>' + (deliveryFor(subtotal()) === 0 ? "Offerte" : fmt(deliveryFor(subtotal()))) + '</strong></div>' +
-        '<div class="co-total"><span>Total</span><strong>' + fmt(subtotal() + deliveryFor(subtotal())) + '</strong></div>' +
+        '<div class="co-line"><span>Livraison (Bamako)</span><strong>' + deliveryFeeLabel(subtotal()) + '</strong></div>' +
+        '<div class="co-total"><span>' + (variableDelivery(subtotal()) ? "Total maximum" : "Total") + '</span><strong>' + fmt(subtotal() + deliveryFor(subtotal())) + '</strong></div>' +
       '</div>';
   }
   function openCheckout(){
@@ -2351,8 +2364,8 @@ window.AURA_IMG = function (img) {
     });
     L.push("");
     L.push("🧾 *Sous-total :* " + fmt(o.subtotal));
-    L.push("🚚 *Livraison :* " + (o.delivery === 0 ? "Offerte" : fmt(o.delivery)));
-    L.push("💰 *Total :* " + fmt(o.total));
+    L.push("🚚 *Livraison :* " + deliveryFeeLabel(o.subtotal) + (variableDelivery(o.subtotal) ? " selon le quartier" : ""));
+    L.push("💰 *" + (variableDelivery(o.subtotal) ? "Total maximum" : "Total") + " :* " + fmt(o.total));
     L.push("👤 *Client :* " + o.client + " (" + localPhone(o.phone) + ")");
     L.push("📍 *Livraison :* Bamako, " + o.quartier);
     return L.join("\n");

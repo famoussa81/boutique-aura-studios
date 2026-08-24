@@ -227,19 +227,26 @@
 
   function settings() {
     return {
-      whatsapp: "22376759515",
-      shopName: "SNEAK BAMAKO",
-      deliveryFee: 1500,
+      whatsapp: "22393249365",
+      shopName: "T&K SHOES",
+      logo: "assets/brand/tk-shoes-nav.png",
+      shareImage: "https://boutique-aura-studios.vercel.app/assets/brand/tk-shoes-share.jpg",
+      address: "Kalaban Coura, Bamako",
+      hours: "Lun–ven 09h–22h · Sam 10h–22h · Dim fermé",
+      deliveryFee: 2500,
+      deliveryFeeMin: 2000,
       freeFrom: 40000,
       /* Délai de livraison annoncé. Modifiable depuis l'administration :
          il alimente à la fois les cartes produit, le bandeau de réassurance
          et les mentions du hero, pour qu'ils ne puissent jamais diverger.
          Exemples : "24h", "48h", "2 à 3 jours", "1 semaine". */
-      deliveryTime: "24h",
+      deliveryTime: "48h",
       /* Délai d'échange annoncé. Comme le délai de livraison, il est écrit
          une seule fois ici : une promesse figée dans le HTML ne peut plus
          être ajustée quand la réalité du terrain change. */
-      exchangeTime: "48h",
+      exchangeTime: "24h",
+      payments: ["Espèces à la livraison", "Espèces au retrait", "Orange Money"],
+      legal: { forme: "", email: "mohamedsambakessy8@gmail.com", adresse: "Kalaban Coura, Bamako", rccm: "", nif: "" },
       /* Avis clients : rempli depuis l'administration, jamais pre-rempli.
          Section masquee en boutique tant que la liste est vide. */
       reviews: [],
@@ -267,8 +274,8 @@
           image: "assets/hero.webp",
           badge: "Collection 2026 · Bamako",
           kicker: "Claquettes · Mules · Sabots",
-          title: "Le confort ne se négocie pas",
-          sub: "Les grandes marques, en pointures 39 à 45. Commande simple par WhatsApp, paiement à la livraison.",
+          title: "Les modèles qui comptent",
+          sub: "Des modèles originaux, en pointures 39 à 45. Commande simple par WhatsApp et livraison à Bamako.",
           cta1: "Voir les marques",
           cta2: "Tout le catalogue"
         },
@@ -286,11 +293,11 @@
           image: "assets/editorial.webp",
           kicker: "La maison",
           title: "Le vrai, au bon prix",
-          text: "Nous sélectionnons chaque paire auprès de fournisseurs vérifiés. Pas de copie, pas de mauvaise surprise : ce que vous voyez est ce que vous recevez.",
+          text: "T&K SHOES sélectionne des modèles originaux de plusieurs marques. Ce que vous voyez est ce que vous recevez.",
           pillars: [
-            { title: "Authentique", text: "Chaque modèle vient d'un circuit vérifié. Nous montrons la boîte et l'étiquette sur demande." },
+            { title: "Produits originaux", text: "Chaque modèle est vendu comme produit original par un revendeur multimarques indépendant." },
             { title: "Pointures complètes", text: "Du 39 au 45 sur la majorité des modèles, avec le stock réel affiché." },
-            { title: "Livraison rapide", text: "Bamako en 24 heures, paiement à la réception. Vous ne payez rien à l'avance." }
+            { title: "Livraison simple", text: "Bamako sous 48 heures. Paiement à la livraison, au retrait ou par Orange Money après confirmation." }
           ]
         },
         newsletter: {
@@ -331,7 +338,7 @@
         { key: "allsaints", label: "AllSaints", logo: "assets/logos/allsaints.svg", tagline: "Minimal", accent: "#6E6459", cover: "assets/brand-banners/allsaints.webp",
           desc: "Bleu marine et logo blanc. Rien de plus." }
       ],
-      announcement: "Livraison gratuite à Bamako dès 40 000 FCFA d'achat",
+      announcement: "Livraison offerte dès 40 000 FCFA · sous 48h à Bamako",
       instagram: "",
       tiktok: "",
       youtube: ""

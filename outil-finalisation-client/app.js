@@ -460,7 +460,7 @@
       <div class="form-section">
         <h3>Nom et présentation</h3><p>Ces textes apparaîtront dans l’en-tête, les pages et les résultats de recherche.</p>
         <div class="form-grid">
-          ${field("identity.storeName", "Nom exact de la boutique", { required: true, placeholder: "Ex. SNEAK BAMAKO" })}
+          ${field("identity.storeName", "Nom exact de la boutique", { required: true, placeholder: "Ex. T&K SHOES" })}
           ${field("identity.slogan", "Slogan", { placeholder: "Ex. Les modèles qui comptent" })}
           ${field("identity.shortDescription", "Description courte", { required: true, full: true, type: "textarea", maxlength: 220, placeholder: "En deux phrases : que vend la boutique et pourquoi acheter ici ?" })}
           ${field("identity.about", "Histoire de la boutique", { full: true, type: "textarea", placeholder: "Depuis quand existe-t-elle ? Comment choisit-elle ses produits ?" })}

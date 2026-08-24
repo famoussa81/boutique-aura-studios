@@ -8,7 +8,7 @@ const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 module.exports = async function shareImage(req, res) {
   const host = String(req.headers["x-forwarded-host"] || req.headers.host || "boutique-aura-studios.vercel.app");
   const proto = String(req.headers["x-forwarded-proto"] || "https");
-  const fallback = `${proto}://${host}/assets/hero.webp`;
+  const fallback = `${proto}://${host}/assets/brand/tk-shoes-share.jpg`;
   let target = fallback;
   try {
     const response = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=data&id=eq.1`, {

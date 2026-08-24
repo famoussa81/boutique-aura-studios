@@ -6,7 +6,7 @@
  * légales laissées en attente, dans tous les fichiers concernés.
  *
  *   node configurer.mjs --domaine https://ma-boutique.com
- *   node configurer.mjs --enseigne "SNEAK BAMAKO" --image assets/hero.webp
+ *   node configurer.mjs --enseigne "T&K SHOES" --image assets/hero.webp
  *   node configurer.mjs --domaine https://ma-boutique.com \
  *                       --enseigne "NOM SARL" --forme "SARL" \
  *                       --adresse "Rue 224, Porte 15, ACI 2000" \
@@ -30,7 +30,7 @@ const FICHIERS_DOMAINE = [
    commerçant ne peut pas modifier depuis l'administration : ce sont elles qui
    composent l'aperçu affiché quand il envoie le lien de sa boutique sur
    WhatsApp. Sans ce passage, il enverrait le nom du modèle de départ. */
-const ENSEIGNE_DEMO = 'SNEAK BAMAKO';
+const ENSEIGNE_DEMO = 'T&K SHOES';
 const IMAGE_DEMO = '/assets/hero.webp';
 
 const FICHIERS_ENSEIGNE = [
@@ -129,7 +129,7 @@ const LEGAL = [
   ['rccm',     /Registre du commerce \(RCCM\) : \[à compléter\]/,      v => `Registre du commerce (RCCM) : ${v}`],
   ['nif',      /Numéro d'identification fiscale \(NIF\) : \[à compléter\]/, v => `Numéro d'identification fiscale (NIF) : ${v}`],
   ['email',    /— \[adresse e-mail\]/,                                 v => `— ${v}`],
-  ['enseigne', /Dénomination : SNEAK BAMAKO/,                          v => `Dénomination : ${v}`],
+  ['enseigne', /Dénomination : T&K SHOES/,                             v => `Dénomination : ${v}`],
 ];
 
 let cgv = lire('cgv.html');
