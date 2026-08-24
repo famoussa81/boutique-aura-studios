@@ -6,6 +6,15 @@
   <meta name="color-scheme" content="light">
   <meta name="robots" content="noindex,nofollow">
   <title>Finalisation de votre boutique</title>
+  <script>
+    (function(){
+      var token=new URLSearchParams(location.search).get("d");
+      if(token&&/^[A-Za-z0-9_-]{40,100}$/.test(token)){
+        try{sessionStorage.setItem("aura_intake_token",token);}catch(e){}
+        history.replaceState(null,"",location.pathname+"#"+token);
+      }
+    })();
+  </script>
   <style>
     #styleFallback{min-height:100vh;display:grid;place-content:center;text-align:center;padding:24px;font:600 16px/1.5 system-ui,sans-serif;color:#171713;background:#fff}
     #styleFallback small{display:block;margin-top:8px;color:#686865;font-weight:400}

@@ -3608,7 +3608,7 @@ function applyStatus(order, ns){
   function message(text){var t=el("toast");if(!t)return;t.textContent=text;t.setAttribute("data-visible","true");setTimeout(function(){t.setAttribute("data-visible","false");},2600);}
   function savedLinks(){try{return JSON.parse(localStorage.getItem(linksKey)||"{}");}catch(e){return {};}}
   function keepLink(id,token){var all=savedLinks();all[id]=token;localStorage.setItem(linksKey,JSON.stringify(all));}
-  function clientUrl(token){return location.origin+"/outil-finalisation-client/#"+token;}
+  function clientUrl(token){return location.origin+"/outil-finalisation-client/?d="+encodeURIComponent(token);}
   function date(v){return v?new Intl.DateTimeFormat("fr-FR",{dateStyle:"medium",timeStyle:"short"}).format(new Date(v)):"—";}
   function status(row){if(row.status==="submitted")return"Envoyé";if(row.status==="disabled")return"Désactivé";if(Date.parse(row.expires_at)<Date.now())return"Expiré";return"En cours";}
   function showLink(id,token,phone){keepLink(id,token);var url=clientUrl(token),box=el("intakeLinkBox");el("intakeLink").value=url;box.hidden=false;el("intakeWhatsApp").href=whatsapp(phone,url);box.scrollIntoView({behavior:"smooth",block:"nearest"});}

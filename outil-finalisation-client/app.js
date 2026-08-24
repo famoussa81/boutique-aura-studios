@@ -3,7 +3,8 @@
 
   const DB_NAME = "dossier-boutique-local";
   const DB_VERSION = 1;
-  const tokenFromUrl = (location.hash || "").slice(1).trim();
+  const tokenFromQuery = new URLSearchParams(location.search).get("d") || "";
+  const tokenFromUrl = ((location.hash || "").slice(1).trim() || tokenFromQuery.trim());
   const rememberedToken = (() => { try { return sessionStorage.getItem("aura_intake_token") || ""; } catch (_) { return ""; } })();
   const INTAKE_TOKEN = tokenFromUrl || rememberedToken;
   if (tokenFromUrl) { try { sessionStorage.setItem("aura_intake_token", tokenFromUrl); } catch (_) {} }
