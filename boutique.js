@@ -1079,8 +1079,13 @@ window.AURA_IMG = function (img) {
       if (prioritaire){
         e.removeAttribute("data-src");
         var sourceMobile = e.id === "heroImage" ? $("#heroMobileSource") : null;
-        if (e.id === "heroImage" && /^(?:\.\/)?assets\/hero\.webp$/i.test(String(url))){
-          if (sourceMobile) sourceMobile.srcset = mediaUrl("assets/hero-960.webp");
+        var heroMobiles = {
+          "assets/hero.webp": "assets/hero-960.webp",
+          "assets/hero-navy-20260824.webp": "assets/hero-navy-mobile-20260824.webp"
+        };
+        var heroKey = String(url).replace(/^\.\//, "");
+        if (e.id === "heroImage" && heroMobiles[heroKey]){
+          if (sourceMobile) sourceMobile.srcset = mediaUrl(heroMobiles[heroKey]);
         } else {
           if (sourceMobile) sourceMobile.removeAttribute("srcset");
         }
