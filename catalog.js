@@ -228,7 +228,7 @@
         },
         editorial: {
           on: true,
-          image: "assets/editorial-premium-20260824.webp",
+          image: "assets/editorial-selection-20260824.webp",
           kicker: "La maison",
           title: "Le vrai, au bon prix",
           text: "T&K SHOES sélectionne des modèles originaux de plusieurs marques. Ce que vous voyez est ce que vous recevez.",
