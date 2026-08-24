@@ -1247,7 +1247,7 @@
       setSaving(false);
       if (localIsNewer && !submitted) scheduleSave();
     } catch (error) {
-      console.error(error);
+      if (error.message !== "Ce lien privé est incomplet.") console.error(error);
       document.body.innerHTML = `<main class="link-error"><span>!</span><h1>Lien indisponible</h1><p>${esc(error.message || "Ce lien est invalide ou a expiré.")}</p><small>Demandez un nouveau lien au responsable du site.</small></main>`;
     }
   }
