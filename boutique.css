@@ -163,7 +163,7 @@
   .mband-top:hover .mband-go svg{transform:translateX(4px)}
   /* Rangée horizontale : montrer quatre modèles sans pousser la marque
      suivante trois écrans plus bas. */
-  .mrow{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,236px);
+  .mrow{display:grid;grid-auto-flow:column;grid-auto-columns:236px;
     gap:16px;margin-top:18px;overflow-x:auto;scroll-snap-type:x proximity;
     -webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}
   .mrow::-webkit-scrollbar{display:none}
@@ -271,12 +271,12 @@
     /* Le libellé « Voir les 4 modèles » passerait à la ligne : la bannière
        entière est déjà cliquable, la flèche suffit à le dire. */
     .mband-go span{display:none}
-    .mrow{grid-auto-columns:minmax(0,168px);gap:12px;
+    .mrow{grid-auto-columns:168px;gap:12px;
       margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
     /* Sur téléphone, quatre colonnes donneraient des cartes illisibles :
        la rangée redevient un défilement au doigt. */
     .mrow-fixe{grid-auto-flow:column;grid-template-columns:none;
-      grid-auto-columns:minmax(0,168px);overflow-x:auto}
+      grid-auto-columns:168px;overflow-x:auto}
   }
 
   .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px}
