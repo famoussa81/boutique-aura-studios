@@ -809,7 +809,7 @@ window.AURA_IMG = function (img) {
      boutique installée à l'instant ne montre pas une page vide.
      Plafonné à quatre : au-delà, l'accueil devient un catalogue déguisé et
      plus personne ne descend jusqu'aux autres marques. */
-  var MAX_BANDES = 4, MAX_MODELES = 8;
+  var MAX_BANDES = 4, MAX_MODELES = 4;
   function imageMarque(c, desktopKey, mobileKey){
     var mobile = false;
     try { mobile = !!(mobileKey && window.matchMedia && window.matchMedia("(max-width:640px)").matches); } catch(e){}
@@ -836,31 +836,42 @@ window.AURA_IMG = function (img) {
     var choisies = marquesEnAvant(colls);
     host.innerHTML = choisies.map(function(c){
       var bandCover=imageMarque(c,"homeCover","homeCoverMobile");
-      var produits = store.products.filter(function(p){
+      var tousProduits = store.products.filter(function(p){
         return p.active && p.collection === c.key;
-      }).slice(0, MAX_MODELES);
+      });
+      var idsVedette = Array.isArray(c.homeProducts) ? c.homeProducts.slice(0, MAX_MODELES) : [];
+      var produits = idsVedette.map(function(id){
+        return tousProduits.filter(function(p){ return p.id === id; })[0] || null;
+      }).filter(Boolean);
+      /* Sans sélection manuelle, les premiers modèles servent de repli. Dès
+         que le commerçant choisit une paire, seuls ses choix sont montrés. */
+      if (!produits.length) produits = tousProduits.slice(0, MAX_MODELES);
+      var total = tousProduits.length;
       var n = produits.length;
+      var autres = Math.max(0, total - n);
       /* Chaque maison tient sa bande : sa photo d'ambiance en fond, sa couleur
          sur le filet et le lien. Tant qu'aucune photo n'est fournie, la
          couleur remplit la bande — jamais un trou, jamais un fond gris. */
       return '<div class="mband' + (bandCover ? ' a-photo' : '') + '"' +
         (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' +
         '<a class="mband-top" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
-          ' aria-label="' + (n > 1 ? 'Voir les ' + n + ' modèles ' : 'Voir le modèle ') + esc(c.label) + '">' +
+          ' aria-label="' + (total > 1 ? 'Voir les ' + total + ' modèles ' : 'Voir le modèle ') + esc(c.label) + '">' +
           (bandCover ? '<img class="mband-cover" ' + lazyAttrs(bandCover) + ' alt="" onerror="AURA_IMG(this)" />' : '') +
           '<span class="mband-in">' +
             '<span>' +
               (c.tagline ? '<span class="mband-tag">' + esc(c.tagline) + '</span>' : '') +
               '<span class="mband-name">' + esc(c.label) + '</span>' +
             '</span>' +
-            '<span class="mband-go"><span>' + (n > 1 ? 'Voir les ' + n + ' modèles' : 'Voir le modèle') + '</span>' +
+            '<span class="mband-go"><span>' + (total > 1 ? 'Voir les ' + total + ' modèles' : 'Voir le modèle') + '</span>' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
           '</span>' +
         '</a>' +
         /* Quatre modèles ou moins tiennent sur une ligne : une barre de
            défilement qui ne défile pas donne l'impression d'un bug. */
-        '<div class="mrow' + (n <= 4 ? ' mrow-fixe' : '') + '">' +
-          produits.map(cardHTML).join("") + '</div>' +
+        '<div class="mrow mrow-fixe">' + produits.map(cardHTML).join("") + '</div>' +
+        (autres ? '<a class="mrow-more" href="collection.html?c=' + encodeURIComponent(c.key) + '">' +
+          '<span>Voir les ' + autres + ' autre' + (autres > 1 ? 's' : '') + ' modèle' + (autres > 1 ? 's' : '') + '</span>' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>' : '') +
       '</div>';
     }).join("");
     return choisies.map(function(c){ return c.key; });

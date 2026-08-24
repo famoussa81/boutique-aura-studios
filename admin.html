@@ -223,7 +223,7 @@
   .ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
     padding:8px 0;border-top:1px solid var(--line);font-size:13px}
 </style>
-<link rel="stylesheet" href="admin-dashboard.css?v=20260823media1" />
+<link rel="stylesheet" href="admin-dashboard.css?v=20260824featured1" />
 </head>
 <body>
 
@@ -2234,6 +2234,21 @@
     '</div>';
   }
 
+  function collHomeProductsHTML(c, i){
+    var produits=store.products.filter(function(p){return p.collection===c.key&&!p.archived&&p.active!==false;});
+    if(!produits.length)return '<p class="hint">Aucun produit dans cette marque.</p>';
+    var selection=Array.isArray(c.homeProducts)?c.homeProducts.filter(function(id){
+      return produits.some(function(p){return p.id===id;});
+    }).slice(0,4):[];
+    return '<div class="brand-featured-products">'+produits.map(function(p){
+      var checked=selection.indexOf(p.id)>=0,disabled=!checked&&selection.length>=4;
+      return '<label class="brand-featured-product'+(checked?' is-selected':'')+(disabled?' is-disabled':'')+'">'+
+        '<input type="checkbox" data-clhomeproduct="'+esc(p.id)+'" data-clindex="'+i+'"'+(checked?' checked':'')+(disabled?' disabled':'')+' />'+
+        (p.img?'<img src="'+esc(p.img)+'" alt="" onerror="this.style.opacity=0" />':'<span class="brand-featured-placeholder"></span>')+
+        '<span><b>'+esc(p.name)+'</b><small>'+(p.active?'Visible en boutique':'Masqué en boutique')+'</small></span></label>';
+    }).join('')+'</div><p class="hint">'+selection.length+'/4 sélectionnée'+(selection.length>1?'s':'')+'. Sans sélection, les quatre premiers modèles sont choisis automatiquement.</p>';
+  }
+
   function collEditorHTML(c, i){
     var plein = !c.featured && collEnAvant() >= 4;
     return '<div class="axes-editeur">' +
@@ -2244,6 +2259,9 @@
         (plein ? 'Quatre marques sont déjà mises en avant : décochez-en une pour libérer une place.'
                : 'Quatre au maximum — au-delà, la page d\'accueil devient un catalogue et plus personne ne descend jusqu\'en bas.') +
         '</p></div>' +
+      '<div class="field"><label>Paires vedettes sur l\'accueil</label>'+
+        '<p class="hint" style="margin-bottom:10px">Choisissez jusqu\'à quatre paires. Les autres restent accessibles avec le bouton « Voir les autres modèles ».</p>'+
+        collHomeProductsHTML(c,i)+'</div>'+
       '<div class="field"><label for="clTag' + i + '">Accroche</label>' +
         '<input type="text" id="clTag' + i + '" data-clfield="tagline.' + i + '" maxlength="40" value="' + esc(c.tagline || "") + '" placeholder="Monogram, Vintage Check…" />' +
         '<p class="hint">Deux ou trois mots, affichés au-dessus du nom sur la bannière.</p></div>' +
@@ -2281,8 +2299,12 @@
               (c.featured ? ' · en avant sur l\'accueil' : '') + '</div></div>' +
           /* L'identifiant technique ne s'affiche plus : le commerçant ne le
              saisit plus et n'a jamais à s'en servir. */
-          '<button type="button" class="sbtn danger" data-clldel="' + i + '"' +
-            (used ? ' disabled title="Marque utilisée par ' + used + ' produit(s)"' : '') + '>Supprimer</button>' +
+          '<div class="brand-order-actions">'+
+            '<button type="button" class="sbtn" data-clmove="'+i+'" data-cldirection="-1"'+(i===0?' disabled':'')+' aria-label="Monter '+esc(c.label)+'">↑</button>'+
+            '<button type="button" class="sbtn" data-clmove="'+i+'" data-cldirection="1"'+(i===list.length-1?' disabled':'')+' aria-label="Descendre '+esc(c.label)+'">↓</button>'+
+            '<button type="button" class="sbtn danger" data-clldel="' + i + '"' +
+              (used ? ' disabled title="Marque utilisée par ' + used + ' produit(s)"' : '') + '>Supprimer</button>'+
+          '</div>' +
         '</div>' +
         '<button type="button" class="sbtn" data-clopen="' + i + '">' +
           (collOuverte === i ? 'Masquer l\'identité' : 'Modifier cette marque') + '</button>' +
@@ -2308,6 +2330,14 @@
   });
 
   $("#collList").addEventListener("click", function(e){
+    var move=e.target.closest("[data-clmove]");
+    if(move&&!move.disabled){
+      var moveList=collList(),from=parseInt(move.getAttribute("data-clmove"),10),direction=parseInt(move.getAttribute("data-cldirection"),10),to=from+direction;
+      if(!moveList[from]||!moveList[to])return;
+      var moved=moveList.splice(from,1)[0];moveList.splice(to,0,moved);
+      if(collOuverte===from)collOuverte=to;else collOuverte=null;
+      majCollections(moveList);toast("Ordre des marques modifié");return;
+    }
     var ouvre = e.target.closest("[data-clopen]");
     if (ouvre){
       var i = parseInt(ouvre.getAttribute("data-clopen"), 10);
@@ -2336,6 +2366,20 @@
 
   $("#collList").addEventListener("change", function(e){
     var list = collList();
+
+    var homeProduct=e.target.closest("[data-clhomeproduct]");
+    if(homeProduct){
+      var hpIndex=parseInt(homeProduct.getAttribute("data-clindex"),10),hpId=homeProduct.getAttribute("data-clhomeproduct"),hpColl=list[hpIndex];
+      if(!hpColl)return;
+      var hpSelection=Array.isArray(hpColl.homeProducts)?hpColl.homeProducts.slice():[];
+      hpSelection=hpSelection.filter(function(id){return id!==hpId;});
+      if(homeProduct.checked){
+        if(hpSelection.length>=4){homeProduct.checked=false;toast("Quatre paires maximum");return;}
+        hpSelection.push(hpId);
+      }
+      if(hpSelection.length)hpColl.homeProducts=hpSelection;else delete hpColl.homeProducts;
+      majCollections(list);toast(homeProduct.checked?"Paire mise en vedette":"Paire retirée des vedettes");return;
+    }
 
     var lab = e.target.closest("[data-cllabel]");
     if (lab){
