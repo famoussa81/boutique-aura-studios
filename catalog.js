@@ -211,7 +211,7 @@
         },
         banner: {
           on: true,
-          image: "assets/banniere.webp",
+          image: "assets/banniere-premium-20260824.webp",
           kicker: "Sélection de la semaine",
           title: "Prêtes à porter, tout de suite.",
           text: "Semelle moulée, bride renforcée, pointures complètes. Les modèles qui partent le plus vite.",
@@ -220,7 +220,7 @@
         },
         editorial: {
           on: true,
-          image: "assets/editorial.webp",
+          image: "assets/editorial-premium-20260824.webp",
           kicker: "La maison",
           title: "Le vrai, au bon prix",
           text: "T&K SHOES sélectionne des modèles originaux de plusieurs marques. Ce que vous voyez est ce que vous recevez.",
