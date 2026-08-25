@@ -425,7 +425,7 @@
   /* Le délai de livraison remplace la catégorie : un argument à la place
      d'une redite. Le texte vient des réglages de la boutique. */
   .pdelivery{font-size:11.5px;color:var(--muted);text-transform:uppercase;
-    letter-spacing:.12em;font-weight:700;min-height:1.4em}
+    letter-spacing:.12em;font-weight:700;min-height:2.8em;line-height:1.4}
   /* Apercus reels des coloris : assez grands pour reconnaitre la matiere,
      assez legers pour ne pas transformer la grille en galerie complete. */
   .pcolors{display:flex;align-items:center;justify-content:space-between;gap:8px;
@@ -1059,12 +1059,22 @@
     .porte-in{padding:18px 18px;gap:6px}
     .porte-nom{font-size:clamp(24px,7vw,32px)}
     .porte-go{margin-top:2px;padding:10px 20px}
-    .choix-titre{font-size:clamp(22px,6.5vw,30px)}
+    .choix-titre{font-size:clamp(32px,11vw,44px)}
     .choix-logo{font-size:21px}
     .choix-logo-img{max-width:150px;max-height:42px}
     .choix-note{font-size:11px;letter-spacing:.08em}
     .choix-legal{gap:0 16px}
     .choix-legal a{min-height:44px;font-size:12px}
+  }
+
+  /* Très petits écrans : le titre repasserait sur deux lignes et pousserait
+     la seconde porte sous le pli. Il rétrécit plutôt que de voler la place
+     des portes — c'est le choix du rayon qui doit rester entier. */
+  @media (max-width:359px){
+    .choix{gap:12px;padding:18px 12px 14px}
+    .choix-titre{font-size:clamp(24px,8vw,30px)}
+    .choix-portes{grid-auto-rows:minmax(130px,1fr)}
+    .choix-logo-img{max-width:130px;max-height:36px}
   }
   @media (prefers-reduced-motion:reduce){
     .porte:hover .porte-img{transform:none}
