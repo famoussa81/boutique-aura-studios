@@ -1283,7 +1283,11 @@ window.AURA_IMG = function (img) {
     var b = c.banner || {};
     var bs = $("#bannerSection");
     if (bs) bs.hidden = b.on === false;
-    poserImage("#bannerImage", b.image, false);
+    /* Bannière et éditorial appartiennent à la boutique, mais leurs photos
+       montrent des modèles. Sur un rayon qui a la sienne, elle prime : une
+       paire d'homme au milieu du rayon Femme dit au visiteur qu'il s'est
+       trompé d'endroit. */
+    poserImage("#bannerImage", (rayon && pageRayonContenu.bannerImage) || b.image, false);
     poser("#bannerKicker", b.kicker);
     poser("#bannerTitre", b.title);
     poser("#bannerTexte", b.text);
@@ -1293,7 +1297,7 @@ window.AURA_IMG = function (img) {
     var e = c.editorial || {};
     var es = $("#a-propos");
     if (es) es.hidden = e.on === false;
-    poserImage("#edImage", e.image, false);
+    poserImage("#edImage", (rayon && pageRayonContenu.editorialImage) || e.image, false);
     poser("#edKicker", e.kicker);
     poser("#edTitre", e.title);
     poser("#edTexte", e.text);
