@@ -1815,7 +1815,7 @@ window.AURA_IMG = function (img) {
        la cliente cliquait sur une paire et en trouvait une autre à l'écran
        suivant — la vue studio ne correspondant à aucun coloris coché. */
     var photoCarte = photoDeLaSelection(p, valuesOf(firstAvailableKey(p))) || p.img;
-    var productUrl = audienceLien('produit.html?id=' + encodeURIComponent(p.id), curAudience || audienceAttribut());
+    var productUrl = audienceLien('produit?id=' + encodeURIComponent(p.id), curAudience || audienceAttribut());
     return '<article class="pcard' + (out ? ' is-out' : '') + '" data-card="' + esc(p.id) + '">' +
       '<div class="pmedia">' +
         '<img ' + lazyAttrs(cardThumbUrl(photoCarte)) + ' alt="' + alt + '" width="600" height="800" onerror="AURA_IMG(this)" />' +

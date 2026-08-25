@@ -3,8 +3,10 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/produit", "has": [{ "type": "query", "key": "id" }], "destination": "/api/produit" },
-    { "source": "/produit.html", "has": [{ "type": "query", "key": "id" }], "destination": "/api/produit" }
+    { "source": "/produit", "destination": "/api/produit" }
+  ],
+  "redirects": [
+    { "source": "/produit.html", "destination": "/produit", "permanent": true }
   ],
   "headers": [
     {
@@ -83,6 +85,18 @@
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
         }
+      ]
+    },
+    {
+      "source": "/gabarit-produit.html",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, follow" }
+      ]
+    },
+    {
+      "source": "/gabarit-produit",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, follow" }
       ]
     },
     {

@@ -61,14 +61,16 @@ function urlAbsolue(base, chemin) {
   return base + "/" + c.replace(/^\/+/, "");
 }
 
-/* Le gabarit vit dans le dépôt. On le lit sur le disque de la fonction ;
-   si le fichier n'a pas été embarqué, on le redemande au CDN — l'adresse
-   sans paramètre `id` sert le fichier statique, jamais cette fonction. */
+/* Le gabarit vit dans le dépôt sous son propre nom : sur Vercel un fichier
+   statique l'emporte toujours sur une règle de réécriture, donc tant qu'un
+   « produit.html » existait, c'est lui qui répondait et cette fonction
+   n'était jamais appelée. On lit le gabarit sur le disque de la fonction ;
+   s'il n'a pas été embarqué, on le redemande au CDN. */
 async function gabarit(base) {
   try {
-    return fs.readFileSync(path.join(process.cwd(), "produit.html"), "utf8");
+    return fs.readFileSync(path.join(process.cwd(), "gabarit-produit.html"), "utf8");
   } catch (_) {
-    const r = await fetch(base + "/produit.html", { redirect: "follow" });
+    const r = await fetch(base + "/gabarit-produit.html", { redirect: "follow" });
     if (!r.ok) throw new Error("gabarit introuvable");
     return await r.text();
   }
