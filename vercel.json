@@ -3,7 +3,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/produit", "destination": "/api/produit" }
+    { "source": "/produit", "destination": "/api/produit" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" }
   ],
   "redirects": [
     { "source": "/produit.html", "destination": "/produit", "permanent": true }
