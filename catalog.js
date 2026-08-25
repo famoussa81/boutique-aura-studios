@@ -204,8 +204,8 @@
         desc: "Claquette à bride textile large, déclinée dans des motifs bleus, noirs et gris." }),
       make({ id: "femme-dior-dway-pastels", name: "Claquette Dway Tons Pastel", audience: "femme", brand: "dior", price: 48000,
         sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 3, 3, 2, 1],
-        img: "assets/products/femme/dior-dway-rose.jpg", colors: ["Bleu glacier", "Noir profond", "Rose", "Lilas", "Marine", "Gris anthracite"],
-        valueImages: { "Coloris::Bleu glacier": "assets/products/femme/dior-dway-bleu-glacier.jpg", "Coloris::Noir profond": "assets/products/femme/dior-dway-noir-profond.jpg", "Coloris::Rose": "assets/products/femme/dior-dway-rose.jpg", "Coloris::Lilas": "assets/products/femme/dior-dway-lilas.jpg", "Coloris::Marine": "assets/products/femme/dior-dway-marine.jpg", "Coloris::Gris anthracite": "assets/products/femme/dior-dway-gris-anthracite.jpg" },
+        img: "assets/products/femme/dior-dway-rose.jpg", colors: ["Ivoire doré", "Noir profond", "Rose", "Toile rose", "Marine", "Gris anthracite"],
+        valueImages: { "Coloris::Ivoire doré": "assets/products/femme/dior-dway-bleu-glacier.jpg", "Coloris::Noir profond": "assets/products/femme/dior-dway-noir-profond.jpg", "Coloris::Rose": "assets/products/femme/dior-dway-rose.jpg", "Coloris::Toile rose": "assets/products/femme/dior-dway-lilas.jpg", "Coloris::Marine": "assets/products/femme/dior-dway-marine.jpg", "Coloris::Gris anthracite": "assets/products/femme/dior-dway-gris-anthracite.jpg" },
         desc: "Une seconde sélection de teintes pastel et profondes pour garder chaque fiche lisible." }),
       make({ id: "femme-birkenstock-boston-rose", name: "Sabot Boston Rose", audience: "femme", cat: "mules", brand: "birkenstock", price: 32000, badge: "Nouveau",
         sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 3, 3, 2, 1],
@@ -214,8 +214,8 @@
         desc: "Sabot fermé en matière douce rose poudré, bride réglable et semelle contrastée." }),
       make({ id: "femme-hermes-chypre-bleu", name: "Sandale Chypre Bleu Glacier", audience: "femme", brand: "hermes", price: 55000,
         sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 3, 3, 2, 1],
-        img: "assets/products/femme/hermes-chypre-bleu-studio.jpg", colors: ["Bleu glacier"],
-        valueImages: { "Coloris::Bleu glacier": "assets/products/femme/hermes-chypre-bleu-studio.jpg" },
+        img: "assets/products/femme/hermes-chypre-bleu-studio.jpg", colors: ["Ivoire doré"],
+        valueImages: { "Coloris::Ivoire doré": "assets/products/femme/hermes-chypre-bleu-studio.jpg" },
         desc: "Sandale bleu glacier à double bride, découpe H et semelle noire contrastée." })
     ];
   }
