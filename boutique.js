@@ -925,7 +925,11 @@ window.AURA_IMG = function (img) {
        n'annonçait qu'un bandeau là où l'autre rayon en montre trois. On
        complète avec les marques du rayon, les mieux fournies d'abord. */
     if (choisies.length < 2){
-      var complement = avec.filter(function(c){ return choisies.indexOf(c) < 0; })
+      /* Deux modèles minimum, comme pour le choix automatique : un bandeau
+         qui annonce une maison et ne montre qu'une paire promet plus qu'il
+         ne tient. Les marques à modèle unique rejoignent la rangée simple
+         plus bas. */
+      var complement = avec.filter(function(c){ return choisies.indexOf(c) < 0 && actifs[c.key] >= 2; })
         .sort(function(a, b){ return actifs[b.key] - actifs[a.key]; });
       choisies = choisies.concat(complement).slice(0, 3);
     }
@@ -975,6 +979,25 @@ window.AURA_IMG = function (img) {
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>' : '') +
       '</div>';
     }).join("");
+
+    /* Une paire dont la marque n'a pas de bandeau n'apparaissait nulle part
+       sur la page du rayon : elle n'existait qu'au catalogue. Déclarer une
+       marque entière pour un seul modèle serait disproportionné — la paire
+       rejoint donc une rangée simple, sans en-tête ni bandeau. */
+    var portees = {};
+    choisies.forEach(function(c){ portees[c.key] = true; });
+    var orphelins = store.products.filter(function(p){
+      return p && p.active !== false && !p.archived && !portees[p.collection] &&
+        audienceProduit(p, curAudience || audienceAttribut());
+    });
+    var hoteReste = $("#marquesOrphelins");
+    if (hoteReste){
+      hoteReste.hidden = !orphelins.length;
+      hoteReste.innerHTML = orphelins.length
+        ? '<div class="mrow' + (orphelins.length <= 4 ? ' mrow-fixe' : '') + '">' +
+            orphelins.slice(0, 8).map(cardHTML).join("") + '</div>'
+        : "";
+    }
     return choisies.map(function(c){ return c.key; });
   }
 
