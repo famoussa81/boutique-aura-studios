@@ -405,6 +405,16 @@
      transformait « Nouveau » en « Nouve… ». */
   .badge{position:absolute;top:12px;left:12px;z-index:2;max-width:calc(100% - 62px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--accent);color:var(--bg);border-radius:var(--radius);padding:6px 12px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
   .badge-sale{background:var(--ink)}
+  /* Paire épuisée : la photo pâlit et un bandeau barre le bas de l'image.
+     Le voile fait le travail avant la lecture — la carte se lit comme
+     éteinte en balayant la grille — et le bandeau nomme la raison. Les deux
+     laissent passer le clic : la fiche reste ouvrable, et le bouton
+     « Me prévenir » vaut mieux qu'un client qui repart. */
+  .pout-voile{position:absolute;inset:0;z-index:2;pointer-events:none;background:rgba(255,255,255,.45)}
+  .pout{position:absolute;left:0;right:0;bottom:0;z-index:3;pointer-events:none;
+    background:var(--ink);color:var(--bg);text-align:center;padding:7px 0;
+    font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+  .pcard.is-out .pmedia img{filter:grayscale(.6)}
   /* Le cœur suit la ligne de la marque au lieu de flotter sur la photo :
      il ne masque plus la chaussure, et sa cible reste franche au pouce. */
   .wish{flex:none;width:44px;height:44px;margin:-11px -8px -11px 0;border-radius:var(--radius);
@@ -673,6 +683,7 @@
     .fcol a{min-height:44px}
     .footer-bottom a{min-width:44px;min-height:44px;justify-content:center}
     .badge{font-size:10px;padding:5px 9px;letter-spacing:.1em}
+    .pout{font-size:10px;padding:6px 0;letter-spacing:.12em}
   }
   @media (max-width:960px){
     .wrap{padding:0 20px}

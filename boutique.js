@@ -1742,7 +1742,10 @@ window.AURA_IMG = function (img) {
     return fmt(p.price);
   }
   function badgeHTML(p){
-    if (isOut(p)) return '<span class="badge">Rupture de stock</span>';
+    /* Un produit épuisé ne porte plus ni « Nouveau » ni remise : la carte
+       entière annonce l'indisponibilité, et vanter une paire qu'on ne peut
+       pas vendre n'achète qu'une déception. */
+    if (isOut(p)) return "";
     if (p.oldPrice > p.price){
       var remise = Math.max(1, Math.round((p.oldPrice - p.price) * 100 / p.oldPrice));
       return '<span class="badge badge-sale">-' + remise + ' %</span>';
@@ -1813,7 +1816,7 @@ window.AURA_IMG = function (img) {
        suivant — la vue studio ne correspondant à aucun coloris coché. */
     var photoCarte = photoDeLaSelection(p, valuesOf(firstAvailableKey(p))) || p.img;
     var productUrl = audienceLien('produit.html?id=' + encodeURIComponent(p.id), curAudience || audienceAttribut());
-    return '<article class="pcard" data-card="' + esc(p.id) + '">' +
+    return '<article class="pcard' + (out ? ' is-out' : '') + '" data-card="' + esc(p.id) + '">' +
       '<div class="pmedia">' +
         '<img ' + lazyAttrs(cardThumbUrl(photoCarte)) + ' alt="' + alt + '" width="600" height="800" onerror="AURA_IMG(this)" />' +
         /* Lien en surimpression plutot qu'un <a> autour du bloc : le bouton
@@ -1821,6 +1824,11 @@ window.AURA_IMG = function (img) {
            HTML valide. Le favori passe au-dessus par son z-index. */
         '<a class="pmedia-link" href="' + productUrl + '" aria-label="' + alt + '"></a>' +
         badgeHTML(p) +
+        /* La rupture était une pastille noire en haut à gauche — exactement
+           celle de « Nouveau ». Deux messages opposés habillés pareil : il
+           fallait lire pour savoir lequel. Le bandeau et le voile se lisent
+           d'un coup d'œil, en balayant la grille au pouce, sans lire. */
+        (out ? '<span class="pout-voile"></span><span class="pout">Épuisé</span>' : '') +
         '</div>' +
       '<div class="pinfo">' +
         /* Le bandeau est réservé dès qu'une marque existe dans la boutique,
