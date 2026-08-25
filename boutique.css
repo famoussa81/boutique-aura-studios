@@ -697,6 +697,24 @@
        que d'écraser le bouton « Filtrer » contre le bord de l'écran. */
     .cat-total{margin:2px 0 0;width:100%}
     .cat-panel{grid-template-columns:1fr;gap:18px;padding:16px}
+
+    /* Fenêtre produit sur téléphone. Le bouton s'appelle « Choisir la
+       taille » : les pointures doivent donc être visibles à l'ouverture. La
+       photo en occupait plus de la moitié et repoussait les tailles à sept
+       cents pixels de défilement — le client ne voyait pas ce qu'il venait
+       demander. La photo garde son rôle d'identification, pas d'affiche. */
+    #pvOverlay .pv-main{aspect-ratio:auto;height:30vh;max-height:250px;object-fit:contain;background:var(--gray)}
+    #pvOverlay .pv-media{min-height:0}
+    /* Les miniatures et la description repoussaient les pointures d'une
+       centaine de pixels. Les coloris ont déjà leurs propres photos plus
+       bas, et le texte descriptif attend sur la fiche complète : dans cette
+       fenêtre, le client vient choisir une taille. */
+    #pvOverlay .pv-thumbs{display:none}
+    #pvOverlay .pv-desc{display:none}
+    /* Le bouton d'ajout reste au bord de l'écran : la taille se choisit en
+       haut, l'ajout se fait sans avoir à retrouver le bouton plus bas. */
+    #pvOverlay #pvAdd{position:sticky;bottom:0;z-index:3;
+      box-shadow:0 -10px 16px -12px color-mix(in srgb,var(--ink) 45%,transparent)}
   }
 
   @media (max-width:640px){

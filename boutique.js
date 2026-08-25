@@ -135,8 +135,10 @@
     '          <h3 id="pvName"></h3>\n' +
     '          <span class="price" id="pvPrice"></span>\n' +
     '          <p class="pv-desc" id="pvDesc"></p>\n' +
-    '          <span class="size-label" style="margin-top:6px">Taille</span>\n' +
-    '          <div id="pvAxes"></div>\n' +
+    /* Chaque axe porte déjà son nom — « Pointure », « Coloris ». Un libellé
+       « Taille » au-dessus faisait doublon, et sur téléphone il volait une
+       ligne juste avant les boutons de pointure. */
+    '          <div id="pvAxes" style="margin-top:6px"></div>\n' +
     '          <span class="stock-line" id="pvStock"></span>\n' +
     '          <div id="pvWaitlistHost"></div>\n' +
     '          <span class="size-label">Quantité</span>\n' +
