@@ -1549,11 +1549,13 @@ window.AURA_IMG = function (img) {
        vitrine que celui qui l'a envoyé. */
     var vTaille = tailleFromUrl(), vMarques = listeUrl("m");
     var vPrix = paramUrl("p"), vDispo = paramUrl("dispo") === "1", vTri = paramUrl("tri");
+    var vFavoris = paramUrl("favoris") === "1";
     var change = false;
     if (vTaille && curTaille !== vTaille){ curTaille = vTaille; change = true; }
     if (vMarques.length && curMarques.join(",") !== vMarques.join(",")){ curMarques = vMarques; change = true; }
     if (vPrix && curPrix !== vPrix){ curPrix = vPrix; change = true; }
     if (vDispo && !curDispo){ curDispo = true; change = true; }
+    if (vFavoris && !curFavoris && wish.length){ curFavoris = true; change = true; }
     if (vTri && curTri !== vTri){ curTri = vTri; change = true; }
     if (change) renderGrid();
   }
@@ -1667,7 +1669,7 @@ window.AURA_IMG = function (img) {
      navigation : la lecture de l'adresse se fait avant le rendu de la
      grille, et une variable déclarée plus bas ne serait pas encore un
      tableau au moment où le lien partagé est relu. */
-  var curTaille = "", curMarques = [], curPrix = "", curDispo = false, curTri = "defaut";
+  var curTaille = "", curMarques = [], curPrix = "", curDispo = false, curFavoris = false, curTri = "defaut";
 
   /* ---------------- Initialisation ---------------- */
   applySettings();
@@ -1898,13 +1900,17 @@ window.AURA_IMG = function (img) {
     if (curMarques.length && curMarques.indexOf(p.collection || "") < 0) return false;
     if (tranche && (p.price < tranche.min || p.price > tranche.max)) return false;
     if (curDispo && !enStock(p)) return false;
+    if (curFavoris && !isWished(p.id)) return false;
     return true;
   }
   function nbFiltres(){
-    return (curTaille ? 1 : 0) + curMarques.length + (curPrix ? 1 : 0) + (curDispo ? 1 : 0);
+    return (curTaille ? 1 : 0) + curMarques.length + (curPrix ? 1 : 0) + (curDispo ? 1 : 0) + (curFavoris ? 1 : 0);
   }
   function trier(list){
     var out = list.slice();
+    /* Un cœur posé sur une paire vaut une intention d'achat : elle passe
+       devant, quel que soit l'ordre demandé. Le tri choisi s'applique
+       ensuite à l'intérieur de chaque groupe, favoris puis le reste. */
     if (curTri === "prix-asc") out.sort(function(a, b){ return (a.price || 0) - (b.price || 0); });
     else if (curTri === "prix-desc") out.sort(function(a, b){ return (b.price || 0) - (a.price || 0); });
     else if (curTri === "nom") out.sort(function(a, b){ return String(a.name).localeCompare(String(b.name), "fr"); });
@@ -1912,6 +1918,10 @@ window.AURA_IMG = function (img) {
       var na = /nouveau/i.test(a.badge || "") ? 0 : 1, nb = /nouveau/i.test(b.badge || "") ? 0 : 1;
       return na - nb;
     });
+    var aimes = out.filter(function(p){ return isWished(p.id); });
+    if (aimes.length && aimes.length < out.length){
+      out = aimes.concat(out.filter(function(p){ return !isWished(p.id); }));
+    }
     return out;
   }
 
@@ -1976,7 +1986,15 @@ window.AURA_IMG = function (img) {
 
     groupes += '<div class="cat-group"><h4>Disponibilité</h4><div class="cat-opts">' +
       '<button type="button" class="cat-opt" data-fdispo="1" aria-pressed="' + (curDispo ? "true" : "false") +
-      '">En stock seulement</button></div></div>';
+      '">En stock seulement</button>' +
+      /* Le cœur ne servait à rien : ce qu'il marquait n'était visible nulle
+         part. Il ouvre maintenant sa propre sélection, et les paires aimées
+         remontent en tête de la grille. */
+      (wish.length
+        ? '<button type="button" class="cat-opt" data-ffavoris="1" aria-pressed="' + (curFavoris ? "true" : "false") +
+          '">Mes favoris<span class="cat-n">' + wish.length + '</span></button>'
+        : '') +
+      '</div></div>';
 
     /* Sortie explicite du panneau : sans elle, refermer demande de remonter
        jusqu'au bouton « Filtrer », au-dessus de la zone qu'on vient de lire. */
@@ -1992,6 +2010,7 @@ window.AURA_IMG = function (img) {
     var ta = trancheActive(base);
     if (ta) tags.push({ k: "prix", v: ta.cle, l: ta.label });
     if (curDispo) tags.push({ k: "dispo", v: "1", l: "En stock" });
+    if (curFavoris) tags.push({ k: "favoris", v: "1", l: "Mes favoris" });
 
     actives.hidden = !tags.length;
     actives.innerHTML = tags.length
@@ -2033,7 +2052,7 @@ window.AURA_IMG = function (img) {
     return liste;
   }
   function effacerFiltres(){
-    curTaille = ""; curMarques = []; curPrix = ""; curDispo = false;
+    curTaille = ""; curMarques = []; curPrix = ""; curDispo = false; curFavoris = false;
     renderGrid(); syncUrl(curFilter);
   }
 
@@ -2136,6 +2155,7 @@ window.AURA_IMG = function (img) {
     if (curMarques.length) params.push("m=" + encodeURIComponent(curMarques.join(",")));
     if (curPrix) params.push("p=" + encodeURIComponent(curPrix));
     if (curDispo) params.push("dispo=1");
+    if (curFavoris) params.push("favoris=1");
     if (curTri && curTri !== "defaut") params.push("tri=" + encodeURIComponent(curTri));
     var url = location.pathname + (params.length ? "?" + params.join("&") : "");
     try { history.replaceState(null, "", url); } catch(e){}
@@ -3011,7 +3031,19 @@ window.AURA_IMG = function (img) {
       wishBtn.setAttribute("data-on", added ? "true" : "false");
       wishBtn.setAttribute("aria-pressed", added ? "true" : "false");
       wishBtn.setAttribute("aria-label", added ? "Retirer des favoris" : "Ajouter aux favoris");
-      toast(added ? "Ajouté aux favoris" : "Retiré des favoris");
+      toast(added ? "Ajouté aux favoris — remonté en tête" : "Retiré des favoris");
+      /* La grille se réordonne aussitôt : sans cela, la paire qu'on vient
+         d'aimer resterait à sa place et le cœur n'aurait, une fois encore,
+         aucun effet visible. Le panneau se repeint pour tenir le compte à
+         jour. Sur une fenêtre produit ouverte, on ne bouge rien sous les
+         doigts du visiteur. */
+      if ($("#grid") && !document.querySelector('#pvOverlay[data-open="true"]')){
+        /* Retirer le dernier cœur alors que la sélection est affichée
+           laisserait une page vide : le filtre se retire avec lui, et
+           l'adresse suit — sinon elle annonce un filtre qui n'existe plus. */
+        if (curFavoris && !added && !wish.length){ curFavoris = false; syncUrl(curFilter); }
+        renderGrid();
+      }
       return;
     }
 
@@ -3048,6 +3080,7 @@ window.AURA_IMG = function (img) {
       renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return;
     }
     if (t.closest("[data-fdispo]")){ curDispo = !curDispo; renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return; }
+    if (t.closest("[data-ffavoris]")){ curFavoris = !curFavoris; renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return; }
     var ftag = t.closest("[data-ftag]");
     if (ftag){
       var k = ftag.getAttribute("data-ftag"), v = ftag.getAttribute("data-fval");
@@ -3055,6 +3088,7 @@ window.AURA_IMG = function (img) {
       else if (k === "marque") toggleDansListe(curMarques, v);
       else if (k === "prix") curPrix = "";
       else if (k === "dispo") curDispo = false;
+      else if (k === "favoris") curFavoris = false;
       renderGrid(); syncUrl(curFilter); return;
     }
     if (t.closest("[data-fclear]")){ effacerFiltres(); return; }
