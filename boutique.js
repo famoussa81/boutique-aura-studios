@@ -994,8 +994,11 @@ window.AURA_IMG = function (img) {
     if (hoteReste){
       hoteReste.hidden = !orphelins.length;
       hoteReste.innerHTML = orphelins.length
-        ? '<div class="mrow' + (orphelins.length <= 4 ? ' mrow-fixe' : '') + '">' +
-            orphelins.slice(0, 8).map(cardHTML).join("") + '</div>'
+        ? '<div class="mband mband-simple">' +
+            '<h3 class="mband-simple-titre">Autres modèles</h3>' +
+            '<div class="mrow' + (orphelins.length <= 4 ? ' mrow-fixe' : '') + '">' +
+              orphelins.slice(0, 8).map(cardHTML).join("") + '</div>' +
+          '</div>'
         : "";
     }
     return choisies.map(function(c){ return c.key; });

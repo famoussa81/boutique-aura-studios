@@ -122,6 +122,12 @@
      la rangée en dessous montre les modèles. Le même composant carte est
      réutilisé tel quel — aucune seconde définition à maintenir. */
   .mband{margin-bottom:52px}
+  /* Rangée des modèles dont la marque n'a pas de bandeau : un simple titre
+     suffit à les rattacher, sans couverture ni identité de maison — elles
+     n'en ont pas assez pour porter une section entière. */
+  .mband-simple-titre{font-size:15px;font-weight:800;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 14px;padding-top:4px;
+    border-top:var(--border-w) solid var(--line)}
   .mband-top{position:relative;display:block;overflow:hidden;
     border-radius:var(--radius);background:var(--ink);aspect-ratio:16/5;
     text-decoration:none;color:var(--bg)}
@@ -393,7 +399,11 @@
   body:not(.product-visuals-ready) .pv-media::before{z-index:1}
   body:not(.product-visuals-ready) .pv-thumbs{display:none}
   .pcard:hover .pmedia img{transform:scale(1.04)}
-  .badge{position:absolute;top:12px;left:12px;z-index:2;max-width:calc(100% - 76px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--accent);color:var(--bg);border-radius:var(--radius);padding:6px 12px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+  /* La réserve laissée au bouton favori était calée au pixel près sur la
+     police Inter. Chargée depuis un service externe, elle arrive en retard
+     ou pas du tout sur un réseau lent : le texte de secours, plus large,
+     transformait « Nouveau » en « Nouve… ». */
+  .badge{position:absolute;top:12px;left:12px;z-index:2;max-width:calc(100% - 62px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--accent);color:var(--bg);border-radius:var(--radius);padding:6px 12px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
   .badge-sale{background:var(--ink)}
   .wish{position:absolute;top:12px;right:12px;z-index:2;width:45px;height:45px;border-radius:var(--radius);background:color-mix(in srgb,var(--bg) 88%,transparent);border:none;display:flex;align-items:center;justify-content:center}
   .wish svg{width:18px;height:18px;color:var(--ink)}
