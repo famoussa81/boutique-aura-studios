@@ -678,7 +678,11 @@
     .cat-tools-row .cat-btn{flex:0 0 auto}
     .cat-tools-row .cat-sort{flex:1 1 150px;min-width:0;padding-left:12px;gap:6px}
     .cat-tools-row .cat-sort>span{flex:none}
-    .cat-tools-row .cat-sort select{flex:1 1 auto;width:100%;min-width:0;padding:10px 4px}
+    /* Un select ne sait pas couper son texte : « Sélection de la boutique »
+       sortait du cadre. Il rétrécit avec la police plutôt qu'en débordant. */
+    .cat-tools-row .cat-sort select{flex:1 1 auto;width:100%;min-width:0;
+      padding:10px 2px;font-size:12.5px}
+    .cat-tools-row .cat-sort>span{font-size:10.5px;letter-spacing:.1em}
     /* Le compte passe sous les deux commandes : sur la même ligne il les
        écrasait au point de réduire « Trier » à sa bordure. */
     .cat-total{flex:1 0 100%;margin:2px 0 0;text-align:left}
