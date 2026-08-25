@@ -234,8 +234,8 @@
       /* Délai de livraison annoncé. Modifiable depuis l'administration :
          il alimente à la fois les cartes produit, le bandeau de réassurance
          et les mentions du hero, pour qu'ils ne puissent jamais diverger.
-         Exemples : "24h", "48h", "2 à 3 jours", "1 semaine". */
-      deliveryTime: "48h",
+         Exemples : "5 jours", "48h", "2 à 3 jours", "1 semaine". */
+      deliveryTime: "5 jours",
       /* Délai d'échange annoncé. Comme le délai de livraison, il est écrit
          une seule fois ici : une promesse figée dans le HTML ne peut plus
          être ajustée quand la réalité du terrain change. */
@@ -292,7 +292,7 @@
           pillars: [
             { title: "Produits originaux", text: "Chaque modèle est vendu comme produit original par un revendeur multimarques indépendant." },
             { title: "Pointures complètes", text: "Du 39 au 45 sur la majorité des modèles, avec le stock réel affiché." },
-            { title: "Livraison simple", text: "Bamako sous 48 heures. Paiement à la livraison, au retrait ou par Orange Money après confirmation." }
+            { title: "Livraison simple", text: "Bamako sous 5 jours. Paiement à la livraison, au retrait ou par Orange Money après confirmation." }
           ]
         },
         newsletter: {
@@ -319,7 +319,7 @@
           /* Ces modèles viennent d'un autre circuit que le stock présent en
              boutique : annoncer le délai du rayon Homme serait une promesse
              intenable. Vide, le rayon reprendrait le délai général. */
-          deliveryTime: "10 à 12 jours",
+          deliveryTime: "10 jours",
           featuredProducts: ["femme-hermes-oran-vives", "femme-dior-dway-bleus", "femme-birkenstock-boston-rose", "femme-hermes-chypre-bleu"]
         }
       },

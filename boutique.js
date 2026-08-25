@@ -838,9 +838,16 @@ window.AURA_IMG = function (img) {
     if (!general || !propre || general === propre) return texte;
     return texte.split(general).join(propre);
   }
+  /* « Livré en 5 jours » se lit comme une durée de trajet ; « livré sous
+     5 jours » se lit comme un engagement. Mais une fourchette veut l'inverse :
+     « sous 2 à 3 jours » ne veut rien dire. La préposition suit donc la forme
+     du délai écrit par le commerçant, sans qu'il ait à y penser. */
+  function delaiPrep(delai){
+    return /\sà\s|-/.test(delai) ? "en" : "sous";
+  }
   function deliveryLabel(audience){
     var d = deliveryDelay(audience);
-    return d ? "Livré en " + d : "Livraison à Bamako";
+    return d ? "Livré " + delaiPrep(d) + " " + d : "Livraison à Bamako";
   }
 
   /* La section « univers » montre les collections quand il y en a, les
@@ -1480,7 +1487,7 @@ window.AURA_IMG = function (img) {
     var s = store.settings;
     var free = Number(s.freeFrom) || 0;
     var d = deliveryDelay(curAudience || audienceAttribut());
-    var libelle = d ? "Livraison en " + d + " à Bamako" : "Livraison à Bamako";
+    var libelle = d ? "Livraison " + delaiPrep(d) + " " + d + " à Bamako" : "Livraison à Bamako";
     var ex = (store.settings.exchangeTime || "").toString().trim();
     /* Le bandeau est désormais rendu depuis la liste unique des garanties.
        Le seuil de livraison offerte, lui, reste un chiffre de réglage : il
@@ -2239,7 +2246,7 @@ window.AURA_IMG = function (img) {
     var e = (store.settings.exchangeTime || "").toString().trim();
     var defauts = [
       { t: "Payé à la livraison", s: "Vous essayez devant le livreur avant de payer. Rien à avancer." },
-      { t: d ? "Livraison " + d : "Livraison à Bamako", s: "Partout dans la ville, prévenue par WhatsApp." },
+      { t: d ? "Livraison " + delaiPrep(d) + " " + d : "Livraison à Bamako", s: "Partout dans la ville, prévenue par WhatsApp." },
       { t: e ? "Échange sous " + e : "Échange possible", s: "Mauvaise pointure ? On repasse l'échanger." },
       { t: "Stock réel", s: "Le nombre affiché est celui de la boutique, pointure par pointure." }
     ];

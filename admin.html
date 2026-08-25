@@ -224,7 +224,7 @@
     padding:8px 0;border-top:1px solid var(--line);font-size:13px}
   .aud-admin-card{max-width:720px;margin-bottom:20px}.aud-admin-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px}.aud-hero-preview{display:block;width:100%;max-height:260px;object-fit:cover;margin:0 0 10px}.aud-admin-products{display:grid;gap:8px;margin-top:12px}.aud-admin-product{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:8px;padding:8px}.aud-admin-product.selected{border-color:#111;background:#fafafa}.aud-admin-product label{display:flex;align-items:center;gap:10px;min-width:0;flex:1;cursor:pointer}.aud-admin-product img{width:44px;height:56px;object-fit:cover;border-radius:5px;background:#f1f1f1}.aud-admin-product span span{display:grid;min-width:0}.aud-admin-product b{font-size:13px}.aud-admin-product small{font-size:11px;color:var(--muted)}.aud-order{display:flex!important;align-items:center;gap:4px}.aud-order button{width:36px;height:36px;border:1px solid var(--line);background:#fff;border-radius:6px;font-weight:900;cursor:pointer}.aud-order i{width:24px;text-align:center;font-style:normal;font-size:11px;font-weight:800}@media(max-width:560px){.aud-admin-card{padding:16px}.aud-admin-head{align-items:flex-start}.aud-admin-product{align-items:flex-start}.aud-order{flex-wrap:wrap;justify-content:flex-end;max-width:76px}.aud-order i{order:-1;width:100%}}
 </style>
-<link rel="stylesheet" href="admin-dashboard.css?v=20260826f" />
+<link rel="stylesheet" href="admin-dashboard.css?v=20260827a" />
 </head>
 <body>
 
@@ -730,8 +730,8 @@
   <div class="toast" id="toast"></div>
 
 <script src="supabase.config.js"></script>
-<script src="supabase-client.js?v=20260826f"></script>
-<script src="catalog.js?v=20260826f"></script>
+<script src="supabase-client.js?v=20260827a"></script>
+<script src="catalog.js?v=20260827a"></script>
 <script>
 (function(){
   var KEY = "aura_store_v10";
@@ -2021,7 +2021,7 @@
       if(!store.settings.audiencePages[a]||typeof store.settings.audiencePages[a]!=="object")store.settings.audiencePages[a]={};
       var p=store.settings.audiencePages[a];
       if(!Array.isArray(p.featuredProducts))p.featuredProducts=[];
-      if(typeof p.deliveryTime!=="string")p.deliveryTime=a==="femme"?"10 à 12 jours":"";
+      if(typeof p.deliveryTime!=="string")p.deliveryTime=a==="femme"?"10 jours":"";
       if(!p.title)p.title=a==="femme"?"Les modèles Femme":"Les modèles Homme";
       if(!p.text)p.text=a==="femme"?"Une sélection pensée pour elle, avec les vraies pointures, les vraies couleurs et le stock disponible.":"Claquettes, mules et sabots sélectionnés pour leur style, leur confort et leur disponibilité à Bamako.";
     });
@@ -2054,7 +2054,7 @@
       return '<section class="card aud-admin-card"><div class="aud-admin-head"><div><h2>Rayon '+label+'</h2><p class="hint">'+(a==="femme"?(state.ready?'Visible automatiquement sur le site':'Caché : ajoutez une bannière et au moins un produit Femme visible.'):'Rayon principal toujours accessible.')+'</p></div><span class="chip'+(state.ready?' dark':'')+'">'+(state.ready?'Prêt':'À compléter')+'</span></div>'+
         '<div class="field"><label>Titre de la page</label><input type="text" maxlength="60" data-aud-field="'+a+'.title" value="'+esc(page.title||'')+'" /></div>'+
         '<div class="field"><label>Courte présentation</label><textarea maxlength="200" rows="3" data-aud-field="'+a+'.text">'+esc(page.text||'')+'</textarea></div>'+
-        '<div class="field"><label>Délai de livraison de ce rayon</label><input type="text" maxlength="40" data-aud-field="'+a+'.deliveryTime" value="'+esc(page.deliveryTime||'')+'" placeholder="Exemple : 10 à 12 jours" />'+
+        '<div class="field"><label>Délai de livraison de ce rayon</label><input type="text" maxlength="40" data-aud-field="'+a+'.deliveryTime" value="'+esc(page.deliveryTime||'')+'" placeholder="Exemple : 10 jours" />'+
           '<p class="hint">Annoncé sur chaque paire de ce rayon. Laissez vide pour reprendre le délai général de la boutique.</p></div>'+
         '<div class="field"><label>Photo de la bannière</label>'+(page.bannerImage?'<img class="img-preview aud-hero-preview" src="'+esc(page.bannerImage)+'" alt="" />':'')+
           '<label class="drop"><b>'+(page.bannerImage?'Remplacer la photo':'Choisir une photo')+'</b><span>Photo horizontale 16/9 — laissez vide pour garder celle de la boutique</span><input type="file" accept="image/*" data-aud-banner="'+a+'" hidden /></label></div>'+
