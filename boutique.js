@@ -920,6 +920,15 @@ window.AURA_IMG = function (img) {
        Un choix explicite du commerçant est respecté tel quel : c'est lui qui
        sait ce qu'il veut pousser cette semaine. */
     if (!choisies.length) choisies = avec.filter(function(c){ return actifs[c.key] >= 2; }).slice(0, 3);
+    /* La mise en avant est choisie pour l'ensemble de la boutique. Sur un
+       rayon plus jeune, une seule de ces marques a du stock : la page
+       n'annonçait qu'un bandeau là où l'autre rayon en montre trois. On
+       complète avec les marques du rayon, les mieux fournies d'abord. */
+    if (choisies.length < 2){
+      var complement = avec.filter(function(c){ return choisies.indexOf(c) < 0; })
+        .sort(function(a, b){ return actifs[b.key] - actifs[a.key]; });
+      choisies = choisies.concat(complement).slice(0, 3);
+    }
     return choisies.slice(0, MAX_BANDES);
   }
   function renderBandes(colls){
@@ -1036,8 +1045,10 @@ window.AURA_IMG = function (img) {
     if (kicker) kicker.textContent = "Les univers";
     if (titre) titre.textContent = "Explorez les collections";
     grille.innerHTML = catList().map(function(c){
-      return '<a href="catalogue.html?cat=' + encodeURIComponent(c.key) + ((curAudience || audienceAttribut()) ? '&audience=' + encodeURIComponent(curAudience || audienceAttribut()) : '') + '" class="cat-card" data-goto="' + esc(c.key) + '">' +
-        (c.cover ? '<img ' + lazyAttrs(c.cover) + ' alt="" width="800" height="600" onerror="AURA_IMG(this)" />' : '') +
+      var aud = curAudience || audienceAttribut();
+      var cover = couvertureCategorie(c, aud);
+      return '<a href="catalogue.html?cat=' + encodeURIComponent(c.key) + (aud ? '&audience=' + encodeURIComponent(aud) : '') + '" class="cat-card" data-goto="' + esc(c.key) + '">' +
+        (cover ? '<img ' + lazyAttrs(cover) + ' alt="" width="800" height="600" onerror="AURA_IMG(this)" />' : '') +
         '<div class="cat-body">' +
           '<span class="cat-label">' + esc(c.label) + '</span>' +
           '<span class="cat-link">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
@@ -1198,17 +1209,48 @@ window.AURA_IMG = function (img) {
     e.hidden = !v;
   }
 
+  /* Vignette de catégorie adaptée au rayon ouvert. Les couvertures des
+     réglages montrent des modèles homme : sur le rayon Femme, elles
+     annonçaient des claquettes d'homme au-dessus d'un catalogue de sandales.
+     À défaut de couverture propre au rayon, la vignette emprunte la photo
+     d'un vrai produit de ce rayon dans cette catégorie. */
+  function couvertureCategorie(c, audience){
+    if (!audience) return c.cover || "";
+    var propre = c["cover_" + audience];
+    if (propre) return propre;
+    var produit = store.products.filter(function(p){
+      return p && p.active !== false && !p.archived && p.cat === c.key && audienceProduit(p, audience) && p.img;
+    })[0];
+    if (produit) return produit.img;
+    return c.cover || "";
+  }
+
   function renderContenu(){
     var c = contenu();
 
     var h = c.hero || {};
+    /* Les deux rayons partagent la même page : le hero prend donc la bannière
+       et les textes du rayon ouvert quand ils existent. Sans cela, la page
+       Femme s'ouvrait sur une photo de modèles homme. */
+    var rayon = audienceAttribut();
+    var pageRayonContenu = rayon ? audiencePage(rayon) : {};
     var hs = $("#heroSection");
     if (hs) hs.hidden = h.on === false;
-    poserImage("#heroImage", h.image, true);
+    /* Le titre et le texte du rayon ne priment que si le commerçant les a
+       vraiment écrits. « Les modèles Homme » est le remplissage automatique
+       de l'administration : il ne doit pas remplacer une accroche travaillée
+       comme « Le confort ne se négocie pas ». */
+    function propreAuRayon(valeur, defautAuto){
+      var v = (valeur || "").toString().trim();
+      return v && v !== defautAuto ? v : "";
+    }
+    var titreRayon = rayon ? propreAuRayon(pageRayonContenu.title, "Les modèles " + audienceLabel(rayon)) : "";
+    var texteRayon = rayon ? (pageRayonContenu.text || "").toString().trim() : "";
+    poserImage("#heroImage", (rayon && pageRayonContenu.heroImage) || h.image, true);
     poser("#heroBadge", h.badge);
-    poser("#heroKicker", h.kicker);
-    poser("#heroTitre", h.title);
-    poser("#heroSub", h.sub);
+    poser("#heroKicker", rayon ? audienceLabel(rayon) : h.kicker);
+    poser("#heroTitre", titreRayon || h.title);
+    poser("#heroSub", (rayon && rayon !== "homme" ? texteRayon : "") || h.sub);
     poserBouton("[data-od-id='hero-cta-primary']", h.cta1);
     poserBouton("[data-od-id='hero-cta-secondary']", h.cta2);
 
