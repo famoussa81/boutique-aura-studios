@@ -17,7 +17,7 @@
     '        <button class="icon-btn burger" data-od-id="nav-burger" id="navBurger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu">\n' +
     '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>\n' +
     '        </button>\n' +
-    '        <a href="index.html" class="logo" id="logoNav" data-od-id="brand-wordmark"></a>\n' +
+    '        <a href="index.html?choix=1" class="logo" id="logoNav" data-od-id="brand-wordmark" aria-label="Choisir le rayon"></a>\n' +
     '      </div>\n' +
     '      <nav class="nav-links" id="navLinks" aria-label="Navigation principale">\n' +
     '        <a href="catalogue.html" data-goto="tous">Nouveautés</a>\n' +
@@ -40,7 +40,7 @@
     '    <div class="wrap">\n' +
     '      <div class="footer-grid">\n' +
     '        <div class="footer-brand">\n' +
-    '          <a href="index.html" class="logo" id="logoPied" style="font-size:26px"></a>\n' +
+    '          <a href="index.html?choix=1" class="logo" id="logoPied" style="font-size:26px" aria-label="Choisir le rayon"></a>\n' +
     '          <p id="piedTexte"></p>\n' +
     '          <p class="footer-independent">Revendeur multimarques indépendant.</p>\n' +
     '          <p id="footerContact" class="footer-contact" hidden></p>\n' +
@@ -260,7 +260,7 @@ window.AURA_IMG = function (img) {
   /* Une nouvelle clé empêche un téléphone revenu plusieurs jours plus tard
      de repeindre un ancien catalogue depuis son stockage local avant la
      réponse de Supabase. */
-  var KEY = "aura_store_v11";
+  var KEY = "aura_store_v12";
   var CKEY = "aura_cart_v1";
   var WKEY = "aura_wish_v1";
   var LOCAL_HOST = location.hostname === "127.0.0.1" || location.hostname === "localhost";
@@ -353,6 +353,10 @@ window.AURA_IMG = function (img) {
      « axes + variants ». Aucune écriture : la conversion vit en mémoire. */
   function normalizeProduct(p){
     if (!p) return p;
+    /* Les lignes publiées avant l'arrivée des univers ne portent pas encore
+       ce champ. Elles restent Homme par défaut : aucune disparition du
+       catalogue, aucune migration destructive. */
+    p.audience = p.audience === "femme" ? "femme" : "homme";
     /* Corrige les anciennes photos qui montraient plusieurs coloris dans le
        même cadre. La migration ne touche que les chemins locaux connus : une
        photo téléversée ensuite par le commerçant reste toujours prioritaire. */
@@ -754,6 +758,7 @@ window.AURA_IMG = function (img) {
   function renderCategories(){
     rebuildCats();
     var list = catList();
+    var audience = curAudience || audienceAttribut();
     var tabs = $("#filterTabs");
     if (tabs){
       var active = curFilter;
@@ -766,31 +771,73 @@ window.AURA_IMG = function (img) {
        un nouvel onglet, partage et indexation fonctionnent. Quand la grille
        est déjà là, le clic est intercepté et filtre sans recharger. */
     var links = list.map(function(c){
-      return '<a href="catalogue.html?cat=' + encodeURIComponent(c.key) + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a>';
+      var href = 'catalogue.html?cat=' + encodeURIComponent(c.key) + (audience ? '&audience=' + encodeURIComponent(audience) : '');
+      return '<a href="' + href + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a>';
     }).join("");
+    var univers = '<a href="hommes.html">Homme</a>' +
+      (audiencePrete("femme") ? '<a href="femmes.html">Femme</a>' : '');
     var nav = $("#navLinks");
-    if (nav) nav.innerHTML = '<a href="marques.html">Marques</a><a href="catalogue.html" data-goto="tous">Tout voir</a>' + links;
+    if (nav) nav.innerHTML = univers + '<a href="marques.html">Marques</a><a href="catalogue.html" data-goto="tous">Catalogue</a>';
     var mob = $("#mobileMenu");
-    if (mob) mob.innerHTML = '<a href="marques.html">Marques</a><a href="catalogue.html" data-goto="tous">Tout voir</a>' + links;
+    if (mob) mob.innerHTML = univers + '<a href="marques.html">Marques</a><a href="catalogue.html" data-goto="tous">Tout le catalogue</a>' + links;
     var foot = $("#footShop");
-    if (foot) foot.innerHTML = '<li><a href="marques.html">Toutes les marques</a></li><li><a href="catalogue.html" data-goto="tous">Tout voir</a></li>' +
+    if (foot) foot.innerHTML = '<li><a href="hommes.html">Homme</a></li>' +
+      (audiencePrete("femme") ? '<li><a href="femmes.html">Femme</a></li>' : '') +
+      '<li><a href="marques.html">Toutes les marques</a></li><li><a href="catalogue.html" data-goto="tous">Tout voir</a></li>' +
       list.map(function(c){
-        return '<li><a href="catalogue.html?cat=' + encodeURIComponent(c.key) + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a></li>';
+        return '<li><a href="catalogue.html?cat=' + encodeURIComponent(c.key) + (audience ? '&audience=' + encodeURIComponent(audience) : '') + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a></li>';
       }).join("");
     /* Le filtre courant peut viser une categorie supprimee entre-temps. */
     if (curFilter !== "tous" && !CATS[curFilter]) curFilter = "tous";
+    renderAudienceTabs();
+  }
+
+  function renderAudienceTabs(){
+    var host = $("#audienceTabs");
+    if (!host) return;
+    var options = [
+      { key:"", label:"Tous" },
+      { key:"homme", label:"Homme" }
+    ];
+    if (audiencePrete("femme")) options.push({ key:"femme", label:"Femme" });
+    host.innerHTML = options.map(function(x){
+      return '<button type="button" class="audience-tab' + (curAudience === x.key ? ' active' : '') + '" data-audience-filter="' + x.key + '" aria-pressed="' + (curAudience === x.key ? 'true' : 'false') + '">' + x.label + '</button>';
+    }).join("");
   }
 
   /* Délai de livraison : une seule valeur dans les réglages alimente la
      carte produit, le bandeau de réassurance et le hero. Sans cette source
      unique, changer « 24h » pour « 1 semaine » laisserait des mentions
      contradictoires sur la page. */
-  function deliveryDelay(){
-    var d = (store.settings.deliveryTime || "").toString().trim();
-    return d;
+  function deliveryDelay(audience){
+    /* Un rayon peut annoncer son propre délai : les modèles Femme viennent
+       d'un autre circuit d'approvisionnement et ne se livrent pas dans le
+       même temps que le stock présent en boutique. À défaut, le délai
+       général des réglages s'applique. */
+    var rayon = audienceValide(audience || "");
+    if (rayon){
+      var propre = (audiencePage(rayon).deliveryTime || "").toString().trim();
+      if (propre) return propre;
+    }
+    return (store.settings.deliveryTime || "").toString().trim();
   }
-  function deliveryLabel(){
-    var d = deliveryDelay();
+  /* Le bandeau d'annonce est un texte libre du commerçant, écrit pour le
+     délai général. Sur un rayon qui annonce le sien, il promettait « 48h »
+     au-dessus de cartes affichant « 10 à 12 jours ». La mention du délai
+     général y est donc remplacée par celle du rayon — une substitution
+     littérale, jamais une phrase inventée. */
+  function annonceDuRayon(){
+    var texte = (store.settings.announcement || "").toString();
+    if (!texte) return "";
+    var rayon = curAudience || audienceAttribut();
+    if (!rayon) return texte;
+    var general = (store.settings.deliveryTime || "").toString().trim();
+    var propre = (audiencePage(rayon).deliveryTime || "").toString().trim();
+    if (!general || !propre || general === propre) return texte;
+    return texte.split(general).join(propre);
+  }
+  function deliveryLabel(audience){
+    var d = deliveryDelay(audience);
     return d ? "Livré en " + d : "Livraison à Bamako";
   }
 
@@ -802,6 +849,36 @@ window.AURA_IMG = function (img) {
   function typePage(){
     return (document.body && document.body.getAttribute("data-page")) || "accueil";
   }
+  function audienceValide(v){ return v === "homme" || v === "femme" ? v : ""; }
+  function audienceAttribut(){
+    return audienceValide((document.body && document.body.getAttribute("data-audience")) || "");
+  }
+  function audienceProduit(p, audience){
+    return !audience || (p && (p.audience === "femme" ? "femme" : "homme") === audience);
+  }
+  function audiencePages(){
+    var pages = store.settings.audiencePages;
+    return pages && typeof pages === "object" ? pages : {};
+  }
+  function audiencePage(audience){
+    var pages = audiencePages();
+    return pages[audience] && typeof pages[audience] === "object" ? pages[audience] : {};
+  }
+  /* Un rayon n'est proposé que s'il a de quoi tenir sa promesse. Le rayon
+     Femme doit en plus porter sa bannière : sans elle, sa page s'ouvre sur un
+     bandeau vide. Homme hérite de l'accueil validé, qui a la sienne. */
+  function audiencePrete(audience){
+    if (audience !== "homme" && audience !== "femme") return false;
+    if (audience === "femme" && !(audiencePage("femme").heroImage || "").toString().trim()) return false;
+    return store.products.some(function(p){
+      return p && p.active !== false && !p.archived && audienceProduit(p, audience);
+    });
+  }
+  function audienceLien(base, audience){
+    if (!audience) return base;
+    return base + (base.indexOf("?") >= 0 ? "&" : "?") + "audience=" + encodeURIComponent(audience);
+  }
+  function audienceLabel(audience){ return audience === "femme" ? "Femme" : audience === "homme" ? "Homme" : "Tous"; }
   function poserMeta(nom, valeur){
     var m = document.head.querySelector('meta[name="' + nom + '"]');
     if (m) m.setAttribute("content", valeur);
@@ -832,7 +909,7 @@ window.AURA_IMG = function (img) {
   function marquesEnAvant(colls){
     var actifs = {};
     store.products.forEach(function(p){
-      if (p.active && p.collection) actifs[p.collection] = (actifs[p.collection] || 0) + 1;
+      if (p.active && p.collection && audienceProduit(p, curAudience || audienceAttribut())) actifs[p.collection] = (actifs[p.collection] || 0) + 1;
     });
     var avec = colls.filter(function(c){ return actifs[c.key]; });
     var choisies = avec.filter(function(c){ return c.featured; });
@@ -850,7 +927,7 @@ window.AURA_IMG = function (img) {
     host.innerHTML = choisies.map(function(c){
       var bandCover=imageMarque(c,"homeCover","homeCoverMobile");
       var tousProduits = store.products.filter(function(p){
-        return p.active && p.collection === c.key;
+        return p.active && p.collection === c.key && audienceProduit(p, curAudience || audienceAttribut());
       });
       var idsVedette = Array.isArray(c.homeProducts) ? c.homeProducts.slice(0, MAX_MODELES) : [];
       var produits = idsVedette.map(function(id){
@@ -867,7 +944,7 @@ window.AURA_IMG = function (img) {
          couleur remplit la bande — jamais un trou, jamais un fond gris. */
       return '<div class="mband' + (bandCover ? ' a-photo' : '') + '"' +
         (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') + '>' +
-        '<a class="mband-top" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
+        '<a class="mband-top" href="' + audienceLien('collection.html?c=' + encodeURIComponent(c.key), curAudience || audienceAttribut()) + '"' +
           ' aria-label="' + (total > 1 ? 'Voir les ' + total + ' modèles ' : 'Voir le modèle ') + esc(c.label) + '">' +
           (bandCover ? '<img class="mband-cover" ' + lazyAttrs(bandCover) + ' alt="" onerror="AURA_IMG(this)" />' : '') +
           '<span class="mband-in">' +
@@ -882,7 +959,7 @@ window.AURA_IMG = function (img) {
         /* Quatre modèles ou moins tiennent sur une ligne : une barre de
            défilement qui ne défile pas donne l'impression d'un bug. */
         '<div class="mrow mrow-fixe">' + produits.map(cardHTML).join("") + '</div>' +
-        (autres ? '<a class="mrow-more" href="collection.html?c=' + encodeURIComponent(c.key) + '">' +
+        (autres ? '<a class="mrow-more" href="' + audienceLien('collection.html?c=' + encodeURIComponent(c.key), curAudience || audienceAttribut()) + '">' +
           '<span>Voir les ' + autres + ' autre' + (autres > 1 ? 's' : '') + ' modèle' + (autres > 1 ? 's' : '') + '</span>' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>' : '') +
       '</div>';
@@ -914,6 +991,16 @@ window.AURA_IMG = function (img) {
     poserSi("#pgKicker", e.kicker);
     poserSi("#pgTitre", e.title);
     poserSi("#pgSub", e.sub);
+    if (t === "catalogue" && curAudience){
+      var label = audienceLabel(curAudience);
+      poserSi("#pgKicker", "Univers " + label);
+      poserSi("#pgTitre", "Le catalogue " + label);
+      poserSi("#pgSub", "Toutes les paires " + label.toLowerCase() + " disponibles. Filtrez par type, pointure ou marque.");
+    } else if (t === "catalogue") {
+      poserSi("#pgKicker", e.kicker || "Toutes les marques");
+      poserSi("#pgTitre", e.title || "Le catalogue");
+      poserSi("#pgSub", e.sub || "Toutes les paires en stock, toutes marques confondues. Filtrez par type ci-dessous.");
+    }
   }
 
   function renderUnivers(){
@@ -928,7 +1015,7 @@ window.AURA_IMG = function (img) {
       renderBandes(colls);
       var actifs = {};
       store.products.forEach(function(p){
-        if (p.active && p.collection) actifs[p.collection] = (actifs[p.collection] || 0) + 1;
+        if (p.active && p.collection && audienceProduit(p, curAudience || audienceAttribut())) actifs[p.collection] = (actifs[p.collection] || 0) + 1;
       });
       var disponibles = colls.filter(function(c){ return actifs[c.key]; });
       var choisies = disponibles.filter(function(c){ return c.featured; });
@@ -938,7 +1025,7 @@ window.AURA_IMG = function (img) {
       choisies = choisies.slice(0, 6);
       var reste = $("#marquesReste");
       if (reste) reste.hidden = !choisies.length;
-      grille.innerHTML = choisies.map(function(c){ return carteMarqueLogoHTML(c); }).join("");
+      grille.innerHTML = choisies.map(function(c){ return carteMarqueLogoHTML(c, curAudience || audienceAttribut()); }).join("");
       var tout = $("#homeBrandsAll");
       if (tout) tout.textContent = disponibles.length ? "Voir les " + disponibles.length + " marques" : "Voir toutes les marques";
       return;
@@ -947,7 +1034,7 @@ window.AURA_IMG = function (img) {
     if (kicker) kicker.textContent = "Les univers";
     if (titre) titre.textContent = "Explorez les collections";
     grille.innerHTML = catList().map(function(c){
-      return '<a href="catalogue.html?cat=' + encodeURIComponent(c.key) + '" class="cat-card" data-goto="' + esc(c.key) + '">' +
+      return '<a href="catalogue.html?cat=' + encodeURIComponent(c.key) + ((curAudience || audienceAttribut()) ? '&audience=' + encodeURIComponent(curAudience || audienceAttribut()) : '') + '" class="cat-card" data-goto="' + esc(c.key) + '">' +
         (c.cover ? '<img ' + lazyAttrs(c.cover) + ' alt="" width="800" height="600" onerror="AURA_IMG(this)" />' : '') +
         '<div class="cat-body">' +
           '<span class="cat-label">' + esc(c.label) + '</span>' +
@@ -981,7 +1068,8 @@ window.AURA_IMG = function (img) {
       "tommy-jeans": "assets/logos/tommy-hilfiger-flag.svg"
     };
     var logo = logosVerifies[c.key] || c.logo || "";
-    return '<a class="brand-logo-card" data-brand="' + esc(c.key) + '" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
+    var audience = arguments.length > 1 ? arguments[1] : (curAudience || audienceAttribut());
+    return '<a class="brand-logo-card" data-brand="' + esc(c.key) + '" href="' + audienceLien('collection.html?c=' + encodeURIComponent(c.key), audience) + '"' +
       ' aria-label="Voir les modèles ' + esc(c.label) + '">' +
         '<span class="brand-logo-visual">' +
           (logo ? '<img class="brand-logo-img" ' + lazyAttrs(logo) + ' alt="' + esc(c.label) + '" onerror="this.hidden=true;this.nextElementSibling.hidden=false" />' : '') +
@@ -999,10 +1087,10 @@ window.AURA_IMG = function (img) {
     var host = $("#brandsDirectory");
     if (!host) return;
     var marques = collList().map(function(c){
-      var n = store.products.filter(function(p){ return p.active && p.collection === c.key; }).length;
+      var n = store.products.filter(function(p){ return p.active && p.collection === c.key && audienceProduit(p, curAudience || audienceAttribut()); }).length;
       return { marque:c, nombre:n };
     }).filter(function(x){ return x.nombre > 0; });
-    host.innerHTML = marques.map(function(x){ return carteMarqueLogoHTML(x.marque); }).join("");
+    host.innerHTML = marques.map(function(x){ return carteMarqueLogoHTML(x.marque, curAudience || audienceAttribut()); }).join("");
   }
 
   /* Bannière de la collection ouverte. L'accent, s'il est défini, ne touche
@@ -1160,10 +1248,160 @@ window.AURA_IMG = function (img) {
     poser("#nlNote", nl.note);
   }
 
+  /* ---------------- Porte d'entrée ----------------
+     La boutique s'ouvre sur le choix du rayon. Une cliente qui tombe d'emblée
+     sur des modèles homme se croit au mauvais endroit et repart : le rayon se
+     choisit donc avant tout le reste, et le choix est retenu pour les visites
+     suivantes. Le logo ramène toujours ici — c'est la seule façon d'en
+     changer, et elle doit rester évidente. */
+  var RAYON_KEY = "aura_rayon";
+
+  function rayonMemorise(){
+    try { return audienceValide(localStorage.getItem(RAYON_KEY) || ""); }
+    catch(e){ return ""; }
+  }
+  function memoriserRayon(audience){
+    try {
+      if (audience) localStorage.setItem(RAYON_KEY, audience);
+      else localStorage.removeItem(RAYON_KEY);
+    } catch(e){}
+  }
+  function pageRayon(audience){ return audience === "femme" ? "femmes.html" : "hommes.html"; }
+  /* `?choix=1` neutralise la mémorisation : sans cette porte de sortie, le
+     visiteur serait renvoyé vers son rayon avant même de voir l'autre. */
+  function choixForce(){
+    if (/[?&]choix=1(?:&|$)/.test(location.search)) return true;
+    /* Retour arrière depuis un rayon : le visiteur demande explicitement à
+       revoir la page qu'il vient de quitter. Le renvoyer d'où il vient rend
+       le bouton Retour inopérant et donne l'impression d'un site bloqué. */
+    try {
+      var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+      if (nav && nav.type === "back_forward") return true;
+      if (!nav && performance.navigation && performance.navigation.type === 2) return true;
+    } catch(e){}
+    return false;
+  }
+
+  var portesAffichees = false;
+
+  function renderChoix(){
+    var hote = $("#choixPortes");
+    if (!hote) return;
+
+    var logo = $("#choixLogo");
+    if (logo && store.settings.logo){
+      logo.replaceChildren();
+      var im = document.createElement("img");
+      im.src = mediaUrl(store.settings.logo);
+      im.alt = store.settings.shopName || "";
+      im.className = "choix-logo-img";
+      logo.appendChild(im);
+    }
+
+    var rayons = ["homme", "femme"].filter(function(a){ return audiencePrete(a); });
+
+    /* Une redirection n'est acceptable qu'avant le premier affichage. La
+       réponse de la base arrive une à deux secondes après la peinture : sans
+       ce verrou, la page sautait sous les yeux du visiteur, parfois pendant
+       qu'il visait une porte du doigt. */
+    if (!portesAffichees && !choixForce()){
+      /* Un seul rayon ouvert : la question n'en est plus une. On entre. */
+      if (rayons.length === 1){
+        location.replace(pageRayon(rayons[0]));
+        return;
+      }
+      var retenu = rayonMemorise();
+      if (retenu && rayons.indexOf(retenu) >= 0){
+        location.replace(pageRayon(retenu));
+        return;
+      }
+    }
+
+    hote.innerHTML = rayons.map(function(a){
+      var page = audiencePage(a);
+      var n = store.products.filter(function(p){
+        return p && p.active !== false && !p.archived && audienceProduit(p, a);
+      }).length;
+      return '<a class="porte" href="' + pageRayon(a) + '" data-rayon="' + a + '">' +
+        (page.heroImage
+          ? '<img class="porte-img" src="' + esc(mediaUrl(page.heroImage)) + '" alt="" ' +
+            (a === rayons[0] ? 'fetchpriority="high"' : 'loading="lazy"') +
+            ' decoding="async" onerror="AURA_IMG(this)" />'
+          : '') +
+        '<span class="porte-voile"></span>' +
+        '<span class="porte-in">' +
+          '<span class="porte-nom">' + esc(audienceLabel(a)) + '</span>' +
+          '<span class="porte-n">' + n + ' modèle' + (n > 1 ? 's' : '') + '</span>' +
+          '<span class="porte-go">Entrer</span>' +
+        '</span>' +
+      '</a>';
+    }).join("");
+
+    document.body.setAttribute("data-portes", rayons.length);
+    portesAffichees = true;
+  }
+
+  /* Pages Homme et Femme. Le sexe du visiteur n'est jamais déduit : les deux
+     portes restent explicites et réversibles.
+
+     L'accueil n'a plus de cartes d'entrée par rayon — la maquette allégée qui
+     les portait a été abandonnée au profit de l'accueil validé. Le code qui
+     les pilotait cherchait des éléments absents de la page. */
+  function renderAudienceExperience(){
+    if (typePage() !== 'audience') return;
+    var audience = audienceAttribut();
+    curAudience = audience;
+    var page = audiencePage(audience);
+    var ready = audiencePrete(audience);
+    var unavailable = $('#audienceUnavailable');
+    var content = $('#audienceContent');
+    if (unavailable) unavailable.hidden = ready;
+    if (content) content.hidden = !ready;
+    if (!ready) return;
+
+    poserImage('#audHeroImage', page.heroImage, true);
+    poser('#audHeroTitle', page.title || ('Les modèles ' + audienceLabel(audience)));
+    poser('#audHeroText', page.text);
+    var heroCatalogue = $('#audHeroCatalogue');
+    if (heroCatalogue) heroCatalogue.href = 'catalogue.html?audience=' + encodeURIComponent(audience);
+    var heroMarques = $('#audHeroMarques');
+    if (heroMarques) heroMarques.href = 'marques.html?audience=' + encodeURIComponent(audience);
+
+    var produits = store.products.filter(function(p){
+      return p.active !== false && !p.archived && audienceProduit(p, audience);
+    });
+    var ids = Array.isArray(page.featuredProducts) ? page.featuredProducts.slice(0, 4) : [];
+    var vedettes = ids.map(function(id){ return produits.filter(function(p){ return p.id === id; })[0] || null; }).filter(Boolean);
+    if (!vedettes.length) vedettes = produits.slice(0, 4);
+    var featured = $('#audFeaturedGrid');
+    if (featured) featured.innerHTML = vedettes.map(cardHTML).join('');
+    var featuredSection = $('#audFeatured');
+    if (featuredSection) featuredSection.hidden = !vedettes.length;
+
+    var cats = $('#audCategories');
+    if (cats){
+      var actives = catList().filter(function(c){
+        return produits.some(function(p){ return p.cat === c.key; });
+      });
+      cats.innerHTML = actives.map(function(c){
+        return '<a class="audience-category" href="catalogue.html?audience=' + encodeURIComponent(audience) + '&cat=' + encodeURIComponent(c.key) + '">' +
+          (c.cover ? '<img ' + lazyAttrs(c.cover) + ' alt="" width="800" height="600" onerror="AURA_IMG(this)" />' : '') +
+          '<span><strong>' + esc(c.label) + '</strong><small>Découvrir</small></span></a>';
+      }).join('');
+      var catSection = $('#audCategorySection');
+      if (catSection) catSection.hidden = !actives.length;
+    }
+
+    var label = audienceLabel(audience);
+    document.title = label + ' — ' + store.settings.shopName + ' — Boutique en ligne · Bamako';
+    poserMeta('description', 'Découvrez les modèles ' + label.toLowerCase() + ' disponibles chez ' + store.settings.shopName + ' à Bamako. Commande par WhatsApp.');
+    poserCanonique(location.origin + location.pathname);
+  }
+
   function applySellingCopy(){
     var s = store.settings;
     var free = Number(s.freeFrom) || 0;
-    var d = deliveryDelay();
+    var d = deliveryDelay(curAudience || audienceAttribut());
     var libelle = d ? "Livraison en " + d + " à Bamako" : "Livraison à Bamako";
     var ex = (store.settings.exchangeTime || "").toString().trim();
     /* Le bandeau est désormais rendu depuis la liste unique des garanties.
@@ -1180,6 +1418,8 @@ window.AURA_IMG = function (img) {
     if (wa) wa.href = waLink(s.whatsapp, "Bonjour " + (s.shopName || "T&K SHOES") + " 👋 J'ai une question sur un article.");
     renderLogo();
     renderContenu();
+    renderChoix();
+    renderAudienceExperience();
     renderReviews();
     renderUnivers();
     renderToutesMarques();
@@ -1217,7 +1457,8 @@ window.AURA_IMG = function (img) {
       if (!c){ location.replace("catalogue.html"); return; }
       document.title = c.label + " — " + store.settings.shopName + " — Boutique en ligne · Bamako";
       poserMeta("description", c.desc || ("Les modèles " + c.label + " disponibles à Bamako. Commande par WhatsApp, paiement à la livraison."));
-      poserCanonique(location.origin + location.pathname + "?c=" + encodeURIComponent(c.key));
+      poserCanonique(location.origin + location.pathname + "?c=" + encodeURIComponent(c.key) +
+        (curAudience ? "&audience=" + encodeURIComponent(curAudience) : ""));
     }
     var voulue = catFromUrl();
     if (voulue && CATS[voulue] && curFilter !== voulue){
@@ -1248,11 +1489,17 @@ window.AURA_IMG = function (img) {
     /* Le nom de la boutique est modifiable et le titre le suit. Sur une page
        de marque, c'est la marque qui prime : le titre y est posé au
        démarrage, une fois la marque connue. */
-    if (typePage() !== "collection"){
-      document.title = (typePage() === "catalogue" ? "Catalogue — " : typePage() === "marques" ? "Marques — " : "") +
+    if (typePage() !== "collection" && typePage() !== "audience"){
+      /* Le rayon ouvert précède le nom de la boutique : deux accueils qui
+         portent le même titre sont indiscernables dans un onglet, un favori
+         ou un résultat de recherche. */
+      var rayon = audienceAttribut();
+      document.title = (typePage() === "catalogue" ? "Catalogue — " :
+                        typePage() === "marques" ? "Marques — " :
+                        rayon ? audienceLabel(rayon) + " — " : "") +
         s.shopName + " — Boutique en ligne · Bamako";
     }
-    var an = $("#announce"); if (an) an.textContent = s.announcement || "";
+    var an = $("#announce"); if (an) an.textContent = annonceDuRayon();
     /* Phrase de présentation du pied de page. Elle décrivait du streetwear
        sur une boutique de claquettes et n'était modifiable nulle part :
        c'était le seul texte du site figé dans le script. */
@@ -1306,6 +1553,7 @@ window.AURA_IMG = function (img) {
          des marques jusqu'au prochain rechargement. Toute zone dépendant des
          réglages doit donc être repeinte ici aussi. */
       renderUnivers();
+      renderAudienceExperience();
       renderToutesMarques();
       renderGrid();
       renderCart();
@@ -1317,6 +1565,8 @@ window.AURA_IMG = function (img) {
       reconcileCart();
       renderCount();
       renderUnivers();
+      renderChoix();
+      renderAudienceExperience();
       renderToutesMarques();
       renderGrid();
       renderCart();
@@ -1334,6 +1584,7 @@ window.AURA_IMG = function (img) {
      une page produit peut appeler openPV() pendant ce premier rendu. */
   var pvProduct = null, pvSel = [], pvQty = 1, pvBuy = false, pvImgs = [], pvPhotoChoice = false;
   var curFilter = "tous", curQuery = "", curColl = "";
+  var curAudience = audienceAttribut() || audienceValide(paramUrl("audience"));
   /* État du tri du catalogue. Déclaré ici, avec les autres critères de
      navigation : la lecture de l'adresse se fait avant le rendu de la
      grille, et une variable déclarée plus bas ne serait pas encore un
@@ -1470,13 +1721,14 @@ window.AURA_IMG = function (img) {
     var name = esc(p.name), img = esc(p.img), alt = esc("Produit " + p.name);
     var marque = marqueDe(p);
     var out = isOut(p);
+    var productUrl = audienceLien('produit.html?id=' + encodeURIComponent(p.id), curAudience || audienceAttribut());
     return '<article class="pcard" data-card="' + esc(p.id) + '">' +
       '<div class="pmedia">' +
         '<img ' + lazyAttrs(cardThumbUrl(p.img)) + ' alt="' + alt + '" width="600" height="800" onerror="AURA_IMG(this)" />' +
         /* Lien en surimpression plutot qu'un <a> autour du bloc : le bouton
            favori est un vrai bouton, et un bouton dans un lien n'est pas du
            HTML valide. Le favori passe au-dessus par son z-index. */
-        '<a class="pmedia-link" href="produit.html?id=' + encodeURIComponent(p.id) + '" aria-label="' + alt + '"></a>' +
+        '<a class="pmedia-link" href="' + productUrl + '" aria-label="' + alt + '"></a>' +
         badgeHTML(p) +
         '<button class="wish" data-wish="' + esc(p.id) + '" data-on="' + (isWished(p.id) ? "true" : "false") + '" aria-pressed="' + (isWished(p.id) ? "true" : "false") + '" aria-label="' + (isWished(p.id) ? "Retirer des favoris" : "Ajouter aux favoris") + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.4 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .9-4.5 2.5C10.5 3.9 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.1 3 5.5l7 6Z"/></svg></button>' +
       '</div>' +
@@ -1486,8 +1738,8 @@ window.AURA_IMG = function (img) {
            n'ont pas la même hauteur. Une boutique sans marques n'a pas de
            bandeau du tout, donc pas d'espace perdu. */
         (collList().length ? '<span class="pbrand">' + esc(marque) + '</span>' : '') +
-        '<a class="pname" href="produit.html?id=' + encodeURIComponent(p.id) + '">' + name + '</a>' +
-        '<span class="pdelivery">' + esc(deliveryLabel()) + '</span>' +
+        '<a class="pname" href="' + productUrl + '">' + name + '</a>' +
+        '<span class="pdelivery">' + esc(deliveryLabel(p.audience)) + '</span>' +
         cardColorisHTML(p) +
         '<span class="price">' + priceHTML(p) + '</span>' +
         stockHintHTML(p) +
@@ -1495,7 +1747,7 @@ window.AURA_IMG = function (img) {
       /* Sur la grille le bouton ouvre la modale — un achat rapide sans
          quitter la liste. Le nom et la photo mènent à la fiche pleine page,
          qui a une adresse partageable. */
-      '<div class="padd"><button class="btn btn-primary btn-full" data-openp="' + esc(p.id) + '">' + (out ? "Me prévenir du retour" : "Choisir la taille") + '</button></div>' +
+      '<div class="padd"><button class="btn btn-primary btn-full" data-openp="' + esc(p.id) + '">' + (out ? "Me prévenir" : "Choisir la taille") + '</button></div>' +
     '</article>';
   }
   /* ---------------- Filtre par pointure ----------------
@@ -1744,6 +1996,7 @@ window.AURA_IMG = function (img) {
     var g = $("#grid");
     if (!g) return;
     var list = store.products.filter(function(p){ return p.active; });
+    if (curAudience) list = list.filter(function(p){ return audienceProduit(p, curAudience); });
     if (curColl) list = list.filter(function(p){ return p.collection === curColl; });
     list = list.filter(function(p){ return curFilter === "tous" || p.cat === curFilter; });
     /* La barre est bâtie avant le filtre de pointure, sinon choisir « 44 »
@@ -1797,6 +2050,7 @@ window.AURA_IMG = function (img) {
     if (!$("#produits")) return;
     var params = [];
     if (curColl) params.push("c=" + encodeURIComponent(curColl));
+    if (curAudience) params.push("audience=" + encodeURIComponent(curAudience));
     if (cat && cat !== "tous") params.push("cat=" + encodeURIComponent(cat));
     if (curTaille) params.push("t=" + encodeURIComponent(curTaille));
     /* Une sélection se partage : « voici les Dior en 43 » doit tenir dans un
@@ -1839,6 +2093,22 @@ window.AURA_IMG = function (img) {
     window.scrollTo({ top: prod.getBoundingClientRect().top + window.pageYOffset - 70, behavior: "smooth" });
   }
 
+  function setAudience(audience){
+    audience = audienceValide(audience);
+    if (audience === "femme" && !audiencePrete("femme")) audience = "";
+    curAudience = audience;
+    curTaille = ""; curMarques = []; curPrix = ""; curDispo = false;
+    renderAudienceTabs();
+    renderCategories();
+    renderGrid();
+    renderEntetePage();
+    syncUrl(curFilter);
+    /* Même mémoire que la porte d'entrée : basculer de rayon depuis le
+       catalogue est un choix aussi explicite que cliquer sur une porte, et
+       la visite suivante doit le respecter. */
+    memoriserRayon(audience);
+  }
+
 
   /* ---------------- Fiche produit en pleine page ----------------
      La modale suffit pour ajouter vite au panier depuis une grille. Elle ne
@@ -1857,7 +2127,7 @@ window.AURA_IMG = function (img) {
   function garantiesListe(){
     var c = contenu();
     var g = Array.isArray(c.garanties) ? c.garanties : [];
-    var d = deliveryDelay();
+    var d = deliveryDelay(curAudience || audienceAttribut());
     var e = (store.settings.exchangeTime || "").toString().trim();
     var defauts = [
       { t: "Payé à la livraison", s: "Vous essayez devant le livreur avant de payer. Rien à avancer." },
@@ -2170,6 +2440,7 @@ window.AURA_IMG = function (img) {
   function subtotal(){ return cart.reduce(function(a,i){ return a + i.price * i.qty; }, 0); }
   function renderCount(){
     var c = count(), el = $("#cartCount");
+    if (!el) return;
     el.textContent = c;
     el.setAttribute("data-hidden", c > 0 ? "false" : "true");
     if (lastCount >= 0 && c > lastCount){
@@ -2182,6 +2453,10 @@ window.AURA_IMG = function (img) {
   var lastCount = -1, countPopTimer;
   function renderCart(){
     var body = $("#cartBody"), foot = $("#cartFoot");
+    /* La page de choix du rayon n'a pas de panier : sans cette sortie, le
+       rendu s'arrêtait sur un élément absent et les portes n'apparaissaient
+       jamais. */
+    if (!body || !foot) return;
     $("#cartTitle").textContent = "Mon panier (" + count() + ")";
     if (!cart.length){
       body.innerHTML =
@@ -2667,6 +2942,11 @@ window.AURA_IMG = function (img) {
       if (bAdd && !bAdd.disabled) bAdd.click();
       return;
     }
+    /* Le rayon choisi est retenu au clic, avant la navigation : la page
+       suivante s'ouvre déjà dans le bon univers. */
+    var porte = t.closest("[data-rayon]");
+    if (porte){ memoriserRayon(porte.getAttribute("data-rayon")); return; }
+
     var chip = t.closest("[data-taille]");
     if (chip){ setTaille(chip.getAttribute("data-taille")); return; }
 
@@ -2700,6 +2980,8 @@ window.AURA_IMG = function (img) {
       renderGrid(); syncUrl(curFilter); return;
     }
     if (t.closest("[data-fclear]")){ effacerFiltres(); return; }
+    var aud = t.closest("[data-audience-filter]");
+    if (aud){ setAudience(aud.getAttribute("data-audience-filter")); return; }
     if (t.closest("[data-searchall]")){ applySearchToGrid(); return; }
     if (t.closest("[data-reset-filters]")){ setFilter("tous"); return; }
 
@@ -2727,7 +3009,11 @@ window.AURA_IMG = function (img) {
     renderGrid();
     syncUrl(curFilter);
   });
-  $("#soInput").addEventListener("keydown", function(e){
+  /* La page d'accueil du choix de rayon ne porte ni recherche ni panier :
+     la coque n'y est pas injectée. Ces attaches doivent donc tolérer un
+     élément absent, sinon le script s'arrête avant d'afficher les portes. */
+  var soInput = $("#soInput");
+  if (soInput) soInput.addEventListener("keydown", function(e){
     if (e.key === "Enter"){ e.preventDefault(); if (this.value.trim()) applySearchToGrid(); }
   });
 
@@ -2743,7 +3029,7 @@ window.AURA_IMG = function (img) {
   });
 
   var coForm = $("#coForm");
-  coForm.addEventListener("submit", function(e){
+  if (coForm) coForm.addEventListener("submit", function(e){
     e.preventDefault();
     submitOrder();
   });

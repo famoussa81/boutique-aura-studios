@@ -14,11 +14,12 @@
   function v(s) { return { s: s, r: 0 }; }
 
   function products() {
-    var pointures = ["39", "40", "41", "42", "43", "44", "45"];
+    var pointuresHomme = ["39", "40", "41", "42", "43", "44", "45"];
     var stock = [2, 4, 5, 5, 4, 3, 1];
     function make(spec) {
+      var pointures = (spec.sizes || pointuresHomme).slice();
       var variants = {};
-      var studio = "assets/studio/" + spec.id + ".webp";
+      var studio = spec.studio || (spec.audience === "femme" ? spec.img : "assets/studio/" + spec.id + ".webp");
       var photosReelles = spec.imgs || [spec.img];
       var valueImages = {};
       Object.keys(spec.valueImages || {}).forEach(function (key) { valueImages[key] = spec.valueImages[key]; });
@@ -26,14 +27,26 @@
         var key = "Coloris::" + coloris;
         if (!valueImages[key]) valueImages[key] = spec.img;
       });
+      /* Les quantités sont lues par position. Une liste plus courte que celle
+         des pointures — l'oubli classique en recopiant une fiche — produisait
+         une variante sans nombre : le stock s'affichait « NaN » et la
+         pointure devenait incommandable. La dernière valeur connue prend le
+         relais, et zéro à défaut. */
+      var quantites = spec.stock || stock;
       spec.colors.forEach(function (coloris) {
         pointures.forEach(function (pointure, i) {
-          variants[pointure + "::" + coloris] = v((spec.stock || stock)[i]);
+          var q = quantites[i];
+          if (typeof q !== "number" || isNaN(q)) q = Number(quantites[quantites.length - 1]) || 0;
+          variants[pointure + "::" + coloris] = v(q);
         });
       });
       return {
         id: spec.id,
         name: spec.name,
+        /* Troisième classement, distinct de la catégorie et de la marque.
+           Les produits historiques sont tous Homme ; l'administration pose
+           explicitement la valeur sur les prochains produits. */
+        audience: spec.audience === "femme" ? "femme" : "homme",
         cat: spec.cat || "claquettes",
         collection: spec.brand,
         price: spec.price,
@@ -159,7 +172,51 @@
         desc: "Bride imprimée au grand logo EA7, proposée sur semelle noire ou beige." }),
       make({ id: "as-pool", name: "Claquette Logo", brand: "allsaints", price: 20000,
         img: "assets/products/allsaints-logo-white-v2.webp", colors: ["Bleu marine"],
-        desc: "Claquette bleu marine minimaliste à logo blanc, avec assise texturée." })
+        desc: "Claquette bleu marine minimaliste à logo blanc, avec assise texturée." }),
+
+      /* Catalogue Femme de démonstration. Les nombreuses teintes reçues sont
+         réparties sur plusieurs fiches courtes : six coloris maximum par
+         carte, tout en conservant une vraie photo pour chaque sélection. */
+      make({ id: "femme-hermes-oran-vives", name: "Sandale Oran Couleurs Vives", audience: "femme", brand: "hermes", price: 52000, badge: "Nouveau",
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 3, 3, 2, 1],
+        img: "assets/products/femme/hermes-oran-vert-studio.jpg", colors: ["Rouge", "Vert", "Bleu ciel", "Bleu marine", "Corail", "Orange"],
+        valueImages: { "Coloris::Rouge": "assets/products/femme/hermes-oran-rouge.jpg", "Coloris::Vert": "assets/products/femme/hermes-oran-vert.jpg", "Coloris::Bleu ciel": "assets/products/femme/hermes-oran-bleu-ciel.jpg", "Coloris::Bleu marine": "assets/products/femme/hermes-oran-marine.jpg", "Coloris::Corail": "assets/products/femme/hermes-oran-corail.jpg", "Coloris::Orange": "assets/products/femme/hermes-oran-orange.jpg" },
+        desc: "Sandale ouverte à découpe H, proposée dans une sélection de couleurs franches." }),
+      make({ id: "femme-hermes-oran-douces", name: "Sandale Oran Tons Doux", audience: "femme", brand: "hermes", price: 52000,
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 3, 3, 2, 1],
+        img: "assets/products/femme/hermes-oran-rose.jpg", colors: ["Jaune", "Beige", "Taupe", "Violet", "Fuchsia", "Rose"],
+        valueImages: { "Coloris::Jaune": "assets/products/femme/hermes-oran-jaune.jpg", "Coloris::Beige": "assets/products/femme/hermes-oran-beige.jpg", "Coloris::Taupe": "assets/products/femme/hermes-oran-taupe.jpg", "Coloris::Violet": "assets/products/femme/hermes-oran-violet.jpg", "Coloris::Fuchsia": "assets/products/femme/hermes-oran-fuchsia.jpg", "Coloris::Rose": "assets/products/femme/hermes-oran-rose.jpg" },
+        desc: "La découpe H emblématique dans des teintes douces et lumineuses." }),
+      make({ id: "femme-hermes-oran-essentiels", name: "Sandale Oran Les Essentiels", audience: "femme", brand: "hermes", price: 52000,
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 3, 3, 2, 1],
+        img: "assets/products/femme/hermes-oran-noir.jpg", colors: ["Rose poudré", "Rose doré", "Caramel", "Marron", "Noir", "Blanc"],
+        valueImages: { "Coloris::Rose poudré": "assets/products/femme/hermes-oran-rose-poudre.jpg", "Coloris::Rose doré": "assets/products/femme/hermes-oran-rose-dore.jpg", "Coloris::Caramel": "assets/products/femme/hermes-oran-caramel.jpg", "Coloris::Marron": "assets/products/femme/hermes-oran-marron.jpg", "Coloris::Noir": "assets/products/femme/hermes-oran-noir.jpg", "Coloris::Blanc": "assets/products/femme/hermes-oran-blanc.jpg" },
+        desc: "Six teintes essentielles faciles à porter, sur une semelle fine et épurée." }),
+      make({ id: "femme-hermes-oran-soiree", name: "Sandale Oran Finitions Soirée", audience: "femme", brand: "hermes", price: 55000,
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 2, 2, 1, 1],
+        img: "assets/products/femme/hermes-oran-noir-or.jpg", colors: ["Noir et camel", "Noir et or", "Noir et argent", "Noir graphique", "Noir strass", "Orange cuir"],
+        valueImages: { "Coloris::Noir et camel": "assets/products/femme/hermes-oran-noir-tan.jpg", "Coloris::Noir et or": "assets/products/femme/hermes-oran-noir-or.jpg", "Coloris::Noir et argent": "assets/products/femme/hermes-oran-noir-argent.jpg", "Coloris::Noir graphique": "assets/products/femme/hermes-oran-noir-graphique.jpg", "Coloris::Noir strass": "assets/products/femme/hermes-oran-noir-strass.jpg", "Coloris::Orange cuir": "assets/products/femme/hermes-oran-orange-cuir.jpg" },
+        desc: "Des finitions métallisées et graphiques pour une allure plus habillée." }),
+      make({ id: "femme-dior-dway-bleus", name: "Claquette Dway Bleus & Noirs", audience: "femme", brand: "dior", price: 48000, badge: "Nouveau",
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 3, 3, 2, 1],
+        img: "assets/products/femme/dior-dway-marine-studio.jpg", colors: ["Toile bleu-noir", "Toile bleue", "Toile grise", "Noir", "Toile noire", "Rose poudré"],
+        valueImages: { "Coloris::Toile bleu-noir": "assets/products/femme/dior-dway-toile-bleu-noir.jpg", "Coloris::Toile bleue": "assets/products/femme/dior-dway-toile-bleu.jpg", "Coloris::Toile grise": "assets/products/femme/dior-dway-toile-gris.jpg", "Coloris::Noir": "assets/products/femme/dior-dway-noir.jpg", "Coloris::Toile noire": "assets/products/femme/dior-dway-toile-noir.jpg", "Coloris::Rose poudré": "assets/products/femme/dior-dway-rose-poudre.jpg" },
+        desc: "Claquette à bride textile large, déclinée dans des motifs bleus, noirs et gris." }),
+      make({ id: "femme-dior-dway-pastels", name: "Claquette Dway Tons Pastel", audience: "femme", brand: "dior", price: 48000,
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 3, 3, 2, 1],
+        img: "assets/products/femme/dior-dway-rose.jpg", colors: ["Bleu glacier", "Noir profond", "Rose", "Lilas", "Marine", "Gris anthracite"],
+        valueImages: { "Coloris::Bleu glacier": "assets/products/femme/dior-dway-bleu-glacier.jpg", "Coloris::Noir profond": "assets/products/femme/dior-dway-noir-profond.jpg", "Coloris::Rose": "assets/products/femme/dior-dway-rose.jpg", "Coloris::Lilas": "assets/products/femme/dior-dway-lilas.jpg", "Coloris::Marine": "assets/products/femme/dior-dway-marine.jpg", "Coloris::Gris anthracite": "assets/products/femme/dior-dway-gris-anthracite.jpg" },
+        desc: "Une seconde sélection de teintes pastel et profondes pour garder chaque fiche lisible." }),
+      make({ id: "femme-birkenstock-boston-rose", name: "Sabot Boston Rose", audience: "femme", cat: "mules", brand: "birkenstock", price: 32000, badge: "Nouveau",
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 3, 3, 2, 1],
+        img: "assets/products/femme/birkenstock-boston-rose-studio.jpg", colors: ["Rose poudré"],
+        valueImages: { "Coloris::Rose poudré": "assets/products/femme/birkenstock-boston-rose-studio.jpg" },
+        desc: "Sabot fermé en matière douce rose poudré, bride réglable et semelle contrastée." }),
+      make({ id: "femme-hermes-chypre-bleu", name: "Sandale Chypre Bleu Glacier", audience: "femme", brand: "hermes", price: 55000,
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 3, 3, 2, 1],
+        img: "assets/products/femme/hermes-chypre-bleu-studio.jpg", colors: ["Bleu glacier"],
+        valueImages: { "Coloris::Bleu glacier": "assets/products/femme/hermes-chypre-bleu-studio.jpg" },
+        desc: "Sandale bleu glacier à double bride, découpe H et semelle noire contrastée." })
     ];
   }
 
@@ -246,6 +303,26 @@
           note: "Zéro spam. Désinscription en un clic."
         }
       },
+      /* Deux univers éditoriaux sous la même identité T&K. Femme reste hors
+         navigation tant qu'il n'a ni vraie bannière ni vrai produit actif. */
+      audiencePages: {
+        homme: {
+          heroImage: "assets/hero-hugo-20260824.webp",
+          title: "Les modèles Homme",
+          text: "Claquettes, mules et sabots sélectionnés pour leur style, leur confort et leur disponibilité à Bamako.",
+          featuredProducts: []
+        },
+        femme: {
+          heroImage: "assets/hero-femme-20260824.jpg",
+          title: "Les modèles Femme",
+          text: "Sandales, claquettes et sabots en pointures 36 à 41, avec chaque coloris visible avant de commander.",
+          /* Ces modèles viennent d'un autre circuit que le stock présent en
+             boutique : annoncer le délai du rayon Homme serait une promesse
+             intenable. Vide, le rayon reprendrait le délai général. */
+          deliveryTime: "10 à 12 jours",
+          featuredProducts: ["femme-hermes-oran-vives", "femme-dior-dway-bleus", "femme-birkenstock-boston-rose", "femme-hermes-chypre-bleu"]
+        }
+      },
       collections: [
         { key: "louis-vuitton", featured: true, label: "Louis Vuitton", logo: "assets/logos/louis-vuitton.png", tagline: "Monogram", accent: "#6b4f2a", cover: "assets/brand-banners/louis-vuitton.webp",
           desc: "Cuir embossé et bande signature. La pièce que tout le monde identifie." },
@@ -261,6 +338,8 @@
           desc: "L'inscription signature centrée sur la bride. Sobre et immédiat." },
         { key: "dior", label: "Dior", logo: "assets/logos/dior.svg", tagline: "Oblique", accent: "#5B6B7A", cover: "assets/brand-banners/dior.webp",
           desc: "Toile jacquard au motif maison. La mule d'intérieur qui se porte dehors." },
+        { key: "birkenstock", label: "Birkenstock", logo: "", tagline: "Boston", accent: "#B78F86", cover: "assets/products/femme/birkenstock-boston-rose-studio.jpg",
+          desc: "Le sabot fermé à boucle, dans une teinte rose poudré facile à porter." },
         { key: "balenciaga", label: "Balenciaga", logo: "assets/logos/capture-balenciaga.png", tagline: "Mold", accent: "#111111", cover: "assets/brand-banners/balenciaga.webp",
           desc: "Caoutchouc moulé d'une seule pièce. Une silhouette qu'on ne confond pas." },
         { key: "tommy-jeans", label: "Tommy Jeans", logo: "assets/logos/capture-tommy-jeans.png", tagline: "Flag", accent: "#1c3a6e", cover: "assets/brand-banners/tommy-jeans.webp",

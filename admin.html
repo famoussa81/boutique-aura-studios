@@ -222,8 +222,9 @@
   .ord-items{margin:14px 0 0}
   .ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
     padding:8px 0;border-top:1px solid var(--line);font-size:13px}
+  .aud-admin-card{max-width:720px;margin-bottom:20px}.aud-admin-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px}.aud-hero-preview{display:block;width:100%;max-height:260px;object-fit:cover;margin:0 0 10px}.aud-admin-products{display:grid;gap:8px;margin-top:12px}.aud-admin-product{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:8px;padding:8px}.aud-admin-product.selected{border-color:#111;background:#fafafa}.aud-admin-product label{display:flex;align-items:center;gap:10px;min-width:0;flex:1;cursor:pointer}.aud-admin-product img{width:44px;height:56px;object-fit:cover;border-radius:5px;background:#f1f1f1}.aud-admin-product span span{display:grid;min-width:0}.aud-admin-product b{font-size:13px}.aud-admin-product small{font-size:11px;color:var(--muted)}.aud-order{display:flex!important;align-items:center;gap:4px}.aud-order button{width:36px;height:36px;border:1px solid var(--line);background:#fff;border-radius:6px;font-weight:900;cursor:pointer}.aud-order i{width:24px;text-align:center;font-style:normal;font-size:11px;font-weight:800}@media(max-width:560px){.aud-admin-card{padding:16px}.aud-admin-head{align-items:flex-start}.aud-admin-product{align-items:flex-start}.aud-order{flex-wrap:wrap;justify-content:flex-end;max-width:76px}.aud-order i{order:-1;width:100%}}
 </style>
-<link rel="stylesheet" href="admin-dashboard.css?v=20260824brandorder1" />
+<link rel="stylesheet" href="admin-dashboard.css?v=20260825n" />
 </head>
 <body>
 
@@ -353,7 +354,7 @@
       </div>
       <div class="product-tools card">
         <div class="field"><label for="productSearch">Rechercher un produit</label><input type="search" id="productSearch" placeholder="Nom, marque ou catégorie" /></div>
-        <div class="field"><label for="productFilter">Afficher</label><select id="productFilter"><option value="">Tous les produits</option><option value="active">Visibles</option><option value="hidden">Masqués</option><option value="out">En rupture</option><option value="low">Stock faible</option><option value="archived">Archivés</option></select></div>
+        <div class="field"><label for="productFilter">Afficher</label><select id="productFilter"><option value="">Tous les produits</option><option value="homme">Rayon Homme</option><option value="femme">Rayon Femme</option><option value="active">Visibles</option><option value="hidden">Masqués</option><option value="out">En rupture</option><option value="low">Stock faible</option><option value="archived">Archivés</option></select></div>
       </div>
       <div class="prod-grid">
         <div class="card" id="productCardList">
@@ -378,6 +379,11 @@
                   <option value="claquettes">Claquettes</option>
                   <option value="mules">Mules &amp; sabots</option>
                 </select>
+              </div>
+              <div class="field">
+                <label for="fAudience">Rayon</label>
+                <select id="fAudience"><option value="homme">Homme</option><option value="femme">Femme</option></select>
+                <p class="hint">Choisissez simplement où cette paire doit apparaître.</p>
               </div>
             <div class="field">
               <label for="fColl">Marque</label>
@@ -459,6 +465,7 @@
       <div class="hub-grid">
         <button class="hub-item" data-view="settings"><b>Identité et livraison</b><span>Nom, logo, WhatsApp, adresse, délais et réseaux sociaux.</span></button>
         <button class="hub-item" data-view="contenu"><b>Page d'accueil</b><span>Textes, photos, garanties et boutons de la boutique.</span></button>
+        <button class="hub-item" data-view="audiences"><b>Rayons Homme et Femme</b><span>Bannières, textes et produits mis en vedette dans chaque rayon.</span></button>
         <button class="hub-item" data-view="catalogue"><b>Marques et catégories</b><span>Rangez vos produits et choisissez les marques mises en avant.</span></button>
         <button class="hub-item" data-view="legal"><b>Informations légales</b><span>Société, adresse, RCCM, NIF, e-mail et guide des tailles.</span></button>
       </div>
@@ -592,6 +599,11 @@
       <div id="contenuBlocs"></div>
     </section>
 
+    <section class="view" id="view-audiences">
+      <div class="view-head"><div><h1>Rayons Homme et Femme</h1><p>Ajoutez les vrais produits et la bannière. Le rayon Femme apparaîtra automatiquement lorsqu'il sera prêt.</p></div><button class="btn btn-ghost" type="button" data-view="site">Retour au site</button></div>
+      <div id="audienceAdmin"></div>
+    </section>
+
     <section class="view" id="view-catalogue">
       <div class="view-head">
         <div><h1>Catégories &amp; marques</h1><p>Rangez simplement la boutique. Une <b>catégorie</b> est un type de produit, comme « Claquettes ». Une <b>marque</b> est le nom affiché avec le produit.</p></div>
@@ -718,11 +730,11 @@
   <div class="toast" id="toast"></div>
 
 <script src="supabase.config.js"></script>
-<script src="supabase-client.js?v=20260825a"></script>
-<script src="catalog.js?v=20260824fresh6"></script>
+<script src="supabase-client.js?v=20260825n"></script>
+<script src="catalog.js?v=20260825n"></script>
 <script>
 (function(){
-  var KEY = "aura_store_v9";
+  var KEY = "aura_store_v10";
   var DRAFT_KEY = KEY + "_admin_draft";
   var DRAFT_META_KEY = KEY + "_admin_draft_meta";
   var DRAFT_ID = "00000000-0000-0000-0000-000000000001";
@@ -1122,6 +1134,7 @@
   }
   function normalizeProduct(p){
     if (!p) return p;
+    p.audience = p.audience === "femme" ? "femme" : "homme";
     if (p.variants){
       if (Array.isArray(p.axes)) p.axes.forEach(function(ax){
         if (Array.isArray(ax.values)) ax.values = trierValeurs(ax.values);
@@ -2001,6 +2014,71 @@
     toast("Catégorie « " + label + " » ajoutée");
   });
 
+  /* ---------------- Rayons Homme / Femme ---------------- */
+  function audiencePagesAdmin(){
+    if(!store.settings.audiencePages||typeof store.settings.audiencePages!=="object")store.settings.audiencePages={};
+    ["homme","femme"].forEach(function(a){
+      if(!store.settings.audiencePages[a]||typeof store.settings.audiencePages[a]!=="object")store.settings.audiencePages[a]={};
+      var p=store.settings.audiencePages[a];
+      if(!Array.isArray(p.featuredProducts))p.featuredProducts=[];
+      if(typeof p.deliveryTime!=="string")p.deliveryTime=a==="femme"?"10 à 12 jours":"";
+      if(!p.title)p.title=a==="femme"?"Les modèles Femme":"Les modèles Homme";
+      if(!p.text)p.text=a==="femme"?"Une sélection pensée pour elle, avec les vraies pointures, les vraies couleurs et le stock disponible.":"Claquettes, mules et sabots sélectionnés pour leur style, leur confort et leur disponibilité à Bamako.";
+    });
+    return store.settings.audiencePages;
+  }
+  function audienceReadyAdmin(a){
+    var p=audiencePagesAdmin()[a],count=store.products.filter(function(x){return x.audience===a&&x.active!==false&&!x.archived;}).length;
+    return {image:!!String(p.heroImage||"").trim(),count:count,ready:a==="homme"||!!String(p.heroImage||"").trim()&&count>0};
+  }
+  function renderAudienceAdmin(){
+    var host=$("#audienceAdmin");if(!host)return;
+    var pages=audiencePagesAdmin(),purge=false;
+    host.innerHTML=["homme","femme"].map(function(a){
+      var page=pages[a],label=a==="femme"?"Femme":"Homme",state=audienceReadyAdmin(a);
+      var produits=store.products.filter(function(p){return p.audience===a&&!p.archived;});
+      var selected=page.featuredProducts.filter(function(id){return produits.some(function(p){return p.id===id;});}).slice(0,4);
+      /* Une vedette archivée disparaît de l'écran : elle doit disparaître
+         aussi du brouillon, sinon le commerçant croit la liste à jour et
+         republie un identifiant qui n'existe plus. */
+      if(selected.length!==page.featuredProducts.length)purge=true;
+      page.featuredProducts=selected;
+      var ordered=selected.map(function(id){return produits.filter(function(p){return p.id===id;})[0];}).filter(Boolean);
+      var rest=produits.filter(function(p){return selected.indexOf(p.id)<0;});
+      var productRows=ordered.concat(rest).map(function(p){
+        var chosen=selected.indexOf(p.id)>=0,index=selected.indexOf(p.id);
+        return '<div class="aud-admin-product'+(chosen?' selected':'')+'"><label><input type="checkbox" data-aud-product="'+a+'.'+esc(p.id)+'"'+(chosen?' checked':'')+' />'+
+          (p.img?'<img src="'+esc(p.img)+'" alt="" />':'')+'<span><b>'+esc(p.name)+'</b><small>'+(p.active===false?'Masqué':'Visible')+'</small></span></label>'+
+          (chosen?'<span class="aud-order"><button type="button" data-aud-move="'+a+'.'+esc(p.id)+'.up" aria-label="Monter">↑</button><button type="button" data-aud-move="'+a+'.'+esc(p.id)+'.down" aria-label="Descendre">↓</button><i>'+(index+1)+'</i></span>':'')+'</div>';
+      }).join('');
+      return '<section class="card aud-admin-card"><div class="aud-admin-head"><div><h2>Rayon '+label+'</h2><p class="hint">'+(a==="femme"?(state.ready?'Visible automatiquement sur le site':'Caché : ajoutez une bannière et au moins un produit Femme visible.'):'Rayon principal toujours accessible.')+'</p></div><span class="chip'+(state.ready?' dark':'')+'">'+(state.ready?'Prêt':'À compléter')+'</span></div>'+
+        '<div class="field"><label>Titre de la page</label><input type="text" maxlength="60" data-aud-field="'+a+'.title" value="'+esc(page.title||'')+'" /></div>'+
+        '<div class="field"><label>Courte présentation</label><textarea maxlength="200" rows="3" data-aud-field="'+a+'.text">'+esc(page.text||'')+'</textarea></div>'+
+        '<div class="field"><label>Délai de livraison de ce rayon</label><input type="text" maxlength="40" data-aud-field="'+a+'.deliveryTime" value="'+esc(page.deliveryTime||'')+'" placeholder="Exemple : 10 à 12 jours" />'+
+          '<p class="hint">Annoncé sur chaque paire de ce rayon. Laissez vide pour reprendre le délai général de la boutique.</p></div>'+
+        '<div class="field"><label>Bannière du rayon</label>'+(page.heroImage?'<img class="img-preview aud-hero-preview" src="'+esc(page.heroImage)+'" alt="" />':'')+
+          '<label class="drop"><b>'+(page.heroImage?'Remplacer la bannière':'Choisir une bannière')+'</b><span>Photo horizontale 16/10</span><input type="file" accept="image/*" data-aud-image="'+a+'" /></label></div>'+
+        '<div class="field"><label>Produits en vedette <span class="hint">4 maximum</span></label><p class="hint">Cochez les paires puis utilisez les flèches pour changer leur ordre.</p><div class="aud-admin-products">'+(productRows||'<p class="hint">Aucun produit dans ce rayon.</p>')+'</div></div>'+
+        '<button type="button" class="btn btn-ghost" data-aud-preview="'+a+'">Voir ce rayon</button></section>';
+    }).join('');
+    if(purge)saveStore();
+  }
+  $("#audienceAdmin").addEventListener("change",function(e){
+    var field=e.target.closest("[data-aud-field]");
+    if(field){var parts=field.getAttribute("data-aud-field").split('.'),page=audiencePagesAdmin()[parts[0]];page[parts[1]]=field.value.trim();saveStore();return;}
+    var image=e.target.closest("[data-aud-image]");
+    if(image){var audience=image.getAttribute("data-aud-image"),file=image.files&&image.files[0];image.value="";if(!file)return;envoyerImage(file,16/10,function(url){audiencePagesAdmin()[audience].heroImage=url;saveStore();renderAudienceAdmin();toast("Bannière enregistrée");});return;}
+    var product=e.target.closest("[data-aud-product]");
+    if(product){var bits=product.getAttribute("data-aud-product").split('.'),p=audiencePagesAdmin()[bits[0]],id=bits.slice(1).join('.'),list=p.featuredProducts||[],index=list.indexOf(id);if(product.checked&&index<0){if(list.length>=4){product.checked=false;toast("Quatre produits maximum");return;}list.push(id);}else if(!product.checked&&index>=0)list.splice(index,1);p.featuredProducts=list;saveStore();renderAudienceAdmin();return;}
+  });
+  $("#audienceAdmin").addEventListener("click",function(e){
+    var preview=e.target.closest("[data-aud-preview]");
+    if(preview){var target=preview.getAttribute("data-aud-preview");try{sessionStorage.setItem("aura_preview_store",JSON.stringify(draftPayload()));sessionStorage.setItem("aura_preview_active","1");}catch(ignore){}location.href=(target==="femme"?'femmes.html':'index.html')+'?preview=1';return;}
+    var move=e.target.closest("[data-aud-move]");if(!move)return;
+    var bits=move.getAttribute("data-aud-move").split('.'),aud=bits.shift(),dir=bits.pop(),id=bits.join('.'),list=audiencePagesAdmin()[aud].featuredProducts,index=list.indexOf(id),to=dir==="up"?index-1:index+1;
+    if(index<0||to<0||to>=list.length)return;var tmp=list[index];list[index]=list[to];list[to]=tmp;saveStore();renderAudienceAdmin();
+  });
+
   /* ---------------- Contenu éditorial ----------------
      Description déclarative des blocs : ajouter un champ ici suffit, le
      formulaire et l'enregistrement suivent. */
@@ -2754,10 +2832,12 @@ function applyStatus(order, ns){
       if(productFilter==="out" && total>0) return false;
       if(productFilter==="low" && !(total>0&&total<=5)) return false;
       if(productFilter==="archived" && !archived) return false;
+      if(productFilter==="homme" && p.audience==="femme") return false;
+      if(productFilter==="femme" && p.audience!=="femme") return false;
       if(!productFilter && archived) return false;
       if(!q) return true;
       var coll=collList().filter(function(c){return c.key===p.collection;})[0];
-      return [p.name,CATS[p.cat]||p.cat,coll&&coll.label||p.collection].join(" ").toLowerCase().indexOf(q)>=0;
+      return [p.name,CATS[p.cat]||p.cat,coll&&coll.label||p.collection,p.audience==="femme"?"femme":"homme"].join(" ").toLowerCase().indexOf(q)>=0;
     });
   }
   function renderProducts(){
@@ -2784,7 +2864,7 @@ function applyStatus(order, ns){
         img +
         '<div class="pi-info">' +
           '<div class="pi-name">' + esc(p.name) + chips + '</div>' +
-          '<div class="pi-meta">' + esc(CATS[p.cat]||p.cat) + ' · ' + fmt(p.price) + '</div>' +
+          '<div class="pi-meta">' + (p.audience === "femme" ? "Femme" : "Homme") + ' · ' + esc(CATS[p.cat]||p.cat) + ' · ' + fmt(p.price) + '</div>' +
           '<div class="pi-stock">' + details.join(' · ') + (reservedForProduct(p) ? ' · '+reservedForProduct(p)+' réservé(s)' : '') + '</div>' +
         '</div>' +
         '<div class="row-actions">' +
@@ -2815,10 +2895,18 @@ function applyStatus(order, ns){
     hint.hidden = true;
     host.innerHTML = axes.map(function(ax, i){
       var choisies = (selection && selection[i]) || [];
+      /* Un produit importé peut porter une valeur qui n'existe pas encore
+         dans la liste de sa catégorie (ex. « Vert olive »). La cacher la
+         décochait silencieusement et empêchait ensuite d'enregistrer toute
+         modification, même un simple changement de rayon. */
+      var disponibles=(ax.values||[]).slice();
+      choisies.forEach(function(val){
+        if(!disponibles.some(function(v){return String(v&&v.v?v.v:v)===String(val);}))disponibles.push({v:val});
+      });
       var estColoris=/couleur|coloris|color/i.test(ax.name||"");
       var estTaille=/pointure|taille|size/i.test(ax.name||"");
       if(estColoris){
-        return '<div class="color-choice-source" hidden>'+(ax.values||[]).map(function(v){
+        return '<div class="color-choice-source" hidden>'+disponibles.map(function(v){
           var val=v&&v.v?v.v:v,coche=choisies.indexOf(val)>=0?' checked':'';
           return '<input type="checkbox" data-axe="'+i+'" value="'+esc(val)+'"'+coche+' />';
         }).join('')+'</div>';
@@ -2826,7 +2914,7 @@ function applyStatus(order, ns){
       return '<div class="axe-groupe">' +
         '<div class="choice-heading"><b>' + esc(estTaille&&!/s$/i.test(ax.name||"")?ax.name+'s':ax.name) + ' disponibles</b>'+
           (estTaille?'<span><button type="button" data-axis-all="'+i+'">Tout choisir</button><button type="button" data-axis-clear="'+i+'">Effacer</button></span>':'')+'</div>' +
-        '<div class="checks">' + ax.values.map(function(v){
+        '<div class="checks">' + disponibles.map(function(v){
           var val = v && v.v ? v.v : v;
           var coche = choisies.indexOf(val) >= 0 ? ' checked' : '';
           return '<label class="chk'+(estTaille?' size-choice':'')+'"><input type="checkbox" data-axe="' + i + '" value="' + esc(val) + '"' + coche + '/><span>' + esc(val) + '</span></label>';
@@ -2971,6 +3059,7 @@ function applyStatus(order, ns){
     $("#fId").value = p.id;
     $("#fName").value = p.name;
     $("#fCat").value = p.cat;
+    $("#fAudience").value = p.audience === "femme" ? "femme" : "homme";
     fillCollSelect();
     $("#fColl").value = p.collection || "";
     $("#fPrice").value = p.price;
@@ -3005,6 +3094,7 @@ function applyStatus(order, ns){
        categorie. */
     var prem = catList()[0];
     $("#fCat").value = prem ? prem.key : "";
+    $("#fAudience").value = "homme";
     fillCollSelect();
     $("#fColl").value = "";
     $("#fPrice").value = "";
@@ -3034,7 +3124,7 @@ function applyStatus(order, ns){
     function grid(fields){var g=document.createElement("div");g.className="grid2";fields.forEach(function(f){if(f)g.appendChild(f);});return g;}
     steps[0].appendChild(field("#imgDrop"));
     steps[0].appendChild(grid([field("#fName"),field("#fCat")]));
-    steps[0].appendChild(field("#fColl"));
+    steps[0].appendChild(grid([field("#fAudience"),field("#fColl")]));
     var urlField=field("#fImg"); if(urlField){var details=document.createElement("details");details.className="advanced-field";details.innerHTML="<summary>J’ai déjà un lien vers la photo</summary>";details.appendChild(urlField);steps[0].appendChild(details);}
     steps[1].appendChild(grid([field("#fPrice"),field("#fOld")]));
     steps[1].appendChild(field("#fBadge")); steps[1].appendChild(field("#fDesc"));
@@ -3099,12 +3189,12 @@ function applyStatus(order, ns){
   setupProductWizard();
   function saveProductFormDraft(){
     if($("#fId").value)return;
-    var data={name:$("#fName").value,cat:$("#fCat").value,coll:$("#fColl").value,price:$("#fPrice").value,old:$("#fOld").value,badge:$("#fBadge").value,desc:$("#fDesc").value,img:$("#fImg").value,active:$("#fActive").checked,out:$("#fOut").checked,axes:selectionCourante(),stock:stockActuel(),gallery:galerieForm,valueImages:valueImagesForm};
+    var data={name:$("#fName").value,cat:$("#fCat").value,audience:$("#fAudience").value,coll:$("#fColl").value,price:$("#fPrice").value,old:$("#fOld").value,badge:$("#fBadge").value,desc:$("#fDesc").value,img:$("#fImg").value,active:$("#fActive").checked,out:$("#fOut").checked,axes:selectionCourante(),stock:stockActuel(),gallery:galerieForm,valueImages:valueImagesForm};
     try{localStorage.setItem(PRODUCT_FORM_KEY,JSON.stringify(data));}catch(e){}
   }
   function restoreProductFormDraft(){
     var d=null;try{d=JSON.parse(localStorage.getItem(PRODUCT_FORM_KEY)||"null");}catch(e){}if(!d)return;
-    $("#fName").value=d.name||"";$("#fCat").value=d.cat||$("#fCat").value;fillCollSelect();$("#fColl").value=d.coll||"";$("#fPrice").value=d.price||"";$("#fOld").value=d.old||"";$("#fBadge").value=d.badge||"";$("#fDesc").value=d.desc||"";$("#fImg").value=d.img||"";$("#fActive").checked=d.active!==false;$("#fOut").checked=!!d.out;galerieForm=d.gallery||[];valueImagesForm=d.valueImages||{};renderGalerieForm();renderAxeChecks(d.axes||null);renderValueImagesForm();renderStockGrid(d.stock||null);if(d.img){$("#fImgPrev").src=d.img;$("#fImgPrev").style.display="block";}
+    $("#fName").value=d.name||"";$("#fCat").value=d.cat||$("#fCat").value;$("#fAudience").value=d.audience==="femme"?"femme":"homme";fillCollSelect();$("#fColl").value=d.coll||"";$("#fPrice").value=d.price||"";$("#fOld").value=d.old||"";$("#fBadge").value=d.badge||"";$("#fDesc").value=d.desc||"";$("#fImg").value=d.img||"";$("#fActive").checked=d.active!==false;$("#fOut").checked=!!d.out;galerieForm=d.gallery||[];valueImagesForm=d.valueImages||{};renderGalerieForm();renderAxeChecks(d.axes||null);renderValueImagesForm();renderStockGrid(d.stock||null);if(d.img){$("#fImgPrev").src=d.img;$("#fImgPrev").style.display="block";}
   }
   $("#prodForm").addEventListener("input",function(){clearTimeout(productFormTimer);productFormTimer=setTimeout(saveProductFormDraft,350);});
   $("#prodForm").addEventListener("change",function(){clearTimeout(productFormTimer);productFormTimer=setTimeout(saveProductFormDraft,100);});
@@ -3464,6 +3554,7 @@ function applyStatus(order, ns){
         return;
       }
       pr.name = name; pr.price = price; pr.oldPrice = oldP; pr.cat = cat; pr.badge = badge;
+      pr.audience = $("#fAudience").value === "femme" ? "femme" : "homme";
       pr.collection = $("#fColl").value || "";
       pr.img = img; pr.desc = desc; pr.active = $("#fActive").checked; pr.stockout = $("#fOut").checked;
       /* La fiche produit affiche `imgs`, la carte affiche `img`. Sans cette
@@ -3502,6 +3593,7 @@ function applyStatus(order, ns){
       });
     } else {
       store.products.push({ id:"p" + Date.now(), name:name, cat:cat,
+        audience:$("#fAudience").value === "femme" ? "femme" : "homme",
         collection:$("#fColl").value || "", price:price,
         oldPrice:oldP, badge:badge, img:img,
         imgs:[img].concat(galerieForm.filter(function(u){ return u && u !== img; })),
@@ -3614,6 +3706,7 @@ function applyStatus(order, ns){
 
   function renderAll(){
     renderContenuAdmin();
+    renderAudienceAdmin();
     renderCollSettings();
     renderAxeChecks(null);
     renderStockGrid(null);

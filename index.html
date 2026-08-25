@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>T&amp;K SHOES — Boutique en ligne · Bamako</title>
-<meta name="description" content="T&amp;K SHOES : claquettes, mules et sabots originaux de grandes marques, en pointures 39 à 45. Commandez par WhatsApp à Bamako." />
+<meta name="description" content="T&amp;K SHOES, Bamako : choisissez votre rayon, Homme ou Femme. Stock réel, commande par WhatsApp, paiement à la livraison." />
 <link rel="canonical" href="https://boutique-aura-studios.vercel.app/" />
 <link rel="icon" href="assets/brand/favicon.ico" sizes="any" />
 <link rel="icon" type="image/png" href="assets/brand/favicon-32.png" sizes="32x32" />
@@ -13,13 +13,13 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="T&amp;K SHOES" />
 <meta property="og:title" content="T&amp;K SHOES — Les modèles qui comptent" />
-<meta property="og:description" content="Les grandes marques en pointures 39 à 45. Commande simple par WhatsApp, paiement à la livraison." />
+<meta property="og:description" content="Les grandes marques, Homme et Femme. Commande simple par WhatsApp, paiement à la livraison." />
 <meta property="og:image" content="https://boutique-aura-studios.vercel.app/api/share-image" />
 <meta property="og:url" content="https://boutique-aura-studios.vercel.app/" />
 <meta property="og:locale" content="fr_FR" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="T&amp;K SHOES — Les modèles qui comptent" />
-<meta name="twitter:description" content="Les grandes marques en pointures 39 à 45. Commande par WhatsApp, paiement à la livraison." />
+<meta name="twitter:description" content="Les grandes marques, Homme et Femme. Commande par WhatsApp, paiement à la livraison." />
 <meta name="twitter:image" content="https://boutique-aura-studios.vercel.app/api/share-image" />
 <link rel="preconnect" href="https://vgzvavlmmqbxtuhanaqj.supabase.co" crossorigin />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -27,14 +27,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap"
       media="print" onload="this.media='all';this.onload=null" />
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" /></noscript>
-<link rel="preload" as="image" href="assets/hero-navy-mobile-20260824.webp" media="(max-width:700px)" fetchpriority="high" />
-<link rel="preload" as="image" href="assets/hero-hugo-20260824.webp" media="(min-width:701px)" fetchpriority="high" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Store",
   "name": "T&K SHOES",
-  "description": "Claquettes, mules et sabots des grandes marques, en pointures 39 à 45.",
+  "description": "Claquettes, mules et sabots des grandes marques, pour homme et pour femme.",
   "image": "assets/brand/tk-shoes-share.jpg",
   "address": { "@type": "PostalAddress", "streetAddress": "Kalaban Coura", "addressLocality": "Bamako", "addressCountry": "ML" },
   "email": "mohamedsambakessy8@gmail.com",
@@ -44,140 +42,59 @@
   "paymentAccepted": "Espèces à la livraison, espèces au retrait, Orange Money"
 }
 </script>
-<link rel="stylesheet" href="boutique.css?v=20260824f" />
+<link rel="stylesheet" href="boutique.css?v=20260825n" />
 </head>
-<body data-page="accueil">
+<body data-page="choix">
 
-  <noscript>
+<noscript>
   <div class="noscript-msg">
     <h1>La boutique a besoin de JavaScript</h1>
     <p>Votre navigateur ne l'exécute pas. C'est souvent le cas en
        <b>mode économie de données</b> ou <b>navigation allégée</b> :
        désactivez-le dans les réglages du navigateur, puis rechargez.</p>
-    <p>Vous pouvez aussi commander directement :</p>
-    <p><a class="noscript-cta" href="https://wa.me/22393249365">Commander sur WhatsApp</a></p>
+    <p>Vous pouvez aussi entrer directement :</p>
+    <p><a class="noscript-cta" href="hommes.html">Rayon Homme</a></p>
+    <p><a class="noscript-cta" href="femmes.html">Rayon Femme</a></p>
   </div>
 </noscript>
-<main id="page">
-<section class="hero" id="heroSection" data-od-id="hero">
-<picture><source id="heroMobileSource" media="(max-width:700px)" srcset="assets/hero-hugo-mobile-20260824.webp" /><img id="heroImage" src="assets/hero-hugo-20260824.webp" alt="" width="1600" height="1000" fetchpriority="high" decoding="async" /></picture>
-    <span class="hero-badge" id="heroBadge" data-od-id="hero-badge"></span>
-    <div class="wrap">
-      <div class="hero-content">
-        <span class="hero-kicker" id="heroKicker"></span>
-        <h1 id="heroTitre" data-od-id="hero-title"></h1>
-        <p class="hero-sub" id="heroSub"></p>
-        <ul class="hero-points">
-          <li>Paiement à la livraison</li>
-          <li id="heroDelay">Livraison à Bamako</li>
-          <li id="heroExchange">Échange</li>
-        </ul>
-        <div class="hero-actions">
-          <a href="marques.html" class="btn btn-light" data-od-id="hero-cta-primary">Découvrir la collection</a>
-          <a href="catalogue.html" class="btn btn-ghost" data-od-id="hero-cta-secondary">Voir les nouveautés</a>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section class="trust" data-od-id="trust-bar" aria-label="Nos garanties">
-    <div class="trust-grid">
-      <div class="trust-item">
-        <b>Paiement à la livraison</b>
-        <span>Vous payez quand vous recevez.</span>
-      </div>
-      <div class="trust-item">
-        <b id="trustDelay">Livraison à Bamako</b>
-        <span id="trustFree">Partout dans la ville.</span>
-      </div>
-      <div class="trust-item">
-        <b id="trustExchange">Échange</b>
-        <span>Mauvaise taille ? On échange.</span>
-      </div>
-    </div>
-  </section>
+<main class="choix" id="choix">
+  <header class="choix-head">
+    <span class="choix-logo" id="choixLogo">T&amp;K<span>SHOES</span></span>
+    <p class="choix-kicker" id="choixKicker">Bamako</p>
+  </header>
 
-  <section class="section" id="categories" data-od-id="categories">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-kicker" id="univKicker">Les univers</span>
-        <h2 class="sec-title" id="univTitre">Explorez les collections</h2>
-      </div>
-      <!-- Marques mises en avant : bannière large + rangée de modèles. -->
-      <div id="marquesBandes"></div>
-      <!-- Aperçu compact des marques, juste après les bannières et leurs modèles. -->
-      <div class="marques-reste" id="marquesReste" hidden>
-        <span class="sec-kicker">Toutes les marques</span>
-        <div class="brands-directory home-brands-grid" id="univGrille"></div>
-        <div class="home-brands-actions">
-          <a class="btn btn-ghost-dark" href="marques.html" id="homeBrandsAll">Voir toutes les marques</a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <h1 class="choix-titre" id="choixTitre">À chacun sa paire</h1>
 
-  <section class="cbanner" id="bannerSection" data-od-id="collection-banner">
-<img id="bannerImage" data-src="assets/banniere-premium-20260824.webp" alt="" width="1600" height="900" loading="lazy" decoding="async" />
-    <div class="wrap">
-      <div class="cbanner-content">
-        <span class="sec-kicker" id="bannerKicker"></span>
-        <h2 id="bannerTitre"></h2>
-        <p id="bannerTexte"></p>
-        <div class="cbanner-actions">
-          <a href="catalogue.html" class="btn btn-light" data-od-id="collection-cta">Voir la collection</a>
-          <a href="catalogue.html?cat=mules" class="btn btn-ghost" data-od-id="collection-cta-alt">Les accessoires</a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <div class="choix-portes" id="choixPortes">
+    <a class="porte" href="hommes.html" data-rayon="homme">
+      <span class="porte-voile"></span>
+      <span class="porte-in">
+        <span class="porte-nom">Homme</span>
+        <span class="porte-go">Entrer</span>
+      </span>
+    </a>
+    <a class="porte" href="femmes.html" data-rayon="femme">
+      <span class="porte-voile"></span>
+      <span class="porte-in">
+        <span class="porte-nom">Femme</span>
+        <span class="porte-go">Entrer</span>
+      </span>
+    </a>
+  </div>
 
-  <section class="section" id="a-propos" data-od-id="editorial" hidden>
-    <div class="wrap">
-      <div class="about">
-        <div class="about-media" data-od-id="editorial-image">
-<img id="edImage" data-src="assets/editorial-selection-20260824.webp" alt="" width="900" height="1125" loading="lazy" decoding="async" />
-        </div>
-        <div>
-          <span class="sec-kicker" id="edKicker"></span>
-          <h2 class="sec-title" id="edTitre" data-od-id="editorial-title"></h2>
-          <p class="sec-sub" id="edTexte"></p>
-          <div id="edPiliers" style="margin-top:28px"></div>
-          </div>
-          <a class="about-link" id="contactBtn" href="#" target="_blank" rel="noopener" data-od-id="editorial-link">Nous contacter sur WhatsApp <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <p class="choix-note" id="choixNote">Paiement à la livraison · Échange possible · Commande par WhatsApp</p>
 
-  <section class="section reviews" id="avis" data-od-id="reviews" hidden>
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="sec-kicker">Ils ont commandé</span>
-        <h2 class="sec-title">Ce que disent nos clients</h2>
-      </div>
-      <div class="rev-grid" id="revGrid"></div>
-      <p class="rev-count" id="revCount"></p>
-    </div>
-  </section>
-
-  <section class="news" id="nlSection" data-od-id="newsletter">
-    <div class="wrap">
-      <span class="sec-kicker" id="nlKicker" style="justify-content:center;color:color-mix(in srgb,#ffffff 60%,transparent);margin-bottom:18px"></span>
-      <h2 id="nlTitre"></h2>
-      <p id="nlTexte"></p>
-      <form class="news-form" id="newsForm" data-od-id="newsletter-form" novalidate>
-        <input type="email" id="newsEmail" placeholder="ton@email.com" aria-label="Adresse e-mail" required />
-        <button type="submit" class="btn btn-light" data-od-id="newsletter-submit">S'inscrire</button>
-      </form>
-      <p class="news-note" id="nlNote"></p>
-      <p class="news-success" data-od-id="newsletter-success" role="status" aria-live="polite">Merci ! Bienvenue dans la communauté.</p>
-    </div>
-  </section>
+  <nav class="choix-legal" aria-label="Informations">
+    <a href="cgv.html">Conditions de vente</a>
+    <a href="confidentialite.html">Confidentialité</a>
+    <a href="guide-des-tailles.html">Guide des pointures</a>
+  </nav>
 </main>
 
 <script src="supabase.config.js"></script>
-<script src="supabase-client.js?v=20260825a"></script>
-<script src="catalog.js?v=20260824fresh6"></script>
-<script src="boutique.js?v=20260824fresh6"></script>
+<script src="supabase-client.js?v=20260825n"></script>
+<script src="catalog.js?v=20260825n"></script>
+<script src="boutique.js?v=20260825n"></script>
 </body>
 </html>

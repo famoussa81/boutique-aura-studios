@@ -219,7 +219,7 @@
     object-fit:contain;object-position:center}
   .brand-logo-fallback{font-size:clamp(16px,1.7vw,22px);line-height:1;text-align:center;
     text-transform:uppercase;letter-spacing:-.02em}
-  .brand-logo-action{font-size:9px;font-weight:800;line-height:1;letter-spacing:.18em;
+  .brand-logo-action{font-size:10.5px;font-weight:800;line-height:1;letter-spacing:.16em;
     text-transform:uppercase;color:#77736d}
   .brand-logo-card[data-brand="hermes"] .brand-logo-img{max-width:72%;max-height:46px}
   .brand-logo-card[data-brand="louis-vuitton"] .brand-logo-img,
@@ -258,7 +258,7 @@
     .brand-logo-card{aspect-ratio:5/3;padding:15px 10px 12px;gap:10px}
     .brand-logo-visual{height:44px}
     .brand-logo-img{max-height:34px;max-width:82%}
-    .brand-logo-action{font-size:8px;letter-spacing:.15em}
+    .brand-logo-action{font-size:10px;letter-spacing:.12em}
     .brand-directory-card{aspect-ratio:4/3}
     .brand-directory-copy{left:12px;right:30px;bottom:11px}
     .brand-directory-copy>span{display:none}
@@ -416,9 +416,12 @@
   /* Deux lignes, jamais trois : la troisième était coupée en son milieu et
      laissait une bande de lettres tronquées sous le titre. La hauteur est
      bornée en plus du découpage, pour les navigateurs qui l'ignorent. */
+  /* Deux lignes de texte au maximum, mais une zone de touche d'au moins
+     44 px : le titre est un lien, et deux lignes serrées n'en font que 39. */
   .pname{font-size:15px;font-weight:700;line-height:1.3;
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-    overflow:hidden;min-height:2.6em;max-height:2.6em}
+    overflow:hidden;min-height:2.6em;max-height:2.6em;
+    padding-block:3px;box-sizing:content-box}
   /* Le délai de livraison remplace la catégorie : un argument à la place
      d'une redite. Le texte vient des réglages de la boutique. */
   .pdelivery{font-size:11.5px;color:var(--muted);text-transform:uppercase;
@@ -735,7 +738,7 @@
   @media (max-width:400px){
     .pgrid{gap:8px}
     .pcolors{gap:5px}
-    .pcolors-count{font-size:9.5px;letter-spacing:.06em}
+    .pcolors-count{font-size:11px;letter-spacing:.04em}
     .pcolor-photo{width:27px;height:32px}
     .pcolor-more{height:32px;min-width:18px;padding-left:3px}
     .cat-body{left:14px;bottom:12px;right:14px}
@@ -997,8 +1000,111 @@
     .cat-panel-wrap,.cat-panel-wrap>.cat-panel{transition:none}
   }
 
+
+  /* ---------------- Porte d'entrée ----------------
+     Premier écran de la boutique : deux portes, rien d'autre. Pas de
+     navigation, pas de panier, pas de bandeau — tout ce qui n'aide pas à
+     choisir retarde le choix. */
+  body[data-page="choix"]{min-height:100vh;min-height:100svh;
+    display:flex;flex-direction:column;background:var(--bg)}
+  .choix{flex:1;display:flex;flex-direction:column;gap:26px;
+    max-width:1320px;width:100%;margin:0 auto;padding:38px 24px 34px}
+  .choix-head{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+  .choix-logo{font-size:26px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);
+    display:inline-flex;align-items:baseline;gap:10px}
+  .choix-logo span{font-size:11px;font-weight:700;letter-spacing:.4em;color:var(--muted)}
+  .choix-logo-img{max-width:190px;max-height:52px;width:auto;height:auto;object-fit:contain}
+  .choix-kicker{font-size:11px;font-weight:800;letter-spacing:.32em;text-transform:uppercase;color:var(--muted)}
+  .choix-titre{text-align:center;font-size:clamp(26px,5vw,44px);font-weight:900;letter-spacing:-.03em;
+    line-height:1.05;text-wrap:balance;margin:2px 0 0}
+  .choix-portes{flex:1;display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr));min-height:0}
+  body[data-portes="1"] .choix-portes{grid-template-columns:minmax(0,1fr)}
+  .choix-note{text-align:center;font-size:12px;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted)}
+  /* La page d'entrée n'injecte pas la coque : ses liens obligatoires vivent
+     donc dans la page elle-même. */
+  .choix-legal{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 22px}
+  .choix-legal a{display:inline-flex;align-items:center;min-height:44px;
+    font-size:12.5px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+  .choix-legal a:hover{color:var(--ink)}
+
+  .porte{position:relative;display:block;overflow:hidden;border-radius:var(--radius);
+    background:var(--gray);min-height:min(62vh,560px);min-height:min(62svh,560px);
+    text-decoration:none;color:#fff}
+  .porte-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    transition:transform .5s ease}
+  .porte:hover .porte-img{transform:scale(1.03)}
+  .porte-voile{position:absolute;inset:0;
+    background:linear-gradient(to top,rgba(17,17,17,.82) 0%,rgba(17,17,17,.34) 46%,rgba(17,17,17,.06) 100%)}
+  .porte-in{position:absolute;inset:auto 0 0 0;z-index:2;display:flex;flex-direction:column;
+    align-items:flex-start;gap:8px;padding:26px 28px}
+  .porte-nom{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.02em;line-height:1}
+  .porte-n{font-size:11.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
+    color:rgba(255,255,255,.76)}
+  .porte-go{margin-top:6px;display:inline-flex;align-items:center;min-height:44px;padding:11px 26px;
+    border-radius:var(--radius-pill);background:#fff;color:var(--ink);
+    font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+  .porte:hover .porte-go{background:var(--gray)}
+  .porte:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+  @media (max-width:760px){
+    /* Les deux portes tiennent dans l'écran sans défilement : une porte qu'il
+       faut aller chercher plus bas n'est pas un choix, c'est un défaut. Elles
+       se partagent la hauteur restante, avec un plancher pour rester lisibles
+       sur les petits téléphones. */
+    .choix{gap:14px;padding:22px 14px 18px}
+    .choix-portes{grid-template-columns:minmax(0,1fr);
+      grid-auto-rows:minmax(150px,1fr);gap:10px}
+    .porte{min-height:0}
+    .porte-in{padding:18px 18px;gap:6px}
+    .porte-nom{font-size:clamp(24px,7vw,32px)}
+    .porte-go{margin-top:2px;padding:10px 20px}
+    .choix-titre{font-size:clamp(22px,6.5vw,30px)}
+    .choix-logo{font-size:21px}
+    .choix-logo-img{max-width:150px;max-height:42px}
+    .choix-note{font-size:11px;letter-spacing:.08em}
+    .choix-legal{gap:0 16px}
+    .choix-legal a{min-height:44px;font-size:12px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .porte:hover .porte-img{transform:none}
+  }
+
   .store-logo{display:block;max-width:150px;max-height:42px;width:auto;height:auto;object-fit:contain}
   .store-logo-foot{max-width:180px;max-height:54px}
   .preview-bar{position:sticky;z-index:9999;left:0;right:0;top:0;min-height:44px;background:#0759ea;color:#fff;display:flex;align-items:center;justify-content:center;gap:18px;padding:8px 12px;text-align:center;font:800 12px/1.25 Inter,system-ui,sans-serif;letter-spacing:.03em}
   .preview-bar a{color:#fff;text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center;white-space:nowrap}
-  @media(max-width:520px){.preview-bar{justify-content:space-between;text-align:left}.preview-bar span{max-width:24ch}}
+@media(max-width:520px){.preview-bar{justify-content:space-between;text-align:left}.preview-bar span{max-width:24ch}}
+
+/* ============================================================
+   UNIVERS HOMME / FEMME
+   L'accueil reste commun et calme ; chaque univers porte ensuite ses
+   produits, marques et catégories sans changer l'identité T&K.
+   ============================================================ */
+.audience-tabs{display:flex;gap:6px;margin:0 0 20px;padding:5px;background:#f1f1f1;border-radius:999px;width:max-content;max-width:100%}
+.audience-tab{border:0;background:transparent;min-height:44px;padding:0 24px;border-radius:999px;font:800 12px/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#666;cursor:pointer}
+.audience-tab.active{background:#111;color:#fff}
+.audience-hero{position:relative;min-height:min(76vh,760px);display:flex;align-items:flex-end;background:#111;overflow:hidden}
+.audience-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.audience-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.84),rgba(0,0,0,.06) 70%)}
+.audience-hero-copy{position:relative;z-index:1;color:#fff;padding:72px 0;width:100%}
+.audience-hero-copy h1{font-size:clamp(2.8rem,8vw,7rem);line-height:.92;text-transform:uppercase;letter-spacing:-.045em;max-width:12ch}
+.audience-hero-copy p{max-width:48ch;margin:22px 0 30px;color:rgba(255,255,255,.82);font-size:clamp(1rem,1.6vw,1.2rem)}
+.audience-hero-actions{display:flex;flex-wrap:wrap;gap:10px}
+.audience-categories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.audience-category{position:relative;min-height:280px;overflow:hidden;border-radius:var(--radius);background:#111;color:#fff}
+.audience-category img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.audience-category:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.78),transparent 70%)}
+.audience-category span{position:absolute;z-index:1;left:24px;right:24px;bottom:22px;display:flex;justify-content:space-between;align-items:end;gap:16px}
+.audience-category strong{font-size:clamp(1.4rem,3vw,2.4rem);text-transform:uppercase}
+.audience-category small{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.13em}
+.audience-unavailable{min-height:60vh;display:grid;place-items:center;text-align:center;padding:70px 24px}
+.audience-unavailable[hidden]{display:none}
+.audience-unavailable div{max-width:540px}
+.audience-unavailable h1{font-size:clamp(2.2rem,7vw,5rem);line-height:.95;text-transform:uppercase;margin-bottom:18px}
+.audience-unavailable p{color:var(--muted);margin-bottom:28px}
+@media(max-width:700px){
+  .audience-hero{min-height:72vh}.audience-hero-copy{padding:48px 0}
+  .audience-categories{grid-template-columns:1fr}.audience-category{min-height:220px}
+  .audience-tabs{width:100%}.audience-tab{flex:1;padding:0 12px}
+}
