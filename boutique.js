@@ -123,7 +123,7 @@
     '  <div class="m-overlay" id="pvOverlay" role="dialog" aria-modal="true" aria-label="Fiche produit" aria-hidden="true">\n' +
     '    <div class="modal">\n' +
     '      <div class="m-head">\n' +
-    '        <h3>Fiche produit</h3>\n' +
+    '        <h3 id="pvHeadTitre">Fiche produit</h3>\n' +
     '        <button class="icon-btn" data-close="pvOverlay" aria-label="Fermer">\n' +
     '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>\n' +
     '        </button>\n' +
@@ -888,6 +888,22 @@ window.AURA_IMG = function (img) {
     return base + (base.indexOf("?") >= 0 ? "&" : "?") + "audience=" + encodeURIComponent(audience);
   }
   function audienceLabel(audience){ return audience === "femme" ? "Femme" : audience === "homme" ? "Homme" : "Tous"; }
+  /* Le visiteur entre par une porte — Homme ou Femme — puis touche « Tout le
+     catalogue » et reçoit les trente-six modèles, sandales du rayon Femme
+     comprises. La porte d'entrée promettait un rayon que la page suivante ne
+     tenait pas. Les liens vers le catalogue emportent donc le rayon ouvert,
+     sauf ceux qui en désignent déjà un. */
+  function propagerRayon(){
+    var rayon = curAudience || audienceAttribut();
+    if (!rayon) return;
+    var liens = document.querySelectorAll('a[href*="catalogue"]');
+    for (var i = 0; i < liens.length; i++){
+      var href = liens[i].getAttribute("href") || "";
+      if (!/^\/?catalogue(\.html)?(\?|$)/.test(href)) continue;
+      if (/[?&]audience=/.test(href)) continue;
+      liens[i].setAttribute("href", audienceLien(href, rayon));
+    }
+  }
   function poserMeta(nom, valeur){
     var m = document.head.querySelector('meta[name="' + nom + '"]');
     if (m) m.setAttribute("content", valeur);
@@ -1616,6 +1632,9 @@ window.AURA_IMG = function (img) {
     var f = $("#footerBrandLine");
     if (f) f.textContent = "© " + new Date().getFullYear() + " " + s.shopName + ". Tous droits réservés.";
     applySellingCopy();
+    /* La navigation vient d'être réécrite : ses liens vers le catalogue
+       repartent sans rayon tant qu'on ne les repasse pas. */
+    propagerRayon();
   }
 
   /* ---------------- Hydratation Supabase (catalogue + réglages) ---------------- */
@@ -1794,7 +1813,11 @@ window.AURA_IMG = function (img) {
           photos.push({ src: src, label: val });
       });
     }
-    if (!photos.length) return '<div class="pcolors pcolors-empty" aria-hidden="true"></div>';
+    /* Une pastille pour annoncer qu'il n'y a pas de choix occupe une ligne
+       pour rien : sur onze cartes du rayon Homme, « 1 coloris » ne servait
+       qu'à pousser la photo hors de l'écran. La ligne n'apparaît plus
+       qu'à partir de deux coloris. */
+    if (photos.length < 2) return "";
     var total = photos.length, visibles = photos.slice(0, 3);
     return '<div class="pcolors" aria-label="' + total + ' coloris disponible' + (total > 1 ? 's' : '') + '">' +
       '<span class="pcolors-count">' + total + ' coloris</span>' +
@@ -1844,7 +1867,6 @@ window.AURA_IMG = function (img) {
           '<button class="wish" data-wish="' + esc(p.id) + '" data-on="' + (isWished(p.id) ? "true" : "false") + '" aria-pressed="' + (isWished(p.id) ? "true" : "false") + '" aria-label="' + (isWished(p.id) ? "Retirer des favoris" : "Ajouter aux favoris") + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.4 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .9-4.5 2.5C10.5 3.9 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.1 3 5.5l7 6Z"/></svg></button>' +
         '</span>' +
         '<a class="pname" href="' + productUrl + '">' + name + '</a>' +
-        '<span class="pdelivery">' + esc(deliveryLabel(p.audience)) + '</span>' +
         cardColorisHTML(p) +
         '<span class="price">' + priceHTML(p) + '</span>' +
         stockHintHTML(p) +
@@ -2141,9 +2163,14 @@ window.AURA_IMG = function (img) {
                marqueDe(p).toLowerCase().indexOf(q) >= 0; });
     }
     var total = $("#catTotal");
-    if (total) total.textContent = list.length
-      ? (list.length > 1 ? list.length + " modèles" : "1 modèle")
-      : "";
+    if (total){
+      /* Le délai était répété sur chaque carte alors qu'il y est identique :
+         trente-six fois la même phrase n'aide à choisir aucune paire, et
+         elle poussait la photo hors de l'écran. Une fois ici suffit. */
+      var nb = list.length ? (list.length > 1 ? list.length + " modèles" : "1 modèle") : "";
+      var delai = deliveryLabel(curAudience || audienceAttribut());
+      total.textContent = nb && delai ? nb + " · " + delai : nb;
+    }
     if (!list.length){
       /* Message adapté : dire « aucun résultat » sans dire quel critère
          exclut tout laisse le client croire que la boutique est vide. */
@@ -2419,6 +2446,11 @@ window.AURA_IMG = function (img) {
       }).join("") + '</div>';
     }
     $("#pvMedia").innerHTML = media;
+    /* « Fiche produit » occupait toute la barre du haut sans rien apprendre.
+       Sur téléphone, cette barre reste visible pendant que le reste défile :
+       elle doit rappeler quel modèle on regarde. */
+    var entete = $("#pvHeadTitre");
+    if (entete) entete.textContent = p.name || "Fiche produit";
     var marque = marqueDe(p);
     $("#pvCat").textContent = (marque ? marque + " · " : "") + (CATS[p.cat] || p.cat);
     $("#pvName").textContent = p.name;
@@ -3305,6 +3337,34 @@ window.AURA_IMG = function (img) {
       obs.observe(el);
     });
   }
+
+  /* Le bouton WhatsApp flotte au-dessus de la page et se posait sur ce
+     qu'on lisait : le texte de la réassurance, une carte produit, le bouton
+     « Voir les autres modèles ». On ne peut pas lui réserver une place —
+     il flotte partout. Il s'efface donc pendant qu'on descend, et revient
+     dès qu'on remonte ou qu'on s'arrête : c'est à ce moment-là qu'on
+     cherche à joindre la boutique, pas en pleine lecture. */
+  (function whatsappDiscret(){
+    var bouton = $("#waFloat");
+    if (!bouton) return;
+    var dernier = window.pageYOffset, minuteur = 0;
+    function cacher(){ bouton.setAttribute("data-recule", "true"); }
+    function montrer(){ bouton.removeAttribute("data-recule"); }
+    /* Au chargement, il se posait sur la barre de réassurance : la première
+       chose qu'un nouveau visiteur lit, à moitié couverte par un bouton
+       qu'il n'a pas demandé. Il n'apparaît qu'une fois la page engagée,
+       quand écrire à la boutique devient une intention plausible. */
+    if (window.pageYOffset < 140) cacher();
+    window.addEventListener("scroll", function(){
+      var y = window.pageYOffset;
+      if (y < 140) cacher();
+      else if (y > dernier + 6) cacher();
+      else if (y < dernier - 6) montrer();
+      dernier = y;
+      clearTimeout(minuteur);
+      minuteur = setTimeout(function(){ if (window.pageYOffset >= 140) montrer(); }, 700);
+    }, { passive: true });
+  })();
 
   /* Pulsation du compteur quand le panier change : sans elle, un ajout
      depuis une carte ne se voit nulle part sur la page. */

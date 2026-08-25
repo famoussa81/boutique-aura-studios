@@ -417,8 +417,14 @@
   .pcard.is-out .pmedia img{filter:grayscale(.6)}
   /* Le cœur suit la ligne de la marque au lieu de flotter sur la photo :
      il ne masque plus la chaussure, et sa cible reste franche au pouce. */
-  .wish{flex:none;width:44px;height:44px;margin:-11px -8px -11px 0;border-radius:var(--radius);
-    background:transparent;border:0;display:inline-flex;align-items:center;justify-content:center}
+  /* « Louis Vuitton » s'affichait « Louis Vuit… » : le cœur prenait
+     quarante-quatre pixels de large à la marque la plus désirable du
+     catalogue. Il n'en occupe plus que trente ; sa cible tactile garde ses
+     quarante-quatre pixels par un débordement invisible. */
+  .wish{flex:none;width:30px;height:44px;margin:-11px -6px -11px 0;border-radius:var(--radius);
+    position:relative;background:transparent;border:0;display:inline-flex;
+    align-items:center;justify-content:center}
+  .wish::after{content:"";position:absolute;top:0;bottom:0;left:-7px;right:-7px}
   .wish svg{width:18px;height:18px;color:var(--ink)}
   .wish:hover svg{color:var(--muted)}
   /* Aimé : le cœur se remplit. Plus de pastille ni de cadre — dans une
@@ -456,7 +462,6 @@
      assez legers pour ne pas transformer la grille en galerie complete. */
   .pcolors{display:flex;align-items:center;justify-content:space-between;gap:8px;
     min-height:38px;margin-top:3px}
-  .pcolors-empty{visibility:hidden}
   .pcolors-count{font-size:10.5px;font-weight:800;letter-spacing:.1em;
     text-transform:uppercase;color:var(--muted);white-space:nowrap}
   .pcolors-list{display:flex;align-items:center;justify-content:flex-end;min-width:0}
@@ -663,6 +668,25 @@
        est l'information secondaire : c'est lui qui rétrécit. */
     .price{font-size:14px;gap:6px}
     .price .old{font-size:11px}
+    /* L'interlettrage large coûte une lettre et demie sur « EA7 Emporio
+       Armani » ou « Tommy Jeans » : dans une carte de 168 px, il décide
+       seul de la coupure du nom de marque. */
+    .pbrand{font-size:11px;letter-spacing:.07em}
+    /* Filtrer et Trier tiennent sur une ligne : empilés, ils repoussaient la
+       première photo à près de sept cents pixels du haut de la page. */
+    .cat-tools-row{align-items:stretch;gap:8px}
+    .cat-tools-row .cat-btn{flex:0 0 auto}
+    .cat-tools-row .cat-sort{flex:1 1 150px;min-width:0;padding-left:12px;gap:6px}
+    .cat-tools-row .cat-sort>span{flex:none}
+    .cat-tools-row .cat-sort select{flex:1 1 auto;width:100%;min-width:0;padding:10px 4px}
+    /* Le compte passe sous les deux commandes : sur la même ligne il les
+       écrasait au point de réduire « Trier » à sa bordure. */
+    .cat-total{flex:1 0 100%;margin:2px 0 0;text-align:left}
+    /* Deux boutons de même force se disputaient le doigt alors qu'ils
+       mènent presque au même endroit. Le second redevient ce qu'il est :
+       une porte de service, pas une invitation. */
+    .hero-actions .btn-ghost{border-color:transparent;background:transparent;
+      text-decoration:underline;text-underline-offset:5px;padding-inline:0}
   }
 
   @media (hover:none){
@@ -741,6 +765,11 @@
        haut, l'ajout se fait sans avoir à retrouver le bouton plus bas. */
     #pvOverlay #pvAdd{position:sticky;bottom:0;z-index:3;
       box-shadow:0 -10px 16px -12px color-mix(in srgb,var(--ink) 45%,transparent)}
+    /* Collé au bas de la fenêtre, le bouton recouvrait les vignettes de
+       coloris : les trois passaient dessous, à moitié visibles. On ne
+       choisit pas ce qu'on ne voit pas. Le contenu se termine désormais
+       au-dessus du bouton. */
+    #pvOverlay .pv-info{padding-bottom:64px}
   }
 
   @media (max-width:640px){
@@ -864,7 +893,13 @@
      jamais concurrencer le bouton d'action principal. */
   body:has(.drawer[data-open="true"]) .wa-float,
   body:has(.m-overlay[data-open="true"]) .wa-float{opacity:0;pointer-events:none;visibility:hidden}
-  .wa-float{transition:opacity .25s ease}
+  /* Le bouton flotte au-dessus de tout : il se posait sur le texte de la
+     réassurance, sur une carte produit, sur « Voir les 5 autres modèles ».
+     Il s'efface dès qu'on descend la page — on lit alors sans rien qui
+     recouvre — et revient dès qu'on remonte ou qu'on s'arrête, c'est-à-dire
+     au moment où l'on cherche à joindre la boutique. */
+  .wa-float{transition:opacity .25s ease, transform .25s ease}
+  .wa-float[data-recule="true"]{opacity:0;pointer-events:none;transform:translateY(12px) scale(.9)}
   @media (prefers-reduced-motion:reduce){ .wa-float{transition:none} }
   @media (max-width:640px){
     .wa-float{right:14px;bottom:14px;padding:14px;gap:0}
