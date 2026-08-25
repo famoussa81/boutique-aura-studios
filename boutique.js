@@ -1282,7 +1282,8 @@ window.AURA_IMG = function (img) {
     return false;
   }
 
-  var portesAffichees = false;
+  var portesAffichees = false, visiteurATouche = false;
+  document.addEventListener("pointerdown", function(){ visiteurATouche = true; }, true);
 
   function renderChoix(){
     var hote = $("#choixPortes");
@@ -1300,20 +1301,23 @@ window.AURA_IMG = function (img) {
 
     var rayons = ["homme", "femme"].filter(function(a){ return audiencePrete(a); });
 
-    /* Une redirection n'est acceptable qu'avant le premier affichage. La
-       réponse de la base arrive une à deux secondes après la peinture : sans
-       ce verrou, la page sautait sous les yeux du visiteur, parfois pendant
-       qu'il visait une porte du doigt. */
-    if (!portesAffichees && !choixForce()){
+    /* Une redirection ne doit jamais surprendre. Elle est donc permise avant
+       le premier affichage, et ensuite seulement tant que le visiteur n'a
+       touché à rien : la réponse de la base arrive une à deux secondes après
+       la peinture et peut réduire le choix à une seule porte — un écran de
+       choix sans choix, que personne ne devrait avoir à franchir. */
+    if (!choixForce() && (!portesAffichees || !visiteurATouche)){
       /* Un seul rayon ouvert : la question n'en est plus une. On entre. */
       if (rayons.length === 1){
         location.replace(pageRayon(rayons[0]));
         return;
       }
-      var retenu = rayonMemorise();
-      if (retenu && rayons.indexOf(retenu) >= 0){
-        location.replace(pageRayon(retenu));
-        return;
+      if (!portesAffichees){
+        var retenu = rayonMemorise();
+        if (retenu && rayons.indexOf(retenu) >= 0){
+          location.replace(pageRayon(retenu));
+          return;
+        }
       }
     }
 
