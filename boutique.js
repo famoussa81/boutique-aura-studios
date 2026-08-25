@@ -1814,14 +1814,20 @@ window.AURA_IMG = function (img) {
            HTML valide. Le favori passe au-dessus par son z-index. */
         '<a class="pmedia-link" href="' + productUrl + '" aria-label="' + alt + '"></a>' +
         badgeHTML(p) +
-        '<button class="wish" data-wish="' + esc(p.id) + '" data-on="' + (isWished(p.id) ? "true" : "false") + '" aria-pressed="' + (isWished(p.id) ? "true" : "false") + '" aria-label="' + (isWished(p.id) ? "Retirer des favoris" : "Ajouter aux favoris") + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.4 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .9-4.5 2.5C10.5 3.9 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.1 3 5.5l7 6Z"/></svg></button>' +
-      '</div>' +
+        '</div>' +
       '<div class="pinfo">' +
         /* Le bandeau est réservé dès qu'une marque existe dans la boutique,
            même vide sur un produit sans marque : sinon deux cartes voisines
            n'ont pas la même hauteur. Une boutique sans marques n'a pas de
            bandeau du tout, donc pas d'espace perdu. */
-        (collList().length ? '<span class="pbrand">' + esc(marque) + '</span>' : '') +
+        /* Le cœur vivait sur la photo, où il chevauchait la chaussure : sur
+           une paire claire il devenait illisible, sur une paire sombre il
+           masquait la bride. Il rejoint la ligne de la marque, hors du
+           cadre du produit. */
+        '<span class="pinfo-head">' +
+          (collList().length ? '<span class="pbrand">' + esc(marque) + '</span>' : '<span class="pbrand"></span>') +
+          '<button class="wish" data-wish="' + esc(p.id) + '" data-on="' + (isWished(p.id) ? "true" : "false") + '" aria-pressed="' + (isWished(p.id) ? "true" : "false") + '" aria-label="' + (isWished(p.id) ? "Retirer des favoris" : "Ajouter aux favoris") + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.4 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .9-4.5 2.5C10.5 3.9 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.1 3 5.5l7 6Z"/></svg></button>' +
+        '</span>' +
         '<a class="pname" href="' + productUrl + '">' + name + '</a>' +
         '<span class="pdelivery">' + esc(deliveryLabel(p.audience)) + '</span>' +
         cardColorisHTML(p) +

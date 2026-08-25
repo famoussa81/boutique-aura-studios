@@ -405,15 +405,21 @@
      transformait « Nouveau » en « Nouve… ». */
   .badge{position:absolute;top:12px;left:12px;z-index:2;max-width:calc(100% - 62px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--accent);color:var(--bg);border-radius:var(--radius);padding:6px 12px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
   .badge-sale{background:var(--ink)}
-  .wish{position:absolute;top:12px;right:12px;z-index:2;width:45px;height:45px;border-radius:var(--radius);background:color-mix(in srgb,var(--bg) 88%,transparent);border:none;display:flex;align-items:center;justify-content:center}
+  /* Le cœur suit la ligne de la marque au lieu de flotter sur la photo :
+     il ne masque plus la chaussure, et sa cible reste franche au pouce. */
+  .wish{flex:none;width:44px;height:44px;margin:-11px -8px -11px 0;border-radius:var(--radius);
+    background:transparent;border:0;display:inline-flex;align-items:center;justify-content:center}
   .wish svg{width:18px;height:18px;color:var(--ink)}
-  .wish:hover{background:var(--bg)}
-  .wish[data-on="true"]{background:var(--bg);border:var(--border-w) solid var(--line)}
+  .wish:hover svg{color:var(--muted)}
+  /* Aimé : le cœur se remplit. Plus de pastille ni de cadre — dans une
+     ligne de texte, un bouton encadré pèse plus lourd que la marque. */
   .wish[data-on="true"] svg{color:var(--ink);fill:var(--ink)}
   .padd{grid-area:media;align-self:end;margin:12px;z-index:2;opacity:0;
     transform:translateY(6px);transition:all .22s ease}
   .pcard:hover .padd{opacity:1;transform:none}
   .pinfo{grid-area:info;padding:14px 2px 0;display:flex;flex-direction:column;gap:4px}
+  .pinfo-head{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:18px}
+  .pinfo-head .pbrand{flex:1;min-width:0}
   /* Deux lignes réservées en permanence : c'est ce qui aligne la grille.
      Sans cela, neuf noms sur vingt passent à la ligne sur téléphone et
      produisent quatre hauteurs de carte différentes. */
@@ -667,7 +673,6 @@
     .fcol a{min-height:44px}
     .footer-bottom a{min-width:44px;min-height:44px;justify-content:center}
     .badge{font-size:10px;padding:5px 9px;letter-spacing:.1em}
-    .wish{background:color-mix(in srgb,var(--bg) 70%,transparent)}
   }
   @media (max-width:960px){
     .wrap{padding:0 20px}
@@ -914,7 +919,6 @@
   /* Lien de carte en surimpression : toute la photo mene a la fiche, le
      bouton favori reste au-dessus et cliquable. */
   .pmedia-link{position:absolute;inset:0;z-index:1}
-  .wish{z-index:2}
 
   .fiche-guide{border-top:var(--border-w) solid var(--line);margin-top:22px;padding-top:16px}
   .fiche-guide summary{cursor:pointer;font-size:12px;font-weight:800;letter-spacing:.12em;
