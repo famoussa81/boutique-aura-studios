@@ -1801,10 +1801,14 @@ window.AURA_IMG = function (img) {
     var name = esc(p.name), img = esc(p.img), alt = esc("Produit " + p.name);
     var marque = marqueDe(p);
     var out = isOut(p);
+    /* La carte montre le coloris que la fiche présélectionnera. Sans cela,
+       la cliente cliquait sur une paire et en trouvait une autre à l'écran
+       suivant — la vue studio ne correspondant à aucun coloris coché. */
+    var photoCarte = photoDeLaSelection(p, valuesOf(firstAvailableKey(p))) || p.img;
     var productUrl = audienceLien('produit.html?id=' + encodeURIComponent(p.id), curAudience || audienceAttribut());
     return '<article class="pcard" data-card="' + esc(p.id) + '">' +
       '<div class="pmedia">' +
-        '<img ' + lazyAttrs(cardThumbUrl(p.img)) + ' alt="' + alt + '" width="600" height="800" onerror="AURA_IMG(this)" />' +
+        '<img ' + lazyAttrs(cardThumbUrl(photoCarte)) + ' alt="' + alt + '" width="600" height="800" onerror="AURA_IMG(this)" />' +
         /* Lien en surimpression plutot qu'un <a> autour du bloc : le bouton
            favori est un vrai bouton, et un bouton dans un lien n'est pas du
            HTML valide. Le favori passe au-dessus par son z-index. */
@@ -2357,14 +2361,37 @@ window.AURA_IMG = function (img) {
     }
   }
 
+  /* Photo correspondant à la sélection en cours. La fiche s'ouvrait sur la
+     vue studio du produit alors qu'un coloris était déjà coché : la cliente
+     voyait une paire marine unie au-dessus d'un coloris « toile bleue »
+     sélectionné. Deux paires différentes sur le même écran, au moment
+     précis où elle décide. */
+  function photoDeLaSelection(p, valeurs){
+    if (!p || !p.valueImages) return "";
+    var axes = prodAxes(p);
+    for (var i = 0; i < axes.length; i++){
+      var val = valeurs && valeurs[i];
+      if (!val) continue;
+      var src = p.valueImages[axes[i].name + VSEP + val];
+      if (src) return src;
+    }
+    return "";
+  }
+
   /* ---------------- Fiche produit ---------------- */
   function pvKey(){ return keyOf(pvSel); }
   function openPV(id){
     var p = findProduct(id); if (!p) return;
-    pvProduct = p; pvSel = valuesOf(firstAvailableKey(p)); pvQty = 1; pvBuy = false; pvImgs = []; pvPhotoChoice = false;
+    pvProduct = p; pvSel = valuesOf(firstAvailableKey(p)); pvQty = 1; pvBuy = false; pvImgs = [];
+    /* Un coloris est coché dès l'ouverture : la photo doit le montrer. Sans
+       cela, la fiche s'ouvrait sur la vue studio du produit — une paire qui
+       ne correspondait à aucun coloris coché, au moment précis où la cliente
+       décide. Le drapeau signifie « la photo suit la sélection ». */
+    pvPhotoChoice = !!photoDeLaSelection(p, pvSel);
     var imgs = (p.imgs && p.imgs.length) ? p.imgs : (p.img ? [p.img] : []);
     pvImgs = imgs;
-    var media = '<img class="pv-main" src="' + esc(mediaUrl(imgs[0] || "")) + '" onerror="AURA_IMG(this)" alt="' + esc(p.name) + '" />';
+    var premiere = photoDeLaSelection(p, pvSel) || imgs[0] || "";
+    var media = '<img class="pv-main" src="' + esc(mediaUrl(premiere)) + '" onerror="AURA_IMG(this)" alt="' + esc(p.name) + '" />';
     if (imgs.length > 1){
       media += '<div class="pv-thumbs" id="pvThumbs">' + imgs.map(function(src, i){
         return '<button type="button" data-thumb="' + i + '" aria-label="Voir la photo ' + (i + 1) + ' sur ' + imgs.length + '"' + (i === 0 ? ' class="active"' : '') + '><img ' + lazyAttrs(detailThumbUrl(src)) + ' onerror="AURA_IMG(this)" alt="" /></button>';
