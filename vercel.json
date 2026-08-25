@@ -2,6 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    { "source": "/produit", "has": [{ "type": "query", "key": "id" }], "destination": "/api/produit" },
+    { "source": "/produit.html", "has": [{ "type": "query", "key": "id" }], "destination": "/api/produit" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
