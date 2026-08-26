@@ -266,6 +266,18 @@ window.AURA_IMG = function (img) {
   var CKEY = "aura_cart_v1";
   var WKEY = "aura_wish_v1";
   var LOCAL_HOST = location.hostname === "127.0.0.1" || location.hostname === "localhost";
+  /* Le catalogue gardé en mémoire date de la visite précédente. Un modèle
+     ajouté depuis n'y figure pas : conclure de son absence qu'il n'existe
+     pas, c'est renvoyer le visiteur ailleurs alors que la fiche qu'il vient
+     d'ouvrir est parfaitement valable. Tant que la base n'a pas répondu, on
+     ne conclut rien. */
+  var produitsCharges = false;
+  function baseVaRepondre(){
+    if (produitsCharges) return false;
+    if (document.documentElement.getAttribute("data-preview") === "true") return false;
+    if (LOCAL_HOST) return false;
+    return typeof window.AURA_DB !== "undefined" && !!window.AURA_DB.ready();
+  }
   var LOCAL_DEMO = LOCAL_HOST &&
     (/[?&](?:demo|preview)=1(?:&|$)/.test(location.search) || sessionStorage.getItem("aura_preview_active") === "1");
   var VSEP = window.AURA_CATALOG.VSEP || "::";
@@ -1549,13 +1561,23 @@ window.AURA_IMG = function (img) {
       var prod = vid ? findProduct(vid) : null;
       /* Produit retiré du catalogue ou lien périmé : le catalogue vaut mieux
          qu'une page vide, et garde le client dans la boutique. */
-      if (!prod || !prod.active || prod.archived){ location.replace("catalogue.html"); return; }
+      if (!prod || !prod.active || prod.archived){
+        /* La base va répondre : elle tranchera. La page reste sur le contenu
+           servi par le serveur au lieu de fuir vers le catalogue. */
+        if (baseVaRepondre()) return;
+        location.replace(audienceLien("catalogue.html", curAudience || audienceValide(paramUrl("audience"))));
+        return;
+      }
       openPV(prod.id);
       return;
     }
     if (typePage() === "collection"){
       var c = curColl ? collById(curColl) : null;
-      if (!c){ location.replace("catalogue.html"); return; }
+      if (!c){
+        if (baseVaRepondre()) return;
+        location.replace(audienceLien("catalogue.html", curAudience || audienceValide(paramUrl("audience"))));
+        return;
+      }
       document.title = c.label + " — " + store.settings.shopName + " — Boutique en ligne · Bamako";
       poserMeta("description", c.desc || ("Les modèles " + c.label + " disponibles à Bamako. Commande par WhatsApp, paiement à la livraison."));
       poserCanonique(location.origin + location.pathname + "?c=" + encodeURIComponent(c.key) +
@@ -1665,6 +1687,9 @@ window.AURA_IMG = function (img) {
       renderCart();
     });
     window.AURA_DB.loadProducts(function(ep, rows){
+      /* Même en cas d'échec, la question est tranchée : sans réponse, mieux
+         vaut laisser la page telle quelle que de la faire fuir. */
+      produitsCharges = true;
       if (ep || !rows) return;
       store.products = normalizeProducts(rows);
       saveStore(store);
@@ -1680,7 +1705,10 @@ window.AURA_IMG = function (img) {
         var currentId="";
         try{var foundId=location.search.match(/[?&]id=([^&]+)/);currentId=foundId?decodeURIComponent(foundId[1]):"";}catch(e){}
         var fresh=currentId?findProduct(currentId):null;
-        if(!fresh||fresh.active===false||fresh.archived){location.replace("catalogue.html");return;}
+        if(!fresh||fresh.active===false||fresh.archived){
+          location.replace(audienceLien("catalogue.html", curAudience || audienceValide(paramUrl("audience"))));
+          return;
+        }
         openPV(fresh.id);
       }
     });

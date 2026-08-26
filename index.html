@@ -3,6 +3,23 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>
+/* Le rayon retenu était relu par le script principal, donc après la peinture :
+   le visiteur voyait la page de choix s'afficher puis disparaître, comme si le
+   site hésitait. La lecture se fait ici, avant le moindre pixel, et la page ne
+   clignote plus. « ?choix=1 » et le bouton Retour gardent la main. */
+(function(){
+  try{
+    if (/[?&]choix=1(?:&|$)/.test(location.search)) return;
+    var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+    if (nav && nav.type === "back_forward") return;
+    if (!nav && performance.navigation && performance.navigation.type === 2) return;
+    var rayon = localStorage.getItem("aura_rayon");
+    if (rayon === "homme") location.replace("hommes.html");
+    else if (rayon === "femme") location.replace("femmes.html");
+  }catch(e){}
+})();
+</script>
 <title>T&amp;K SHOES — Boutique en ligne · Bamako</title>
 <meta name="description" content="T&amp;K SHOES, Bamako : choisissez votre rayon, Homme ou Femme. Stock réel, commande par WhatsApp, paiement à la livraison." />
 <link rel="canonical" href="https://boutique-aura-studios.vercel.app/" />
@@ -42,7 +59,7 @@
   "paymentAccepted": "Espèces à la livraison, espèces au retrait, Orange Money"
 }
 </script>
-<link rel="stylesheet" href="boutique.css?v=20260828c" />
+<link rel="stylesheet" href="boutique.css?v=20260828d" />
 </head>
 <body data-page="choix">
 
@@ -93,8 +110,8 @@
 </main>
 
 <script src="supabase.config.js"></script>
-<script src="supabase-client.js?v=20260828c"></script>
-<script src="catalog.js?v=20260828c"></script>
-<script src="boutique.js?v=20260828c"></script>
+<script src="supabase-client.js?v=20260828d"></script>
+<script src="catalog.js?v=20260828d"></script>
+<script src="boutique.js?v=20260828d"></script>
 </body>
 </html>
