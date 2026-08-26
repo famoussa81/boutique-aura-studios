@@ -379,9 +379,9 @@
   .pgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
   /* Trois rangées nommées : le bouton occupe la zone « media » sur
      ordinateur (survol) et sa propre rangée sur écran tactile. */
-  .pcard{display:grid;grid-template-areas:"media" "info" "cta";
+  .pcard{display:grid;grid-template-areas:"media" "info";
     grid-template-columns:minmax(0,1fr);
-    grid-template-rows:auto 1fr auto;min-width:0}
+    grid-template-rows:auto 1fr;min-width:0}
   .pmedia{grid-area:media;position:relative;aspect-ratio:3/4;overflow:hidden;border-radius:var(--radius);background:var(--gray)}
   .pmedia img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
   body:not(.product-visuals-ready) .pmedia::before,
@@ -430,9 +430,6 @@
   /* Aimé : le cœur se remplit. Plus de pastille ni de cadre — dans une
      ligne de texte, un bouton encadré pèse plus lourd que la marque. */
   .wish[data-on="true"] svg{color:var(--ink);fill:var(--ink)}
-  .padd{grid-area:media;align-self:end;margin:12px;z-index:2;opacity:0;
-    transform:translateY(6px);transition:all .22s ease}
-  .pcard:hover .padd{opacity:1;transform:none}
   .pinfo{grid-area:info;padding:14px 2px 0;display:flex;flex-direction:column;gap:4px}
   .pinfo-head{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:18px}
   .pinfo-head .pbrand{flex:1;min-width:0}
@@ -450,10 +447,14 @@
      bornée en plus du découpage, pour les navigateurs qui l'ignorent. */
   /* Deux lignes de texte au maximum, mais une zone de touche d'au moins
      44 px : le titre est un lien, et deux lignes serrées n'en font que 39. */
-  .pname{font-size:15px;font-weight:700;line-height:1.3;
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-    overflow:hidden;min-height:2.6em;max-height:2.6em;
-    padding-block:3px;box-sizing:content-box}
+  /* Le nom n'est plus affiché mais reste dans la page : les moteurs de
+     recherche le lisent, les lecteurs d'écran l'annoncent, et il revient à
+     l'écran dès qu'on l'atteint au clavier. */
+  .pname-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+    overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+  .pname-sr:focus{position:static;width:auto;height:auto;margin:0;clip:auto;
+    clip-path:none;white-space:normal;font-size:15px;font-weight:700;line-height:1.3;
+    outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
   /* Le délai de livraison remplace la catégorie : un argument à la place
      d'une redite. Le texte vient des réglages de la boutique. */
   .pdelivery{font-size:11.5px;color:var(--muted);text-transform:uppercase;
@@ -471,6 +472,14 @@
   .pcolor-photo img{display:block;width:100%;height:100%;object-fit:cover}
   .pcolor-more{display:flex;align-items:center;justify-content:center;min-width:24px;height:36px;
     padding-left:5px;font-size:10px;font-weight:800;color:var(--muted)}
+  /* Le prix tient la ligne, le cœur en occupe le bout : plus rien ne
+     dispute sa largeur au nom de la marque. */
+  /* Le prix se cale en bas de carte : sans le bouton qui l'y tenait, une
+     carte sans coloris remontait son prix de quarante-cinq pixels et le
+     désalignait de sa voisine. */
+  .pprix{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    margin-top:auto;padding-top:4px}
+  .pprix .price{margin-top:0;flex:1;min-width:0}
   .price{display:flex;align-items:baseline;gap:8px;margin-top:4px;font-weight:800;font-size:15px}
   .price .old{color:var(--muted);font-weight:400;text-decoration:line-through;font-size:13px;white-space:nowrap}
   .price .sale{color:var(--ink);white-space:nowrap}
@@ -700,12 +709,6 @@
     .pinfo{padding:12px 4px 0}
     .pmedia{border-radius:calc(var(--radius) - 2px)}
 
-    /* Pas de survol : le bouton doit être permanent, donc il quitte la photo
-       pour la rangée du dessous — le bas du vêtement redevient visible. */
-    .padd{grid-area:cta;align-self:auto;margin:10px 0 0;opacity:1;transform:none}
-    /* « Choisir la taille » passait sur deux lignes dans la carte resserrée :
-       l'interlettrage large du système coûte plus que la taille de police. */
-    .padd .btn{padding:12px 8px;font-size:11px;letter-spacing:.04em}
     /* Zone cliquable étendue autour des liens, sans toucher à la typographie. */
     .fcol li{margin-bottom:4px}
     .fcol a{min-height:44px}
@@ -965,7 +968,6 @@
 
   /* Le lien du nom ne doit pas se signaler comme un lien : la carte entière
      est cliquable, un soulignement bleu la salirait. */
-  a.pname{color:inherit;text-decoration:none}
   /* Lien de carte en surimpression : toute la photo mene a la fiche, le
      bouton favori reste au-dessus et cliquable. */
   .pmedia-link{position:absolute;inset:0;z-index:1}
@@ -1040,13 +1042,12 @@
   @media (hover:hover){
     .pcard .pmedia img{transition:transform .5s cubic-bezier(.22,.61,.36,1)}
     .pcard:hover .pmedia img{transform:scale(1.04)}
-    .pcard .padd .btn{transition:background-color .2s ease,color .2s ease}
     .mband-link svg{transition:transform .22s ease}
     .mband-link:hover svg{transform:translateX(5px)}
   }
 
   /* Retour au doigt : sur écran tactile, seul l'enfoncement fait signe. */
-  .pcard .padd .btn:active,.buybar .btn:active{transform:scale(.985)}
+  .buybar .btn:active{transform:scale(.985)}
   .tab{transition:background-color .18s ease,color .18s ease,border-color .18s ease}
   .size-chip{transition:background-color .16s ease,color .16s ease,border-color .16s ease}
 

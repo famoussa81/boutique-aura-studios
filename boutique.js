@@ -1008,7 +1008,7 @@ window.AURA_IMG = function (img) {
         '</a>' +
         /* Quatre modèles ou moins tiennent sur une ligne : une barre de
            défilement qui ne défile pas donne l'impression d'un bug. */
-        '<div class="mrow mrow-fixe">' + produits.map(cardHTML).join("") + '</div>' +
+        '<div class="mrow mrow-fixe">' + produits.map(function(x){ return cardHTML(x, { sansMarque: true }); }).join("") + '</div>' +
         (autres ? '<a class="mrow-more" href="' + audienceLien('collection.html?c=' + encodeURIComponent(c.key), curAudience || audienceAttribut()) + '">' +
           '<span>Voir les ' + autres + ' autre' + (autres > 1 ? 's' : '') + ' modèle' + (autres > 1 ? 's' : '') + '</span>' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>' : '') +
@@ -1858,7 +1858,18 @@ window.AURA_IMG = function (img) {
       '</span>' +
     '</div>';
   }
-  function cardHTML(p){
+  /* Carte réduite à ce qui fait choisir : la photo, les coloris, le prix.
+     Le nom quitte l'affichage — sous une bannière Hermès, « Sandale Chypre
+     Bordeaux » répète trois fois ce que la bannière et la photo disent
+     déjà. Il reste dans le lien, hors de l'écran : les moteurs de recherche
+     et les lecteurs d'écran continuent de le lire, et il réapparaît au
+     clavier pour qui navigue à la tabulation.
+
+     `sansMarque` sert les rangées de marque et les suggestions d'une même
+     maison : le nom de la marque y est écrit juste au-dessus. Dans le
+     catalogue, où les maisons se mélangent, il reste. */
+  function cardHTML(p, opts){
+    opts = opts || {};
     var name = esc(p.name), img = esc(p.img), alt = esc("Produit " + p.name);
     var marque = marqueDe(p);
     var out = isOut(p);
@@ -1890,19 +1901,19 @@ window.AURA_IMG = function (img) {
            une paire claire il devenait illisible, sur une paire sombre il
            masquait la bride. Il rejoint la ligne de la marque, hors du
            cadre du produit. */
-        '<span class="pinfo-head">' +
-          (collList().length ? '<span class="pbrand">' + esc(marque) + '</span>' : '<span class="pbrand"></span>') +
+        (!opts.sansMarque && collList().length
+          ? '<span class="pinfo-head"><span class="pbrand">' + esc(marque) + '</span></span>'
+          : '') +
+        '<a class="pname-sr" href="' + productUrl + '">' + name + '</a>' +
+        cardColorisHTML(p) +
+        /* Le cœur descend sur la ligne du prix : plus rien ne dispute sa
+           place au nom de la marque, qui ne se coupe donc plus. */
+        '<span class="pprix">' +
+          '<span class="price">' + priceHTML(p) + '</span>' +
           '<button class="wish" data-wish="' + esc(p.id) + '" data-on="' + (isWished(p.id) ? "true" : "false") + '" aria-pressed="' + (isWished(p.id) ? "true" : "false") + '" aria-label="' + (isWished(p.id) ? "Retirer des favoris" : "Ajouter aux favoris") + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.4 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .9-4.5 2.5C10.5 3.9 9.3 3 7.5 3A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.1 3 5.5l7 6Z"/></svg></button>' +
         '</span>' +
-        '<a class="pname" href="' + productUrl + '">' + name + '</a>' +
-        cardColorisHTML(p) +
-        '<span class="price">' + priceHTML(p) + '</span>' +
         stockHintHTML(p) +
       '</div>' +
-      /* Sur la grille le bouton ouvre la modale — un achat rapide sans
-         quitter la liste. Le nom et la photo mènent à la fiche pleine page,
-         qui a une adresse partageable. */
-      '<div class="padd"><button class="btn btn-primary btn-full" data-openp="' + esc(p.id) + '">' + (out ? "Me prévenir" : "Choisir la taille") + '</button></div>' +
     '</article>';
   }
   /* ---------------- Filtre par pointure ----------------
@@ -2372,6 +2383,7 @@ window.AURA_IMG = function (img) {
     var liste = memeMarque.length ? memeMarque
               : actifs.filter(function(x){ return x.cat === p.cat; });
     return { titre: memeMarque.length ? "Autres modèles " + marqueDe(p) : "Dans le même rayon",
+             memeMarque: memeMarque.length > 0,
              liste: liste.slice(0, 4) };
   }
 
@@ -2403,7 +2415,7 @@ window.AURA_IMG = function (img) {
     var sugg = ficheSuggestions(p);
     var host = $("#ficheSugg");
     if (host){
-      host.innerHTML = sugg.liste.map(cardHTML).join("");
+      host.innerHTML = sugg.liste.map(function(x){ return cardHTML(x, { sansMarque: !!sugg.memeMarque }); }).join("");
       var sec = $("#ficheSuggSection");
       if (sec) sec.hidden = !sugg.liste.length;
       var t = $("#ficheSuggTitre");
