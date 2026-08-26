@@ -424,7 +424,10 @@
   .wish{flex:none;width:30px;height:44px;margin:-11px -6px -11px 0;border-radius:var(--radius);
     position:relative;background:transparent;border:0;display:inline-flex;
     align-items:center;justify-content:center}
-  .wish::after{content:"";position:absolute;top:0;bottom:0;left:-7px;right:-7px}
+  /* La cible débordait de sept pixels à droite, donc du bord de la carte la
+     plus à droite de la grille. Elle s'étend vers l'intérieur : quarante-
+     quatre pixels de large sans dépasser de la carte. */
+  .wish::after{content:"";position:absolute;top:0;bottom:0;left:-14px;right:0}
   .wish svg{width:18px;height:18px;color:var(--ink)}
   .wish:hover svg{color:var(--muted)}
   /* Aimé : le cœur se remplit. Plus de pastille ni de cadre — dans une
@@ -809,8 +812,16 @@
     .mobile-menu{padding:8px 16px 16px}
     .hero-badge{top:14px;right:14px;padding:8px 12px;font-size:10px}
   }
-  .skip-link{position:absolute;left:-9999px;top:0;z-index:200;background:var(--ink);color:var(--bg);padding:12px 18px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-  .skip-link:focus{left:0}
+  /* Ce lien était caché à neuf mille pixels sur la gauche. Safari sur
+     iPhone compte cette distance dans la zone défilable : la page glissait
+     latéralement et laissait un grand vide blanc à côté du site. Il est
+     maintenant réduit à un pixel découpé — invisible de la même façon, sans
+     rien étendre — et reprend sa taille dès qu'on l'atteint au clavier. */
+  .skip-link{position:absolute;top:0;left:0;z-index:200;width:1px;height:1px;
+    overflow:hidden;clip-path:inset(50%);white-space:nowrap;
+    background:var(--ink);color:var(--bg);padding:0;font-size:13px;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase}
+  .skip-link:focus{width:auto;height:auto;clip-path:none;padding:12px 18px}
   :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
   .m-overlay :focus-visible,.drawer :focus-visible,.news :focus-visible{outline-color:currentColor}
   .wish[data-on="true"] svg{fill:var(--ink);stroke:var(--ink)}
