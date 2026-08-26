@@ -1803,7 +1803,10 @@ window.AURA_IMG = function (img) {
   /* Rarete affichee seulement sous 4 pieces, et uniquement a partir du stock
      reel : un faux compte a rebours convertit une fois puis brule la marque. */
   function stockHintHTML(p){
-    if (isOut(p)) return '<span class="stock-hint">&nbsp;</span>';
+    /* La réserve d'une ligne vide alignait les cartes du temps où le bouton
+       suivait le prix ; c'est `margin-top:auto` sur la ligne du prix qui
+       s'en charge. Sans rien à dire, la carte ne dit rien. */
+    if (isOut(p)) return "";
     var total = 0, low = [];
     for (var k in p.variants){
       var a = availFor(p, k);
@@ -1813,7 +1816,7 @@ window.AURA_IMG = function (img) {
         if (a <= 3) low.push(lib ? a + " en " + lib : a + " pièces");
       }
     }
-    if (total === 0 || total > 8) return '<span class="stock-hint">&nbsp;</span>';
+    if (total === 0 || total > 8) return "";
     if (low.length) return '<span class="stock-hint">Plus que ' + esc(low[0]) + '</span>';
     return '<span class="stock-hint">Plus que ' + total + ' pièces</span>';
   }
@@ -1911,7 +1914,7 @@ window.AURA_IMG = function (img) {
         (!opts.sansMarque && collList().length
           ? '<span class="pinfo-head"><span class="pbrand">' + esc(marque) + '</span></span>'
           : '') +
-        '<a class="pname-sr" href="' + productUrl + '" tabindex="-1">' + name + '</a>' +
+        '<a class="pname-sr" href="' + productUrl + '" tabindex="-1" aria-hidden="true">' + name + '</a>' +
         cardColorisHTML(p) +
         /* Le cœur descend sur la ligne du prix : plus rien ne dispute sa
            place au nom de la marque, qui ne se coupe donc plus. */
@@ -3067,6 +3070,15 @@ window.AURA_IMG = function (img) {
     if (open){
       var id = open.getAttribute("data-openp");
       if (open.closest("#soOverlay")) closeModal("soOverlay");
+      /* Sur la fiche pleine page, `openPV` repeint le produit sans toucher
+         à l'adresse : le visiteur se retrouvait à lire un modèle pendant
+         que l'adresse en nommait un autre — lien partagé faux, et le
+         rechargement changeait la paire sous ses yeux. Là, on navigue. */
+      if (typePage() === "produit"){
+        location.href = audienceLien("produit?id=" + encodeURIComponent(id),
+                                     curAudience || audienceAttribut());
+        return;
+      }
       openPV(id);
       return;
     }
