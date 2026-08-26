@@ -554,8 +554,14 @@
 
   .overlay{position:fixed;inset:0;background:color-mix(in srgb,var(--ink) 55%,transparent);z-index:90;opacity:0;pointer-events:none;transition:opacity .25s ease}
   .overlay[data-open="true"]{opacity:1;pointer-events:auto}
-  .drawer{position:fixed;top:0;right:0;height:100%;width:min(440px,100%);background:var(--bg);z-index:100;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s ease;box-shadow:-8px 0 30px color-mix(in srgb,var(--ink) 18%,transparent)}
-  .drawer[data-open="true"]{transform:none}
+  /* Le panier attend garé juste après le bord droit de l'écran. Chrome et
+     Firefox ignorent ce qui est ainsi déplacé hors cadre ; Safari sur
+     iPhone l'ajoute à la zone défilable — un glissement du doigt emportait
+     le site sur le côté et découvrait la largeur du panier en blanc.
+     `visibility` le retire vraiment du rendu tant qu'il est fermé, et ne
+     revient qu'à l'ouverture pour ne pas couper l'animation. */
+  .drawer{position:fixed;top:0;right:0;height:100%;width:min(440px,100%);background:var(--bg);z-index:100;display:flex;flex-direction:column;transform:translateX(100%);visibility:hidden;transition:transform .3s ease,visibility 0s linear .3s;box-shadow:-8px 0 30px color-mix(in srgb,var(--ink) 18%,transparent)}
+  .drawer[data-open="true"]{transform:none;visibility:visible;transition:transform .3s ease,visibility 0s}
   .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:var(--border-w) solid var(--line)}
   .drawer-head h3{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.12em}
   .drawer-body{flex:1;overflow-y:auto;padding:24px}
