@@ -557,7 +557,7 @@ window.AURA_IMG = function (img) {
   /* Les médias statiques sont servis un an en cache. Cette révision change
      leur URL à chaque livraison : le téléphone reçoit immédiatement la
      nouvelle image, puis la garde sans refaire de téléchargement inutile. */
-  var MEDIA_REV = "20260828b";
+  var MEDIA_REV = "20260828e";
   function mediaUrl(src){
     src = String(src || "");
     if (!/^(?:\.\/)?(?:assets|logos)\//.test(src)) return src;
