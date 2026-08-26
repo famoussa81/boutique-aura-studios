@@ -1841,11 +1841,18 @@ window.AURA_IMG = function (img) {
           photos.push({ src: src, label: val });
       });
     }
-    /* Une pastille pour annoncer qu'il n'y a pas de choix occupe une ligne
-       pour rien : sur onze cartes du rayon Homme, « 1 coloris » ne servait
-       qu'à pousser la photo hors de l'écran. La ligne n'apparaît plus
-       qu'à partir de deux coloris. */
-    if (photos.length < 2) return "";
+    /* La ligne était masquée en dessous de deux coloris, du temps où la
+       carte portait aussi la marque, le nom et un bouton : une ligne de
+       moins ne se voyait pas. La carte épurée n'a plus que trois lignes, et
+       son absence saute aux yeux — une carte sur deux plus courte que sa
+       voisine. Elle reste donc toujours là. Un modèle sans axe de coloris
+       montre sa propre photo : il existe en une finition, la carte le dit
+       dans la même forme que les autres. */
+    if (!photos.length){
+      var seule = photoDeLaSelection(p, valuesOf(firstAvailableKey(p))) || p.img;
+      if (seule) photos = [{ src: seule, label: "" }];
+    }
+    if (!photos.length) return "";
     var total = photos.length, visibles = photos.slice(0, 3);
     return '<div class="pcolors" aria-label="' + total + ' coloris disponible' + (total > 1 ? 's' : '') + '">' +
       '<span class="pcolors-count">' + total + ' coloris</span>' +
