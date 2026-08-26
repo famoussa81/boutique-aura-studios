@@ -11,3 +11,6 @@ admin-essai.html
 outil-finalisation-client/design-*.png
 outil-finalisation-client/OUVRIR-OUTIL.bat
 outil-finalisation-client/README.md
+
+# Clé service_role Supabase (accès total, hors RLS) - jamais dans le depot.
+.secrets/
