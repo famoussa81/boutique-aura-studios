@@ -1904,7 +1904,7 @@ window.AURA_IMG = function (img) {
         (!opts.sansMarque && collList().length
           ? '<span class="pinfo-head"><span class="pbrand">' + esc(marque) + '</span></span>'
           : '') +
-        '<a class="pname-sr" href="' + productUrl + '">' + name + '</a>' +
+        '<a class="pname-sr" href="' + productUrl + '" tabindex="-1">' + name + '</a>' +
         cardColorisHTML(p) +
         /* Le cœur descend sur la ligne du prix : plus rien ne dispute sa
            place au nom de la marque, qui ne se coupe donc plus. */

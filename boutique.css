@@ -448,13 +448,12 @@
   /* Deux lignes de texte au maximum, mais une zone de touche d'au moins
      44 px : le titre est un lien, et deux lignes serrées n'en font que 39. */
   /* Le nom n'est plus affiché mais reste dans la page : les moteurs de
-     recherche le lisent, les lecteurs d'écran l'annoncent, et il revient à
-     l'écran dès qu'on l'atteint au clavier. */
+     recherche le lisent dans le lien, les lecteurs d'écran l'annoncent. Il
+     est retiré du parcours de tabulation — un lien qu'on atteint au clavier
+     sans jamais le voir est un piège, et la photo juste au-dessus mène déjà
+     à la même fiche. */
   .pname-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;
     overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
-  .pname-sr:focus{position:static;width:auto;height:auto;margin:0;clip:auto;
-    clip-path:none;white-space:normal;font-size:15px;font-weight:700;line-height:1.3;
-    outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
   /* Le délai de livraison remplace la catégorie : un argument à la place
      d'une redite. Le texte vient des réglages de la boutique. */
   .pdelivery{font-size:11.5px;color:var(--muted);text-transform:uppercase;
