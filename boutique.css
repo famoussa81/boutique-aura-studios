@@ -16,7 +16,18 @@
     --font:Inter, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  /* Barrière contre le glissement latéral. Trois causes ont été trouvées et
+     corrigées une à une — le lien d'évitement, la cible du cœur, le panier
+     garé hors cadre — et la page glissait encore sur iPhone. `clip` ferme la
+     question pour toutes les suivantes : il coupe ce qui dépasse sans créer
+     de conteneur de défilement, donc sans casser l'en-tête qui reste collé
+     en haut. Les carrousels gardent leur propre défilement, qui leur est
+     interne. `hidden` prend le relais sur les Safari d'avant 2022. */
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:clip}
+  body{overflow-x:clip}
+  @supports not (overflow:clip){
+    body{overflow-x:hidden}
+  }
   body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
   img{max-width:100%;display:block}
   a{color:inherit;text-decoration:none}
