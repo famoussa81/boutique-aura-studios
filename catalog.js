@@ -32,8 +32,10 @@
          une variante sans nombre : le stock s'affichait « NaN » et la
          pointure devenait incommandable. La dernière valeur connue prend le
          relais, et zéro à défaut. */
-      var quantites = spec.stock || stock;
       spec.colors.forEach(function (coloris) {
+        /* Un coloris peut être épuisé sans que le produit entier le soit.
+           La quantité propre au coloris l'emporte sur le stock général. */
+        var quantites = (spec.stockByColor && spec.stockByColor[coloris]) || spec.stock || stock;
         pointures.forEach(function (pointure, i) {
           var q = quantites[i];
           if (typeof q !== "number" || isNaN(q)) q = Number(quantites[quantites.length - 1]) || 0;
@@ -111,6 +113,7 @@
       make({ id: "ck-ribbed", name: "Claquette Logo Relief", brand: "calvin-klein", price: 22000,
         img: "assets/products/ck-ribbed-noir.webp", imgs: ["assets/products/ck-ribbed-noir.webp", "assets/products/ck-ribbed-blanc.webp"],
         colors: ["Noir", "Blanc"], valueImages: { "Coloris::Noir": "assets/products/ck-ribbed-noir.webp", "Coloris::Blanc": "assets/products/ck-ribbed-blanc.webp" },
+        stock: [0, 0, 0, 0, 0, 0, 0], stockout: true,
         desc: "Claquette monobloc à bride côtelée et logo en relief, pensée pour un usage quotidien." }),
       make({ id: "ck-jeans", name: "Claquette CK Jeans", brand: "calvin-klein", price: 23000,
         img: "assets/products/ck-jeans-paire-blanc-white-v2.webp", imgs: ["assets/products/ck-jeans-paire-blanc-white-v2.webp", "assets/products/ck-jeans-paire-bleu-white-v2.webp"], colors: ["Blanc", "Bleu"],
@@ -141,6 +144,7 @@
       make({ id: "bb-check", name: "Claquette Vintage Check", brand: "burberry", price: 38000,
         img: "assets/products/burberry-check-beige-white-v2.webp", imgs: ["assets/products/burberry-check-beige-white-v2.webp", "assets/products/burberry-check-vert-white-v2.webp", "assets/products/burberry-check-paire-bleu-ciel-white-v2.webp", "assets/products/burberry-check-paire-noir-white-v2.webp"],
         colors: ["Beige", "Vert", "Bleu ciel", "Noir"], valueImages: { "Coloris::Beige": "assets/products/burberry-check-beige-white-v2.webp", "Coloris::Vert": "assets/products/burberry-check-vert-white-v2.webp", "Coloris::Bleu ciel": "assets/products/burberry-check-paire-bleu-ciel-white-v2.webp", "Coloris::Noir": "assets/products/burberry-check-paire-noir-white-v2.webp" },
+        stockByColor: { "Beige": [0, 0, 0, 0, 0, 0, 0] },
         desc: "Claquette à bride imprimée carreaux, déclinée en quatre associations faciles à porter." }),
       make({ id: "gv-paris", name: "Claquette Paris", brand: "givenchy", price: 40000,
         img: "assets/products/givenchy-paris-blanc-white-v2.webp", imgs: ["assets/products/givenchy-paris-blanc-white-v2.webp", "assets/products/givenchy-paris-noir.webp", "assets/products/givenchy-paris-paire-bleu-white-v2.webp", "assets/products/givenchy-paris-paire-beige-white-v2.webp"],
@@ -156,6 +160,7 @@
       make({ id: "hg-mono", name: "Claquette Monogramme", brand: "hugo", price: 24000,
         img: "assets/products/hugo-monogramme-noir-white-v2.webp", imgs: ["assets/products/hugo-monogramme-noir-white-v2.webp", "assets/products/hugo-monogramme-paire-bleu-blanc-white-v2.webp"],
         colors: ["Noir", "Bleu et blanc"], valueImages: { "Coloris::Noir": "assets/products/hugo-monogramme-noir-white-v2.webp", "Coloris::Bleu et blanc": "assets/products/hugo-monogramme-paire-bleu-blanc-white-v2.webp" },
+        stockByColor: { "Noir": [0, 0, 0, 0, 0, 0, 0] },
         desc: "Bride souple à motif HUGO répété, montée sur une semelle noire ou blanche." }),
       make({ id: "hg-red", name: "Claquette Bande Rouge", brand: "hugo", price: 25000,
         img: "assets/products/hugo-bande-rouge.webp", colors: ["Noir et rouge"],

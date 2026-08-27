@@ -1903,7 +1903,7 @@ window.AURA_IMG = function (img) {
     }
     if (!photos.length) return "";
     var total = photos.length, visibles = photos.slice(0, 3);
-    return '<div class="pcolors" aria-label="' + total + ' coloris disponible' + (total > 1 ? 's' : '') + '">' +
+    return '<div class="pcolors" aria-label="' + total + ' coloris">' +
       '<span class="pcolors-count">' + total + ' coloris</span>' +
       '<span class="pcolors-list" aria-hidden="true">' +
         visibles.map(function(x){
@@ -2664,7 +2664,8 @@ window.AURA_IMG = function (img) {
                (choisi ? " selected" : "") + (dispo ? "" : " soldout") +
                '" data-axe="' + i + '" data-val="' + esc(val) + '"' +
                ' title="' + esc(val) + '" aria-label="' + esc(val) + (dispo ? '"' : ' — épuisé, être prévenu du retour"') +
-               '>' + visuel + (photo ? '<span class="sr-only">' + esc(val) + '</span>' : esc(val)) + '</button>';
+               '>' + visuel + (estColoris && !dispo ? '<span class="choice-soldout">Épuisé</span>' : '') +
+               (photo ? '<span class="sr-only">' + esc(val) + '</span>' : esc(val)) + '</button>';
       }).join("");
       return '<div class="axe-bloc">' +
                '<span class="size-label">' + esc(ax.name) + '</span>' +

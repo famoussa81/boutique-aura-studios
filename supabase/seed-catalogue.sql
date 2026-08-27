@@ -61,7 +61,7 @@ values ('ck-band', '{"id":"ck-band","name":"Claquette Bande Signature","cat":"cl
 on conflict (id) do update set data = excluded.data, updated_at = now();
 
 insert into public.products (id, data, updated_at)
-values ('lv-signature', '{"id":"lv-signature","name":"Claquette Signature LV","cat":"claquettes","collection":"louis-vuitton","price":45000,"oldPrice":0,"badge":"","img":"assets/studio/lv-signature.webp","imgs":["assets/studio/lv-signature.webp","assets/products/lv-signature-paire-bleu.webp","assets/products/lv-signature-paire-noir.webp","assets/products/lv-signature-paire-marron.webp"],"desc":"Bride large à signature textile, semelle rembourrée et finitions contrastées.","axes":[{"name":"Pointure","values":["39","40","41","42","43","44","45"]},{"name":"Coloris","values":["Bleu","Noir","Marron"]}],"valueImages":{"Coloris::Bleu":"assets/products/lv-signature-paire-bleu.webp","Coloris::Noir":"assets/products/lv-signature-paire-noir.webp","Coloris::Marron":"assets/products/lv-signature-paire-marron.webp"},"variants":{"39::Bleu":{"s":2,"r":0},"40::Bleu":{"s":4,"r":0},"41::Bleu":{"s":5,"r":0},"42::Bleu":{"s":5,"r":0},"43::Bleu":{"s":4,"r":0},"44::Bleu":{"s":3,"r":0},"45::Bleu":{"s":1,"r":0},"39::Noir":{"s":2,"r":0},"40::Noir":{"s":4,"r":0},"41::Noir":{"s":5,"r":0},"42::Noir":{"s":5,"r":0},"43::Noir":{"s":4,"r":0},"44::Noir":{"s":3,"r":0},"45::Noir":{"s":1,"r":0},"39::Marron":{"s":2,"r":0},"40::Marron":{"s":4,"r":0},"41::Marron":{"s":5,"r":0},"42::Marron":{"s":5,"r":0},"43::Marron":{"s":4,"r":0},"44::Marron":{"s":3,"r":0},"45::Marron":{"s":1,"r":0}},"active":true,"stockout":false}'::jsonb, now())
+values ('lv-signature', '{"id":"lv-signature","name":"Claquette Signature LV","cat":"claquettes","collection":"louis-vuitton","price":45000,"oldPrice":0,"badge":"","img":"assets/studio/lv-signature.webp","imgs":["assets/studio/lv-signature.webp","assets/products/lv-signature-bleu-white-20260826.jpg","assets/products/lv-signature-noir-white-20260826.jpg","assets/products/lv-signature-marron-white-20260826.jpg"],"desc":"Bride large à signature textile, semelle rembourrée et finitions contrastées.","axes":[{"name":"Pointure","values":["39","40","41","42","43","44","45"]},{"name":"Coloris","values":["Bleu","Noir","Marron"]}],"valueImages":{"Coloris::Bleu":"assets/products/lv-signature-bleu-white-20260826.jpg","Coloris::Noir":"assets/products/lv-signature-noir-white-20260826.jpg","Coloris::Marron":"assets/products/lv-signature-marron-white-20260826.jpg"},"variants":{"39::Bleu":{"s":2,"r":0},"40::Bleu":{"s":4,"r":0},"41::Bleu":{"s":5,"r":0},"42::Bleu":{"s":5,"r":0},"43::Bleu":{"s":4,"r":0},"44::Bleu":{"s":3,"r":0},"45::Bleu":{"s":1,"r":0},"39::Noir":{"s":2,"r":0},"40::Noir":{"s":4,"r":0},"41::Noir":{"s":5,"r":0},"42::Noir":{"s":5,"r":0},"43::Noir":{"s":4,"r":0},"44::Noir":{"s":3,"r":0},"45::Noir":{"s":1,"r":0},"39::Marron":{"s":2,"r":0},"40::Marron":{"s":4,"r":0},"41::Marron":{"s":5,"r":0},"42::Marron":{"s":5,"r":0},"43::Marron":{"s":4,"r":0},"44::Marron":{"s":3,"r":0},"45::Marron":{"s":1,"r":0}},"active":true,"stockout":false}'::jsonb, now())
 on conflict (id) do update set data = excluded.data, updated_at = now();
 
 insert into public.products (id, data, updated_at)
@@ -81,7 +81,7 @@ values ('gv-paris', '{"id":"gv-paris","name":"Claquette Paris","cat":"claquettes
 on conflict (id) do update set data = excluded.data, updated_at = now();
 
 insert into public.products (id, data, updated_at)
-values ('dr-oblique', '{"id":"dr-oblique","name":"Mule Oblique","cat":"mules","collection":"dior","price":48000,"oldPrice":0,"badge":"","img":"assets/studio/dr-oblique.webp","imgs":["assets/studio/dr-oblique.webp","assets/products/dior-oblique-paire-noir.webp","assets/products/dior-oblique-paire-gris.webp"],"desc":"Mule fermée en textile monogrammé, maintenue par une bride latérale réglable.","axes":[{"name":"Pointure","values":["39","40","41","42","43","44","45"]},{"name":"Coloris","values":["Noir","Gris"]}],"valueImages":{"Coloris::Noir":"assets/products/dior-oblique-paire-noir.webp","Coloris::Gris":"assets/products/dior-oblique-paire-gris.webp"},"variants":{"39::Noir":{"s":2,"r":0},"40::Noir":{"s":4,"r":0},"41::Noir":{"s":5,"r":0},"42::Noir":{"s":5,"r":0},"43::Noir":{"s":4,"r":0},"44::Noir":{"s":3,"r":0},"45::Noir":{"s":1,"r":0},"39::Gris":{"s":2,"r":0},"40::Gris":{"s":4,"r":0},"41::Gris":{"s":5,"r":0},"42::Gris":{"s":5,"r":0},"43::Gris":{"s":4,"r":0},"44::Gris":{"s":3,"r":0},"45::Gris":{"s":1,"r":0}},"active":true,"stockout":false}'::jsonb, now())
+values ('dr-oblique', '{"id":"dr-oblique","name":"Mule Oblique","cat":"mules","collection":"dior","price":48000,"oldPrice":0,"badge":"","img":"assets/studio/dr-oblique.webp","imgs":["assets/studio/dr-oblique.webp","assets/products/dior-oblique-noir-white-20260826.jpg","assets/products/dior-oblique-gris-white-20260826.jpg"],"desc":"Mule fermée en textile monogrammé, maintenue par une bride latérale réglable.","axes":[{"name":"Pointure","values":["39","40","41","42","43","44","45"]},{"name":"Coloris","values":["Noir","Gris"]}],"valueImages":{"Coloris::Noir":"assets/products/dior-oblique-noir-white-20260826.jpg","Coloris::Gris":"assets/products/dior-oblique-gris-white-20260826.jpg"},"variants":{"39::Noir":{"s":2,"r":0},"40::Noir":{"s":4,"r":0},"41::Noir":{"s":5,"r":0},"42::Noir":{"s":5,"r":0},"43::Noir":{"s":4,"r":0},"44::Noir":{"s":3,"r":0},"45::Noir":{"s":1,"r":0},"39::Gris":{"s":2,"r":0},"40::Gris":{"s":4,"r":0},"41::Gris":{"s":5,"r":0},"42::Gris":{"s":5,"r":0},"43::Gris":{"s":4,"r":0},"44::Gris":{"s":3,"r":0},"45::Gris":{"s":1,"r":0}},"active":true,"stockout":false}'::jsonb, now())
 on conflict (id) do update set data = excluded.data, updated_at = now();
 
 insert into public.products (id, data, updated_at)
@@ -111,3 +111,35 @@ on conflict (id) do update set data = excluded.data, updated_at = now();
 insert into public.products (id, data, updated_at)
 values ('as-pool', '{"id":"as-pool","name":"Claquette Logo","cat":"claquettes","collection":"allsaints","price":20000,"oldPrice":0,"badge":"","img":"assets/studio/as-pool.webp","imgs":["assets/studio/as-pool.webp","assets/products/allsaints-logo.webp"],"desc":"Claquette bleu marine minimaliste à logo blanc, avec assise texturée.","axes":[{"name":"Pointure","values":["39","40","41","42","43","44","45"]},{"name":"Coloris","values":["Bleu marine"]}],"valueImages":{"Coloris::Bleu marine":"assets/products/allsaints-logo.webp"},"variants":{"39::Bleu marine":{"s":2,"r":0},"40::Bleu marine":{"s":4,"r":0},"41::Bleu marine":{"s":5,"r":0},"42::Bleu marine":{"s":5,"r":0},"43::Bleu marine":{"s":4,"r":0},"44::Bleu marine":{"s":3,"r":0},"45::Bleu marine":{"s":1,"r":0}},"active":true,"stockout":false}'::jsonb, now())
 on conflict (id) do update set data = excluded.data, updated_at = now();
+
+-- Disponibilités réelles signalées par le commerçant. Un coloris épuisé
+-- reste dans les axes et les photos : seule sa quantité passe à zéro.
+update public.products
+set data = jsonb_set(
+  jsonb_set(data, '{variants}', (
+    select jsonb_object_agg(v.key, jsonb_set(v.value, '{s}', '0'::jsonb))
+    from jsonb_each(data->'variants') v
+  ), true),
+  '{stockout}', 'true'::jsonb, true
+)
+where id = 'ck-ribbed';
+
+update public.products
+set data = jsonb_set(data, '{variants}', (
+  select jsonb_object_agg(
+    v.key,
+    case when v.key like '%::Noir' then jsonb_set(v.value, '{s}', '0'::jsonb) else v.value end
+  )
+  from jsonb_each(data->'variants') v
+), true)
+where id = 'hg-mono';
+
+update public.products
+set data = jsonb_set(data, '{variants}', (
+  select jsonb_object_agg(
+    v.key,
+    case when v.key like '%::Beige' then jsonb_set(v.value, '{s}', '0'::jsonb) else v.value end
+  )
+  from jsonb_each(data->'variants') v
+), true)
+where id = 'bb-check';
