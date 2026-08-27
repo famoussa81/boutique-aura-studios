@@ -2068,10 +2068,10 @@ window.AURA_IMG = function (img) {
     if (curTri === "defaut"){
       var priorites = [];
       if (curColl){
-        var coll = collByKey(curColl);
+        var coll = collById(curColl);
         priorites = coll && Array.isArray(coll.homeProducts) ? coll.homeProducts : [];
       } else if (curAudience){
-        var pageAudience = settings.audiencePages && settings.audiencePages[curAudience];
+        var pageAudience = store.settings.audiencePages && store.settings.audiencePages[curAudience];
         priorites = pageAudience && Array.isArray(pageAudience.featuredProducts) ? pageAudience.featuredProducts : [];
       }
       out.sort(function(a, b){
