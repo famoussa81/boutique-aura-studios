@@ -315,7 +315,7 @@
           heroImage: "assets/hero-hugo-20260824.webp",
           title: "Les modèles Homme",
           text: "Claquettes, mules et sabots sélectionnés pour leur style, leur confort et leur disponibilité à Bamako.",
-          featuredProducts: []
+          featuredProducts: ["bb-check", "dr-oblique", "gv-paris", "ferragamo-gancini"]
         },
         femme: {
           heroImage: "assets/hero-femme-20260824.jpg",
@@ -329,13 +329,13 @@
         }
       },
       collections: [
-        { key: "louis-vuitton", featured: true, label: "Louis Vuitton", logo: "assets/logos/louis-vuitton.png", tagline: "Monogram", accent: "#6b4f2a", cover: "assets/brand-banners/louis-vuitton.webp",
+        { key: "louis-vuitton", featured: true, label: "Louis Vuitton", logo: "assets/logos/louis-vuitton.png", tagline: "Monogram", accent: "#6b4f2a", cover: "assets/brand-banners/louis-vuitton.webp", homeProducts: ["lv-signature", "lv-relief", "lv-v-croisee", "lv-damier"],
           desc: "Cuir embossé et bande signature. La pièce que tout le monde identifie." },
-        { key: "calvin-klein", featured: true, label: "Calvin Klein", logo: "assets/logos/calvin-klein.svg", tagline: "Minimalisme américain", accent: "#2E3A46", cover: "assets/brand-banners/calvin-klein.webp",
+        { key: "calvin-klein", featured: true, label: "Calvin Klein", logo: "assets/logos/calvin-klein.svg", tagline: "Minimalisme américain", accent: "#2E3A46", cover: "assets/brand-banners/calvin-klein.webp", homeProducts: ["ck-double-bride", "ck-jeans", "ck-band", "ck-pool"],
           desc: "Le logo embossé sur bride large. Une claquette qui se reconnaît de loin." },
-        { key: "hugo", featured: true, label: "HUGO", logo: "assets/logos/hugo.svg", tagline: "Bande rouge", accent: "#a3262b", cover: "assets/brand-banners/hugo.webp",
+        { key: "hugo", featured: true, label: "HUGO", logo: "assets/logos/hugo.svg", tagline: "Bande rouge", accent: "#a3262b", cover: "assets/brand-banners/hugo.webp", homeProducts: ["hg-red", "hg-mono"],
           desc: "La bande contrastée et le monogramme répété. Sport et net." },
-        { key: "hermes", featured: true, label: "Hermès", logo: "assets/logos/hermes.png", tagline: "H signature", accent: "#d86f25", cover: "assets/brand-banners/hermes.webp",
+        { key: "hermes", featured: true, label: "Hermès", logo: "assets/logos/hermes.png", tagline: "H signature", accent: "#d86f25", cover: "assets/brand-banners/hermes.webp", homeProducts: ["hermes-chypre", "hermes-chypre-bordeaux", "hermes-chypre-vives", "hermes-chypre-daim"],
           desc: "Cuir orange, découpe H et semelle noire. Une silhouette immédiatement reconnaissable." },
         { key: "burberry", label: "Burberry", logo: "assets/logos/burberry.png", tagline: "Vintage Check", accent: "#B08A5E", cover: "assets/brand-banners/burberry.webp",
           desc: "Le tartan maison, décliné en trois teintes." },

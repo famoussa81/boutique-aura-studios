@@ -1071,6 +1071,17 @@ window.AURA_IMG = function (img) {
       return p && p.active !== false && !p.archived && !portees[p.collection] &&
         audienceProduit(p, curAudience || audienceAttribut());
     });
+    var audienceCourante = curAudience || audienceAttribut();
+    var pageCourante = audiencePage(audienceCourante);
+    var ordreReste = pageCourante && Array.isArray(pageCourante.featuredProducts)
+      ? pageCourante.featuredProducts : [];
+    orphelins.sort(function(a, b){
+      var stockA = enStock(a) ? 0 : 1, stockB = enStock(b) ? 0 : 1;
+      if (stockA !== stockB) return stockA - stockB;
+      var ia = ordreReste.indexOf(a.id), ib = ordreReste.indexOf(b.id);
+      ia = ia < 0 ? 9999 : ia; ib = ib < 0 ? 9999 : ib;
+      return ia - ib;
+    });
     var hoteReste = $("#marquesOrphelins");
     if (hoteReste){
       hoteReste.hidden = !orphelins.length;
@@ -2050,6 +2061,27 @@ window.AURA_IMG = function (img) {
   }
   function trier(list){
     var out = list.slice();
+    /* L'ordre par défaut est une vitrine, pas un ordre technique de base de
+       données. Les sélections éditoriales déjà enregistrées servent donc
+       aussi de priorité dans le catalogue et dans une page de marque. Les
+       produits épuisés passent ensuite, sans être cachés. */
+    if (curTri === "defaut"){
+      var priorites = [];
+      if (curColl){
+        var coll = collByKey(curColl);
+        priorites = coll && Array.isArray(coll.homeProducts) ? coll.homeProducts : [];
+      } else if (curAudience){
+        var pageAudience = settings.audiencePages && settings.audiencePages[curAudience];
+        priorites = pageAudience && Array.isArray(pageAudience.featuredProducts) ? pageAudience.featuredProducts : [];
+      }
+      out.sort(function(a, b){
+        var stockA = enStock(a) ? 0 : 1, stockB = enStock(b) ? 0 : 1;
+        if (stockA !== stockB) return stockA - stockB;
+        var ia = priorites.indexOf(a.id), ib = priorites.indexOf(b.id);
+        ia = ia < 0 ? 9999 : ia; ib = ib < 0 ? 9999 : ib;
+        return ia - ib;
+      });
+    }
     /* Un cœur posé sur une paire vaut une intention d'achat : elle passe
        devant, quel que soit l'ordre demandé. Le tri choisi s'applique
        ensuite à l'intérieur de chaque groupe, favoris puis le reste. */
