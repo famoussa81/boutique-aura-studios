@@ -381,12 +381,12 @@ window.AURA_IMG = function (img) {
         coloris:{"Blanc":"assets/products/ck-jeans-paire-blanc.webp","Bleu":"assets/products/ck-jeans-paire-bleu.webp"}
       },
       "lv-signature": {
-        anciens:["assets/products/lv-signature-bleu.webp","assets/products/lv-signature-noir.webp","assets/products/lv-signature-marron.webp"],
-        nouveaux:["assets/products/lv-signature-paire-bleu.webp","assets/products/lv-signature-paire-noir.webp","assets/products/lv-signature-paire-marron.webp"],
-        coloris:{"Bleu":"assets/products/lv-signature-paire-bleu.webp","Noir":"assets/products/lv-signature-paire-noir.webp","Marron":"assets/products/lv-signature-paire-marron.webp"}
+        anciens:["assets/studio/lv-signature.webp","assets/products/lv-signature-bleu.webp","assets/products/lv-signature-noir.webp","assets/products/lv-signature-marron.webp","assets/products/lv-signature-paire-bleu.webp","assets/products/lv-signature-paire-noir.webp","assets/products/lv-signature-paire-marron.webp"],
+        nouveaux:["assets/products/lv-signature-bleu-white-20260826.jpg","assets/products/lv-signature-noir-white-20260826.jpg","assets/products/lv-signature-marron-white-20260826.jpg"],
+        coloris:{"Bleu":"assets/products/lv-signature-bleu-white-20260826.jpg","Noir":"assets/products/lv-signature-noir-white-20260826.jpg","Marron":"assets/products/lv-signature-marron-white-20260826.jpg"}
       },
       "lv-relief": {
-        anciens:["assets/products/lv-relief-multi.webp","assets/products/lv-relief-duo.webp","assets/products/lv-relief-noir.webp"],
+        anciens:["assets/studio/lv-relief.webp","assets/products/lv-relief-multi.webp","assets/products/lv-relief-duo.webp","assets/products/lv-relief-noir.webp"],
         nouveaux:["assets/products/lv-relief-paire-noir.webp","assets/products/lv-relief-paire-bordeaux.webp","assets/products/lv-relief-paire-ivoire.webp"],
         coloris:{"Noir":"assets/products/lv-relief-paire-noir.webp","Bordeaux":"assets/products/lv-relief-paire-bordeaux.webp","Ivoire":"assets/products/lv-relief-paire-ivoire.webp"}
       },
@@ -401,9 +401,9 @@ window.AURA_IMG = function (img) {
         coloris:{"Bleu":"assets/products/givenchy-paris-paire-bleu.webp","Beige":"assets/products/givenchy-paris-paire-beige.webp"}
       },
       "dr-oblique": {
-        anciens:["assets/products/dior-oblique.webp"],
-        nouveaux:["assets/products/dior-oblique-paire-noir.webp","assets/products/dior-oblique-paire-gris.webp"],
-        coloris:{"Noir":"assets/products/dior-oblique-paire-noir.webp","Gris":"assets/products/dior-oblique-paire-gris.webp"}
+        anciens:["assets/products/dior-oblique.webp","assets/products/dior-oblique-paire-noir.webp","assets/products/dior-oblique-paire-gris.webp"],
+        nouveaux:["assets/products/dior-oblique-noir-white-20260826.jpg","assets/products/dior-oblique-gris-white-20260826.jpg"],
+        coloris:{"Noir":"assets/products/dior-oblique-noir-white-20260826.jpg","Gris":"assets/products/dior-oblique-gris-white-20260826.jpg"}
       },
       "hg-mono": {
         anciens:["assets/products/hugo-monogramme-multi.webp"],
@@ -414,6 +414,26 @@ window.AURA_IMG = function (img) {
         anciens:["assets/products/ea7-logo.webp"],
         nouveaux:["assets/products/ea7-logo-paire-noir.webp","assets/products/ea7-logo-paire-beige.webp"],
         coloris:{"Noir":"assets/products/ea7-logo-paire-noir.webp","Beige":"assets/products/ea7-logo-paire-beige.webp"}
+      },
+      "femme-hermes-oran-vives": {
+        anciens:["assets/products/femme/hermes-oran-vert-studio.jpg"],
+        nouveaux:["assets/products/femme/hermes-oran-rouge.jpg","assets/products/femme/hermes-oran-vert.jpg","assets/products/femme/hermes-oran-bleu-ciel.jpg","assets/products/femme/hermes-oran-marine.jpg","assets/products/femme/hermes-oran-corail.jpg","assets/products/femme/hermes-oran-orange.jpg"],
+        coloris:{"Rouge":"assets/products/femme/hermes-oran-rouge.jpg","Vert":"assets/products/femme/hermes-oran-vert.jpg","Bleu ciel":"assets/products/femme/hermes-oran-bleu-ciel.jpg","Bleu marine":"assets/products/femme/hermes-oran-marine.jpg","Corail":"assets/products/femme/hermes-oran-corail.jpg","Orange":"assets/products/femme/hermes-oran-orange.jpg"}
+      },
+      "femme-hermes-oran-douces": {
+        anciens:["assets/products/femme/hermes-oran-rose.jpg"],
+        nouveaux:["assets/products/femme/hermes-oran-jaune.jpg","assets/products/femme/hermes-oran-beige.jpg","assets/products/femme/hermes-oran-taupe.jpg","assets/products/femme/hermes-oran-violet.jpg","assets/products/femme/hermes-oran-fuchsia.jpg","assets/products/femme/hermes-oran-rose.jpg"],
+        coloris:{"Jaune":"assets/products/femme/hermes-oran-jaune.jpg","Beige":"assets/products/femme/hermes-oran-beige.jpg","Taupe":"assets/products/femme/hermes-oran-taupe.jpg","Violet":"assets/products/femme/hermes-oran-violet.jpg","Fuchsia":"assets/products/femme/hermes-oran-fuchsia.jpg","Rose":"assets/products/femme/hermes-oran-rose.jpg"}
+      },
+      "femme-hermes-oran-essentiels": {
+        anciens:["assets/products/femme/hermes-oran-noir.jpg"],
+        nouveaux:["assets/products/femme/hermes-oran-rose-poudre.jpg","assets/products/femme/hermes-oran-rose-dore.jpg","assets/products/femme/hermes-oran-caramel.jpg","assets/products/femme/hermes-oran-marron.jpg","assets/products/femme/hermes-oran-noir.jpg","assets/products/femme/hermes-oran-blanc.jpg"],
+        coloris:{"Rose poudré":"assets/products/femme/hermes-oran-rose-poudre.jpg","Rose doré":"assets/products/femme/hermes-oran-rose-dore.jpg","Caramel":"assets/products/femme/hermes-oran-caramel.jpg","Marron":"assets/products/femme/hermes-oran-marron.jpg","Noir":"assets/products/femme/hermes-oran-noir.jpg","Blanc":"assets/products/femme/hermes-oran-blanc.jpg"}
+      },
+      "femme-hermes-oran-soiree": {
+        anciens:["assets/products/femme/hermes-oran-noir-or.jpg"],
+        nouveaux:["assets/products/femme/hermes-oran-noir-tan.jpg","assets/products/femme/hermes-oran-noir-or.jpg","assets/products/femme/hermes-oran-noir-argent.jpg","assets/products/femme/hermes-oran-noir-graphique.jpg","assets/products/femme/hermes-oran-noir-strass.jpg","assets/products/femme/hermes-oran-orange-cuir.jpg"],
+        coloris:{"Noir et camel":"assets/products/femme/hermes-oran-noir-tan.jpg","Noir et or":"assets/products/femme/hermes-oran-noir-or.jpg","Noir et argent":"assets/products/femme/hermes-oran-noir-argent.jpg","Noir graphique":"assets/products/femme/hermes-oran-noir-graphique.jpg","Noir strass":"assets/products/femme/hermes-oran-noir-strass.jpg","Orange cuir":"assets/products/femme/hermes-oran-orange-cuir.jpg"}
       }
     };
     var correction = correctionsPhotos[p.id];
@@ -557,7 +577,7 @@ window.AURA_IMG = function (img) {
   /* Les médias statiques sont servis un an en cache. Cette révision change
      leur URL à chaque livraison : le téléphone reçoit immédiatement la
      nouvelle image, puis la garde sans refaire de téléchargement inutile. */
-  var MEDIA_REV = "20260828e";
+  var MEDIA_REV = "20260828n";
   function mediaUrl(src){
     src = String(src || "");
     if (!/^(?:\.\/)?(?:assets|logos)\//.test(src)) return src;

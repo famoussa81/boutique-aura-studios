@@ -390,7 +390,7 @@
   .pgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
   /* Trois rangées nommées : le bouton occupe la zone « media » sur
      ordinateur (survol) et sa propre rangée sur écran tactile. */
-  .pcard{display:grid;grid-template-areas:"media" "info";
+  .pcard{position:relative;display:grid;grid-template-areas:"media" "info";
     grid-template-columns:minmax(0,1fr);
     grid-template-rows:auto 1fr;min-width:0}
   .pmedia{grid-area:media;position:relative;aspect-ratio:3/4;overflow:hidden;border-radius:var(--radius);background:var(--gray)}
@@ -466,7 +466,7 @@
      est retiré du parcours de tabulation — un lien qu'on atteint au clavier
      sans jamais le voir est un piège, et la photo juste au-dessus mène déjà
      à la même fiche. */
-  .pname-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+  .pname-sr{position:absolute;top:0;left:0;width:1px;height:1px;margin:-1px;padding:0;
     overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
   /* Le délai de livraison remplace la catégorie : un argument à la place
      d'une redite. Le texte vient des réglages de la boutique. */
