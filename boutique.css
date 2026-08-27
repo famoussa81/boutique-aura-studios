@@ -377,7 +377,9 @@
     font-size:13px;font-weight:700}
   .cat-opt:hover{border-color:var(--ink)}
   .cat-opt[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
-  .cat-opt .cat-n{opacity:.55;font-weight:600;margin-left:5px;font-variant-numeric:tabular-nums}
+  .cat-opt .cat-n{opacity:.55;font-weight:600;margin-left:6px;font-variant-numeric:tabular-nums}
+  .cat-opt .cat-n::before{content:"("}
+  .cat-opt .cat-n::after{content:")"}
   .cat-actives{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
   .cat-tag{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:7px 14px;
     border-radius:999px;background:var(--gray);color:var(--ink);font-size:12.5px;font-weight:700}
@@ -394,7 +396,14 @@
     grid-template-columns:minmax(0,1fr);
     grid-template-rows:auto 1fr;min-width:0}
   .pmedia{grid-area:media;position:relative;aspect-ratio:3/4;overflow:hidden;border-radius:var(--radius);background:var(--gray)}
-  .pmedia img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+  .pmedia img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;
+    transition:opacity .22s ease,transform .5s ease}
+  .pmedia img.is-loaded{opacity:1}
+  .pmedia::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(105deg,transparent 36%,rgba(255,255,255,.72) 48%,transparent 60%);
+    background-size:220% 100%;animation:photo-load 1.15s linear infinite}
+  .pmedia:has(img.is-loaded)::after{display:none}
+  @keyframes photo-load{to{background-position:-220% 0}}
   body:not(.product-visuals-ready) .pmedia::before,
   body:not(.product-visuals-ready) .pv-media::before{
     content:"Photo produit bientôt";position:absolute;inset:0;display:flex;
@@ -603,13 +612,26 @@
   .modal{background:var(--bg);border-radius:var(--radius);width:min(920px,100%);max-height:92vh;overflow:auto;transform:translateY(12px);transition:transform .25s ease}
   .m-overlay[data-open="true"] .modal{transform:none}
   .modal.s-modal{width:min(560px,100%)}
+  .photo-zoom{background:rgba(0,0,0,.92);padding:0}
+  .photo-zoom .zoom-modal{position:relative;width:100%;height:100%;max-height:none;border-radius:0;
+    background:#000;display:grid;place-items:center;overflow:hidden}
+  .photo-zoom img{width:100%;height:100%;object-fit:contain}
+  .zoom-close{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;z-index:2;
+    background:rgba(255,255,255,.92);color:#111}
+  .zoom-counter{position:absolute;left:50%;bottom:max(18px,env(safe-area-inset-bottom));z-index:2;
+    transform:translateX(-50%);color:#fff;font-size:12px;font-weight:800;letter-spacing:.12em}
   .m-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:var(--border-w) solid var(--line)}
   .m-head h3{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.12em}
   .m-body{padding:24px}
 
   .pv-grid{display:grid;grid-template-columns:1fr 1fr}
   .pv-media{background:var(--gray);min-height:320px;display:flex;flex-direction:column}
-  .pv-main{width:100%;aspect-ratio:3/4;object-fit:cover}
+  .pv-main-wrap{position:relative;background:var(--gray);overflow:hidden;touch-action:pan-y}
+  .pv-main{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}
+  .pv-zoom-hit{position:absolute;inset:0;z-index:1;border:0;background:transparent;cursor:zoom-in}
+  .pv-counter{position:absolute;right:12px;bottom:12px;z-index:2;padding:5px 8px;
+    border-radius:999px;background:rgba(17,17,17,.72);color:#fff;font-size:11px;
+    font-weight:800;letter-spacing:.08em;pointer-events:none}
   .pv-thumbs{display:flex;gap:8px;padding:12px;overflow-x:auto}
   .pv-thumbs button{flex-shrink:0;width:56px;height:70px;border:var(--border-w) solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--bg);padding:0;opacity:.65;transition:all .16s ease}
   .pv-thumbs button:hover{opacity:1}
@@ -772,7 +794,18 @@
     /* Sur téléphone, le nombre de résultats passe sous les commandes plutôt
        que d'écraser le bouton « Filtrer » contre le bord de l'écran. */
     .cat-total{margin:2px 0 0;width:100%}
-    .cat-panel{grid-template-columns:1fr;gap:18px;padding:16px}
+    .cat-tools{position:sticky;top:65px;z-index:45;margin:-14px -16px 26px;padding:8px 16px;
+      background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+    .cat-panel-wrap{position:fixed;inset:0;z-index:120;display:flex;align-items:flex-end;
+      grid-template-rows:none;background:rgba(17,17,17,.56);opacity:0;visibility:hidden;
+      pointer-events:none;transition:opacity .2s ease,visibility 0s linear .2s}
+    .cat-panel-wrap[data-open="true"]{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .2s ease}
+    .cat-panel-wrap>.cat-panel,.cat-panel-wrap[data-open="true"]>.cat-panel{
+      width:100%;max-height:min(84dvh,720px);overflow-y:auto;overscroll-behavior:contain;
+      grid-template-columns:1fr;gap:18px;padding:22px 16px max(16px,env(safe-area-inset-bottom));
+      border:0;border-radius:16px 16px 0 0;background:var(--bg);opacity:1}
+    .cat-done{position:sticky;bottom:0;width:100%;justify-self:stretch;z-index:1;
+      box-shadow:0 -12px 18px -14px rgba(0,0,0,.55)}
 
     /* Fenêtre produit sur téléphone. Le bouton s'appelle « Choisir la
        taille » : les pointures doivent donc être visibles à l'ouverture. La
@@ -926,7 +959,9 @@
   /* Le bouton s'efface quand une modale ou le panier est ouvert : il ne doit
      jamais concurrencer le bouton d'action principal. */
   body:has(.drawer[data-open="true"]) .wa-float,
-  body:has(.m-overlay[data-open="true"]) .wa-float{opacity:0;pointer-events:none;visibility:hidden}
+  body:has(.m-overlay[data-open="true"]) .wa-float,
+  body:has(.mobile-menu[data-open="true"]) .wa-float,
+  body:has(.cat-panel-wrap[data-open="true"]) .wa-float{opacity:0;pointer-events:none;visibility:hidden}
   /* Le bouton flotte au-dessus de tout : il se posait sur le texte de la
      réassurance, sur une carte produit, sur « Voir les 5 autres modèles ».
      Il s'efface dès qu'on descend la page — on lit alors sans rien qui
@@ -1040,6 +1075,10 @@
     .buybar-price{font-size:16px;font-weight:900;white-space:nowrap}
     .buybar .btn{flex:1;min-height:48px}
     .fiche-trust{padding-bottom:0}
+    body:has(.drawer[data-open="true"]) .buybar,
+    body:has(.m-overlay[data-open="true"]) .buybar,
+    body:has(.mobile-menu[data-open="true"]) .buybar,
+    body:has(.cat-panel-wrap[data-open="true"]) .buybar{opacity:0;pointer-events:none;visibility:hidden}
   }
 
   /* ══════════════════════════════════════════════════════════════════
@@ -1108,6 +1147,7 @@
     .cart-drawer,.m-overlay .modal{transition:none}
     .cart-count[data-bump="true"]{animation:none}
     .cat-panel-wrap,.cat-panel-wrap>.cat-panel{transition:none}
+    .pmedia::after{animation:none}
   }
 
 

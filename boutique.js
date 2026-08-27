@@ -225,6 +225,16 @@
     '    </div>\n' +
     '  </div>\n' +
     '\n' +
+    '  <div class="m-overlay photo-zoom" id="photoZoom" role="dialog" aria-modal="true" aria-label="Photo du produit agrandie" aria-hidden="true">\n' +
+    '    <div class="modal zoom-modal">\n' +
+    '      <button class="icon-btn zoom-close" data-close="photoZoom" aria-label="Fermer la photo agrandie">\n' +
+    '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>\n' +
+    '      </button>\n' +
+    '      <img id="photoZoomImg" alt="" />\n' +
+    '      <span class="zoom-counter" id="photoZoomCounter"></span>\n' +
+    '    </div>\n' +
+    '  </div>\n' +
+    '\n' +
     '  <a class="wa-float" id="waFloat" target="_blank" rel="noopener" aria-label="Nous ecrire sur WhatsApp">\n' +
     '    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.69 8.23-8.24 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.53.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.43.06-.66.31-.22.25-.87.85-.87 2.07s.89 2.4 1.02 2.57c.12.16 1.75 2.67 4.25 3.74.59.26 1.06.41 1.42.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.22-.17-.47-.29Z"/></svg>\n' +
     '    <span>WhatsApp</span>\n' +
@@ -577,7 +587,7 @@ window.AURA_IMG = function (img) {
   /* Les médias statiques sont servis un an en cache. Cette révision change
      leur URL à chaque livraison : le téléphone reçoit immédiatement la
      nouvelle image, puis la garde sans refaire de téléchargement inutile. */
-  var MEDIA_REV = "20260828n";
+  var MEDIA_REV = "20260828p";
   function mediaUrl(src){
     src = String(src || "");
     if (!/^(?:\.\/)?(?:assets|logos)\//.test(src)) return src;
@@ -586,6 +596,9 @@ window.AURA_IMG = function (img) {
   function lazyAttrs(src){
     return 'data-src="' + esc(mediaUrl(src)) + '" loading="lazy" decoding="async"';
   }
+  function eagerAttrs(src){
+    return 'src="' + esc(mediaUrl(src)) + '" loading="eager" fetchpriority="high" decoding="async"';
+  }
   /* La grille n'a pas besoin des fichiers pleine definition de la fiche.
      Les miniatures locales sont generees a part ; une photo distante ajoutee
      par le commercant retombe simplement sur son URL d'origine. */
@@ -593,11 +606,13 @@ window.AURA_IMG = function (img) {
     src = String(src || "");
     if (/^assets\/studio\/[^/]+\.webp$/i.test(src))
       return src.replace(/^assets\/studio\//i, "assets/thumbs/cards/studio/");
+    if (/^assets\/products\/.+\.(?:jpe?g|webp)$/i.test(src))
+      return src.replace(/^assets\/products\//i, "assets/thumbs/cards/products/");
     return src;
   }
   function colorThumbUrl(src){
     src = String(src || "");
-    if (/^assets\/products\/[^/]+\.webp$/i.test(src))
+    if (/^assets\/products\/.+\.(?:jpe?g|webp)$/i.test(src))
       return src.replace(/^assets\/products\//i, "assets/thumbs/colors/products/");
     return src;
   }
@@ -615,6 +630,13 @@ window.AURA_IMG = function (img) {
   /* Les images du prochain écran commencent à charger avant que le visiteur
      les voie. Cela évite le blanc après un défilement rapide, sans télécharger
      tout le catalogue au chargement. */
+  function watchImage(img){
+    if (!img || img.dataset.loadWatch === "1") return;
+    img.dataset.loadWatch = "1";
+    function loaded(){ img.classList.add("is-loaded"); }
+    img.addEventListener("load", loaded, { once:true });
+    if (img.complete && img.naturalWidth) loaded();
+  }
   var lazyObserver = "IntersectionObserver" in window ? new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if (!entry.isIntersecting) return;
@@ -625,7 +647,11 @@ window.AURA_IMG = function (img) {
     });
   }, { rootMargin: "800px 0px" }) : null;
   function observeLazy(root){
-    var imgs = (root || document).querySelectorAll("img[data-src]");
+    root = root || document;
+    var all = Array.prototype.slice.call(root.querySelectorAll("img"));
+    if (root.matches && root.matches("img")) all.unshift(root);
+    for (var a = 0; a < all.length; a++) watchImage(all[a]);
+    var imgs = root.querySelectorAll("img[data-src]");
     for (var i = 0; i < imgs.length; i++){
       if (lazyObserver) lazyObserver.observe(imgs[i]);
       else {
@@ -1736,7 +1762,7 @@ window.AURA_IMG = function (img) {
 
   /* L'état de la fiche doit exister avant le premier applySettings() :
      une page produit peut appeler openPV() pendant ce premier rendu. */
-  var pvProduct = null, pvSel = [], pvQty = 1, pvBuy = false, pvImgs = [], pvPhotoChoice = false;
+  var pvProduct = null, pvSel = [], pvQty = 1, pvBuy = false, pvImgs = [], pvIndex = 0, pvPhotoChoice = false;
   var curFilter = "tous", curQuery = "", curColl = "";
   var curAudience = audienceAttribut() || audienceValide(paramUrl("audience"));
   /* État du tri du catalogue. Déclaré ici, avec les autres critères de
@@ -1899,7 +1925,7 @@ window.AURA_IMG = function (img) {
      maison : le nom de la marque y est écrit juste au-dessus. Dans le
      catalogue, où les maisons se mélangent, il reste. */
   function cardHTML(p, opts){
-    opts = opts || {};
+    opts = (opts && typeof opts === "object") ? opts : {};
     var name = esc(p.name), img = esc(p.img), alt = esc("Produit " + p.name);
     var marque = marqueDe(p);
     var out = isOut(p);
@@ -1910,7 +1936,7 @@ window.AURA_IMG = function (img) {
     var productUrl = audienceLien('produit?id=' + encodeURIComponent(p.id), curAudience || audienceAttribut());
     return '<article class="pcard' + (out ? ' is-out' : '') + '" data-card="' + esc(p.id) + '">' +
       '<div class="pmedia">' +
-        '<img ' + lazyAttrs(cardThumbUrl(photoCarte)) + ' alt="' + alt + '" width="600" height="800" onerror="AURA_IMG(this)" />' +
+        '<img ' + (opts.eager ? eagerAttrs(cardThumbUrl(photoCarte)) : lazyAttrs(cardThumbUrl(photoCarte))) + ' alt="' + alt + '" width="600" height="800" onerror="AURA_IMG(this)" />' +
         /* Lien en surimpression plutot qu'un <a> autour du bloc : le bouton
            favori est un vrai bouton, et un bouton dans un lien n'est pas du
            HTML valide. Le favori passe au-dessus par son z-index. */
@@ -2153,15 +2179,20 @@ window.AURA_IMG = function (img) {
   function ouvrirPanneau(ouvrir){
     var w = $("#catPanelWrap"), btn = $("#catFiltrer");
     if (!w || !btn) return;
+    var mobile = window.innerWidth <= 760;
+    var dejaOuvert = w.getAttribute("data-open") === "true";
     w.setAttribute("data-open", ouvrir ? "true" : "false");
     btn.setAttribute("aria-expanded", ouvrir ? "true" : "false");
+    if (mobile && ouvrir && !dejaOuvert){
+      w.setAttribute("role", "dialog");
+      w.setAttribute("aria-modal", "true");
+      w.dataset.layered = "true";
+      pushLayer(w, function(){ ouvrirPanneau(false); });
+    } else if (w.dataset.layered === "true" && !ouvrir){
+      delete w.dataset.layered;
+      popLayer(w);
+    }
   }
-  /* Sur petit écran, choisir un critère referme le panneau : le client veut
-     voir le résultat, pas relire la liste des options. */
-  function refermerSiPetitEcran(){
-    if (window.innerWidth <= 760) ouvrirPanneau(false);
-  }
-
   function toggleDansListe(liste, valeur){
     var i = liste.indexOf(valeur);
     if (i >= 0) liste.splice(i, 1); else liste.push(valeur);
@@ -2252,7 +2283,7 @@ window.AURA_IMG = function (img) {
         '</p>';
       return;
     }
-    g.innerHTML = trier(list).map(cardHTML).join("");
+    g.innerHTML = trier(list).map(function(p, i){ return cardHTML(p, { eager:i < 4 }); }).join("");
   }
   function setFilter(f){
     curFilter = f; curQuery = "";
@@ -2500,7 +2531,7 @@ window.AURA_IMG = function (img) {
   function pvKey(){ return keyOf(pvSel); }
   function openPV(id){
     var p = findProduct(id); if (!p) return;
-    pvProduct = p; pvSel = valuesOf(firstAvailableKey(p)); pvQty = 1; pvBuy = false; pvImgs = [];
+    pvProduct = p; pvSel = valuesOf(firstAvailableKey(p)); pvQty = 1; pvBuy = false; pvImgs = []; pvIndex = 0;
     /* Un coloris est coché dès l'ouverture : la photo doit le montrer. Sans
        cela, la fiche s'ouvrait sur la vue studio du produit — une paire qui
        ne correspondait à aucun coloris coché, au moment précis où la cliente
@@ -2509,7 +2540,11 @@ window.AURA_IMG = function (img) {
     var imgs = (p.imgs && p.imgs.length) ? p.imgs : (p.img ? [p.img] : []);
     pvImgs = imgs;
     var premiere = photoDeLaSelection(p, pvSel) || imgs[0] || "";
-    var media = '<img class="pv-main" src="' + esc(mediaUrl(premiere)) + '" onerror="AURA_IMG(this)" alt="' + esc(p.name) + '" />';
+    var media = '<div class="pv-main-wrap">' +
+      '<img class="pv-main" src="' + esc(mediaUrl(premiere)) + '" onerror="AURA_IMG(this)" alt="' + esc(p.name) + '" />' +
+      '<button type="button" class="pv-zoom-hit" id="pvZoom" aria-label="Agrandir la photo"></button>' +
+      (imgs.length > 1 ? '<span class="pv-counter" id="pvCounter">1 / ' + imgs.length + '</span>' : '') +
+      '</div>';
     if (imgs.length > 1){
       media += '<div class="pv-thumbs" id="pvThumbs">' + imgs.map(function(src, i){
         return '<button type="button" data-thumb="' + i + '" aria-label="Voir la photo ' + (i + 1) + ' sur ' + imgs.length + '"' + (i === 0 ? ' class="active"' : '') + '><img ' + lazyAttrs(detailThumbUrl(src)) + ' onerror="AURA_IMG(this)" alt="" /></button>';
@@ -2566,11 +2601,45 @@ window.AURA_IMG = function (img) {
     var defaut = pvImgs[0] || "";
     var cible = mediaUrl(voulue || defaut);
     if (cible && img.getAttribute("src") !== cible) img.src = cible;
+    var indexSelection = voulue ? pvImgs.indexOf(voulue) : 0;
+    pvIndex = indexSelection >= 0 ? indexSelection : 0;
+    majCompteurGalerie();
     /* La miniature active suit, sinon l'état affiché se contredit. */
     var vignettes = $$("#pvThumbs [data-thumb]");
     vignettes.forEach(function(b, i){
       b.classList.toggle("active", !voulue && i === 0);
     });
+  }
+
+  function majCompteurGalerie(){
+    var texte = pvImgs.length > 1 ? (pvIndex + 1) + " / " + pvImgs.length : "";
+    var compteur = $("#pvCounter");
+    if (compteur) compteur.textContent = texte;
+    var zoomCompteur = $("#photoZoomCounter");
+    if (zoomCompteur) zoomCompteur.textContent = texte;
+  }
+  function afficherPhoto(index){
+    if (!pvImgs.length) return;
+    pvIndex = (index + pvImgs.length) % pvImgs.length;
+    pvPhotoChoice = false;
+    var main = document.querySelector("#pvMedia .pv-main");
+    if (main) main.src = mediaUrl(pvImgs[pvIndex]);
+    $$("#pvThumbs [data-thumb]").forEach(function(b, i){ b.classList.toggle("active", i === pvIndex); });
+    majCompteurGalerie();
+    var zoom = $("#photoZoom");
+    if (zoom && zoom.getAttribute("data-open") === "true"){
+      var zi = $("#photoZoomImg");
+      if (zi) zi.src = mediaUrl(pvImgs[pvIndex]);
+    }
+  }
+  function ouvrirPhotoZoom(){
+    var main = document.querySelector("#pvMedia .pv-main");
+    var zi = $("#photoZoomImg");
+    if (!main || !zi) return;
+    zi.src = main.src;
+    zi.alt = main.alt || "Photo du produit";
+    majCompteurGalerie();
+    openModal("photoZoom");
   }
 
   function renderAxes(){
@@ -3114,14 +3183,12 @@ window.AURA_IMG = function (img) {
 
     if (t.closest("#navSearch") || t.closest("[data-od-id='nav-search']")){ openSearch(); return; }
 
+    if (t.closest("#pvZoom")){ ouvrirPhotoZoom(); return; }
+
     var thumb = t.closest("#pvThumbs [data-thumb]");
     if (thumb){
       var idx = parseInt(thumb.getAttribute("data-thumb"), 10);
-      if (pvImgs[idx]){
-        var main = document.querySelector("#pvMedia .pv-main");
-        if (main) main.src = mediaUrl(pvImgs[idx]);
-        $$("#pvThumbs [data-thumb]").forEach(function(b, i){ b.classList.toggle("active", i === idx); });
-      }
+      if (pvImgs[idx]) afficherPhoto(idx);
       return;
     }
 
@@ -3223,23 +3290,24 @@ window.AURA_IMG = function (img) {
        second clic : sans ça, le client ne trouve plus comment revenir en
        arrière et quitte la page. */
     if (t.closest("#catFiltrer")){ ouvrirPanneau(!panneauOuvert()); return; }
+    if (t.id === "catPanelWrap"){ ouvrirPanneau(false); return; }
     if (t.closest("[data-fclose]")){ ouvrirPanneau(false); return; }
     var fp = t.closest("[data-fpointure]");
     if (fp){
       var vp = fp.getAttribute("data-fpointure");
       curTaille = (curTaille === vp) ? "" : vp;
-      renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return;
+      renderGrid(); syncUrl(curFilter); return;
     }
     var fm = t.closest("[data-fmarque]");
-    if (fm){ toggleDansListe(curMarques, fm.getAttribute("data-fmarque")); renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return; }
+    if (fm){ toggleDansListe(curMarques, fm.getAttribute("data-fmarque")); renderGrid(); syncUrl(curFilter); return; }
     var fpr = t.closest("[data-fprix]");
     if (fpr){
       var vpr = fpr.getAttribute("data-fprix");
       curPrix = (curPrix === vpr) ? "" : vpr;
-      renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return;
+      renderGrid(); syncUrl(curFilter); return;
     }
-    if (t.closest("[data-fdispo]")){ curDispo = !curDispo; renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return; }
-    if (t.closest("[data-ffavoris]")){ curFavoris = !curFavoris; renderGrid(); syncUrl(curFilter); refermerSiPetitEcran(); return; }
+    if (t.closest("[data-fdispo]")){ curDispo = !curDispo; renderGrid(); syncUrl(curFilter); return; }
+    if (t.closest("[data-ffavoris]")){ curFavoris = !curFavoris; renderGrid(); syncUrl(curFilter); return; }
     var ftag = t.closest("[data-ftag]");
     if (ftag){
       var k = ftag.getAttribute("data-ftag"), v = ftag.getAttribute("data-fval");
@@ -3269,6 +3337,21 @@ window.AURA_IMG = function (img) {
       return;
     }
   });
+
+  /* Balayage horizontal de la photo principale. Un mouvement surtout
+     vertical reste un défilement normal de la page ; seuls les gestes nets
+     de plus de 44 px changent de vue. */
+  var pvTouchX = 0, pvTouchY = 0;
+  document.addEventListener("touchstart", function(e){
+    if (!e.target.closest || !e.target.closest(".pv-main-wrap") || e.touches.length !== 1) return;
+    pvTouchX = e.touches[0].clientX; pvTouchY = e.touches[0].clientY;
+  }, { passive:true });
+  document.addEventListener("touchend", function(e){
+    if (!e.target.closest || !e.target.closest(".pv-main-wrap") || !e.changedTouches.length || pvImgs.length < 2) return;
+    var dx = e.changedTouches[0].clientX - pvTouchX;
+    var dy = e.changedTouches[0].clientY - pvTouchY;
+    if (Math.abs(dx) >= 44 && Math.abs(dx) > Math.abs(dy) * 1.25) afficherPhoto(pvIndex + (dx < 0 ? 1 : -1));
+  }, { passive:true });
 
   document.addEventListener("input", function(e){
     if (e.target === $("#soInput")) curSearch();
