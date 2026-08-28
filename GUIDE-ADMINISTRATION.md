@@ -304,6 +304,62 @@ pour ne montrer qu'un article produit l'effet inverse de celui recherché.
 
 ---
 
+## 6 bis. Classement et vedettes
+
+Ouvrez **Classement et vedettes** depuis l'accueil du tableau de bord. C'est
+là que vous décidez de l'ordre dans lequel vos paires apparaissent.
+
+### Choisir la zone
+
+En haut, un menu propose le **rayon Homme**, le **rayon Femme**, puis chacune
+de vos marques. Chaque zone garde son propre classement : ranger les Hermès
+ne dérange pas les Louis Vuitton.
+
+Sous le menu, un rappel du contenu de la zone : combien de produits, combien
+de vedettes choisies, combien de paires disponibles, combien en rupture.
+
+### Les quatre vedettes
+
+Ce sont les paires montrées en premier. Le bouton **Vedette** de chaque ligne
+les ajoute ou les retire. Au-delà de quatre, les autres boutons se grisent :
+retirez-en une pour libérer une place.
+
+Si une vedette tombe en rupture, la boutique la remplace toute seule par la
+paire disponible suivante. Votre choix n'est pas perdu : la paire revient à
+sa place dès que vous remettez du stock.
+
+### Ranger tous les produits
+
+Sous les vedettes, la liste complète. Trois boutons par ligne :
+
+- **Monter** — un cran vers le haut.
+- **Descendre** — un cran vers le bas.
+- **Premier** — directement en tête.
+
+Le bouton **Annuler le dernier déplacement**, en haut, revient en arrière si
+vous vous êtes trompé.
+
+Le champ **Retrouver une paire** filtre la liste par nom ou par marque quand
+vous en cherchez une précise dans une longue liste.
+
+### Ce que la boutique fait d'elle-même
+
+Les paires **disponibles passent toujours avant les paires épuisées**, quel
+que soit l'ordre que vous donnez. Une rupture reste visible — un client peut
+demander à être prévenu — mais elle ne prend pas la place d'une paire que
+vous pouvez vendre aujourd'hui.
+
+Un produit que vous venez de créer se place à la fin de la liste. À vous de
+le remonter s'il mérite mieux.
+
+### Avant de publier
+
+**Voir cette zone avant publication** ouvre la boutique telle qu'elle sera,
+sans que vos clients voient encore quoi que ce soit. Rien ne change en ligne
+tant que vous n'avez pas appuyé sur **Publier**.
+
+---
+
 ## 7. Contenu du site
 
 Cet onglet contient les grands blocs de la page d'accueil. Chacun a un

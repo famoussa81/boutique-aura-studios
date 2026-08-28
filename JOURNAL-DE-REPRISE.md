@@ -238,6 +238,44 @@ deux suivantes venant de l'ordre complet. C'est conforme au plan
 (`tasks/plan.md`, point 3) et cela évite un trou dans la grille, mais ce
 n'est pas ce qu'une lecture rapide de l'écran laisse deviner.
 
+### Mise en ligne
+
+Commit `52514ba`, poussé sur `main`, déployé.
+
+Vérifié sur la production après déploiement :
+
+- Huit routes répondent 200, y compris `/admin` et `/collection?c=hermes`.
+- L'écran est présent dans l'administration en ligne.
+- `classerProduits()` et `resoudreVedettes()` sont dans le `boutique.js` servi.
+- Catalogue du rayon Homme : 32 cartes, les trois premières sont exactement
+  les vedettes configurées — Claquette Vintage Check, Mule Oblique,
+  Claquette Paris. Les sélections d'avant la tâche sont donc préservées.
+- Première paire épuisée en position 30 sur 32 : les disponibles passent bien
+  devant.
+- Aucune erreur console, aucune image cassée, aucun débordement horizontal.
+
+### Surface réelle du classement de rayon
+
+`hommes.html` et `femmes.html` n'ont pas de section « vedettes du rayon » :
+`#audFeaturedGrid` n'existe pas dans ces pages, et
+`renderAudienceExperience()` passe donc son chemin sans rien peindre.
+
+L'ordre d'un rayon se voit aujourd'hui dans le catalogue filtré par rayon,
+tri « Sélection boutique », et dans la rangée « Autres modèles ». Les quatre
+vedettes d'un rayon n'ont, elles, aucune surface d'affichage propre. Le
+classement par marque, lui, pilote bien les rangées de marque de l'accueil.
+
+Décider avant de promettre cet écran au commerçant : soit ajouter une section
+vedettes aux deux pages de rayon, soit reformuler l'écran pour dire que les
+vedettes d'un rayon ordonnent le catalogue plutôt qu'une vitrine.
+
+### Prochaine action sûre
+
+Ouvrir l'écran en production avec les identifiants du propriétaire et refaire
+les quatre gestes sur une vraie zone, puis publier. Les vérifications de
+cette session ont été menées sur la copie hors ligne et le catalogue de
+démonstration ; le parcours authentifié complet reste à faire.
+
 ## Points encore ouverts hors tâche
 
 - Mentions légales réelles manquantes : forme juridique, siège, RCCM, NIF et

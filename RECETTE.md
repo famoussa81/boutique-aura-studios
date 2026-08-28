@@ -136,6 +136,24 @@ Puis ouvrir `http://localhost:8899/`.
 - [ ] Aperçu de l'image lors de la saisie de l'URL
 - [ ] Modification des tailles : le stock réservé existant est préservé
 
+## 11 bis. Administration — classement et vedettes
+
+- [ ] L'écran s'ouvre depuis l'accueil du tableau de bord
+- [ ] Le menu propose les deux rayons puis toutes les marques
+- [ ] Le rappel indique produits, vedettes, disponibles et ruptures
+- [ ] « Monter », « Descendre » et « Premier » déplacent la bonne paire
+- [ ] « Annuler le dernier déplacement » revient à l'état précédent
+- [ ] Une cinquième vedette est refusée, les boutons se grisent à quatre
+- [ ] Retirer une vedette rouvre les boutons des autres
+- [ ] La recherche filtre par nom et par marque, « Effacer » la vide
+- [ ] Changer de zone conserve le classement de la zone quittée
+- [ ] Après rechargement complet, le classement est toujours là
+- [ ] L'état passe à « À publier » et la boutique ne bouge pas avant publication
+- [ ] « Voir cette zone avant publication » ouvre le rayon ou la marque en aperçu
+- [ ] En boutique, les paires disponibles précèdent les paires épuisées
+- [ ] Une vedette épuisée est remplacée, puis revient après réapprovisionnement
+- [ ] À 375 px : aucune cible sous 44 px, aucun débordement horizontal
+
 ## 12. Administration — réglages et newsletter
 
 - [ ] Numéro WhatsApp invalide refusé

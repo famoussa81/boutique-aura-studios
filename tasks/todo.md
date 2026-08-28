@@ -16,10 +16,10 @@
   - Acceptation : aucune modification publique avant publication et
     persistance après rechargement.
   - Vérification : mode démonstration puis contrôle Supabase non destructif.
-- [ ] Mettre à jour guide, recette et journal.
+- [x] Mettre à jour guide, recette et journal.
   - Acceptation : prochain agent peut reprendre sans conversation.
   - Vérification : relecture des documents et `git diff --check`.
-- [ ] Déployer et vérifier la production.
+- [x] Déployer et vérifier la production.
   - Acceptation : routes 200, aucune erreur console pertinente, classement
     publié visible.
   - Vérification : navigateur production à 375 px et ordinateur.
