@@ -1649,14 +1649,21 @@
     }).join("");
     return '<select class="status" aria-label="État de la commande ' + esc(o.ref) + '" data-status="' + esc(o.ref) + '">' + opts + '</select>';
   }
+  /* Le commerçant tape « hermes », la marque s'appelle « Hermès » : dix-huit
+     paires — la plus grosse marque du catalogue — restaient introuvables.
+     Sur un clavier de téléphone, personne ne va chercher l'accent grave.
+     Les deux côtés de la comparaison sont donc aplatis. */
+  function sansAccents(v){
+    var t = String(v == null ? "" : v).toLowerCase();
+    return t.normalize ? t.normalize("NFD").replace(/[̀-ͯ]/g, "") : t;
+  }
   var ordQuery = "", ordStatus = "";
   function filteredOrders(){
-    var q = ordQuery.trim().toLowerCase();
+    var q = sansAccents(ordQuery.trim());
     return store.orders.filter(function(o){
       if (ordStatus && o.status !== ordStatus) return false;
       if (!q) return true;
-      var hay = [o.ref, o.client, o.phone, o.quartier].join(" ").toLowerCase();
-      return hay.indexOf(q) >= 0;
+      return sansAccents([o.ref, o.client, o.phone, o.quartier].join(" ")).indexOf(q) >= 0;
     });
   }
   function renderOrders(){
@@ -2207,10 +2214,10 @@
       return '<article class="merch-featured-card"><span class="merch-rank">'+(index+1)+'</span>'+(p.img?'<img src="'+esc(p.img)+'" alt="" />':'')+'<b>'+esc(p.name)+'</b><small>'+esc(state.label)+'</small></article>';
     }).join(""):'<p class="merch-empty" style="grid-column:1/-1">Aucune vedette choisie. Utilisez le bouton « Vedette » dans la liste ci-dessous.</p>';
     var ordered=ctx.order.map(function(id){return merchProduct(ctx,id);}).filter(Boolean);
-    var q=merchQuery.toLowerCase();
+    var q=sansAccents(merchQuery);
     if(q)ordered=ordered.filter(function(p){
       var coll=collList().filter(function(c){return c.key===p.collection;})[0];
-      return (p.name+" "+(coll?coll.label:"")).toLowerCase().indexOf(q)>=0;
+      return sansAccents(p.name+" "+(coll?coll.label:"")).indexOf(q)>=0;
     });
     var host=$("#merchList");
     host.innerHTML=ordered.length?ordered.map(function(p){
@@ -2995,20 +3002,23 @@ function applyStatus(order, ns){
   }
   var productQuery="", productFilter="";
   function filteredProducts(){
-    var q=productQuery.trim().toLowerCase();
+    var q=sansAccents(productQuery.trim());
     return store.products.filter(function(p){
       var total=availableTotalFor(p), archived=!!p.archived;
-      if(productFilter==="active" && (p.active===false||archived)) return false;
-      if(productFilter==="hidden" && (p.active!==false||archived)) return false;
+      /* Un produit archivé n'apparaît que dans la vue « Archivés ». Chaque
+         filtre portait sa propre exclusion, et le rayon Homme n'en avait
+         pas : quatre paires retirées de la vente y revenaient, prêtes à être
+         modifiées par un commerçant qui les croyait parties. */
+      if(archived !== (productFilter==="archived")) return false;
+      if(productFilter==="active" && p.active===false) return false;
+      if(productFilter==="hidden" && p.active!==false) return false;
       if(productFilter==="out" && total>0) return false;
       if(productFilter==="low" && !(total>0&&total<=5)) return false;
-      if(productFilter==="archived" && !archived) return false;
       if(productFilter==="homme" && p.audience==="femme") return false;
       if(productFilter==="femme" && p.audience!=="femme") return false;
-      if(!productFilter && archived) return false;
       if(!q) return true;
       var coll=collList().filter(function(c){return c.key===p.collection;})[0];
-      return [p.name,CATS[p.cat]||p.cat,coll&&coll.label||p.collection,p.audience==="femme"?"femme":"homme"].join(" ").toLowerCase().indexOf(q)>=0;
+      return sansAccents([p.name,CATS[p.cat]||p.cat,coll&&coll.label||p.collection,p.audience==="femme"?"femme":"homme"].join(" ")).indexOf(q)>=0;
     });
   }
   function renderProducts(){
