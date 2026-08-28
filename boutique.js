@@ -1025,13 +1025,8 @@ window.AURA_IMG = function (img) {
       var tousProduits = store.products.filter(function(p){
         return p.active && p.collection === c.key && audienceProduit(p, curAudience || audienceAttribut());
       });
-      var idsVedette = Array.isArray(c.homeProducts) ? c.homeProducts.slice(0, MAX_MODELES) : [];
-      var produits = idsVedette.map(function(id){
-        return tousProduits.filter(function(p){ return p.id === id; })[0] || null;
-      }).filter(Boolean);
-      /* Sans sélection manuelle, les premiers modèles servent de repli. Dès
-         que le commerçant choisit une paire, seuls ses choix sont montrés. */
-      if (!produits.length) produits = tousProduits.slice(0, MAX_MODELES);
+      var ordreMarque = Array.isArray(c.productOrder) ? c.productOrder : c.homeProducts;
+      var produits = resoudreVedettes(tousProduits, c.homeProducts, ordreMarque, MAX_MODELES);
       var total = tousProduits.length;
       var n = produits.length;
       var autres = Math.max(0, total - n);
@@ -1073,15 +1068,10 @@ window.AURA_IMG = function (img) {
     });
     var audienceCourante = curAudience || audienceAttribut();
     var pageCourante = audiencePage(audienceCourante);
-    var ordreReste = pageCourante && Array.isArray(pageCourante.featuredProducts)
-      ? pageCourante.featuredProducts : [];
-    orphelins.sort(function(a, b){
-      var stockA = enStock(a) ? 0 : 1, stockB = enStock(b) ? 0 : 1;
-      if (stockA !== stockB) return stockA - stockB;
-      var ia = ordreReste.indexOf(a.id), ib = ordreReste.indexOf(b.id);
-      ia = ia < 0 ? 9999 : ia; ib = ib < 0 ? 9999 : ib;
-      return ia - ib;
-    });
+    var ordreReste = pageCourante && Array.isArray(pageCourante.productOrder)
+      ? pageCourante.productOrder
+      : pageCourante && Array.isArray(pageCourante.featuredProducts) ? pageCourante.featuredProducts : [];
+    orphelins = classerProduits(orphelins, ordreReste);
     var hoteReste = $("#marquesOrphelins");
     if (hoteReste){
       hoteReste.hidden = !orphelins.length;
@@ -1540,9 +1530,8 @@ window.AURA_IMG = function (img) {
     var produits = store.products.filter(function(p){
       return p.active !== false && !p.archived && audienceProduit(p, audience);
     });
-    var ids = Array.isArray(page.featuredProducts) ? page.featuredProducts.slice(0, 4) : [];
-    var vedettes = ids.map(function(id){ return produits.filter(function(p){ return p.id === id; })[0] || null; }).filter(Boolean);
-    if (!vedettes.length) vedettes = produits.slice(0, 4);
+    var ordreRayon = Array.isArray(page.productOrder) ? page.productOrder : page.featuredProducts;
+    var vedettes = resoudreVedettes(produits, page.featuredProducts, ordreRayon, 4);
     var featured = $('#audFeaturedGrid');
     if (featured) featured.innerHTML = vedettes.map(cardHTML).join('');
     var featuredSection = $('#audFeatured');
@@ -2028,6 +2017,43 @@ window.AURA_IMG = function (img) {
     for (var i = 0; i < keys.length; i++) if (availFor(p, keys[i]) > 0) return true;
     return false;
   }
+  /* Classement éditorial partagé par toutes les surfaces publiques. La
+     disponibilité forme deux groupes, puis l'ordre manuel s'applique à
+     l'intérieur de chacun. Un produit ajouté après le classement reste
+     visible à la fin, dans son ordre d'origine. */
+  function classerProduits(list, ordre){
+    var positions = {};
+    (Array.isArray(ordre) ? ordre : []).forEach(function(id, index){
+      if (positions[id] == null) positions[id] = index;
+    });
+    return list.map(function(p, index){ return {p:p,index:index}; }).sort(function(a, b){
+      var stockA = enStock(a.p) ? 0 : 1, stockB = enStock(b.p) ? 0 : 1;
+      if (stockA !== stockB) return stockA - stockB;
+      var posA = positions[a.p.id] == null ? 999999 : positions[a.p.id];
+      var posB = positions[b.p.id] == null ? 999999 : positions[b.p.id];
+      if (posA !== posB) return posA - posB;
+      return a.index - b.index;
+    }).map(function(x){ return x.p; });
+  }
+  /* Les choix du commerçant passent d'abord, mais une paire indisponible ne
+     crée jamais un trou : la prochaine paire disponible de l'ordre complet
+     la remplace. S'il n'existe plus assez de stock dans toute la zone, les
+     modèles épuisés complètent seulement les places restantes. */
+  function resoudreVedettes(list, choix, ordre, maximum){
+    var classes = classerProduits(list, ordre), parId = {}, resultat = [];
+    classes.forEach(function(p){ parId[p.id] = p; });
+    (Array.isArray(choix) ? choix : []).forEach(function(id){
+      var p = parId[id];
+      if (p && enStock(p) && resultat.indexOf(p) < 0 && resultat.length < maximum) resultat.push(p);
+    });
+    classes.forEach(function(p){
+      if (enStock(p) && resultat.indexOf(p) < 0 && resultat.length < maximum) resultat.push(p);
+    });
+    classes.forEach(function(p){
+      if (resultat.indexOf(p) < 0 && resultat.length < maximum) resultat.push(p);
+    });
+    return resultat;
+  }
   /* Trois tranches bâties sur les prix réellement présents : figées dans le
      code, elles deviendraient fausses au premier changement de catalogue. */
   function tranchesPrix(list){
@@ -2069,18 +2095,14 @@ window.AURA_IMG = function (img) {
       var priorites = [];
       if (curColl){
         var coll = collById(curColl);
-        priorites = coll && Array.isArray(coll.homeProducts) ? coll.homeProducts : [];
+        priorites = coll && Array.isArray(coll.productOrder) ? coll.productOrder
+          : coll && Array.isArray(coll.homeProducts) ? coll.homeProducts : [];
       } else if (curAudience){
         var pageAudience = store.settings.audiencePages && store.settings.audiencePages[curAudience];
-        priorites = pageAudience && Array.isArray(pageAudience.featuredProducts) ? pageAudience.featuredProducts : [];
+        priorites = pageAudience && Array.isArray(pageAudience.productOrder) ? pageAudience.productOrder
+          : pageAudience && Array.isArray(pageAudience.featuredProducts) ? pageAudience.featuredProducts : [];
       }
-      out.sort(function(a, b){
-        var stockA = enStock(a) ? 0 : 1, stockB = enStock(b) ? 0 : 1;
-        if (stockA !== stockB) return stockA - stockB;
-        var ia = priorites.indexOf(a.id), ib = priorites.indexOf(b.id);
-        ia = ia < 0 ? 9999 : ia; ib = ib < 0 ? 9999 : ib;
-        return ia - ib;
-      });
+      out = classerProduits(out, priorites);
     }
     /* Un cœur posé sur une paire vaut une intention d'achat : elle passe
        devant, quel que soit l'ordre demandé. Le tri choisi s'applique

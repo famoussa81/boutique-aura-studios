@@ -1,5 +1,18 @@
 # Reprise du projet — tout ce qu'il faut savoir
 
+## 0. Journal de continuité obligatoire
+
+Avant toute nouvelle tâche, lire puis actualiser `JOURNAL-DE-REPRISE.md` :
+
+1. inscrire la date, la demande courante et l'état Git au début de la tâche ;
+2. indiquer les fichiers envisagés et les risques connus ;
+3. à la fin, remplacer l'état « en cours » par le résultat réel, les tests
+   passés, le déploiement éventuel et la prochaine action sûre ;
+4. ne jamais présenter une vérification non exécutée comme réussie.
+
+Ce journal est la mémoire de passage entre agents. Il doit rester concis mais
+suffisamment précis pour reprendre le travail sans relire les conversations.
+
 Ce fichier existe pour qu'un autre agent (Codex, Claude, ou un humain) puisse
 reprendre ce projet sans relire l'historique. Il ne décrit pas ce que le code
 fait — le code le dit — mais **pourquoi il est écrit ainsi**, et les pièges qui
