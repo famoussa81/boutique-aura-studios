@@ -169,6 +169,12 @@ revu.
 Implémenter le module `merchandising` décrit dans
 `SPEC-merchandising.md` après création de cette mémoire persistante.
 
+Demande ajoutée pendant l'implémentation : garantir qu'une commande reste
+parfaitement identifiable alors que le nom du modèle n'est plus affiché sur
+les cartes publiques. Le nom existe toujours dans les données et dans la
+commande ; le parcours doit aussi afficher une référence article stable avec
+la marque, le modèle interne, le coloris et la pointure.
+
 ### Résultat attendu
 
 - Un écran autonome « Classement et vedettes » dans le dashboard.
@@ -185,6 +191,7 @@ Implémenter le module `merchandising` décrit dans
 
 - `admin.html`
 - `boutique.js`
+- parcours de commande et listes de commandes dans `admin.html` ;
 - `catalog.js` seulement si une valeur initiale est réellement nécessaire.
 - `tasks/plan.md`, `tasks/todo.md`
 - `RECETTE.md`, `GUIDE-ADMINISTRATION.md`
@@ -275,6 +282,25 @@ Ouvrir l'écran en production avec les identifiants du propriétaire et refaire
 les quatre gestes sur une vraie zone, puis publier. Les vérifications de
 cette session ont été menées sur la copie hors ligne et le catalogue de
 démonstration ; le parcours authentifié complet reste à faire.
+
+### Complément — identification des articles commandés
+
+Le nom masqué sur une carte publique n'a jamais été supprimé du produit : la
+commande enregistrée garde l'identifiant, la marque, le modèle, la variante
+et la quantité. Pour rendre la préparation impossible à confondre, chaque
+article expose désormais une référence stable dérivée de son identifiant,
+par exemple `ART-LV-SIGNATURE` :
+
+- dans le récapitulatif avant commande ;
+- dans le message WhatsApp ;
+- dans les listes et détails des commandes du dashboard ;
+- dans la liste Produits et son moteur de recherche.
+
+Test local exécuté de bout en bout le 28 août 2026 : commande de
+`Louis Vuitton Claquette Signature LV`, variante `39 · Bleu`. Le récapitulatif
+et le texte WhatsApp contenaient tous deux `ART-LV-SIGNATURE`, la marque, le
+modèle et la variante. Le lien WhatsApp n'a pas été ouvert et aucun message
+n'a été envoyé. Déploiement à consigner ci-dessous après le push.
 
 ## Points encore ouverts hors tâche
 

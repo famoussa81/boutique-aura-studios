@@ -68,6 +68,7 @@ Puis ouvrir `http://localhost:8899/`.
 - [ ] La liste de quartiers propose des suggestions
 - [ ] Commande valide : écran de confirmation avec référence unique
 - [ ] Le message WhatsApp contient les articles, le sous-total, la livraison (« Offerte » le cas échéant), le total, le client et le quartier
+- [ ] Chaque article commandé conserve la marque, le modèle, la pointure, le coloris et sa référence `ART-…`, même si le nom est masqué sur la carte publique
 - [ ] « Ouvrir WhatsApp » pointe vers le bon numéro
 - [ ] « Copier le texte de la commande » copie et confirme
 - [ ] Le panier est vidé après la commande
@@ -118,6 +119,7 @@ Puis ouvrir `http://localhost:8899/`.
 
 - [ ] La commande passée en test apparaît
 - [ ] Recherche par référence, client, téléphone, quartier
+- [ ] Le détail d'une commande affiche la référence `ART-…` de chaque article
 - [ ] Filtre par statut + compteur cohérent
 - [ ] Changement de statut : En attente → Confirmée décrémente le stock
 - [ ] Confirmée → Annulée restitue le stock
@@ -128,6 +130,7 @@ Puis ouvrir `http://localhost:8899/`.
 ## 11. Administration — produits
 
 - [ ] Les 14 produits sont listés avec vignette, prix et stock par taille
+- [ ] La recherche Produits retrouve une paire avec sa référence `ART-…`
 - [ ] « Modifier » remplit le formulaire
 - [ ] Modification du prix : visible immédiatement en boutique
 - [ ] « Masquer » / « Afficher » : le produit disparaît/réapparaît en boutique

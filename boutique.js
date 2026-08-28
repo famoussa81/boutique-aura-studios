@@ -694,6 +694,10 @@ window.AURA_IMG = function (img) {
   }
   function isOut(p){ if (p.stockout) return true; return availableTotalFor(p) <= 0; }
   function waLink(phone, text){ return "https://wa.me/" + digits(phone) + "?text=" + encodeURIComponent(text); }
+  function articleRef(id){
+    var propre=String(id||"").replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"").toUpperCase();
+    return "ART-"+(propre||"SANS-REFERENCE");
+  }
 
   var toastTimer;
   function toast(msg){
@@ -3024,7 +3028,7 @@ window.AURA_IMG = function (img) {
     el.innerHTML =
       '<div class="co-sum">' +
         cart.map(function(it){
-          return '<div class="co-item"><span>' + esc(it.brand ? it.brand + ' ' + it.name : it.name) + ' <small>' + (it.variantLabel ? esc(it.variantLabel) + ' · ' : '') + it.qty + ' x</small></span><strong>' + fmt(it.price * it.qty) + '</strong></div>';
+          return '<div class="co-item"><span>' + esc(it.brand ? it.brand + ' ' + it.name : it.name) + ' <small>' + esc(articleRef(it.id)) + (it.variantLabel ? ' · ' + esc(it.variantLabel) : '') + ' · ' + it.qty + ' x</small></span><strong>' + fmt(it.price * it.qty) + '</strong></div>';
         }).join("") +
         '<div class="co-line"><span>Livraison (Bamako)</span><strong>' + deliveryFeeLabel(subtotal()) + '</strong></div>' +
         '<div class="co-total"><span>' + (variableDelivery(subtotal()) ? "Total maximum" : "Total") + '</span><strong>' + fmt(subtotal() + deliveryFor(subtotal())) + '</strong></div>' +
@@ -3044,7 +3048,8 @@ window.AURA_IMG = function (img) {
     o.items.forEach(function(it){
       var lib = it.variantLabel || it.size || "";
       L.push("• " + it.qty + " × " + (it.brand ? it.brand + " " : "") + it.name +
-             (lib ? " (" + lib + ")" : "") + " — " + fmt(it.price * it.qty));
+             (lib ? " (" + lib + ")" : "") + " — Réf. " + articleRef(it.id) +
+             " — " + fmt(it.price * it.qty));
     });
     L.push("");
     L.push("🧾 *Sous-total :* " + fmt(o.subtotal));

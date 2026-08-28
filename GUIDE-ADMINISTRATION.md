@@ -111,7 +111,8 @@ quoi que ce soit.
 - Une **référence** unique du type `CMD-202608-0042`. Utilisez-la quand vous
   parlez au client : c'est plus sûr que « la commande de Fatoumata ».
 - Le **nom, le téléphone et le quartier** du client.
-- Les **articles** : quantité, marque, modèle, pointure et coloris.
+- Les **articles** : quantité, marque, modèle, pointure, coloris et une
+  **référence article** du type `ART-LV-SIGNATURE`.
 - Le **sous-total, les frais de livraison et le total**.
 
 ### Les cinq statuts
@@ -147,7 +148,7 @@ vous envoie sur WhatsApp. Vous recevez :
 ```
 🛍️ Nouvelle commande CMD-202608-0042
 
-• 1 × HUGO Claquette Monogramme (42 · Noir) — 23 000 FCFA
+• 1 × HUGO Claquette Monogramme (42 · Noir) — Réf. ART-HUGO-MONOGRAMME — 23 000 FCFA
 
 🧾 Sous-total : 23 000 FCFA
 🚚 Livraison : 1 500 FCFA
@@ -159,6 +160,12 @@ vous envoie sur WhatsApp. Vous recevez :
 La marque figure devant le nom du modèle. C'est indispensable : deux marques
 peuvent vendre une « Claquette Monogramme », et sans la marque vous ne
 sauriez pas laquelle préparer.
+
+Le nom peut être volontairement masqué sur les cartes de la boutique pour
+alléger l'affichage mobile : il n'est jamais supprimé des données. La fiche,
+le panier, la commande enregistrée et WhatsApp conservent le modèle complet.
+La référence `ART-…` permet en plus de retrouver immédiatement la bonne fiche
+dans l'espace **Produits** : saisissez-la dans la recherche.
 
 **Le message WhatsApp et la commande enregistrée disent toujours la même
 chose.** Si un client vous montre un message qui ne correspond pas à ce que
