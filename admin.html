@@ -923,11 +923,22 @@
     if (!online()) return cb();
     var localDirty=!!draftMeta.dirty, localVersion=Number(draftMeta.version)||0, localDraft=null;
     try{if(localDirty)localDraft=JSON.parse(localStorage.getItem(DRAFT_KEY)||"null");}catch(e){}
-    var pending = 4, published = { settings:null, products:null }, loadedDraft=null, needsInitialDraft=false;
+    var pending = 4, published = { settings:null, products:null }, loadedDraft=null, needsInitialDraft=false, cleanRemoteDraft=false;
     /* Copie locale seulement : ce qui vient d'être lu depuis la base n'a pas
        à y être renvoyé. Si l'une des trois lectures a échoué, un renvoi
        réécrirait la base avec une copie incomplète. */
     function step(){ if (--pending === 0){
+      /* Un brouillon propre n'est pas une version de travail : la boutique
+         publiée est alors la source de vérité. Des produits peuvent avoir
+         été ajoutés par une importation ou une correction urgente depuis un
+         autre outil. Recharger l'ancien brouillon « propre » les ferait
+         disparaître à la publication suivante. On le remet donc à niveau
+         seulement si les deux lectures publiques ont réussi. */
+      if(cleanRemoteDraft && published.settings && Array.isArray(published.products)){
+        loadedDraft={settings:clone(published.settings),products:clone(published.products)};
+        draftMeta.dirty=false;
+        needsInitialDraft=true;
+      }
       if(loadedDraft){
         if(loadedDraft.settings)store.settings=loadedDraft.settings;
         if(loadedDraft.products)store.products=mergeDraftProducts(loadedDraft.products,published.products||store.products);
@@ -966,6 +977,7 @@
           draftMeta.dirty = dr.dirty === true;
           draftMeta.conflict=false;
           loadedDraft=dr.data;
+          cleanRemoteDraft=dr.dirty !== true;
         }
       } else if (!ed && !dr){
         draftMeta.version = 0;
