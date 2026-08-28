@@ -300,7 +300,15 @@ Test local exécuté de bout en bout le 28 août 2026 : commande de
 `Louis Vuitton Claquette Signature LV`, variante `39 · Bleu`. Le récapitulatif
 et le texte WhatsApp contenaient tous deux `ART-LV-SIGNATURE`, la marque, le
 modèle et la variante. Le lien WhatsApp n'a pas été ouvert et aucun message
-n'a été envoyé. Déploiement à consigner ci-dessous après le push.
+n'a été envoyé.
+
+Correction fonctionnelle commitée sous `394e572`, poussée sur `main` et
+déployée sur Vercel. En production, les sept routes principales ont répondu
+200. À 375 px, la fiche ne déborde pas (`clientWidth = scrollWidth = 375`) et
+le récapitulatif avant envoi affiche bien le modèle complet,
+`ART-LV-SIGNATURE`, `39 · Bleu`, la quantité et le prix. La soumission n'a pas
+été déclenchée en production afin de ne pas créer une fausse commande ni
+réserver du stock réel.
 
 ## Points encore ouverts hors tâche
 
