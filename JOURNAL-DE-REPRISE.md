@@ -199,7 +199,10 @@ des pixels réellement occupés. Aucun logo, monogramme ou texte de marque n'a
 Vérifications locales exécutées sur `/marques.html?demo=1` : bureau et 375 px,
 Balenciaga/Moncler/EA7 visibles en entier, fonds uniformes, aucune erreur
 console et aucun débordement horizontal (`clientWidth = scrollWidth = 360`).
-La révision CSS est `20260829r` sur les sept pages qui chargent la feuille.
+Un premier contrôle après déploiement a montré que Moncler restait coupé au
+breakpoint mobile ; l'offset mobile a été corrigé puis revalidé localement.
+La révision CSS finale est `20260829s` sur les sept pages qui chargent la
+feuille.
 
 ### Nouvelle tâche — génération des visuels d'une marque
 

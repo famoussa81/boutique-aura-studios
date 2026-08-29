@@ -277,6 +277,7 @@
     .brand-logo-card{aspect-ratio:5/3;padding:15px 10px 12px;gap:10px}
     .brand-logo-visual{height:44px}
     .brand-logo-img{max-height:34px;max-width:82%}
+    .brand-logo-card[data-brand="moncler"] .brand-logo-img{top:-5px}
     .brand-logo-action{font-size:10px;letter-spacing:.12em}
     .brand-directory-card{aspect-ratio:4/3}
     .brand-directory-copy{left:12px;right:30px;bottom:11px}
