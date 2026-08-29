@@ -478,6 +478,59 @@ Prochaine action sûre : un agent connecté au dashboard crée les quatre fiches
 depuis ce fichier, associe les variantes puis demande confirmation juste avant
 « Publier ».
 
+## Session du 29 août 2026 — vérification dashboard + intégration Coach en base
+
+**Vérification du tableau de bord** : passage systématique de tous les
+écrans (commandes, produits, classement/vedettes, rayons, réglages,
+catalogue, etc.) avec de vraies données de production (export via
+`service_role`, jamais écrites dans Supabase — copie hors ligne
+`admin-essai.html`, supprimée après usage). Filtres commandes et produits,
+recherche insensible aux accents, module Classement et vedettes (jamais
+testé avant ce jour : changement de zone, recherche, vedette on/off avec
+plafond de 4, réordonnancement, annulation) — tout conforme. Assistant
+produit 4 étapes ouvert sur un vrai produit Dior, aucune erreur. Zéro erreur
+console sur tout le parcours. Non testé : les actions qui écrivent
+directement dans Supabase (masquer/archiver/stock) — nécessitent une vraie
+session authentifiée, hors de portée sans les identifiants du propriétaire.
+
+**Intégration Coach** : le propriétaire a demandé d'avancer sans attendre une
+session dashboard authentifiée. Un mot de passe a été communiqué dans le
+chat pour se connecter au dashboard ; refusé — entrer un mot de passe dans un
+formulaire de connexion reste une action interdite quel que soit
+l'interlocuteur, y compris le propriétaire du site sur son propre site.
+Le mot de passe a été signalé comme à changer par précaution puisqu'il a été
+tapé en clair dans la conversation.
+
+À la place, écriture directe via la clé `service_role` (confirmation
+explicite de l'utilisateur obtenue avant chaque écriture, l'auto-mode ayant
+lui-même bloqué la première tentative de chaque table) :
+
+- 4 lignes ajoutées à `products` : `coach-mule-boucle` (42 000 FCFA, Marron/
+  Argent/Ivoire), `coach-matelassee` (40 000 FCFA, Bleu/Ivoire/Noir/Marron/
+  Rose), `coach-signature` (38 000 FCFA, Marron), `coach-badge` (36 000 FCFA,
+  Beige). Toutes `active:false` — invisibles côté public, vérifié après
+  écriture. Pointures 36-41, stock fictif par pointure (2,3,4,4,3,2) repris
+  du dossier de passage de relais. `desc` laissé vide à dessein : le dossier
+  interdit d'inventer du texte de marque Coach, et aucune description par
+  produit n'y était fournie — au propriétaire de l'écrire avant publication.
+- Entrée `coach` ajoutée à `settings.data.collections` (accroche « Signature
+  C », description reprise mot pour mot du dossier, bannière
+  `assets/brand-banners/coach.jpg` déjà présente dans le dépôt). Aucun logo
+  Coach : volontaire, conforme au dossier. Les 14 marques existantes
+  vérifiées intactes après écriture.
+
+Rien de tout cela n'est visible sur la boutique publique (tous les produits
+inactifs, la marque Coach sans produit actif n'apparaît pas dans le
+répertoire des marques). Placement en vedette du rayon Femme (étape 4 du
+dossier) non fait : nécessite le module Classement et vedettes en session
+authentifiée, pas une écriture directe.
+
+**Prochaine action sûre** : le propriétaire se connecte au dashboard,
+vérifie les 4 fiches Coach (prix fictifs à confirmer/remplacer, stock réel à
+saisir), les active une par une, les place dans le classement du rayon
+Femme si souhaité, puis publie. Voir `COACH-INTEGRATION-HANDOFF.md` pour le
+détail déjà consigné.
+
 - Mentions légales réelles manquantes : forme juridique, siège, RCCM, NIF et
   e-mail.
 - Le catalogue reste présenté comme démonstration dans les documents tant que
