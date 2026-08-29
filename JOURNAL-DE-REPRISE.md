@@ -448,6 +448,36 @@ réserver du stock réel.
 
 ## Points encore ouverts hors tâche
 
+## Session du 29 août 2026 — intégration Coach (en cours)
+
+Demande : ajouter rapidement la marque Coach et ses produits depuis le
+dashboard, avec prix fictifs et mise en avant. Le dépôt est propre à
+l'exception de `design-qa.md`, non suivi et hors sujet : ne pas le modifier.
+
+État réel : les images Coach, le catalogue de secours et la bannière sont déjà
+dans Git (`d3f9e04`, déployé). La boutique publique charge toutefois les
+données Supabase : la vraie intégration doit donc passer par le dashboard
+authentifié et rester en brouillon jusqu'au clic explicite sur « Publier ».
+La marque Coach a été ajoutée au brouillon avec son accroche/sa description ;
+la première fiche « Mule Boucle Signature » était en cours de création quand
+la session d'administration a été interrompue. Ne pas déclarer les produits
+ni les couleurs publiés sans vérification dans le dashboard.
+
+Risques : ne pas écraser `design-qa.md`, ne pas abandonner un assistant
+d'ajout sans vérifier son état, et demander une confirmation immédiate avant
+la publication publique.
+
+Résultat de cette reprise : les visuels Coach complets, leurs miniatures et la
+bannière existent déjà dans le dépôt. Un passage de relais autonome a été
+créé dans `COACH-INTEGRATION-HANDOFF.md`; il liste les quatre produits, les
+dix variantes, les prix fictifs, le stock de départ et l'ordre à appliquer.
+La session dashboard reste en brouillon (« À publier ») ; aucune publication
+supplémentaire n'a été effectuée pendant cette reprise.
+
+Prochaine action sûre : un agent connecté au dashboard crée les quatre fiches
+depuis ce fichier, associe les variantes puis demande confirmation juste avant
+« Publier ».
+
 - Mentions légales réelles manquantes : forme juridique, siège, RCCM, NIF et
   e-mail.
 - Le catalogue reste présenté comme démonstration dans les documents tant que

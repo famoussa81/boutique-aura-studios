@@ -8,9 +8,11 @@ validée ou rejetée.
 
 - Marque : Coach (identifiée dans les marquages photographiés).
 - Images sources reçues : 42 JPEG dans `C:\\Users\\PC\\Downloads\\Telegram Desktop`, le 29 août 2026.
-- Générations effectuées : aucune.
-- Intégration dans le site : préparation des actifs en cours ; publication
-  distante reste suspendue jusqu'aux prix confirmés et à une session dashboard.
+- Générations effectuées : une bannière Coach sans logo ni texte ; les 10
+  visuels produit proviennent de photographies réelles recadrées et
+  homogénéisées, sans retouche générative des marquages.
+- Intégration dans le site : les actifs, les miniatures et la graine sont prêts
+  dans Git. L'intégration Supabase/dashboard reste à terminer puis à publier.
 - Mode retenu : conserver les meilleures photographies réelles. Les produits
   affichent des monogrammes Coach ; aucune édition générative n'est utilisée,
   afin de ne jamais les modifier.
@@ -59,6 +61,10 @@ afin d'utiliser un produit réellement approuvé comme référence.
 Les doublons stricts confirmés sont 5/7, 8/15, 9/12 et 30/32/34. Les autres
 sources ne sont pas retenues pour l'ouverture : elles ne présentent pas une
 paire propre suffisamment homogène.
+
+Le fichier `COACH-INTEGRATION-HANDOFF.md` contient maintenant les noms,
+prix fictifs, variantes, ordre de mise en avant et consignes exactes pour
+l'agent chargé de l'intégration dashboard.
 
 ### Bannière Coach
 
