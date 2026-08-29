@@ -182,6 +182,30 @@
       /* Catalogue Femme de démonstration. Les nombreuses teintes reçues sont
          réparties sur plusieurs fiches courtes : six coloris maximum par
          carte, tout en conservant une vraie photo pour chaque sélection. */
+      make({ id: "femme-coach-mule-boucle", name: "Mule Boucle Signature", audience: "femme", cat: "claquettes", brand: "coach", price: 42000,
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [2, 3, 4, 4, 3, 2],
+        img: "assets/products/femme/coach-mule-boucle-marron-studio.jpg",
+        imgs: ["assets/products/femme/coach-mule-boucle-argent-studio.jpg", "assets/products/femme/coach-mule-boucle-ivoire-studio.jpg"],
+        colors: ["Marron", "Argent", "Ivoire"],
+        valueImages: { "Coloris::Marron": "assets/products/femme/coach-mule-boucle-marron-studio.jpg", "Coloris::Argent": "assets/products/femme/coach-mule-boucle-argent-studio.jpg", "Coloris::Ivoire": "assets/products/femme/coach-mule-boucle-ivoire-studio.jpg" },
+        desc: "Mule ouverte à bride signature, détail métallique doré et semelle fine." }),
+      make({ id: "femme-coach-matelassee", name: "Claquette Matelassée C", audience: "femme", cat: "claquettes", brand: "coach", price: 40000,
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [2, 3, 4, 4, 3, 2],
+        img: "assets/products/femme/coach-matelassee-bleu-studio.jpg",
+        imgs: ["assets/products/femme/coach-matelassee-ivoire-studio.jpg", "assets/products/femme/coach-matelassee-noir-studio.jpg", "assets/products/femme/coach-matelassee-marron-studio.jpg", "assets/products/femme/coach-matelassee-rose-studio.jpg"],
+        colors: ["Bleu", "Ivoire", "Noir", "Marron", "Rose"],
+        valueImages: { "Coloris::Bleu": "assets/products/femme/coach-matelassee-bleu-studio.jpg", "Coloris::Ivoire": "assets/products/femme/coach-matelassee-ivoire-studio.jpg", "Coloris::Noir": "assets/products/femme/coach-matelassee-noir-studio.jpg", "Coloris::Marron": "assets/products/femme/coach-matelassee-marron-studio.jpg", "Coloris::Rose": "assets/products/femme/coach-matelassee-rose-studio.jpg" },
+        desc: "Bride matelassée souple, détail C métallique et semelle légère." }),
+      make({ id: "femme-coach-signature", name: "Claquette Signature Toile", audience: "femme", cat: "claquettes", brand: "coach", price: 38000,
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [2, 3, 4, 4, 3, 2],
+        img: "assets/products/femme/coach-signature-marron-studio.jpg", colors: ["Marron"],
+        valueImages: { "Coloris::Marron": "assets/products/femme/coach-signature-marron-studio.jpg" },
+        desc: "Claquette carrée en toile signature, semelle brun cognac et ligne épurée." }),
+      make({ id: "femme-coach-badge", name: "Claquette Badge Signature", audience: "femme", cat: "claquettes", brand: "coach", price: 36000,
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [2, 3, 4, 4, 3, 2],
+        img: "assets/products/femme/coach-badge-beige-studio.jpg", colors: ["Beige"],
+        valueImages: { "Coloris::Beige": "assets/products/femme/coach-badge-beige-studio.jpg" },
+        desc: "Bride large en toile beige, badge signature et assise souple." }),
       make({ id: "femme-hermes-oran-vives", name: "Sandale Oran Couleurs Vives", audience: "femme", brand: "hermes", price: 52000, badge: "Nouveau",
         sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 3, 3, 2, 1],
         img: "assets/products/femme/hermes-oran-rouge.jpg", colors: ["Rouge", "Vert", "Bleu ciel", "Bleu marine", "Corail", "Orange"],
@@ -325,7 +349,7 @@
              boutique : annoncer le délai du rayon Homme serait une promesse
              intenable. Vide, le rayon reprendrait le délai général. */
           deliveryTime: "10 jours",
-          featuredProducts: ["femme-hermes-oran-vives", "femme-dior-dway-bleus", "femme-birkenstock-boston-rose", "femme-hermes-chypre-bleu"]
+          featuredProducts: ["femme-coach-mule-boucle", "femme-coach-matelassee", "femme-hermes-oran-vives", "femme-dior-dway-bleus"]
         }
       },
       collections: [
@@ -359,6 +383,8 @@
           desc: "Bride croisée et détail Gancini. Une ligne souple aux tons naturels." },
         { key: "bally", label: "Bally", logo: "assets/logos/bally.svg", tagline: "Swiss heritage", accent: "#15233A", cover: "assets/brand-banners/bally.webp",
           desc: "Brides croisées et contraste graphique. Une silhouette nette et confortable." }
+        ,{ key: "coach", featured: true, label: "Coach", logo: "", tagline: "Signature C", accent: "#9A6B45", cover: "assets/brand-banners/coach.jpg", homeProducts: ["femme-coach-mule-boucle", "femme-coach-matelassee", "femme-coach-signature", "femme-coach-badge"],
+          desc: "Toile signature, cuir souple et détails métalliques dorés. Une sélection féminine pensée pour l'été." }
       ],
       announcement: "Livraison offerte dès 40 000 FCFA · sous 48h à Bamako",
       instagram: "",

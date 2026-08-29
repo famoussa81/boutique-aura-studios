@@ -1,6 +1,6 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
-Dernière mise à jour : 28 août 2026, correction `dashboard-live-link`.
+Dernière mise à jour : 29 août 2026, lot Coach reçu et en cours de tri.
 
 ## Protocole obligatoire pour chaque agent
 
@@ -213,10 +213,43 @@ recontrôlé dans le HTML de production.
 
 ### Nouvelle tâche — génération des visuels d'une marque
 
-L'utilisateur va fournir environ dix photos d'une nouvelle marque. Cette
-session doit les inspecter visuellement, les classer du défaut le plus critique
-au moins critique, puis régénérer les photos produit nécessaires et une
-bannière de marque. L'intégration dans le code sera confiée à un autre agent.
+Le dossier `C:\\Users\\PC\\Downloads\\Telegram Desktop` contient 42 photos
+reçues le 29 août, vraisemblablement de la marque Coach. Demande actualisée :
+identifier les modèles, réunir les coloris d'un même modèle, choisir la photo
+de couverture la plus soignée, régénérer seulement les visuels insuffisants,
+puis ajouter les produits, leur marque, leurs coloris et leurs emplacements
+Homme/Femme dans la boutique et le dashboard. Les produits unisexes pourront
+être classés Homme tout en restant identifiés comme pertinents pour tous.
+
+Demande précisée : ajouter aussi des prix et stocks fictifs de démonstration,
+placer les modèles Coach les plus esthétiques en vedettes, et régénérer les
+visuels insuffisants. Les photos produit portent des monogrammes Coach : les
+sorties produit seront donc recréées par cadrage/composition non générative
+des pixels source, afin de préserver exactement leurs marquages. ImageGen est
+autorisé uniquement pour une bannière sans texte, logo ou monogramme.
+
+Résultat local : quatre modèles Femme Coach ont été ajoutés à la graine du
+catalogue, pour dix coloris et des prix de démonstration (42 000, 40 000,
+38 000, 36 000 FCFA). Les tailles 36–41 et stocks de démonstration sont
+présents. La Mule Boucle Signature puis la Claquette Matelassée C sont les
+deux premières vedettes Femme et les premières de la marque. Dix photos
+produit réelles ont été recadrées en 1200×1600 avec leurs miniatures ; la
+bannière sans logo/texte est `assets/brand-banners/coach.jpg` en 1920×600.
+Tests exécutés : syntaxe `catalog.js`, structure des quatre fiches, ordre des
+vedettes, existence des vingt miniatures et dimensions de chaque visuel.
+
+Limite à ne pas masquer : la production lit les produits depuis Supabase, pas
+la graine `catalog.js`. La synchronisation de ces quatre fiches dans la base
+demande une session administrateur authentifiée, puis la publication du
+brouillon ; aucun contournement de cette protection ne doit être introduit.
+
+État Git au début : `main` à `336e934`, seul fichier non suivi préexistant
+`design-qa.md` à préserver. Fichiers pressentis : dossier source externe,
+`assets/`, `catalog.js`, réglages de marques/catalogue si nécessaire,
+documentation de reprise et ce journal. Risques : ne jamais inventer ou
+retoucher les logos/marques, ne pas confondre couleurs et modèles, ne pas
+écraser les sources reçues, et vérifier la synchronisation dashboard après
+l'intégration.
 
 Le registre de reprise dédié est `IMAGE-BATCH-HANDOFF.md`. Il doit recevoir
 une ligne pour chaque source et une entrée complète après chaque génération.

@@ -6,12 +6,14 @@ validée ou rejetée.
 
 ## État actuel
 
-- Marque : à préciser avec les pièces jointes.
-- Images sources reçues : aucune dans cette tâche pour le moment.
+- Marque : Coach (identifiée dans les marquages photographiés).
+- Images sources reçues : 42 JPEG dans `C:\\Users\\PC\\Downloads\\Telegram Desktop`, le 29 août 2026.
 - Générations effectuées : aucune.
-- Intégration dans le site : hors de cette tâche ; elle sera confiée à un
-  autre agent.
-- Mode prévu : édition ImageGen intégrée, un appel par visuel.
+- Intégration dans le site : préparation des actifs en cours ; publication
+  distante reste suspendue jusqu'aux prix confirmés et à une session dashboard.
+- Mode retenu : conserver les meilleures photographies réelles. Les produits
+  affichent des monogrammes Coach ; aucune édition générative n'est utilisée,
+  afin de ne jamais les modifier.
 
 ## Règles non négociables
 
@@ -49,7 +51,24 @@ afin d'utiliser un produit réellement approuvé comme référence.
 
 | # | Source | Usage prévu | Défaut observé | Priorité | Sortie | Statut |
 |---|---|---|---|---|---|---|
-| — | En attente des pièces jointes | — | — | — | — | À recevoir |
+| 1 | Photos 10, 15, 16, 19, 23 | Claquette matelassée C | Cinq coloris, paires réelles | — | `assets/products/femme/coach-matelassee-*-studio.jpg` | Intégrée dans la graine |
+| 2 | Photo 5 | Claquette signature | Marron, paire réelle | — | `assets/products/femme/coach-signature-marron-studio.jpg` | Intégrée dans la graine |
+| 3 | Photos 30, 31, 33 | Mule à boucle | Argent, ivoire et marron, paires réelles | — | `assets/products/femme/coach-mule-boucle-*-studio.jpg` | Intégrée dans la graine |
+| 4 | Photo 12 | Claquette badge signature | Beige, paire réelle | — | `assets/products/femme/coach-badge-beige-studio.jpg` | Intégrée dans la graine |
+
+Les doublons stricts confirmés sont 5/7, 8/15, 9/12 et 30/32/34. Les autres
+sources ne sont pas retenues pour l'ouverture : elles ne présentent pas une
+paire propre suffisamment homogène.
+
+### Bannière Coach
+
+- Sortie : `assets/brand-banners/coach.jpg` et sa miniature.
+- Rôle : image de couverture de marque, générée sans texte, logo, monogramme
+  ni marque ; les produits réels restent exclusivement les photographies
+  sources recadrées en studio.
+- Choix éditorial : la Mule Boucle Signature puis la Claquette Matelassée C
+  sont placées parmi les vedettes Femme et de la marque ; les deux autres
+  modèles restent dans l'ordre secondaire.
 
 Statuts autorisés : `À recevoir`, `Inspectée`, `À générer`, `Générée`,
 `Rejetée`, `Validée`, `Prête à intégrer`.
@@ -80,4 +99,3 @@ Décision : validée / rejetée / nouvelle itération
 - La bannière ne contient aucun faux logo ni texte généré.
 - La liste des fichiers à intégrer est explicite ; aucun code, prix, produit
   ou déploiement n'a été modifié pendant la génération.
-
