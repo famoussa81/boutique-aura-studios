@@ -222,6 +222,15 @@
   .ord-items{margin:14px 0 0}
   .ord-item{display:flex;justify-content:space-between;align-items:center;gap:12px;
     padding:8px 0;border-top:1px solid var(--line);font-size:13px}
+  /* Miniature de la paire commandée. Le commerçant prépare le colis en
+     regardant la photo, pas en déchiffrant une référence. */
+  .ord-arts{display:grid;gap:6px;margin-top:5px}
+  .ord-art{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted)}
+  .ord-art>span{display:grid;min-width:0}
+  .ord-art small{display:block;font-size:10px;letter-spacing:.04em}
+  .ord-vig{width:32px;height:42px;flex:none;object-fit:cover;border-radius:4px;
+    background:var(--gray);border:1px solid var(--line)}
+  .ord-vig-vide{display:block}
   .aud-admin-card{max-width:720px;margin-bottom:20px}.aud-admin-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px}.aud-hero-preview{display:block;width:100%;max-height:260px;object-fit:cover;margin:0 0 10px}.aud-admin-products{display:grid;gap:8px;margin-top:12px}.aud-admin-product{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:8px;padding:8px}.aud-admin-product.selected{border-color:#111;background:#fafafa}.aud-admin-product label{display:flex;align-items:center;gap:10px;min-width:0;flex:1;cursor:pointer}.aud-admin-product img{width:44px;height:56px;object-fit:cover;border-radius:5px;background:#f1f1f1}.aud-admin-product span span{display:grid;min-width:0}.aud-admin-product b{font-size:13px}.aud-admin-product small{font-size:11px;color:var(--muted)}.aud-order{display:flex!important;align-items:center;gap:4px}.aud-order button{width:36px;height:36px;border:1px solid var(--line);background:#fff;border-radius:6px;font-weight:900;cursor:pointer}.aud-order i{width:24px;text-align:center;font-style:normal;font-size:11px;font-weight:800}@media(max-width:560px){.aud-admin-card{padding:16px}.aud-admin-head{align-items:flex-start}.aud-admin-product{align-items:flex-start}.aud-order{flex-wrap:wrap;justify-content:flex-end;max-width:76px}.aud-order i{order:-1;width:100%}}
   .merch-shell{max-width:900px;display:grid;gap:16px;overscroll-behavior:contain}.merch-toolbar{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:12px;align-items:end}.merch-toolbar .field{margin:0}.merch-summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.merch-featured{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.merch-featured-card{position:relative;border:1px solid var(--ink);border-radius:8px;padding:8px;background:#fff}.merch-featured-card img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:6px;background:var(--gray)}.merch-featured-card b{display:block;font-size:12px;line-height:1.3;margin-top:7px}.merch-featured-card small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.merch-featured-card .merch-rank{position:absolute;top:14px;left:14px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;font-size:11px;font-weight:900}.merch-search-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;margin-bottom:14px}.merch-search-row .field{margin:0}.merch-list{display:grid;gap:8px}.merch-row{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:11px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:9px;background:#fff}.merch-row.is-featured{border-color:var(--ink);box-shadow:inset 3px 0 0 var(--ink)}.merch-row.is-unavailable{background:#fafafa}.merch-row img{width:52px;height:68px;object-fit:cover;border-radius:6px;background:var(--gray)}.merch-copy{min-width:0}.merch-copy b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.merch-copy small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.merch-state{display:inline-flex!important;width:max-content;margin-top:5px;padding:2px 6px;border:1px solid var(--line);border-radius:20px;font-size:9px!important;font-weight:800;text-transform:uppercase;letter-spacing:.05em}.merch-state.ok{background:#eef8f0;border-color:#b7d9be;color:#176b2d}.merch-actions{display:flex;align-items:center;justify-content:flex-end;gap:5px;flex-wrap:wrap}.merch-actions button{min-width:44px;min-height:44px;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;font-size:11px;font-weight:800;color:var(--ink)}.merch-actions button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}.merch-actions button:disabled{opacity:.35;cursor:not-allowed}.merch-position{min-width:31px;text-align:center;font-size:11px;font-weight:900}.merch-empty{padding:20px;border:1px dashed var(--line);border-radius:8px;color:var(--muted);text-align:center}.merch-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:16px}.merch-foot>div{display:flex;gap:8px;flex-wrap:wrap}
   @media(max-width:700px){.merch-toolbar,.merch-search-row{grid-template-columns:1fr}.merch-featured{grid-template-columns:repeat(2,minmax(0,1fr))}.merch-row{grid-template-columns:46px minmax(0,1fr)}.merch-row img{width:46px;height:60px}.merch-actions{grid-column:1/-1;justify-content:stretch}.merch-actions button{flex:1;min-width:66px}.merch-position{order:-1;flex:0 0 100%;text-align:left}.merch-foot,.merch-foot>div{display:grid;grid-template-columns:1fr;width:100%}.merch-foot .btn{width:100%}}
@@ -1431,6 +1440,36 @@
   function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
   function fmt(n){ return (Math.round(Number(n)||0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g," ") + " FCFA"; }
   function articleRef(id){var propre=String(id||"").replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"").toUpperCase();return "ART-"+(propre||"SANS-REFERENCE");}
+  /* Photo exacte de la paire commandée. Les noms ne s'affichant plus sur les
+     cartes, le commerçant a besoin de reconnaître la paire d'un coup d'œil
+     pour la sortir du carton — une référence se lit, une photo se reconnaît.
+     La commande porte déjà l'identifiant du produit et la clé de variante :
+     le coloris s'en déduit sans rien changer côté serveur.
+     L'ordre d'essai va du plus fidèle au plus sûr, et s'arrête à rien plutôt
+     que de montrer la photo d'une autre paire. */
+  function photoArticle(it){
+    if (!it) return "";
+    /* Photo figée au moment de l'achat : elle prime, car le produit a pu
+       changer de visuel depuis. Aucune commande n'en porte encore. */
+    if (it.image) return it.image;
+    var p = findProduct(it.id);
+    if (!p) return "";
+    var vals = valuesOf(it.variant || "");
+    var axes = Array.isArray(p.axes) ? p.axes : [];
+    for (var i = 0; i < axes.length && i < vals.length; i++){
+      if (!/coloris|couleur|color/i.test(axes[i].name || "")) continue;
+      var cle = axes[i].name + VSEP + vals[i];
+      if (p.valueImages && p.valueImages[cle]) return p.valueImages[cle];
+    }
+    return p.img || "";
+  }
+  function vignetteArticle(it){
+    var src = photoArticle(it);
+    if (!src) return '<span class="ord-vig ord-vig-vide" aria-hidden="true"></span>';
+    /* Une photo devenue inaccessible ne doit pas laisser d'icône cassée :
+       l'image se retire et la place reste neutre, le texte suffit. */
+    return '<img class="ord-vig" src="' + esc(src) + '" alt="" loading="lazy" onerror="this.hidden=true" />';
+  }
   function digits(s){ return String(s||"").replace(/\D/g,""); }
   function localPhone(d){
     d = digits(d);
@@ -1690,8 +1729,15 @@
     if(cards) cards.innerHTML=list.map(function(o){
       var st=STATUS[o.status]||STATUS.PENDING;
       var msg="Bonjour "+o.client+" 👋\n\nVotre commande *"+o.ref+"* ("+st.label+") est enregistrée chez *"+(store.settings.shopName||"la boutique")+"*.\nLivraison prévue à *Bamako, "+o.quartier+"*.";
-      var items=(o.items||[]).map(function(it){ var lib=it.variantLabel||it.size||""; return it.qty+" × "+(it.brand?it.brand+" ":"")+it.name+(lib?" ("+lib+")":"")+" · Réf. "+articleRef(it.id); }).join(" · ");
-      return '<article class="order-card"><div class="order-card-head"><div><span class="ref">'+esc(o.ref)+'</span><h3>'+esc(o.client)+'</h3></div><b>'+fmt(o.total)+'</b></div><div class="order-card-info"><div><span>Téléphone</span>'+esc(localPhone(o.phone))+'</div><div><span>Livraison</span>'+esc(o.quartier)+'</div></div><div class="order-card-items">'+esc(items)+'</div><div class="order-card-actions">'+orderStatusHTML(o)+'<a class="btn btn-ghost" href="tel:+223'+esc(digits(o.phone).slice(-8))+'">Appeler</a><a class="btn btn-primary" target="_blank" rel="noopener" href="'+esc(waLink("223"+digits(o.phone).slice(-8),msg))+'">WhatsApp</a><button type="button" class="btn btn-ghost" data-mobile-ordedit="'+esc(o.ref)+'">Détails</button></div>'+(editingOrder===o.ref?orderEditCardHTML(o):'')+'</article>';
+      /* Le commerçant prépare ses colis sur son téléphone : c'est ici, pas
+         dans le tableau réservé au grand écran, que la photo lui sert. */
+      var items=(o.items||[]).map(function(it){
+        var lib=it.variantLabel||it.size||"";
+        return '<span class="ord-art">'+vignetteArticle(it)+'<span>'+
+          esc(it.qty+" × "+(it.brand?it.brand+" ":"")+it.name+(lib?" ("+lib+")":""))+
+          '<small>Réf. '+esc(articleRef(it.id))+'</small></span></span>';
+      }).join("");
+      return '<article class="order-card"><div class="order-card-head"><div><span class="ref">'+esc(o.ref)+'</span><h3>'+esc(o.client)+'</h3></div><b>'+fmt(o.total)+'</b></div><div class="order-card-info"><div><span>Téléphone</span>'+esc(localPhone(o.phone))+'</div><div><span>Livraison</span>'+esc(o.quartier)+'</div></div><div class="order-card-items ord-arts">'+items+'</div><div class="order-card-actions">'+orderStatusHTML(o)+'<a class="btn btn-ghost" href="tel:+223'+esc(digits(o.phone).slice(-8))+'">Appeler</a><a class="btn btn-primary" target="_blank" rel="noopener" href="'+esc(waLink("223"+digits(o.phone).slice(-8),msg))+'">WhatsApp</a><button type="button" class="btn btn-ghost" data-mobile-ordedit="'+esc(o.ref)+'">Détails</button></div>'+(editingOrder===o.ref?orderEditCardHTML(o):'')+'</article>';
     }).join("");
     body.innerHTML = list.map(function(o){
       var st = STATUS[o.status] || STATUS.PENDING;
@@ -1705,10 +1751,12 @@
         /* La marque distingue deux modèles homonymes : sans elle, le
            commerçant ne sait pas quelle paire préparer. Absente des
            commandes passées avant cette version, elle est simplement omise. */
-        return it.qty + " × " + (it.brand ? it.brand + " " : "") + it.name + (lib ? " (" + lib + ")" : "") + " · Réf. " + articleRef(it.id);
-      }).join(" · ");
+        return '<span class="ord-art">' + vignetteArticle(it) + '<span>' +
+          esc(it.qty + " × " + (it.brand ? it.brand + " " : "") + it.name + (lib ? " (" + lib + ")" : "")) +
+          '<small>Réf. ' + esc(articleRef(it.id)) + '</small></span></span>';
+      }).join("");
       return '<tr data-row="' + esc(o.ref) + '">' +
-        '<td><span class="ref">' + esc(o.ref) + '</span><div style="font-size:11.5px;color:var(--muted);margin-top:3px">' + esc(items) + '</div></td>' +
+        '<td><span class="ref">' + esc(o.ref) + '</span><div class="ord-arts">' + items + '</div></td>' +
         '<td class="mono">' + esc(date) + '</td>' +
         '<td>' + esc(o.client) + '</td>' +
         '<td class="mono">' + esc(localPhone(o.phone)) + '</td>' +

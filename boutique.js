@@ -3041,6 +3041,19 @@ window.AURA_IMG = function (img) {
     renderCheckoutSummary();
     openModal("coOverlay");
   }
+  /* Photo exacte du coloris commandé, en adresse absolue et partageable. */
+  function photoCommandee(it){
+    var src = it && it.image ? it.image : "";
+    if (!src){
+      var p = it ? findProduct(it.id) : null;
+      if (!p) return "";
+      src = photoDeLaSelection(p, valuesOf(it.variant || "")) || p.img || "";
+    }
+    if (!src) return "";
+    if (/^(blob:|data:)/i.test(src)) return "";
+    if (/^https?:\/\//i.test(src)) return src;
+    try { return new URL(src, location.origin + "/").href; } catch(e){ return ""; }
+  }
   function buildWAMessage(o){
     var L = [];
     L.push("🛍️ *Nouvelle commande " + o.ref + "*");
@@ -3050,6 +3063,14 @@ window.AURA_IMG = function (img) {
       L.push("• " + it.qty + " × " + (it.brand ? it.brand + " " : "") + it.name +
              (lib ? " (" + lib + ")" : "") + " — Réf. " + articleRef(it.id) +
              " — " + fmt(it.price * it.qty));
+      /* Le nom ne suffit plus à reconnaître la paire depuis que les cartes ne
+         l'affichent plus : le lien montre exactement le coloris commandé.
+         WhatsApp classique ne peut pas joindre le fichier lui-même — il faudrait
+         l'interface payante de Meta — mais il sait afficher l'aperçu d'un lien.
+         Seule une adresse publique part : jamais un « blob: » ni un « data: »,
+         qui ne mèneraient nulle part chez le commerçant. */
+      var photo = photoCommandee(it);
+      if (photo) L.push("   📷 " + photo);
     });
     L.push("");
     L.push("🧾 *Sous-total :* " + fmt(o.subtotal));
