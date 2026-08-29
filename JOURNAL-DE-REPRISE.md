@@ -243,6 +243,12 @@ la graine `catalog.js`. La synchronisation de ces quatre fiches dans la base
 demande une session administrateur authentifiée, puis la publication du
 brouillon ; aucun contournement de cette protection ne doit être introduit.
 
+Mise en ligne des fichiers terminée : commit `d3f9e04` poussé sur `main`.
+Vérification production effectuée : accueil, `catalog.js?v=20260829coach`,
+bannière Coach et photo de la Mule Boucle Signature répondent tous 200. Les
+fiches ne sont pas encore visibles au public tant que la base Supabase n'a pas
+reçu le brouillon Coach depuis une session administrateur.
+
 État Git au début : `main` à `336e934`, seul fichier non suivi préexistant
 `design-qa.md` à préserver. Fichiers pressentis : dossier source externe,
 `assets/`, `catalog.js`, réglages de marques/catalogue si nécessaire,
