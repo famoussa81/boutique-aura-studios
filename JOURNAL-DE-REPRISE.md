@@ -204,6 +204,13 @@ breakpoint mobile ; l'offset mobile a été corrigé puis revalidé localement.
 La révision CSS finale est `20260829s` sur les sept pages qui chargent la
 feuille.
 
+Mise en ligne terminée : commits `b2c5574` puis `dfe812d`, poussés sur `main`.
+La production `/marques` répond 200 et sert bien `boutique.css?v=20260829s`.
+Contrôle final en production à 375 px : fonds uniformes, Moncler entier,
+Balenciaga et EA7 lisibles, aucune erreur console et aucun débordement. Le
+lien public du dashboard avait déjà été déployé dans `9f04251` et a été
+recontrôlé dans le HTML de production.
+
 ### Nouvelle tâche — génération des visuels d'une marque
 
 L'utilisateur va fournir environ dix photos d'une nouvelle marque. Cette
