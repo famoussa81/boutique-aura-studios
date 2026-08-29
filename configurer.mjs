@@ -19,11 +19,21 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
 const DOMAINE_DEMO = 'https://boutique-aura-studios.vercel.app';
 
+/* Cette liste a déjà été prise en défaut. Elle citait `produit.html`, devenu
+   `gabarit-produit.html`, et ignorait les rayons, le tableau de bord, le
+   catalogue de démarrage et les trois fonctions serveur — huit fichiers qui
+   auraient gardé l'adresse du premier client. Le jour d'une revente, la
+   boutique du nouveau commerçant aurait renvoyé vers celle de l'ancien.
+   Vérifier cette liste avec :
+     grep -rl "boutique-aura-studios.vercel.app" --include="*.html" --include="*.js" . */
 const FICHIERS_DOMAINE = [
-  'index.html', 'marques.html', 'catalogue.html', 'collection.html', 'produit.html', '404.html',
+  'index.html', 'hommes.html', 'femmes.html', 'marques.html', 'catalogue.html',
+  'collection.html', 'gabarit-produit.html', '404.html',
   'cgv.html', 'confidentialite.html',
   'guide-des-tailles.html', 'durabilite.html',
-  'robots.txt', 'sitemap.xml',
+  'admin.html', 'catalog.js',
+  'api/produit.js', 'api/share-image.js', 'api/sitemap.js',
+  'robots.txt',
 ];
 
 /* Nom et image de partage. Ils vivent dans les balises `<meta>`, que le
@@ -34,8 +44,10 @@ const ENSEIGNE_DEMO = 'T&K SHOES';
 const IMAGE_DEMO = '/assets/hero.webp';
 
 const FICHIERS_ENSEIGNE = [
-  'index.html', 'marques.html', 'catalogue.html', 'collection.html', 'produit.html', '404.html',
+  'index.html', 'hommes.html', 'femmes.html', 'marques.html', 'catalogue.html',
+  'collection.html', 'gabarit-produit.html', '404.html',
   'cgv.html', 'confidentialite.html', 'guide-des-tailles.html', 'durabilite.html',
+  'admin.html',
 ];
 
 function args() {

@@ -1,6 +1,6 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
-Dernière mise à jour : 28 août 2026, fin de la tâche `merchandising`.
+Dernière mise à jour : 28 août 2026, correction `dashboard-live-link`.
 
 ## Protocole obligatoire pour chaque agent
 
@@ -163,6 +163,75 @@ Ces fichiers appartiennent au travail en cours. Ne pas supprimer
 revu.
 
 ## Tâche en cours
+
+### Correctif prioritaire — « Voir ma boutique » ouvre le fichier local
+
+Signalement : depuis un dashboard ouvert comme fichier ou sur un serveur de
+test, les liens relatifs `index.html` ouvrent la copie locale au lieu de la
+boutique en production. Le flux attendu est
+`/admin` → « Voir ma boutique » → domaine public dans un nouvel onglet.
+
+Fichier envisagé : `admin.html` uniquement, plus ce journal. Risque : ne pas
+casser les boutons d'aperçu, qui doivent au contraire rester sur la même
+origine afin de partager le brouillon par `sessionStorage`. Le domaine public
+sera écrit avec la valeur reconnue par `configurer.mjs`, afin qu'une boutique
+revendue avec un autre domaine soit réécrite automatiquement.
+
+État Git au début : `main` à `f111b49`; modifications documentaires non
+commitées dans `JOURNAL-DE-REPRISE.md`, `IMAGE-BATCH-HANDOFF.md` et
+`SPEC-order-product-image.md`; `design-qa.md` non suivi à préserver.
+
+Statut : diagnostic confirmé, correctif et vérification en cours.
+
+### Nouvelle tâche — génération des visuels d'une marque
+
+L'utilisateur va fournir environ dix photos d'une nouvelle marque. Cette
+session doit les inspecter visuellement, les classer du défaut le plus critique
+au moins critique, puis régénérer les photos produit nécessaires et une
+bannière de marque. L'intégration dans le code sera confiée à un autre agent.
+
+Le registre de reprise dédié est `IMAGE-BATCH-HANDOFF.md`. Il doit recevoir
+une ligne pour chaque source et une entrée complète après chaque génération.
+À ce stade, aucune photo source de ce nouveau lot n'a encore été jointe et
+aucune génération n'a été lancée.
+
+Limites : ne jamais générer ou retoucher un logo, un monogramme ou un texte de
+marque ; utiliser uniquement un logo officiel fourni séparément. Ne modifier
+ni code, ni produit, ni prix, ni base, ni déploiement pendant ce lot. Les
+sorties doivent rester versionnées jusqu'à validation et être remises au
+prochain agent avec leurs chemins absolus.
+
+La tâche `order-product-image` ci-dessous est suspendue avant implémentation :
+sa spécification existe dans `SPEC-order-product-image.md`, mais les quatre
+décisions listées à la fin de la session précédente n'ont pas encore reçu de
+validation explicite complète. Aucun changement serveur relatif à cette
+spécification n'a été appliqué.
+
+### Nouvelle demande — photo exacte dans les commandes
+
+Ajouter automatiquement à chaque ligne de commande la photo exacte du
+coloris choisi, sans demander au commerçant de saisir une référence ni une
+URL. La photo doit être visible dans le dashboard et son lien doit apparaître
+dans le texte WhatsApp. La solution doit couvrir les produits créés depuis le
+dashboard, les téléversements depuis un téléphone, les anciennes commandes,
+les images remplacées et les échecs de téléversement.
+
+État Git au début : branche `main`, HEAD `f111b49`, seul fichier non suivi
+préexistant : `design-qa.md` (à préserver et ne pas inclure automatiquement).
+
+Fichiers envisagés : `boutique.js`, `admin.html`, `supabase-client.js`,
+éventuellement `supabase/schema.sql` si le contrat serveur doit être élargi,
+une spécification dédiée, `RECETTE.md`, `GUIDE-ADMINISTRATION.md` et ce
+journal.
+
+Risques connus : ne jamais dépendre d'une URL locale `blob:`, ne pas perdre
+la photo d'une ancienne commande après remplacement du produit, ne pas
+exposer de bucket privé dans WhatsApp, ne pas créer de commande de production
+pendant les tests et préserver la compatibilité avec les commandes sans
+champ image.
+
+Statut : spécification et audit du flux d'upload en cours ; aucun code produit
+modifié à ce stade.
 
 ### Demande
 
