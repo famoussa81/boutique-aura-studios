@@ -233,12 +233,14 @@
   .brand-logo-visual{position:relative;display:flex;align-items:center;justify-content:center;
     width:100%;height:54px;overflow:hidden}
   .brand-logo-img{display:block;width:auto;max-width:78%;height:auto;max-height:42px;
-    object-fit:contain;object-position:center}
+    object-fit:contain;object-position:center;mix-blend-mode:multiply}
   .brand-logo-fallback{font-size:clamp(16px,1.7vw,22px);line-height:1;text-align:center;
     text-transform:uppercase;letter-spacing:-.02em}
   .brand-logo-action{font-size:10.5px;font-weight:800;line-height:1;letter-spacing:.16em;
     text-transform:uppercase;color:#77736d}
-  .brand-logo-card[data-brand="hermes"] .brand-logo-img{max-width:72%;max-height:46px}
+  .brand-logo-card[data-brand="hermes"] .brand-logo-img{position:absolute;display:block;
+    width:89.5%;max-width:none;max-height:none;height:auto;left:7.7%;top:8px;
+    object-fit:initial}
   .brand-logo-card[data-brand="louis-vuitton"] .brand-logo-img,
   .brand-logo-card[data-brand="givenchy"] .brand-logo-img{max-width:82%}
   .brand-logo-card[data-brand="dior"] .brand-logo-img{max-width:54%;max-height:46px}
@@ -250,9 +252,9 @@
   .brand-logo-card[data-brand="moncler"] .brand-logo-img,
   .brand-logo-card[data-brand="ea7"] .brand-logo-img{position:absolute;display:block;
     max-width:none;max-height:none;height:auto;object-fit:initial}
-  .brand-logo-card[data-brand="balenciaga"] .brand-logo-img{width:140%;left:0;top:10px}
-  .brand-logo-card[data-brand="moncler"] .brand-logo-img{width:100%;left:0;top:0}
-  .brand-logo-card[data-brand="ea7"] .brand-logo-img{width:195%;left:0;top:11px}
+  .brand-logo-card[data-brand="balenciaga"] .brand-logo-img{width:118.5%;left:7.5%;top:15px}
+  .brand-logo-card[data-brand="moncler"] .brand-logo-img{width:70%;left:15%;top:-25px}
+  .brand-logo-card[data-brand="ea7"] .brand-logo-img{width:172%;left:7.7%;top:16px}
   .catalogue-gateway-section{padding-top:16px}
   .catalogue-gateway{position:relative;display:block;overflow:hidden;min-height:360px;border-radius:var(--radius);color:#fff;text-decoration:none;background:var(--ink)}
   .catalogue-gateway>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .5s ease}

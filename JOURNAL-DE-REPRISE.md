@@ -181,7 +181,25 @@ revendue avec un autre domaine soit réécrite automatiquement.
 commitées dans `JOURNAL-DE-REPRISE.md`, `IMAGE-BATCH-HANDOFF.md` et
 `SPEC-order-product-image.md`; `design-qa.md` non suivi à préserver.
 
-Statut : diagnostic confirmé, correctif et vérification en cours.
+Statut : corrigé localement. Les deux liens « Voir ma boutique » utilisent le
+domaine public reconnu par `configurer.mjs`, s'ouvrent dans un nouvel onglet
+et ne touchent pas aux aperçus de brouillon. Vérification locale : les deux
+ancres portent `https://boutique-aura-studios.vercel.app`, `target="_blank"`
+et `rel="noopener"`, sans erreur console. Déploiement à consigner après push.
+
+### Correctif ajouté — grille « Toutes les marques »
+
+Le fond `#faf9f7` des cartes révélait les rectangles blancs intégrés aux PNG
+Hermès, Balenciaga, Moncler et EA7. Moncler était en plus cadré sur la mauvaise
+zone de sa capture. Correction purement CSS dans `boutique.css` : fusion
+visuelle du blanc par `mix-blend-mode:multiply` et cadrages calculés à partir
+des pixels réellement occupés. Aucun logo, monogramme ou texte de marque n'a
+été généré, redessiné ou retouché.
+
+Vérifications locales exécutées sur `/marques.html?demo=1` : bureau et 375 px,
+Balenciaga/Moncler/EA7 visibles en entier, fonds uniformes, aucune erreur
+console et aucun débordement horizontal (`clientWidth = scrollWidth = 360`).
+La révision CSS est `20260829r` sur les sept pages qui chargent la feuille.
 
 ### Nouvelle tâche — génération des visuels d'une marque
 
