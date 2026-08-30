@@ -647,7 +647,7 @@ SQL : aucune de ces trois fiches n'est encore publique. Prochaine action sûre :
 le propriétaire saisit vrais prix et stocks, contrôle l'aperçu, active les
 fiches puis publie.
 
-### Session du 30 août 2026 — reprise premium des 10 visuels Coach Femme (en cours)
+### Session du 30 août 2026 — reprise premium des 10 visuels Coach Femme (terminée)
 
 Demande : corriger les cadres gris visibles, angles divergents, inclinaisons
 et rendu non premium des quatre cartes Coach Femme déjà publiques. Fichiers
@@ -656,6 +656,19 @@ miniatures. Méthode : édition ImageGen depuis chaque vraie paire, même vue
 studio trois-quarts, même échelle, fond #FFFFFF sans rectangle. Risques : ne
 pas changer modèle, coloris, monogramme, boucle ni texte Coach ; contrôler
 chaque résultat avant écrasement et ne pas publier un visuel rejeté.
+
+Résultat : dix éditions ImageGen retenues puis normalisées en JPEG progressif
+`1200 × 1600`, avec blanc pur aux quatre coins, ombre légère et vue studio
+cohérente. De nouveaux noms `coach-*-premium.jpg` ont été employés pour éviter
+le cache des anciennes photos ; les 10 fichiers produit et leurs 20 miniatures
+carte/coloris ont été ajoutés. `catalog.js`, les quatre produits Coach publics
+et les mêmes produits dans `admin_drafts` utilisent ces nouveaux chemins.
+Le brouillon est passé de la version 227 à 228, sans modifier prix, stock ni
+statut. Commit `412bcd5` poussé sur `main`. Contrôles réussis : syntaxe JS,
+`git diff --check`, dimensions/couleurs de coin, URL de production HTTP 200,
+chargement réel des quatre cartes à 1200 px, rendu desktop et mobile sans cadre
+interne ni débordement horizontal (`375/375`). Prochaine action sûre : aucune ;
+recharger la page si un ancien onglet conserve encore son propre cache.
 
 - Mentions légales réelles manquantes : forme juridique, siège, RCCM, NIF et
   e-mail.
