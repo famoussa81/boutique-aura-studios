@@ -626,7 +626,7 @@ Contrôle SQL : aucun slide noir dans les produits publics et quatre produits
 Coach actifs inchangés. Prochaine action sûre : saisir prix et stock réels
 dans le dashboard, afficher la fiche, vérifier l'aperçu puis publier.
 
-### Session du 30 août 2026 — génération des paires Coach manquantes (en cours)
+### Session du 30 août 2026 — génération des paires Coach manquantes (terminée)
 
 Demande : générer maintenant les paires complètes absentes à partir des photos
 Telegram à chaussure seule. Sources visées : double bride rose, variantes du
@@ -635,6 +635,17 @@ fond blanc et miniatures correspondantes. Risques : conserver exactement
 forme, coloris, matières et marquages visibles ; rejeter toute génération qui
 déforme ou invente un logo/monogramme. Aucun produit ne sera publié avant
 contrôle visuel.
+
+Résultat : huit paires générées avec l'outil intégré ImageGen à partir des
+photos 26, 27, 35, 36, 38, 39, 40 et 42, puis contrôlées visuellement et
+normalisées en JPEG `1200 × 1600`, fond blanc pur. Cela couvre trois sabots,
+quatre nouveaux coloris de slide et la double bride rose ; 24 fichiers produit
+et miniatures ont été ajoutés. Commit `2645d2c` poussé sur `main`; les huit
+URL répondent HTTP 200. Brouillon Supabase passé de la version 226 à 227, avec
+57 produits et trois fiches Coach masquées (`price=0`, stock nul). Vérification
+SQL : aucune de ces trois fiches n'est encore publique. Prochaine action sûre :
+le propriétaire saisit vrais prix et stocks, contrôle l'aperçu, active les
+fiches puis publie.
 
 - Mentions légales réelles manquantes : forme juridique, siège, RCCM, NIF et
   e-mail.
