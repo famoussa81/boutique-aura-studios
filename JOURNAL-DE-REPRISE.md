@@ -602,6 +602,20 @@ sûre : le propriétaire choisit le rayon et le prix du slide noir, puis ajoute
 ce produit depuis le dashboard avant publication ; demander une vraie photo
 de paire pour double bride rose et sabot à boucle.
 
+### Session du 30 août 2026 — ajout Coach demandé (en cours)
+
+Demande : ajouter maintenant les éléments Coach préparés. Fichiers concernés :
+le brouillon administrateur Supabase, le produit Slide Signature Noir et les
+réglages Coach. Risque critique : écrire directement dans `products` ou
+`settings` sera annulé par la prochaine publication ; utiliser exclusivement
+la session dashboard authentifiée et le brouillon, puis vérifier avant tout
+clic de publication.
+
+Le passage manuel par l'interface a été abandonné à la demande du propriétaire.
+Décision : intégrer directement dans le code et le brouillon Supabase, sans
+publier. La nouvelle fiche doit rester masquée, avec prix et stock à zéro,
+pour empêcher toute vente avant saisie des vraies valeurs.
+
 - Mentions légales réelles manquantes : forme juridique, siège, RCCM, NIF et
   e-mail.
 - Le catalogue reste présenté comme démonstration dans les documents tant que

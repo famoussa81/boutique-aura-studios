@@ -90,10 +90,13 @@ et fourni une photo de paire quand le lot ne montre qu'une chaussure.
 | Slide monobloc toile signature | Homme / unisexe | photo 41, paire noire ; 35/37-40, chaussures seules | Visuel paire noire préparé, choix de rayon à valider |
 | Sabot à boucle toile signature | Homme / unisexe | photos 26, 27 et 42, une chaussure chacune | Attendre une vraie paire |
 
-Visuel déjà prêt mais non rattaché à une fiche :
+Visuel rattaché au brouillon à la fiche masquée `coach-slide-signature-noir` :
 `assets/products/homme/coach-slide-signature-noir-studio.jpg` avec ses deux
 miniatures sous `assets/thumbs/cards/products/homme/` et
 `assets/thumbs/colors/products/homme/`.
+
+La fiche reste masquée avec prix et stock à zéro tant que le propriétaire
+n'a pas renseigné les vraies valeurs dans le dashboard.
 
 Raison du blocage : une paire créée par IA ou par duplication cacherait une
 fausse chaussure et risquerait d'altérer les monogrammes. Une photo source de
