@@ -573,6 +573,35 @@ ou publication. Ne pas supposer que ce délai de grâce existe pour toute
 correction future : il tient spécifiquement au fait que le brouillon n'a pas
 été touché depuis.
 
+### Session du 30 août 2026 — reprise complète des visuels Coach (terminée)
+
+Demande : réexaminer les 42 photos Telegram, dédoublonner, retenir tous les
+modèles, homogénéiser les visuels et intégrer bannière/logo réel/produits sans
+publier. Fichiers visés : nouveaux actifs sous `assets/products/`, miniatures,
+bannière et données de catalogue; le tri doit être consigné dans le passage de
+relais. Risques connus : ne jamais générer ni retoucher un monogramme/logo;
+ne pas intégrer une paire fictive depuis une seule chaussure sans une source
+fiable; ne plus écrire les données vivantes sans synchroniser le brouillon.
+
+Tri réalisé : 42 fichiers Telegram représentent sept familles, dont quatre
+modèles Femme déjà actifs avec une paire fiable. Trois familles restent à
+valider : double bride rose (Femme), slide signature (Homme/unisexe), sabot à
+boucle (Homme/unisexe). Seul le slide noir possède une paire source ; son
+visuel propre 1200 × 1600 et ses miniatures ont été préparés, sans IA ni
+retouche des marquages. Les autres images à chaussure seule ne sont pas
+transformées en fausse paire. Le fichier `COACH-INTEGRATION-HANDOFF.md` porte
+désormais ce tri et les prochaines décisions nécessaires.
+
+Résultat : logo officiel Coach conservé à l'identique dans
+`assets/logos/coach.svg` et référencé par le catalogue de secours ; bannière
+Coach déjà existante conservée ; image de paire noire nettoyée par traitement
+déterministe du fond seul et contrôlée visuellement. Aucun produit ni réglage
+Supabase n'a été écrit, aucune publication n'a été lancée. Contrôles passés :
+image `1200 × 1600`, contrôle visuel, `git diff --check`. Prochaine action
+sûre : le propriétaire choisit le rayon et le prix du slide noir, puis ajoute
+ce produit depuis le dashboard avant publication ; demander une vraie photo
+de paire pour double bride rose et sabot à boucle.
+
 - Mentions légales réelles manquantes : forme juridique, siège, RCCM, NIF et
   e-mail.
 - Le catalogue reste présenté comme démonstration dans les documents tant que

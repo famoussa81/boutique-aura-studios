@@ -383,7 +383,7 @@
           desc: "Bride croisée et détail Gancini. Une ligne souple aux tons naturels." },
         { key: "bally", label: "Bally", logo: "assets/logos/bally.svg", tagline: "Swiss heritage", accent: "#15233A", cover: "assets/brand-banners/bally.webp",
           desc: "Brides croisées et contraste graphique. Une silhouette nette et confortable." }
-        ,{ key: "coach", featured: true, label: "Coach", logo: "", tagline: "Signature C", accent: "#9A6B45", cover: "assets/brand-banners/coach.jpg", homeProducts: ["femme-coach-mule-boucle", "femme-coach-matelassee", "femme-coach-signature", "femme-coach-badge"],
+,{ key: "coach", featured: true, label: "Coach", logo: "assets/logos/coach.svg", tagline: "Signature C", accent: "#9A6B45", cover: "assets/brand-banners/coach.jpg", homeProducts: ["femme-coach-mule-boucle", "femme-coach-matelassee", "femme-coach-signature", "femme-coach-badge"],
           desc: "Toile signature, cuir souple et détails métalliques dorés. Une sélection féminine pensée pour l'été." }
       ],
       announcement: "Livraison offerte dès 40 000 FCFA · sous 48h à Bamako",

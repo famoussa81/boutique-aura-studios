@@ -15,13 +15,14 @@ regénérer** et ne pas modifier les marquages Coach.
 - 10 miniatures coloris correspondantes :
   `assets/thumbs/colors/products/femme/coach-*-studio.jpg`
 
-Il n'y a volontairement **pas de fichier logo Coach** : ne pas en générer un.
-Le site affiche simplement le nom `Coach` en texte. C'est plus net et évite
-un faux logo ou un logo déformé.
+- Logo officiel inchangé : `assets/logos/coach.svg`. Relevé directement sur
+  le site officiel Coach, sans génération, redessin ni déformation.
 
-## Produits à créer dans le dashboard
+## Produits déjà intégrés et visibles
 
-Tous sont dans le rayon **Femme**, catégorie **Claquettes**, marque **Coach**.
+Ces quatre modèles sont dans le rayon **Femme**, catégorie **Claquettes**,
+marque **Coach**. Ils sont les seuls modèles dont le lot fournit une paire
+propre, fiable et complète pour chaque coloris retenu.
 Les prix ci-dessous sont fictifs et doivent être confirmés/remplacés par le
 propriétaire avant la publication.
 
@@ -75,3 +76,25 @@ Stock fictif par pointure : `2, 3, 4, 4, 3, 2`. À remplacer par le stock réel.
   suffit pas. L'intégration doit être faite dans le dashboard authentifié,
   puis publiée.
 - Ne pas écraser `design-qa.md` : fichier non suivi, hors tâche.
+
+## Tri complet du lot Telegram — à décider avant ajout
+
+Le lot contient **sept familles de modèles**, pas 42 produits distincts. Les
+quatre premières sont déjà intégrées ci-dessus. Les trois suivantes ne sont
+pas ajoutées dans la boutique tant que le propriétaire n'a pas validé le rayon
+et fourni une photo de paire quand le lot ne montre qu'une chaussure.
+
+| Famille | Rayon proposé | Sources propres | Décision |
+|---|---|---|---|
+| Claquette double bride rose | Femme | photo 36, une chaussure | Attendre une vraie paire |
+| Slide monobloc toile signature | Homme / unisexe | photo 41, paire noire ; 35/37-40, chaussures seules | Visuel paire noire préparé, choix de rayon à valider |
+| Sabot à boucle toile signature | Homme / unisexe | photos 26, 27 et 42, une chaussure chacune | Attendre une vraie paire |
+
+Visuel déjà prêt mais non rattaché à une fiche :
+`assets/products/homme/coach-slide-signature-noir-studio.jpg` avec ses deux
+miniatures sous `assets/thumbs/cards/products/homme/` et
+`assets/thumbs/colors/products/homme/`.
+
+Raison du blocage : une paire créée par IA ou par duplication cacherait une
+fausse chaussure et risquerait d'altérer les monogrammes. Une photo source de
+paire est nécessaire pour vendre honnêtement ces trois familles.
