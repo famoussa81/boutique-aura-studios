@@ -602,7 +602,7 @@ sûre : le propriétaire choisit le rayon et le prix du slide noir, puis ajoute
 ce produit depuis le dashboard avant publication ; demander une vraie photo
 de paire pour double bride rose et sabot à boucle.
 
-### Session du 30 août 2026 — ajout Coach demandé (en cours)
+### Session du 30 août 2026 — ajout Coach demandé (terminée)
 
 Demande : ajouter maintenant les éléments Coach préparés. Fichiers concernés :
 le brouillon administrateur Supabase, le produit Slide Signature Noir et les
@@ -615,6 +615,16 @@ Le passage manuel par l'interface a été abandonné à la demande du propriéta
 Décision : intégrer directement dans le code et le brouillon Supabase, sans
 publier. La nouvelle fiche doit rester masquée, avec prix et stock à zéro,
 pour empêcher toute vente avant saisie des vraies valeurs.
+
+Résultat : commit `4b222df` poussé sur `main`; logo, bannière et photo du
+slide répondent tous en HTTP 200 sur Vercel. Le brouillon Supabase a été mis à
+jour directement de la version 225 à 226 : 55 produits, `dirty=true`, Coach
+mis en avant, logo officiel et bannière liés. La fiche
+`coach-slide-signature-noir` est présente dans le brouillon comme produit
+Homme, masqué, prix 0 et stock 0. Aucune publication Supabase effectuée.
+Contrôle SQL : aucun slide noir dans les produits publics et quatre produits
+Coach actifs inchangés. Prochaine action sûre : saisir prix et stock réels
+dans le dashboard, afficher la fiche, vérifier l'aperçu puis publier.
 
 - Mentions légales réelles manquantes : forme juridique, siège, RCCM, NIF et
   e-mail.
