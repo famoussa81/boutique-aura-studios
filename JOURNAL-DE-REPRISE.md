@@ -626,6 +626,16 @@ Contrôle SQL : aucun slide noir dans les produits publics et quatre produits
 Coach actifs inchangés. Prochaine action sûre : saisir prix et stock réels
 dans le dashboard, afficher la fiche, vérifier l'aperçu puis publier.
 
+### Session du 30 août 2026 — génération des paires Coach manquantes (en cours)
+
+Demande : générer maintenant les paires complètes absentes à partir des photos
+Telegram à chaussure seule. Sources visées : double bride rose, variantes du
+slide signature et sabots à boucle. Sorties prévues : photos produit 3:4 sur
+fond blanc et miniatures correspondantes. Risques : conserver exactement
+forme, coloris, matières et marquages visibles ; rejeter toute génération qui
+déforme ou invente un logo/monogramme. Aucun produit ne sera publié avant
+contrôle visuel.
+
 - Mentions légales réelles manquantes : forme juridique, siège, RCCM, NIF et
   e-mail.
 - Le catalogue reste présenté comme démonstration dans les documents tant que

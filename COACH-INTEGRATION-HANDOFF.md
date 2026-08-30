@@ -77,18 +77,18 @@ Stock fictif par pointure : `2, 3, 4, 4, 3, 2`. À remplacer par le stock réel.
   puis publiée.
 - Ne pas écraser `design-qa.md` : fichier non suivi, hors tâche.
 
-## Tri complet du lot Telegram — à décider avant ajout
+## Tri complet du lot Telegram — génération terminée
 
 Le lot contient **sept familles de modèles**, pas 42 produits distincts. Les
-quatre premières sont déjà intégrées ci-dessus. Les trois suivantes ne sont
-pas ajoutées dans la boutique tant que le propriétaire n'a pas validé le rayon
-et fourni une photo de paire quand le lot ne montre qu'une chaussure.
+quatre premières sont déjà intégrées ci-dessus. Les trois suivantes possèdent
+maintenant des paires studio générées à partir des sources et contrôlées. Elles
+sont ajoutées comme fiches masquées avec prix et stock à zéro.
 
 | Famille | Rayon proposé | Sources propres | Décision |
 |---|---|---|---|
-| Claquette double bride rose | Femme | photo 36, une chaussure | Attendre une vraie paire |
-| Slide monobloc toile signature | Homme / unisexe | photo 41, paire noire ; 35/37-40, chaussures seules | Visuel paire noire préparé, choix de rayon à valider |
-| Sabot à boucle toile signature | Homme / unisexe | photos 26, 27 et 42, une chaussure chacune | Attendre une vraie paire |
+| Claquette double bride rose | Femme | photo 36 | Paire rose générée, fiche `femme-coach-double-bride-rose` masquée |
+| Slide monobloc toile signature | Homme | photos 35, 38-41 | Cinq coloris, fiche `coach-slide-signature-noir` masquée |
+| Sabot à boucle toile signature | Homme | photos 26, 27 et 42 | Trois coloris, fiche `coach-sabot-boucle` masquée |
 
 Visuel rattaché au brouillon à la fiche masquée `coach-slide-signature-noir` :
 `assets/products/homme/coach-slide-signature-noir-studio.jpg` avec ses deux
@@ -98,6 +98,6 @@ miniatures sous `assets/thumbs/cards/products/homme/` et
 La fiche reste masquée avec prix et stock à zéro tant que le propriétaire
 n'a pas renseigné les vraies valeurs dans le dashboard.
 
-Raison du blocage : une paire créée par IA ou par duplication cacherait une
-fausse chaussure et risquerait d'altérer les monogrammes. Une photo source de
-paire est nécessaire pour vendre honnêtement ces trois familles.
+Ces nouvelles images sont des générations IA dérivées des photos produit.
+Elles restent masquées jusqu'à validation du propriétaire, saisie des prix et
+stocks réels, puis contrôle dans l'aperçu du dashboard.
