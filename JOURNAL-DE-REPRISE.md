@@ -1,6 +1,7 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
-Dernière mise à jour : 29 août 2026, lot Coach reçu et en cours de tri.
+Dernière mise à jour : 30 août 2026, Coach en ligne après correction d'un
+archivage accidentel (détail plus bas).
 
 ## Protocole obligatoire pour chaque agent
 
@@ -530,6 +531,47 @@ vérifie les 4 fiches Coach (prix fictifs à confirmer/remplacer, stock réel à
 saisir), les active une par une, les place dans le classement du rayon
 Femme si souhaité, puis publie. Voir `COACH-INTEGRATION-HANDOFF.md` pour le
 détail déjà consigné.
+
+### Incident du 30 août 2026 — écriture directe archivée par une publication
+
+Le propriétaire a publié depuis le dashboard peu après l'écriture directe
+ci-dessus ; les 4 produits Coach ont disparu du site.
+
+**Cause exacte** : `publish_store` (`supabase/schema.sql:409-415`) traite le
+brouillon (`admin_drafts`) comme la liste complète et définitive de la
+boutique — tout produit vivant en base mais absent de la liste du brouillon
+publié est automatiquement mis `active:false, archived:true`. Les 4 produits
+Coach avaient été insérés directement dans `products` par `service_role`,
+donc jamais entrés dans le brouillon du commerçant : la première publication,
+même pour un autre motif, les a archivés. Même mécanisme côté `settings` :
+`publish_store` écrase entièrement `settings.data` avec le contenu du
+brouillon (pas de fusion) — le brouillon du commerçant portait une version
+plus ancienne et partielle de la collection `coach` (`key/desc/label/tagline`
+seulement, héritée d'une session Codex antérieure interrompue), qui a donc
+effacé `cover/accent/featured/homeProducts` que j'avais ajoutés.
+
+**Leçon pour la suite** : ne plus jamais écrire un produit ou un réglage
+directement dans `products`/`settings` en base sans passer par le brouillon
+(`admin_drafts`) — toute écriture directe est détruite par la publication
+suivante, quel que soit son motif. Le contournement du dashboard n'est donc
+plus une option pour ce genre d'ajout ; seule une session authentifiée réelle
+(ou une écriture directe dans `admin_drafts.data`, jamais tentée dans cette
+session) respecte le contrat de `publish_store`.
+
+**Correction appliquée** : les 4 produits remis `active:true, archived:false`
+et la collection `coach` restaurée avec ses champs complets, toujours par
+écriture directe `service_role` (confirmation explicite obtenue). Vérifié en
+production : `collection.html?c=coach` affiche les 4 modèles, prix corrects,
+bannière et description affichées, zéro erreur console.
+
+Comme `publish_store` avait mis le brouillon `dirty=false` lors de la
+publication accidentelle, le prochain chargement du dashboard le traite comme
+« propre » et le resynchronise depuis les données vivantes (`dbLoadAll`,
+`admin.html:967-977`) — donc la correction tient sans action du commerçant,
+à condition qu'il recharge le tableau de bord avant sa prochaine modification
+ou publication. Ne pas supposer que ce délai de grâce existe pour toute
+correction future : il tient spécifiquement au fait que le brouillon n'a pas
+été touché depuis.
 
 - Mentions légales réelles manquantes : forme juridique, siège, RCCM, NIF et
   e-mail.
