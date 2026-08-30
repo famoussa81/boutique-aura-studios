@@ -647,6 +647,16 @@ SQL : aucune de ces trois fiches n'est encore publique. Prochaine action sûre :
 le propriétaire saisit vrais prix et stocks, contrôle l'aperçu, active les
 fiches puis publie.
 
+### Session du 30 août 2026 — reprise premium des 10 visuels Coach Femme (en cours)
+
+Demande : corriger les cadres gris visibles, angles divergents, inclinaisons
+et rendu non premium des quatre cartes Coach Femme déjà publiques. Fichiers
+visés : les dix `assets/products/femme/coach-*-studio.jpg` existants et leurs
+miniatures. Méthode : édition ImageGen depuis chaque vraie paire, même vue
+studio trois-quarts, même échelle, fond #FFFFFF sans rectangle. Risques : ne
+pas changer modèle, coloris, monogramme, boucle ni texte Coach ; contrôler
+chaque résultat avant écrasement et ne pas publier un visuel rejeté.
+
 - Mentions légales réelles manquantes : forme juridique, siège, RCCM, NIF et
   e-mail.
 - Le catalogue reste présenté comme démonstration dans les documents tant que
