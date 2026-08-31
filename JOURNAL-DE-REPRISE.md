@@ -855,3 +855,41 @@ nouvelles cartes Gucci, Prada et Diesel avec prix, coloris et liens produit ;
 une capture mobile 390 px confirme que la page se charge avec la coque et le
 hero. Les prix et stocks de ce lot sont toujours fictifs : prochaine action
 sûre et urgente, les faire remplacer par le propriétaire dans le dashboard.
+
+### Session du 31 août 2026 — audit de chargement production (terminé)
+
+Demande : vérifier que toute la boutique publiée charge correctement et
+rapidement. État Git : `main`, `design-qa.md` et `tmp/` non suivis ; ne pas les
+publier. Portée envisagée : mesures réseau et Lighthouse sur accueil, Homme,
+Femme, catalogue, marque, produit et administration, puis contrôle visuel
+mobile/ordinateur et recherche d'erreurs navigateur. Risques : résultats
+variables selon le réseau, cache chaud trompeur et faux positifs du serveur de
+test local ; mesurer exclusivement la production et distinguer cache froid et
+cache chaud.
+
+Résultat : audit Playwright/Chrome effectué en production à 390 × 844 et
+1440 × 900, plus simulation mobile 4G (150 ms, 1,6 Mbit/s, CPU ×4).
+Accueil, Homme, Femme, catalogue, marque Gucci, fiche Gucci et admin répondent
+HTTP 200 ; aucun débordement horizontal, aucune exception JavaScript et la
+navigation Homme → Louis Vuitton fonctionne. Les pages Femme ne présentent
+pas d'image chargée cassée dans le parcours testé.
+
+Anomalie bloquante de qualité : des dizaines de miniatures sous
+`assets/thumbs/cards/products/` et `assets/thumbs/colors/products/` répondent
+404. Sont notamment touchés Gucci, Prada, Diesel, Dior, Fendi, Dolce &
+Gabbana, Giuseppe Zanotti, plusieurs Calvin Klein, HUGO, Givenchy, Burberry et
+Louis Vuitton. Le script `AURA_IMG` réessaie puis rend l'image transparente :
+les grandes photos existent, mais les cartes/coloris et miniatures de fiche
+peuvent apparaître blanches. La capture de la fiche Gucci le confirme.
+
+Performance observée : les réponses HTML répétées sont généralement entre
+0,38 et 0,80 s, avec un pic froid de 4,05 s sur l'accueil. En mobile normal,
+LCP Homme/Femme/catalogue est proche de 1,0–1,3 s et CLS reste de 0,003 à
+0,078. L'accueil froid atteint 5,55 s de LCP. En 4G simulée, la fiche Gucci
+atteint 6,8 s de LCP. Le catalogue ordinateur a montré un CLS ponctuel de
+1,001, probablement lié à l'injection tardive de sa grande grille ; à
+reproduire avant correction. Les fichiers compressés restent raisonnables :
+`boutique.js` 54 Ko, `boutique.css` 22 Ko, `catalog.js` 11 Ko ; `admin.html`
+transfère environ 66 Ko. Prochaine action sûre : générer toutes les miniatures
+manquantes, les publier, puis répéter exactement le même audit avant de traiter
+les deux anomalies de LCP/CLS.
