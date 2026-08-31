@@ -763,7 +763,7 @@ donnée ou intégration supplémentaire n'est nécessaire ni justifiée pour ce
 dossier. Prochaine action sûre : fournir le véritable nouveau lot Homme dans
 un autre dossier ou avec des noms de fichiers différents.
 
-### Session du 31 août 2026 — nouveau lot Homme Telegram (en cours)
+### Session du 31 août 2026 — nouveau lot Homme Telegram (déployé, brouillon en attente)
 
 Demande : traiter le lot ajouté après l'audit précédent dans
 `C:\Users\PC\Downloads\Telegram Desktop` : identifier modèles, doublons,
@@ -774,14 +774,24 @@ nouveaux assets produit et registre d'intégration. Risques : ne pas confondre
 les anciennes sources Coach du 29 août avec les nouvelles photos du 31 août,
 ni modifier/recréer logos, monogrammes ou textes de marque.
 
-Avancement au 31 août : 37 nouvelles photos détectées (Diesel, Gucci, Calvin
+Résultat au 31 août : 37 nouvelles photos détectées (Diesel, Gucci, Calvin
 Klein, Burberry, HUGO, Dior, Fendi et autres), distinctes de l'ancien lot
 Coach. Les visuels studio ont été produits ; deux sorties signalées par
 l'utilisateur ont été reprises : papier intérieur supprimé sur Burberry vert
 et Diesel argent entièrement régénéré. Le HUGO typographique bleu/blanc est
 repris une seconde fois depuis la source 24 pour restaurer le motif et le petit
-anneau métallique arrière sans disque erroné sur la semelle. Tâche courante : contrôle visuel final,
-conversion homogène WebP, intégration des familles/coloris au catalogue et au
-brouillon administrateur. Risques : ne jamais publier les prix fictifs sans
-validation, ne pas laisser une image PNG lourde ni écraser le numéro WhatsApp
-modifié localement par l'utilisateur.
+anneau métallique arrière sans disque erroné sur la semelle. Les 41 WebP
+retenus sont en 1200 × 1600, fond blanc aux quatre coins. Treize nouvelles
+fiches et cinq fiches enrichies sont intégrées au catalogue de secours ; aucun
+ID, fichier, coloris ou rattachement de marque ne manque. Commit `fa858b8`
+poussé sur `main`, déploiement Vercel confirmé. Le numéro WhatsApp modifié par
+l'utilisateur a été préservé.
+
+Le brouillon administrateur n'est pas encore modifié : à la reconnexion, le
+dashboard signale un conflit entre un brouillon local non publié et la version
+serveur. Choisir l'une des deux versions supprimerait l'autre ; aucune option
+n'a donc été cliquée sans confirmation. Prochaine action sûre : confirmer
+« Charger l'autre version » (recommandé : brouillon serveur le plus récent),
+puis ajouter les 13 fiches au brouillon et laisser `dirty=true`, sans publier.
+Les prix et stocks d'aperçu restent fictifs et doivent être remplacés avant la
+vente. Détail dans `NOUVEAU-LOT-HOMME-20260831.md`.
