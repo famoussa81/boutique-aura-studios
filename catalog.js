@@ -450,17 +450,17 @@
           desc: "Bride croisée et détail Gancini. Une ligne souple aux tons naturels." },
         { key: "bally", label: "Bally", logo: "assets/logos/bally.svg", tagline: "Swiss heritage", accent: "#15233A", cover: "assets/brand-banners/bally.webp",
           desc: "Brides croisées et contraste graphique. Une silhouette nette et confortable." }
-        ,{ key: "diesel", label: "Diesel", logo: "", tagline: "Graphique", accent: "#C31F26", cover: "assets/products/diesel-logo-noir-studio.webp",
+        ,{ key: "diesel", featured: true, label: "Diesel", logo: "", tagline: "Graphique", accent: "#C31F26", cover: "assets/brand-banners/diesel.webp", homeProducts: ["diesel-logo", "diesel-denim", "diesel-relief"],
           desc: "Claquettes graphiques, denim et reliefs sur semelles moulées." }
-        ,{ key: "gucci", label: "Gucci", logo: "", tagline: "Bande signature", accent: "#315B3B", cover: "assets/products/gucci-stripe-noir-studio.webp",
+        ,{ key: "gucci", featured: true, label: "Gucci", logo: "", tagline: "Bande signature", accent: "#315B3B", cover: "assets/brand-banners/gucci.webp", homeProducts: ["gucci-stripe"],
           desc: "Une ligne nette construite autour de la bande contrastée." }
-        ,{ key: "fendi", label: "Fendi", logo: "", tagline: "Motif FF", accent: "#A9854D", cover: "assets/products/fendi-ff-beige-studio.webp",
+        ,{ key: "fendi", label: "Fendi", logo: "", tagline: "Motif FF", accent: "#A9854D", cover: "assets/brand-banners/fendi.webp", homeProducts: ["fendi-ff"],
           desc: "Motif géométrique beige et noir sur une silhouette quotidienne." }
-        ,{ key: "dolce-gabbana", label: "Dolce & Gabbana", logo: "", tagline: "Signature DG", accent: "#4F382A", cover: "assets/products/dolce-gabbana-brun-noir-studio.webp",
+        ,{ key: "dolce-gabbana", label: "Dolce & Gabbana", logo: "", tagline: "Signature DG", accent: "#4F382A", cover: "assets/brand-banners/dolce-gabbana.webp", homeProducts: ["dolce-gabbana-dg"],
           desc: "Brides bicolores et semelles sportives aux contrastes affirmés." }
-        ,{ key: "prada", label: "Prada", logo: "", tagline: "Croisée", accent: "#6B5B4B", cover: "assets/products/prada-croisee-noir-studio.webp",
+        ,{ key: "prada", featured: true, label: "Prada", logo: "", tagline: "Croisée", accent: "#6B5B4B", cover: "assets/brand-banners/prada.webp", homeProducts: ["prada-croisee"],
           desc: "Brides croisées matelassées et palette sobre." }
-        ,{ key: "giuseppe-zanotti", label: "Giuseppe Zanotti", logo: "", tagline: "Signature métallique", accent: "#777777", cover: "assets/products/giuseppe-signature-argent-studio.webp",
+        ,{ key: "giuseppe-zanotti", label: "Giuseppe Zanotti", logo: "", tagline: "Signature métallique", accent: "#777777", cover: "assets/brand-banners/giuseppe-zanotti.webp", homeProducts: ["giuseppe-signature"],
           desc: "Finition métallique et semelle noire pour une ligne habillée." }
 ,{ key: "coach", featured: true, label: "Coach", logo: "assets/logos/coach.svg", tagline: "Signature C", accent: "#9A6B45", cover: "assets/brand-banners/coach.jpg", homeProducts: ["femme-coach-mule-boucle", "femme-coach-matelassee", "femme-coach-signature", "femme-coach-badge"],
           desc: "Toile signature, cuir souple et détails métalliques dorés. Une sélection féminine pensée pour l'été." }

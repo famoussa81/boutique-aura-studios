@@ -800,3 +800,14 @@ n'a donc été cliquée sans confirmation. Prochaine action sûre : confirmer
 puis ajouter les 13 fiches au brouillon et laisser `dirty=true`, sans publier.
 Les prix et stocks d'aperçu restent fictifs et doivent être remplacés avant la
 vente. Détail dans `NOUVEAU-LOT-HOMME-20260831.md`.
+
+### Session du 31 août 2026 — intégration totale du lot Homme (en cours)
+
+Demande : rendre les 41 visuels disponibles sur le site, intégrer les 13
+nouvelles fiches, les nouvelles marques et leurs bannières, puis synchroniser
+le dashboard. État Git : `main`, seul `design-qa.md` non suivi appartient à
+l'utilisateur. Fichiers envisagés : six bannières sous
+`assets/brand-banners/`, `catalog.js`, journal et brouillon Supabase. Risques :
+ne pas générer de logo/texte de marque, conserver les produits dans la bande
+centrale visible au recadrage 16/5, ne pas publier les prix fictifs, et ne pas
+écraser l'un des deux brouillons en conflit sans confirmation immédiate.
