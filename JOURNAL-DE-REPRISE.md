@@ -723,3 +723,22 @@ mais restent volontairement masqués avec prix 0 et stock nul ; le Slide
 Signature Homme est dans le même état. Contrôle Supabase effectué en lecture
 seule, sans modification. Prochaine action sûre : saisir les prix et stocks
 réels, puis activer et publier les fiches masquées depuis le dashboard.
+
+### Session du 31 août 2026 — aperçu public des Coach masqués (terminée)
+
+Demande : rendre visibles les trois fiches Coach jusqu'ici masquées, avec des
+prix fictifs, afin de contrôler leur rendu sur la boutique. État Git au départ :
+`main`, changement local utilisateur dans `catalog.js` et `design-qa.md` non
+suivi. Portée : Supabase public + brouillon admin uniquement. Risques : ne pas
+écraser le brouillon 230, garder les variantes et images existantes, et annoncer
+clairement que les prix sont fictifs avant toute vente réelle.
+
+Résultat : les trois produits sont désormais publics et synchronisés avec le
+brouillon 231 : Sabot Boucle Signature Homme à 32 000 FCFA, Slide Signature
+Homme à 27 000 FCFA et Sandale Double Bride Femme à 30 000 FCFA. Chaque
+variante a un stock d'aperçu de 2. Les images, coloris et autres fiches n'ont
+pas été modifiés. Contrôles SQL réussis : 3/3 fiches publiques, actives, prix
+strictement positifs et stock minimal 2. Attention : ces trois prix et stocks
+sont explicitement fictifs ; les remplacer avant toute vente réelle. Aucun
+fichier de code n'a été modifié. Prochaine action sûre : recharger Homme/Femme
+pour examiner les cartes et corriger les vrais prix depuis le dashboard.
