@@ -679,6 +679,36 @@ recharger la page si un ancien onglet conserve encore son propre cache.
 - Le parcours administrateur authentifié complet en production demande les
   identifiants du propriétaire.
 
+### Session du 31 août 2026 — cohérence rayons, marques et filtres (terminée)
+
+Demande : corriger les pages de marque qui mélangent Homme/Femme, les
+bannières Coach/Hermès inadaptées au rayon, le filtre Homme du catalogue qui
+retourne de mauvaises marques, et l'absence de regroupement « autres marques ».
+État Git au départ : `main`, seul `design-qa.md` est non suivi et appartient à
+l'utilisateur. Fichiers envisagés : `boutique.js`, `catalog.js`, réglages du
+brouillon Supabase si nécessaire. Risques : conserver le catalogue complet
+sur `/catalogue`, ne pas masquer une marque qui possède des produits actifs,
+ne modifier aucun prix, stock ou statut produit, et ne pas publier le brouillon
+global par erreur.
+
+Résultat : les liens Marques/Catalogue gardent désormais le rayon d'origine,
+le répertoire affiche seulement les marques du rayon et les pages de marque
+refusent une combinaison sans produit (ex. Coach Homme). Les marques mixtes
+utilisent une bannière issue du bon rayon ; les suggestions et le fil d'Ariane
+des fiches ne mélangent plus Homme/Femme. Birkenstock a été ajouté comme marque
+au produit et aux réglages public + brouillon, sans toucher au prix, stock ou
+statut et sans publier le brouillon ; version passée de 228 à 230. Commit
+`f7d64f5` poussé sur `main`. Contrôles production réussis : Homme mène à
+`/marques?audience=homme` sans Coach ; Femme mène aux quatre marques Hermès,
+Dior, Coach et Birkenstock ; Hermès emploie deux bannières différentes selon
+le rayon ; Coach Homme redirige vers les marques Homme ; catalogues Homme/Femme
+montrent respectivement 31 et 17 produits sans mélange ; aucun débordement à
+1280 px ni élément bloqué à `opacity:0`. `node --check` et `git diff --check`
+réussis. Le changement local de numéro WhatsApp dans `catalog.js` et
+`design-qa.md` non suivi ont été laissés intacts. Prochaine action sûre : aucune
+pour ce bug ; tester à nouveau après toute future activation de produits Coach
+Homme.
+
 ### Session du 31 août 2026 — vérification des mules et sabots Coach (terminée)
 
 Demande : confirmer si le lot Telegram contenait aussi des mules et des sabots,
