@@ -273,6 +273,41 @@
         img: "assets/products/femme/coach-double-bride-rose-studio.jpg", colors: ["Rose"],
         valueImages: { "Coloris::Rose": "assets/products/femme/coach-double-bride-rose-studio.jpg" },
         desc: "Sandale rose à deux brides en toile signature et boucle métallique." }),
+      make({ id: "femme-dolce-gabbana-dg-volume", name: "Slide DG Volume", audience: "femme", cat: "claquettes", brand: "dolce-gabbana", price: 45000, badge: "Nouveau",
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [0, 0, 0, 0, 0, 0], active: false, stockout: true,
+        img: "assets/products/femme/dolce-gabbana-dg-rose-studio.jpg", imgs: ["assets/products/femme/dolce-gabbana-dg-rose-studio.jpg", "assets/products/femme/dolce-gabbana-dg-noir-studio.jpg", "assets/products/femme/dolce-gabbana-dg-marine-studio.jpg", "assets/products/femme/dolce-gabbana-dg-dore-studio.jpg"], colors: ["Rose", "Noir", "Marine", "Doré"],
+        valueImages: { "Coloris::Rose": "assets/products/femme/dolce-gabbana-dg-rose-studio.jpg", "Coloris::Noir": "assets/products/femme/dolce-gabbana-dg-noir-studio.jpg", "Coloris::Marine": "assets/products/femme/dolce-gabbana-dg-marine-studio.jpg", "Coloris::Doré": "assets/products/femme/dolce-gabbana-dg-dore-studio.jpg" },
+        desc: "Slide plate en cuir souple avec emblème DG ton sur ton en relief." }),
+      make({ id: "femme-hermes-chaine-ancre", name: "Slide Chaîne d'Ancre", audience: "femme", cat: "claquettes", brand: "hermes", price: 55000, badge: "Nouveau",
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [0, 0, 0, 0, 0, 0], active: false, stockout: true,
+        img: "assets/products/femme/hermes-chaine-ancre-bleu-studio.jpg", imgs: ["assets/products/femme/hermes-chaine-ancre-bleu-studio.jpg", "assets/products/femme/hermes-chaine-ancre-bordeaux-studio.jpg", "assets/products/femme/hermes-chaine-ancre-beige-studio.jpg", "assets/products/femme/hermes-chaine-ancre-vert-studio.jpg", "assets/products/femme/hermes-chaine-ancre-marine-studio.jpg", "assets/products/femme/hermes-chaine-ancre-prune-studio.jpg"], colors: ["Bleu", "Bordeaux", "Beige", "Vert", "Marine", "Prune"],
+        valueImages: { "Coloris::Bleu": "assets/products/femme/hermes-chaine-ancre-bleu-studio.jpg", "Coloris::Bordeaux": "assets/products/femme/hermes-chaine-ancre-bordeaux-studio.jpg", "Coloris::Beige": "assets/products/femme/hermes-chaine-ancre-beige-studio.jpg", "Coloris::Vert": "assets/products/femme/hermes-chaine-ancre-vert-studio.jpg", "Coloris::Marine": "assets/products/femme/hermes-chaine-ancre-marine-studio.jpg", "Coloris::Prune": "assets/products/femme/hermes-chaine-ancre-prune-studio.jpg" },
+        desc: "Slide plate à bride sculptée inspirée du motif Chaîne d'Ancre." }),
+      make({ id: "femme-tory-burch-double-t", name: "Double T Sport Slide", audience: "femme", cat: "claquettes", brand: "tory-burch", price: 35000, badge: "Nouveau",
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [0, 0, 0, 0, 0, 0], active: false, stockout: true,
+        img: "assets/products/femme/tory-burch-double-t-menthe-studio.jpg", colors: ["Menthe"],
+        valueImages: { "Coloris::Menthe": "assets/products/femme/tory-burch-double-t-menthe-studio.jpg" },
+        desc: "Slide sport menthe à bride rembourrée et Double T surpiqué." }),
+      make({ id: "femme-tory-burch-miller-jelly", name: "Miller Jelly", audience: "femme", cat: "sandales", brand: "tory-burch", price: 32000, badge: "Nouveau",
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [0, 0, 0, 0, 0, 0], active: false, stockout: true,
+        img: "assets/products/femme/tory-burch-miller-jelly-rouge-studio.jpg", imgs: ["assets/products/femme/tory-burch-miller-jelly-rouge-studio.jpg", "assets/products/femme/tory-burch-miller-jelly-transparent-studio.jpg", "assets/products/femme/tory-burch-miller-jelly-marron-studio.jpg", "assets/products/femme/tory-burch-miller-jelly-jaune-studio.jpg", "assets/products/femme/tory-burch-miller-jelly-vert-studio.jpg", "assets/products/femme/tory-burch-miller-jelly-blanc-studio.jpg", "assets/products/femme/tory-burch-miller-jelly-rose-poudre-studio.jpg", "assets/products/femme/tory-burch-miller-jelly-noir-studio.jpg", "assets/products/femme/tory-burch-miller-jelly-bordeaux-studio.jpg"], colors: ["Rouge", "Transparent", "Marron", "Jaune", "Vert", "Blanc", "Rose poudré", "Noir", "Bordeaux"],
+        valueImages: { "Coloris::Rouge": "assets/products/femme/tory-burch-miller-jelly-rouge-studio.jpg", "Coloris::Transparent": "assets/products/femme/tory-burch-miller-jelly-transparent-studio.jpg", "Coloris::Marron": "assets/products/femme/tory-burch-miller-jelly-marron-studio.jpg", "Coloris::Jaune": "assets/products/femme/tory-burch-miller-jelly-jaune-studio.jpg", "Coloris::Vert": "assets/products/femme/tory-burch-miller-jelly-vert-studio.jpg", "Coloris::Blanc": "assets/products/femme/tory-burch-miller-jelly-blanc-studio.jpg", "Coloris::Rose poudré": "assets/products/femme/tory-burch-miller-jelly-rose-poudre-studio.jpg", "Coloris::Noir": "assets/products/femme/tory-burch-miller-jelly-noir-studio.jpg", "Coloris::Bordeaux": "assets/products/femme/tory-burch-miller-jelly-bordeaux-studio.jpg" },
+        desc: "Sandale légère en TPU translucide avec petit Double T métallique." }),
+      make({ id: "femme-gucci-interlocking", name: "Slide Interlocking G", audience: "femme", cat: "claquettes", brand: "gucci", price: 45000, badge: "Nouveau",
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [0, 0, 0, 0, 0, 0], active: false, stockout: true,
+        img: "assets/products/femme/gucci-interlocking-menthe-studio.jpg", imgs: ["assets/products/femme/gucci-interlocking-menthe-studio.jpg", "assets/products/femme/gucci-interlocking-noir-studio.jpg", "assets/products/femme/gucci-interlocking-rose-studio.jpg", "assets/products/femme/gucci-interlocking-blanc-studio.jpg", "assets/products/femme/gucci-interlocking-orange-studio.jpg"], colors: ["Menthe", "Noir", "Rose", "Blanc", "Orange"],
+        valueImages: { "Coloris::Menthe": "assets/products/femme/gucci-interlocking-menthe-studio.jpg", "Coloris::Noir": "assets/products/femme/gucci-interlocking-noir-studio.jpg", "Coloris::Rose": "assets/products/femme/gucci-interlocking-rose-studio.jpg", "Coloris::Blanc": "assets/products/femme/gucci-interlocking-blanc-studio.jpg", "Coloris::Orange": "assets/products/femme/gucci-interlocking-orange-studio.jpg" },
+        desc: "Slide plate en caoutchouc monochrome à découpe Interlocking G." }),
+      make({ id: "femme-hermes-oran-graine", name: "Sandale Oran Cuir Grainé", audience: "femme", cat: "sandales", brand: "hermes", price: 52000,
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [0, 0, 0, 0, 0, 0], active: false, stockout: true,
+        img: "assets/products/femme/hermes-oran-menthe-graine-studio.jpg", imgs: ["assets/products/femme/hermes-oran-menthe-graine-studio.jpg", "assets/products/femme/hermes-oran-gris-graine-studio.jpg"], colors: ["Menthe", "Gris"],
+        valueImages: { "Coloris::Menthe": "assets/products/femme/hermes-oran-menthe-graine-studio.jpg", "Coloris::Gris": "assets/products/femme/hermes-oran-gris-graine-studio.jpg" },
+        desc: "Sandale Oran à découpe H en cuir finement grainé." }),
+      make({ id: "femme-hermes-oran-autruche", name: "Sandale Oran Effet Autruche", audience: "femme", cat: "sandales", brand: "hermes", price: 55000,
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [0, 0, 0, 0, 0, 0], active: false, stockout: true,
+        img: "assets/products/femme/hermes-oran-autruche-orange-studio.jpg", imgs: ["assets/products/femme/hermes-oran-autruche-orange-studio.jpg", "assets/products/femme/hermes-oran-autruche-noir-studio.jpg", "assets/products/femme/hermes-oran-autruche-blanc-studio.jpg", "assets/products/femme/hermes-oran-autruche-rose-studio.jpg"], colors: ["Orange", "Noir", "Blanc", "Rose"],
+        valueImages: { "Coloris::Orange": "assets/products/femme/hermes-oran-autruche-orange-studio.jpg", "Coloris::Noir": "assets/products/femme/hermes-oran-autruche-noir-studio.jpg", "Coloris::Blanc": "assets/products/femme/hermes-oran-autruche-blanc-studio.jpg", "Coloris::Rose": "assets/products/femme/hermes-oran-autruche-rose-studio.jpg" },
+        desc: "Sandale Oran à découpe H et finition effet autruche." }),
       make({ id: "femme-hermes-oran-vives", name: "Sandale Oran Couleurs Vives", audience: "femme", brand: "hermes", price: 52000, badge: "Nouveau",
         sizes: ["36", "37", "38", "39", "40", "41"], stock: [1, 2, 3, 3, 2, 1],
         img: "assets/products/femme/hermes-oran-rouge.jpg", colors: ["Rouge", "Vert", "Bleu ciel", "Bleu marine", "Corail", "Orange"],
@@ -416,7 +451,7 @@
              boutique : annoncer le délai du rayon Homme serait une promesse
              intenable. Vide, le rayon reprendrait le délai général. */
           deliveryTime: "10 jours",
-          featuredProducts: ["femme-coach-mule-boucle", "femme-coach-matelassee", "femme-hermes-oran-vives", "femme-dior-dway-bleus"]
+          featuredProducts: ["femme-tory-burch-double-t", "femme-gucci-interlocking", "femme-hermes-chaine-ancre", "femme-coach-mule-boucle"]
         }
       },
       collections: [
@@ -426,7 +461,7 @@
           desc: "Le logo embossé sur bride large. Une claquette qui se reconnaît de loin." },
         { key: "hugo", featured: true, label: "HUGO", logo: "assets/logos/hugo.svg", tagline: "Bande rouge", accent: "#a3262b", cover: "assets/brand-banners/hugo.webp", homeProducts: ["hg-red", "hg-mono"],
           desc: "La bande contrastée et le monogramme répété. Sport et net." },
-        { key: "hermes", featured: true, label: "Hermès", logo: "assets/logos/hermes.png", tagline: "H signature", accent: "#d86f25", cover: "assets/brand-banners/hermes.webp", homeProducts: ["hermes-chypre", "hermes-chypre-bordeaux", "hermes-chypre-vives", "hermes-chypre-daim"],
+        { key: "hermes", featured: true, label: "Hermès", logo: "assets/logos/hermes.png", tagline: "H signature", accent: "#d86f25", cover: "assets/brand-banners/hermes.webp", homeProducts: ["femme-hermes-chaine-ancre", "femme-hermes-oran-autruche", "hermes-chypre", "hermes-chypre-bordeaux"],
           desc: "Cuir orange, découpe H et semelle noire. Une silhouette immédiatement reconnaissable." },
         { key: "burberry", label: "Burberry", logo: "assets/logos/burberry.png", tagline: "Vintage Check", accent: "#B08A5E", cover: "assets/brand-banners/burberry.webp",
           desc: "Le tartan maison, décliné en trois teintes." },
@@ -452,11 +487,11 @@
           desc: "Brides croisées et contraste graphique. Une silhouette nette et confortable." }
         ,{ key: "diesel", featured: true, label: "Diesel", logo: "", tagline: "Graphique", accent: "#C31F26", cover: "assets/brand-banners/diesel.webp", homeProducts: ["diesel-logo", "diesel-denim", "diesel-relief"],
           desc: "Claquettes graphiques, denim et reliefs sur semelles moulées." }
-        ,{ key: "gucci", featured: true, label: "Gucci", logo: "", tagline: "Bande signature", accent: "#315B3B", cover: "assets/brand-banners/gucci.webp", homeProducts: ["gucci-stripe"],
+        ,{ key: "gucci", featured: true, label: "Gucci", logo: "", tagline: "Bande signature", accent: "#315B3B", cover: "assets/brand-banners/gucci.webp", homeProducts: ["femme-gucci-interlocking", "gucci-stripe"],
           desc: "Une ligne nette construite autour de la bande contrastée." }
         ,{ key: "fendi", label: "Fendi", logo: "", tagline: "Motif FF", accent: "#A9854D", cover: "assets/brand-banners/fendi.webp", homeProducts: ["fendi-ff"],
           desc: "Motif géométrique beige et noir sur une silhouette quotidienne." }
-        ,{ key: "dolce-gabbana", label: "Dolce & Gabbana", logo: "", tagline: "Signature DG", accent: "#4F382A", cover: "assets/brand-banners/dolce-gabbana.webp", homeProducts: ["dolce-gabbana-dg"],
+        ,{ key: "dolce-gabbana", label: "Dolce & Gabbana", logo: "", tagline: "Signature DG", accent: "#4F382A", cover: "assets/brand-banners/dolce-gabbana.webp", homeProducts: ["femme-dolce-gabbana-dg-volume", "dolce-gabbana-dg"],
           desc: "Brides bicolores et semelles sportives aux contrastes affirmés." }
         ,{ key: "prada", featured: true, label: "Prada", logo: "", tagline: "Croisée", accent: "#6B5B4B", cover: "assets/brand-banners/prada.webp", homeProducts: ["prada-croisee"],
           desc: "Brides croisées matelassées et palette sobre." }
@@ -464,6 +499,8 @@
           desc: "Finition métallique et semelle noire pour une ligne habillée." }
 ,{ key: "coach", featured: true, label: "Coach", logo: "assets/logos/coach.svg", tagline: "Signature C", accent: "#9A6B45", cover: "assets/brand-banners/coach.jpg", homeProducts: ["femme-coach-mule-boucle", "femme-coach-matelassee", "femme-coach-signature", "femme-coach-badge"],
           desc: "Toile signature, cuir souple et détails métalliques dorés. Une sélection féminine pensée pour l'été." }
+        ,{ key: "tory-burch", featured: true, label: "Tory Burch", logo: "", tagline: "Double T", accent: "#B99273", cover: "assets/brand-banners/tory-burch.jpg", homeProducts: ["femme-tory-burch-double-t", "femme-tory-burch-miller-jelly"],
+          desc: "Double T graphique, cuir souple et jelly translucide dans une palette lumineuse." }
       ],
       announcement: "Livraison offerte dès 40 000 FCFA · sous 48h à Bamako",
       instagram: "",
