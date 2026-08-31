@@ -857,7 +857,7 @@
     .sec-head{margin-bottom:32px}
     .pgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
     .hero{min-height:82vh}
-    .hero-content{padding:44px 0 52px}
+    .hero-content{min-height:388px;padding:44px 0 52px}
     .hero-sub{margin:20px 0 24px}
     .hero-actions{gap:10px}
     .btn{min-height:44px;padding:12px 16px;font-size:12px}
@@ -879,8 +879,10 @@
     .qty-stepper{padding:2px 6px}
     .announce{font-size:11px;padding:8px 12px;letter-spacing:.08em}
     .mobile-menu{padding:8px 16px 16px}
-    .hero-badge{top:14px;right:14px;padding:8px 12px;font-size:10px}
+    .hero-badge{top:14px;right:14px;min-width:225px;min-height:34px;padding:8px 12px;font-size:10px}
   }
+  @media (max-width:370px){.hero-content{min-height:436px}}
+  @media (max-width:340px){.hero-content{min-height:484px}}
   /* Ce lien était caché à neuf mille pixels sur la gauche. Safari sur
      iPhone compte cette distance dans la zone défilable : la page glissait
      latéralement et laissait un grand vide blanc à côté du site. Il est
