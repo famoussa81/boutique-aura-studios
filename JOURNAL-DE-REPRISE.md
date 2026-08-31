@@ -678,3 +678,18 @@ recharger la page si un ancien onglet conserve encore son propre cache.
   lors du dernier audit.
 - Le parcours administrateur authentifié complet en production demande les
   identifiants du propriétaire.
+
+### Session du 31 août 2026 — vérification des mules et sabots Coach (terminée)
+
+Demande : confirmer si le lot Telegram contenait aussi des mules et des sabots,
+et préciser leur état réel après l'intégration Coach. Contrôle prévu : fichiers
+générés, catalogue de secours et brouillon Supabase. Aucun fichier produit,
+prix, stock, statut ou réglage ne doit être modifié pendant cette vérification.
+
+Résultat : le lot contenait bien une Mule Boucle Signature Femme déjà publique
+(3 coloris), un Sabot Boucle Signature Homme (3 coloris) et une Sandale Double
+Bride Rose Femme. Le sabot et la double bride existent dans le brouillon 228,
+mais restent volontairement masqués avec prix 0 et stock nul ; le Slide
+Signature Homme est dans le même état. Contrôle Supabase effectué en lecture
+seule, sans modification. Prochaine action sûre : saisir les prix et stocks
+réels, puis activer et publier les fiches masquées depuis le dashboard.
