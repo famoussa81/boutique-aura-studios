@@ -742,3 +742,23 @@ strictement positifs et stock minimal 2. Attention : ces trois prix et stocks
 sont explicitement fictifs ; les remplacer avant toute vente réelle. Aucun
 fichier de code n'a été modifié. Prochaine action sûre : recharger Homme/Femme
 pour examiner les cartes et corriger les vrais prix depuis le dashboard.
+
+### Session du 31 août 2026 — audit du nouveau lot Telegram Homme (terminée)
+
+Demande : analyser le dossier `C:\Users\PC\Downloads\Telegram Desktop`,
+détecter toutes les paires Homme, doublons et produits déjà présents, puis
+générer des vues studio cohérentes pour les nouveautés. État Git : `main`,
+changement utilisateur local dans `catalog.js` et `design-qa.md` non suivi.
+Risque principal : ne pas régénérer inutilement une paire déjà validée ni
+altérer logos, monogrammes, inscriptions ou détails existants.
+
+Résultat : les 42 fichiers sont le lot Coach déjà traité les 29–30 août, pas
+un nouveau lot Homme distinct. Le contact visuel confirme les paires Coach ;
+il comporte aussi des doublons binaires exacts (8/15, 5/7, 9/12, 30/32/34).
+Les visuels studio correspondants existent déjà dans
+`assets/products/femme/coach-*-premium.jpg` et
+`assets/products/coach-*-studio.jpg` : mules Femme, claquettes Femme, sabots
+Homme, slides Homme et double bride Femme. Aucune génération, écriture de
+donnée ou intégration supplémentaire n'est nécessaire ni justifiée pour ce
+dossier. Prochaine action sûre : fournir le véritable nouveau lot Homme dans
+un autre dossier ou avec des noms de fichiers différents.
