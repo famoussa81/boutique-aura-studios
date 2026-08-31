@@ -894,7 +894,7 @@ transfère environ 66 Ko. Prochaine action sûre : générer toutes les miniatur
 manquantes, les publier, puis répéter exactement le même audit avant de traiter
 les deux anomalies de LCP/CLS.
 
-### Session du 31 août 2026 — miniatures et logos responsives (en cours)
+### Session du 31 août 2026 — miniatures et logos responsives (terminée)
 
 Demande : corriger les chargements défectueux détectés, puis empêcher les
 logos de marque d'être masqués ou rognés selon la résolution. État Git :
@@ -904,3 +904,25 @@ dans `boutique.css`, éventuellement la stratégie de secours dans
 `boutique.js`, puis journal. Risques : ne pas dégrader les images originales,
 ne pas réintroduire un débordement horizontal, préserver le ratio des logos et
 mesurer avant/après sur la production mobile et ordinateur.
+
+Résultat : 88 miniatures manquantes ont été produites à partir des visuels
+existants (41 cartes 480 × 640, 41 coloris 144 × 192 et 6 bannières de marque
+400 × 300). Les marges raster superflues de cinq logos ont été retirées sans
+redessiner ni modifier les marques. Les logos de l'en-tête et du répertoire
+emploient désormais `object-fit: contain`, des limites responsives et aucune
+transformation de recadrage. Le chargeur d'images retombe sur l'original si
+une miniature manque. Commits publiés : `f10e998`, `9f6d4b1`.
+
+La coque, les outils du catalogue, la grille et le répertoire de marques
+réservent maintenant leur place avant le chargement des données. Le hero
+mobile réserve aussi la hauteur de ses textes. Commits publiés : `21f1f86`,
+`f599240`, `0059537`. Vérification Playwright sur la production : HTTP 200,
+aucune réponse >= 400, aucune exception JavaScript, aucune image référencée
+cassée et aucun débordement horizontal. CLS final : catalogue 0,001 à 320 px
+et 0,078 à 390 px ; marques 0,021 à 320 px, 0,005 à 390 px, 0,001 à 768 px
+et 0,002 à 1440 px ; rayons Homme/Femme sous 0,060 aux largeurs mobiles
+contrôlées. Les 15 logos du répertoire et le logo T&K sont chargés et restent
+entièrement dans leur conteneur à 320, 390, 768 et 1440 px. Le temps réseau
+reste variable selon Vercel et la connexion ; aucune promesse de LCP fixe
+n'est faite. Prochaine action sûre : demander au propriétaire de vérifier les
+prix fictifs et les stocks depuis le dashboard avant toute nouvelle campagne.
