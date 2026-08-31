@@ -893,3 +893,14 @@ reproduire avant correction. Les fichiers compressés restent raisonnables :
 transfère environ 66 Ko. Prochaine action sûre : générer toutes les miniatures
 manquantes, les publier, puis répéter exactement le même audit avant de traiter
 les deux anomalies de LCP/CLS.
+
+### Session du 31 août 2026 — miniatures et logos responsives (en cours)
+
+Demande : corriger les chargements défectueux détectés, puis empêcher les
+logos de marque d'être masqués ou rognés selon la résolution. État Git :
+`main`, seuls `design-qa.md` et `tmp/` sont non suivis et ne doivent pas être
+publiés. Fichiers envisagés : miniatures sous `assets/thumbs/`, règles de logo
+dans `boutique.css`, éventuellement la stratégie de secours dans
+`boutique.js`, puis journal. Risques : ne pas dégrader les images originales,
+ne pas réintroduire un débordement horizontal, préserver le ratio des logos et
+mesurer avant/après sur la production mobile et ordinateur.

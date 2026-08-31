@@ -261,9 +261,22 @@
    ligne incomplète continuait à voir des trous longtemps après la
    correction, alors que le fichier était revenu sur le serveur. */
 window.AURA_IMG = function (img) {
-  if (!img || img.dataset.retry === "1") { if (img) img.style.opacity = 0; return; }
-  img.dataset.retry = "1";
+  if (!img) return;
   var src = img.getAttribute("src") || "";
+  if (img.dataset.fullFallback !== "1" && /assets\/thumbs\//i.test(src)) {
+    var original = src
+      .replace(/assets\/thumbs\/cards\/products\//i, "assets/products/")
+      .replace(/assets\/thumbs\/colors\/products\//i, "assets/products/")
+      .replace(/assets\/thumbs\/cards\/studio\//i, "assets/studio/")
+      .replace(/assets\/thumbs\/brand-banners\//i, "assets/brand-banners/");
+    if (original !== src) {
+      img.dataset.fullFallback = "1";
+      img.setAttribute("src", original);
+      return;
+    }
+  }
+  if (img.dataset.retry === "1") { img.style.opacity = 0; return; }
+  img.dataset.retry = "1";
   if (!src) { img.style.opacity = 0; return; }
   img.setAttribute("src", src + (src.indexOf("?") >= 0 ? "&" : "?") + "r=" + Date.now());
 };
@@ -587,7 +600,7 @@ window.AURA_IMG = function (img) {
   /* Les médias statiques sont servis un an en cache. Cette révision change
      leur URL à chaque livraison : le téléphone reçoit immédiatement la
      nouvelle image, puis la garde sans refaire de téléchargement inutile. */
-  var MEDIA_REV = "20260828p";
+  var MEDIA_REV = "20260831b";
   function mediaUrl(src){
     src = String(src || "");
     if (!/^(?:\.\/)?(?:assets|logos)\//.test(src)) return src;

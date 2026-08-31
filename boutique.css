@@ -58,10 +58,10 @@
 
   .nav{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:var(--border-w) solid var(--line)}
   .nav-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:14px 24px;max-width:1320px;margin:0 auto}
-  .nav-left,.nav-right{display:flex;align-items:center;gap:8px}
+  .nav-left,.nav-right{display:flex;align-items:center;gap:8px;min-width:0}
   .nav-left{justify-self:start}
   .nav-right{justify-self:end}
-  .logo{font-weight:900;font-size:20px;letter-spacing:.16em;text-transform:uppercase;line-height:1;white-space:nowrap;min-height:44px;display:flex;flex-direction:column;justify-content:center}
+  .logo{font-weight:900;font-size:20px;letter-spacing:.16em;text-transform:uppercase;line-height:1;white-space:nowrap;min-width:0;max-width:100%;min-height:44px;display:flex;flex-direction:column;justify-content:center}
   .logo span{display:block;font-size:9px;font-weight:700;letter-spacing:.42em;color:var(--muted);margin-top:3px}
   .nav-links{display:flex;gap:26px}
   .nav-links a{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);padding:6px 0;min-height:44px;display:inline-flex;align-items:center;position:relative;background:none;border:none}
@@ -231,30 +231,26 @@
     box-shadow:0 10px 30px rgba(17,17,17,.07)}
   .brand-logo-card:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   .brand-logo-visual{position:relative;display:flex;align-items:center;justify-content:center;
-    width:100%;height:54px;overflow:hidden}
-  .brand-logo-img{display:block;width:auto;max-width:78%;height:auto;max-height:42px;
+    width:100%;height:54px;overflow:hidden;padding:4px 8px}
+  .brand-logo-img{position:static;display:block;width:auto;max-width:88%;height:auto;max-height:46px;
     object-fit:contain;object-position:center;mix-blend-mode:multiply}
   .brand-logo-fallback{font-size:clamp(16px,1.7vw,22px);line-height:1;text-align:center;
     text-transform:uppercase;letter-spacing:-.02em}
   .brand-logo-action{font-size:10.5px;font-weight:800;line-height:1;letter-spacing:.16em;
     text-transform:uppercase;color:#77736d}
-  .brand-logo-card[data-brand="hermes"] .brand-logo-img{position:absolute;display:block;
-    width:89.5%;max-width:none;max-height:none;height:auto;left:7.7%;top:8px;
-    object-fit:initial}
+  .brand-logo-card[data-brand="hermes"] .brand-logo-img{max-width:88%;max-height:44px}
   .brand-logo-card[data-brand="louis-vuitton"] .brand-logo-img,
   .brand-logo-card[data-brand="givenchy"] .brand-logo-img{max-width:82%}
   .brand-logo-card[data-brand="dior"] .brand-logo-img{max-width:54%;max-height:46px}
   .brand-logo-card[data-brand="hugo"] .brand-logo-img{max-width:58%;max-height:46px}
-  .brand-logo-card[data-brand="tommy-jeans"] .brand-logo-img{max-width:48%;max-height:40px}
-  /* Ces trois fichiers sont des captures déjà validées. On cadre uniquement
-     leur zone logo sans altérer le dessin de la marque. */
+  .brand-logo-card[data-brand="tommy-jeans"] .brand-logo-img{max-width:88%;max-height:38px}
+  /* Les fichiers raster ont été débarrassés uniquement de leur marge blanche.
+     Ils restent tous en `contain` : aucun bord du logo ne peut disparaître
+     quand la largeur de la carte change. */
   .brand-logo-card[data-brand="balenciaga"] .brand-logo-img,
   .brand-logo-card[data-brand="moncler"] .brand-logo-img,
-  .brand-logo-card[data-brand="ea7"] .brand-logo-img{position:absolute;display:block;
-    max-width:none;max-height:none;height:auto;object-fit:initial}
-  .brand-logo-card[data-brand="balenciaga"] .brand-logo-img{width:118.5%;left:7.5%;top:15px}
-  .brand-logo-card[data-brand="moncler"] .brand-logo-img{width:70%;left:15%;top:-25px}
-  .brand-logo-card[data-brand="ea7"] .brand-logo-img{width:172%;left:7.7%;top:16px}
+  .brand-logo-card[data-brand="ea7"] .brand-logo-img{position:static;width:auto;height:auto;
+    max-width:92%;max-height:44px;object-fit:contain}
   .catalogue-gateway-section{padding-top:16px}
   .catalogue-gateway{position:relative;display:block;overflow:hidden;min-height:360px;border-radius:var(--radius);color:#fff;text-decoration:none;background:var(--ink)}
   .catalogue-gateway>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .5s ease}
@@ -276,8 +272,12 @@
     .brands-page .brands-directory{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
     .brand-logo-card{aspect-ratio:5/3;padding:15px 10px 12px;gap:10px}
     .brand-logo-visual{height:44px}
-    .brand-logo-img{max-height:34px;max-width:82%}
-    .brand-logo-card[data-brand="moncler"] .brand-logo-img{top:-5px}
+    .brand-logo-img{max-height:34px;max-width:88%}
+    .brand-logo-card[data-brand="hermes"] .brand-logo-img,
+    .brand-logo-card[data-brand="balenciaga"] .brand-logo-img,
+    .brand-logo-card[data-brand="moncler"] .brand-logo-img,
+    .brand-logo-card[data-brand="ea7"] .brand-logo-img,
+    .brand-logo-card[data-brand="tommy-jeans"] .brand-logo-img{max-width:92%;max-height:34px}
     .brand-logo-action{font-size:10px;letter-spacing:.12em}
     .brand-directory-card{aspect-ratio:4/3}
     .brand-directory-copy{left:12px;right:30px;bottom:11px}
@@ -1238,11 +1238,21 @@
     .porte:hover .porte-img{transform:none}
   }
 
-  .store-logo{display:block;max-width:150px;max-height:42px;width:auto;height:auto;object-fit:contain}
+  .store-logo{display:block;width:clamp(104px,12vw,150px);max-width:100%;height:42px;max-height:42px;object-fit:contain;object-position:left center}
   .store-logo-foot{max-width:180px;max-height:54px}
   .preview-bar{position:sticky;z-index:9999;left:0;right:0;top:0;min-height:44px;background:#0759ea;color:#fff;display:flex;align-items:center;justify-content:center;gap:18px;padding:8px 12px;text-align:center;font:800 12px/1.25 Inter,system-ui,sans-serif;letter-spacing:.03em}
   .preview-bar a{color:#fff;text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center;white-space:nowrap}
 @media(max-width:520px){.preview-bar{justify-content:space-between;text-align:left}.preview-bar span{max-width:24ch}}
+@media(max-width:960px){
+  .nav-inner{gap:8px}
+  .nav-left{gap:3px}
+  .nav-right{gap:0}
+  .nav-left .store-logo{width:clamp(88px,27vw,118px);height:38px;max-width:none}
+}
+@media(max-width:359px){
+  .nav-inner{padding-left:10px;padding-right:10px;gap:4px}
+  .nav-left .store-logo{width:86px;height:36px}
+}
 
 /* ============================================================
    UNIVERS HOMME / FEMME
