@@ -840,14 +840,15 @@ window.AURA_IMG = function (img) {
     }).join("");
     var univers = '<a href="hommes.html">Homme</a>' +
       (audiencePrete("femme") ? '<a href="femmes.html">Femme</a>' : '');
+    var marquesHref = audienceLien("marques.html", audience);
     var nav = $("#navLinks");
-    if (nav) nav.innerHTML = univers + '<a href="marques.html">Marques</a><a href="catalogue.html" data-goto="tous">Catalogue</a>';
+    if (nav) nav.innerHTML = univers + '<a href="' + marquesHref + '">Marques</a><a href="catalogue.html" data-goto="tous">Catalogue</a>';
     var mob = $("#mobileMenu");
-    if (mob) mob.innerHTML = univers + '<a href="marques.html">Marques</a><a href="catalogue.html" data-goto="tous">Tout le catalogue</a>' + links;
+    if (mob) mob.innerHTML = univers + '<a href="' + marquesHref + '">Marques</a><a href="catalogue.html" data-goto="tous">Tout le catalogue</a>' + links;
     var foot = $("#footShop");
     if (foot) foot.innerHTML = '<li><a href="hommes.html">Homme</a></li>' +
       (audiencePrete("femme") ? '<li><a href="femmes.html">Femme</a></li>' : '') +
-      '<li><a href="marques.html">Toutes les marques</a></li><li><a href="catalogue.html" data-goto="tous">Tout voir</a></li>' +
+      '<li><a href="' + marquesHref + '">Toutes les marques</a></li><li><a href="catalogue.html" data-goto="tous">Tout voir</a></li>' +
       list.map(function(c){
         return '<li><a href="catalogue.html?cat=' + encodeURIComponent(c.key) + (audience ? '&audience=' + encodeURIComponent(audience) : '') + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a></li>';
       }).join("");
@@ -953,15 +954,15 @@ window.AURA_IMG = function (img) {
   /* Le visiteur entre par une porte — Homme ou Femme — puis touche « Tout le
      catalogue » et reçoit les trente-six modèles, sandales du rayon Femme
      comprises. La porte d'entrée promettait un rayon que la page suivante ne
-     tenait pas. Les liens vers le catalogue emportent donc le rayon ouvert,
+     tenait pas. Les liens vers le catalogue et les marques emportent donc le rayon ouvert,
      sauf ceux qui en désignent déjà un. */
   function propagerRayon(){
     var rayon = curAudience || audienceAttribut();
     if (!rayon) return;
-    var liens = document.querySelectorAll('a[href*="catalogue"]');
+    var liens = document.querySelectorAll('a[href*="catalogue"],a[href*="marques"]');
     for (var i = 0; i < liens.length; i++){
       var href = liens[i].getAttribute("href") || "";
-      if (!/^\/?catalogue(\.html)?(\?|$)/.test(href)) continue;
+      if (!/^\/?(catalogue|marques)(\.html)?(\?|$)/.test(href)) continue;
       if (/[?&]audience=/.test(href)) continue;
       liens[i].setAttribute("href", audienceLien(href, rayon));
     }
@@ -1150,7 +1151,10 @@ window.AURA_IMG = function (img) {
       if (reste) reste.hidden = !choisies.length;
       grille.innerHTML = choisies.map(function(c){ return carteMarqueLogoHTML(c, curAudience || audienceAttribut()); }).join("");
       var tout = $("#homeBrandsAll");
-      if (tout) tout.textContent = disponibles.length ? "Voir les " + disponibles.length + " marques" : "Voir toutes les marques";
+      if (tout){
+        tout.textContent = disponibles.length ? "Voir les " + disponibles.length + " marques" : "Voir toutes les marques";
+        tout.href = audienceLien("marques.html", curAudience || audienceAttribut());
+      }
       return;
     }
 
@@ -1211,11 +1215,60 @@ window.AURA_IMG = function (img) {
   function renderToutesMarques(){
     var host = $("#brandsDirectory");
     if (!host) return;
+    var audience = curAudience || audienceAttribut();
     var marques = collList().map(function(c){
-      var n = store.products.filter(function(p){ return p.active && p.collection === c.key && audienceProduit(p, curAudience || audienceAttribut()); }).length;
+      var n = store.products.filter(function(p){ return p.active && !p.archived && p.collection === c.key && audienceProduit(p, audience); }).length;
       return { marque:c, nombre:n };
     }).filter(function(x){ return x.nombre > 0; });
-    host.innerHTML = marques.map(function(x){ return carteMarqueLogoHTML(x.marque, curAudience || audienceAttribut()); }).join("");
+    host.innerHTML = marques.map(function(x){ return carteMarqueLogoHTML(x.marque, audience); }).join("");
+    var titre = $("#brandsTitle");
+    if (titre) titre.textContent = audience ? "Marques " + audienceLabel(audience) : "Toutes les marques";
+    var sousTitre = document.querySelector(".brands-page-head .sec-sub");
+    if (sousTitre) sousTitre.textContent = audience
+      ? "Choisissez une marque pour voir uniquement ses modèles " + audienceLabel(audience) + " disponibles."
+      : "Choisissez une marque pour voir uniquement ses modèles disponibles.";
+    var passerelle = document.querySelector(".catalogue-gateway");
+    if (passerelle) passerelle.href = audienceLien("catalogue.html", audience);
+  }
+
+  /* Une marque présente dans les deux rayons ne peut pas réutiliser une photo
+     masculine chez Femme (ou inversement). Le dashboard peut fournir une
+     couverture dédiée ; sinon une vraie photo produit du rayon sert de repli. */
+  function imageMarqueRayon(c, audience){
+    if (!audience) return imageMarque(c,"pageCover","pageCoverMobile");
+    var mobile = false;
+    try { mobile = !!(window.matchMedia && window.matchMedia("(max-width:640px)").matches); } catch(e){}
+    var mobileKey = "pageCoverMobile_" + audience;
+    var desktopKey = "pageCover_" + audience;
+    var specifique = (mobile && c[mobileKey]) || c[desktopKey] || c["cover_" + audience] || "";
+    if (specifique) return specifique;
+    var rayons = {};
+    store.products.forEach(function(p){
+      if (p && p.active !== false && !p.archived && p.collection === c.key){
+        rayons[p.audience === "femme" ? "femme" : "homme"] = true;
+      }
+    });
+    if (rayons.homme && rayons.femme){
+      var produit = store.products.find(function(p){
+        return p && p.active !== false && !p.archived && p.collection === c.key && audienceProduit(p, audience) && p.img;
+      });
+      if (produit) return produit.img;
+    }
+    return imageMarque(c,"pageCover","pageCoverMobile");
+  }
+
+  function collectionDisponibleDansRayon(key, audience){
+    if (!key || !audience) return true;
+    return store.products.some(function(p){
+      return p && p.active !== false && !p.archived && p.collection === key && audienceProduit(p, audience);
+    });
+  }
+
+  function validerCollectionRayon(){
+    if (typePage() !== "collection" || !curColl || !curAudience || !produitsCharges) return true;
+    if (collectionDisponibleDansRayon(curColl, curAudience)) return true;
+    location.replace(audienceLien("marques.html", curAudience));
+    return false;
   }
 
   /* Bannière de la collection ouverte. L'accent, s'il est défini, ne touche
@@ -1225,7 +1278,7 @@ window.AURA_IMG = function (img) {
     if (!box) return;
     var c = curColl ? collById(curColl) : null;
     if (!c){ box.hidden = true; return; }
-    var pageCover=imageMarque(c,"pageCover","pageCoverMobile");
+    var pageCover=imageMarqueRayon(c, curAudience || audienceAttribut());
     box.hidden = false;
     box.classList.toggle("has-brand-cover", !!pageCover);
     box.classList.toggle("has-brand-logo", !pageCover && !!c.logo);
@@ -1628,6 +1681,7 @@ window.AURA_IMG = function (img) {
         location.replace(audienceLien("catalogue.html", curAudience || audienceValide(paramUrl("audience"))));
         return;
       }
+      if (!validerCollectionRayon()) return;
       document.title = c.label + " — " + store.settings.shopName + " — Boutique en ligne · Bamako";
       poserMeta("description", c.desc || ("Les modèles " + c.label + " disponibles à Bamako. Commande par WhatsApp, paiement à la livraison."));
       poserCanonique(location.origin + location.pathname + "?c=" + encodeURIComponent(c.key) +
@@ -1743,6 +1797,7 @@ window.AURA_IMG = function (img) {
       if (ep || !rows) return;
       store.products = normalizeProducts(rows);
       saveStore(store);
+      if (!validerCollectionRayon()) return;
       reconcileCart();
       renderCount();
       renderUnivers();
@@ -2495,7 +2550,8 @@ window.AURA_IMG = function (img) {
      venu pour une marque en veut d'autres de la même marque ; c'est ce qui
      transforme une fiche en deuxième vente. */
   function ficheSuggestions(p){
-    var actifs = store.products.filter(function(x){ return x.active && x.id !== p.id; });
+    var audience = p.audience === "femme" ? "femme" : "homme";
+    var actifs = store.products.filter(function(x){ return x.active && !x.archived && x.id !== p.id && audienceProduit(x, audience); });
     var memeMarque = p.collection
       ? actifs.filter(function(x){ return x.collection === p.collection; })
       : [];
@@ -2514,7 +2570,7 @@ window.AURA_IMG = function (img) {
     var fil = $("#filMarque");
     if (fil){
       fil.innerHTML = (p.collection && marque)
-        ? '· <a href="collection.html?c=' + encodeURIComponent(p.collection) + '">' + esc(marque) + '</a>'
+        ? '· <a href="' + audienceLien('collection.html?c=' + encodeURIComponent(p.collection), p.audience === "femme" ? "femme" : "homme") + '">' + esc(marque) + '</a>'
         : '· ' + esc(CATS[p.cat] || p.cat);
     }
 
