@@ -241,7 +241,7 @@
   .brand-logo-card[data-brand="hermes"] .brand-logo-img{max-width:88%;max-height:44px}
   .brand-logo-card[data-brand="louis-vuitton"] .brand-logo-img,
   .brand-logo-card[data-brand="givenchy"] .brand-logo-img{max-width:82%}
-  .brand-logo-card[data-brand="dior"] .brand-logo-img{max-width:54%;max-height:46px}
+  .brand-logo-card[data-brand="dior"] .brand-logo-img{max-width:54%;max-height:40px}
   .brand-logo-card[data-brand="hugo"] .brand-logo-img{max-width:58%;max-height:46px}
   .brand-logo-card[data-brand="tommy-jeans"] .brand-logo-img{max-width:88%;max-height:38px}
   /* Les fichiers raster ont été débarrassés uniquement de leur marge blanche.
@@ -274,6 +274,7 @@
     .brand-logo-visual{height:44px}
     .brand-logo-img{max-height:34px;max-width:88%}
     .brand-logo-card[data-brand="hermes"] .brand-logo-img,
+    .brand-logo-card[data-brand="dior"] .brand-logo-img,
     .brand-logo-card[data-brand="balenciaga"] .brand-logo-img,
     .brand-logo-card[data-brand="moncler"] .brand-logo-img,
     .brand-logo-card[data-brand="ea7"] .brand-logo-img,
