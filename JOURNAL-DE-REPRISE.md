@@ -926,3 +926,26 @@ entièrement dans leur conteneur à 320, 390, 768 et 1440 px. Le temps réseau
 reste variable selon Vercel et la connexion ; aucune promesse de LCP fixe
 n'est faite. Prochaine action sûre : demander au propriétaire de vérifier les
 prix fictifs et les stocks depuis le dashboard avant toute nouvelle campagne.
+
+### Session du 31 août 2026 — contrôle d'exhaustivité du lot Telegram (terminé)
+
+Demande : confirmer avant le prochain lot si tous les modèles et toutes les
+photos actuellement présents dans `Downloads/Telegram Desktop` ont bien été
+intégrés. État Git : `main`; `design-qa.md` et `tmp/` non suivis appartiennent
+à l'utilisateur. Portée : inventaire en lecture seule des 37 photos source,
+comparaison avec les visuels produits, le catalogue Git et les produits
+publiés. Risque principal : une même photo peut contenir plusieurs coloris ou
+dupliquer un modèle ; ne pas confondre « fichier traité » et « paire unique
+intégrée ».
+
+Résultat : le dossier contient exactement 37 JPEG datés du 31 août. Le
+registre `NOUVEAU-LOT-HOMME-20260831.md`, le commit source `fa858b8` et le
+catalogue concordent : ces 37 photos ont été dédoublonnées et regroupées en
+41 vues studio WebP, reliées à 13 nouvelles fiches et à cinq fiches déjà
+existantes enrichies. Les six nouvelles marques nécessaires ont leur bannière.
+La publication 232 → 233 avait déjà confirmé 13/13 fiches publiques, et le
+dernier audit réseau avait contrôlé 48/48 visuels et bannières en HTTP 200.
+Conclusion : le lot actuellement présent dans ce dossier est entièrement
+traité et intégré ; aucun fichier source de ce lot ne reste en attente. Les
+prix et stocks de ce lot restent fictifs et doivent être corrigés par le
+propriétaire.
