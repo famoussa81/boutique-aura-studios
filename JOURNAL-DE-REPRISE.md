@@ -832,3 +832,26 @@ Contrôle réseau : 48/48 images et bannières répondent HTTP 200. Rien n'a ét
 publié depuis le dashboard ; les prix et stocks fictifs restent uniquement
 dans le brouillon. Sur l'ancien appareil, choisir « Charger l'autre version »
 pour afficher le brouillon serveur 232, puis contrôler et publier manuellement.
+
+### Session du 31 août 2026 — publication du brouillon 232 (terminée)
+
+Demande explicite : publier maintenant le brouillon serveur 232. État Git :
+`main`, seul `design-qa.md` non suivi appartient à l'utilisateur. Portée : RPC
+`publish_store` puis vérifications SQL et production. Risques : concurrence de
+version, archivage des produits absents du brouillon, et mise en ligne de prix
+et stocks signalés comme fictifs ; l'utilisateur autorise explicitement la
+publication malgré cet avertissement.
+
+Résultat : publication atomique réussie avec `publish_store`, version 232 →
+233, révision `5aafe5d3-fcff-4be6-882b-7ed8183c1f01`, publiée le 31 août
+2026 à 18:15:08 UTC. Le brouillon est propre (`dirty=false`). Vérifications
+SQL après publication : 13/13 nouvelles fiches publiques avec prix, 6/6
+nouvelles marques avec bannière, 64 produits actifs au total et classement
+Gucci / Prada / Dior / Diesel appliqué en tête. Les cinq anciennes fiches
+enrichies conservent leurs variantes et utilisent les nouveaux visuels.
+
+Vérification production : `/hommes` répond et son DOM rendu contient bien les
+nouvelles cartes Gucci, Prada et Diesel avec prix, coloris et liens produit ;
+une capture mobile 390 px confirme que la page se charge avec la coque et le
+hero. Les prix et stocks de ce lot sont toujours fictifs : prochaine action
+sûre et urgente, les faire remplacer par le propriétaire dans le dashboard.
