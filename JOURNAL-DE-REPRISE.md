@@ -801,7 +801,7 @@ puis ajouter les 13 fiches au brouillon et laisser `dirty=true`, sans publier.
 Les prix et stocks d'aperçu restent fictifs et doivent être remplacés avant la
 vente. Détail dans `NOUVEAU-LOT-HOMME-20260831.md`.
 
-### Session du 31 août 2026 — intégration totale du lot Homme (en cours)
+### Session du 31 août 2026 — intégration totale du lot Homme (site déployé, dashboard bloqué)
 
 Demande : rendre les 41 visuels disponibles sur le site, intégrer les 13
 nouvelles fiches, les nouvelles marques et leurs bannières, puis synchroniser
@@ -811,3 +811,24 @@ l'utilisateur. Fichiers envisagés : six bannières sous
 ne pas générer de logo/texte de marque, conserver les produits dans la bande
 centrale visible au recadrage 16/5, ne pas publier les prix fictifs, et ne pas
 écraser l'un des deux brouillons en conflit sans confirmation immédiate.
+
+Résultat : les 41 visuels sont reliés à 13 nouvelles fiches et cinq fiches
+existantes dans le catalogue de secours. Six bannières 4/3 ont été créées pour
+Diesel, Gucci, Fendi, Dolce & Gabbana, Prada et Giuseppe Zanotti ; leur bande
+centrale 16/5 a été contrôlée visuellement. Diesel, Gucci et Prada sont mises
+en avant. Commit `b05fb2e` poussé, Vercel confirmé avec les nouveaux chemins.
+Contrôles : 56 produits, 22 marques, 13/13 nouvelles fiches, aucun ID doublon
+et aucun fichier référencé manquant.
+
+Synchronisation dashboard terminée côté serveur sans résoudre ni écraser le
+brouillon local en conflit : fusion directe et additive dans `admin_drafts`,
+version 231 → 232, `dirty=true`. Le brouillon contient maintenant 70 produits,
+dont les 13 nouvelles fiches, et 22 marques, dont les six nouvelles avec leur
+bannière. Les cinq fiches existantes ont reçu leurs nouveaux coloris/images en
+préservant prix, statut et variantes déjà saisis. Vérifications SQL : 13/13
+nouveaux produits, 6/6 nouvelles marques avec bannière, classement Homme
+Gucci/Prada/Dior/Diesel, et 0 nouveau produit dans les données publiques.
+Contrôle réseau : 48/48 images et bannières répondent HTTP 200. Rien n'a été
+publié depuis le dashboard ; les prix et stocks fictifs restent uniquement
+dans le brouillon. Sur l'ancien appareil, choisir « Charger l'autre version »
+pour afficher le brouillon serveur 232, puis contrôler et publier manuellement.
