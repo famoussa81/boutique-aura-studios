@@ -949,3 +949,31 @@ Conclusion : le lot actuellement présent dans ce dossier est entièrement
 traité et intégré ; aucun fichier source de ce lot ne reste en attente. Les
 prix et stocks de ce lot restent fictifs et doivent être corrigés par le
 propriétaire.
+
+### Session du 31 août 2026 — nouveau lot Femme Telegram (terminée)
+
+Demande : traiter le nouveau contenu déposé dans
+`C:\Users\PC\Downloads\Telegram Desktop` avant intégration à la boutique.
+État Git : `main`; `design-qa.md` et `tmp/` non suivis restent hors portée.
+Inventaire initial : 13 JPEG nommés `photo_1_2026-08-31_22-00-10.jpg` à
+`photo_13_...`, distincts du lot Homme précédent. Fichiers envisagés : visuels
+studio sous `assets/products/femme/`, miniatures, catalogue et brouillon
+dashboard après identification. Risques : doublons, plusieurs coloris dans
+une même photo, classification Femme/Homme, fidélité absolue aux formes,
+coutures, motifs et logos ; aucun prix réel n'a encore été fourni.
+
+Résultat : les 13 sources ont été dédoublonnées en 7 fiches et 31 coloris :
+Dolce & Gabbana DG Volume, Hermès Chaîne d'Ancre, Tory Burch Double T Sport,
+Tory Burch Miller Jelly, Gucci Interlocking G, Hermès Oran grainé et Hermès
+Oran effet autruche. Les 31 visuels finaux sont des JPEG 1200 × 1600 avec
+miniatures carte et coloris ; chaque paire a été contrôlée sur une planche de
+contact. La bannière Tory Burch a été ajoutée sans générer de logo : le nom
+reste rendu en texte. Détail dans `NOUVEAU-LOT-FEMME-20260831.md`.
+
+Le commit `847fb89` est publié sur `main`. La production sert le nouveau
+cache-buster et quatre ressources représentatives ont répondu HTTP 200. Le
+brouillon Supabase est passé de la version 233 à 234 : 7/7 produits actifs
+dans le brouillon, 7/7 matrices pointure × coloris valides, une seule marque
+Tory Burch et état `dirty=true`. Aucun des sept produits n'est encore dans la
+table publique : le propriétaire doit d'abord remplacer les prix et stocks
+provisoires, contrôler l'aperçu, puis publier depuis le dashboard.
