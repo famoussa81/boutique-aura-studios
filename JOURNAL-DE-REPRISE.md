@@ -762,3 +762,26 @@ Homme, slides Homme et double bride Femme. Aucune génération, écriture de
 donnée ou intégration supplémentaire n'est nécessaire ni justifiée pour ce
 dossier. Prochaine action sûre : fournir le véritable nouveau lot Homme dans
 un autre dossier ou avec des noms de fichiers différents.
+
+### Session du 31 août 2026 — nouveau lot Homme Telegram (en cours)
+
+Demande : traiter le lot ajouté après l'audit précédent dans
+`C:\Users\PC\Downloads\Telegram Desktop` : identifier modèles, doublons,
+marques déjà présentes et créer des photos studio homogènes pour les vraies
+nouveautés Homme. État Git : `main`, seul le changement utilisateur local
+`catalog.js` et `design-qa.md` non suivi sont hors portée. Fichiers envisagés :
+nouveaux assets produit et registre d'intégration. Risques : ne pas confondre
+les anciennes sources Coach du 29 août avec les nouvelles photos du 31 août,
+ni modifier/recréer logos, monogrammes ou textes de marque.
+
+Avancement au 31 août : 37 nouvelles photos détectées (Diesel, Gucci, Calvin
+Klein, Burberry, HUGO, Dior, Fendi et autres), distinctes de l'ancien lot
+Coach. Les visuels studio ont été produits ; deux sorties signalées par
+l'utilisateur ont été reprises : papier intérieur supprimé sur Burberry vert
+et Diesel argent entièrement régénéré. Le HUGO typographique bleu/blanc est
+repris une seconde fois depuis la source 24 pour restaurer le motif et le petit
+anneau métallique arrière sans disque erroné sur la semelle. Tâche courante : contrôle visuel final,
+conversion homogène WebP, intégration des familles/coloris au catalogue et au
+brouillon administrateur. Risques : ne jamais publier les prix fictifs sans
+validation, ne pas laisser une image PNG lourde ni écraser le numéro WhatsApp
+modifié localement par l'utilisateur.
