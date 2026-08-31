@@ -977,3 +977,22 @@ dans le brouillon, 7/7 matrices pointure × coloris valides, une seule marque
 Tory Burch et état `dirty=true`. Aucun des sept produits n'est encore dans la
 table publique : le propriétaire doit d'abord remplacer les prix et stocks
 provisoires, contrôler l'aperçu, puis publier depuis le dashboard.
+
+### Session du 31 août 2026 — publication du lot Femme (terminée)
+
+Demande : publier sur le site le brouillon Femme version 234 précédemment
+préparé. État Git : `main`; `design-qa.md` et `tmp/` non suivis restent hors
+portée. Fichiers envisagés : journal uniquement. Opération distante prévue :
+appel contrôlé à `publish_store`, puis vérification des 7 fiches et ressources
+sur la production. Risques : publier les prix et stocks provisoires tels que
+présents dans le brouillon ; éviter toute double publication ou divergence de
+version.
+
+Résultat : `publish_store` a publié le brouillon 234 et créé la révision
+`a63f7e63-e43c-4089-b477-e9f359a9f296`. Le brouillon est désormais en
+version 235 avec `dirty=false`. Contrôle en base : 7/7 nouvelles fiches sont
+publiques, actives et non archivées ; Tory Burch apparaît une seule fois dans
+les réglages publics. Contrôle sur `/femmes` : Tory Burch, Gucci Interlocking
+et Hermès Chaîne d'Ancre sont rendus, aucune erreur console et aucune image
+effectivement chargée n'est cassée. Les prix et stocks restent provisoires et
+doivent être remplacés par le propriétaire depuis le dashboard.
