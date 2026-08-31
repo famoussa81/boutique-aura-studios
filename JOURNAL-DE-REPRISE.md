@@ -787,6 +787,11 @@ ID, fichier, coloris ou rattachement de marque ne manque. Commit `fa858b8`
 poussé sur `main`, déploiement Vercel confirmé. Le numéro WhatsApp modifié par
 l'utilisateur a été préservé.
 
+Correction visuelle complémentaire terminée : l'anneau visible derrière la
+chaussure dans la source 24 appartient à la boîte, pas au produit. Le retirer
+des deux chaussures HUGO sans toucher au motif, à l'angle ni au fond. Le WebP
+1200 × 1600 corrigé a été contrôlé visuellement et remplace l'ancien actif.
+
 Le brouillon administrateur n'est pas encore modifié : à la reconnexion, le
 dashboard signale un conflit entre un brouillon local non publié et la version
 serveur. Choisir l'une des deux versions supprimerait l'autre ; aucune option
