@@ -245,6 +245,8 @@
   if (!conteneur) return;
   conteneur.insertAdjacentHTML("beforebegin", avant);
   conteneur.insertAdjacentHTML("afterend", apres);
+  var reserveCoque = document.querySelector(".shell-reserve");
+  if (reserveCoque) reserveCoque.remove();
   /* La page produit affiche la fiche en pleine page et porte donc deja
      `pvMedia`, `pvAxes`, `pvAdd`… La modale injectee par la coque
      dupliquerait ces identifiants : le script ecrirait dans la copie
