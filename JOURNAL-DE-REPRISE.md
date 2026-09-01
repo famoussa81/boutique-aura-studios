@@ -1162,3 +1162,30 @@ production réussi sur toutes les routes principales, les deux ressources
 restaurées, la porte d'entrée, les collections Coach Homme/Femme, le coloris
 Burberry en un seul appui et le portail admin ; réponses HTTP 200, aucune
 image cassée, erreur console ou largeur débordante observée.
+
+### Session du 1er septembre 2026 — séparer le Damier bleu LV (terminée)
+
+Demande : transformer la paire Damier bleue actuellement présentée comme un
+coloris de `lv-damier` en produit Homme autonome, disponible, puis la placer en
+première position de la sélection Homme sur l'accueil. Le produit Damier
+existant doit rester séparé et ne plus contenir cette paire bleue. État Git :
+`main` au commit `dff5a07`, propre hors `design-qa.md` et `tmp/` non suivis et
+hors portée. Fichiers/données envisagés : catalogue de secours uniquement si
+nécessaire, produits publics et brouillon Supabase, classement d'accueil et
+journal. Risques : préserver prix, stocks et réservations du modèle existant,
+éviter un doublon d'identifiant et maintenir vitrine/dashboard synchronisés.
+
+Résultat : `lv-damier` ne contient plus que le coloris Noir et gris et utilise
+sa photo noire. Le nouveau produit autonome `lv-damier-bleu`, intitulé
+« Claquette Damier Bleu », reprend la photo studio bleue, le prix de 27 000
+FCFA, les pointures 39 à 45 et des stocks disponibles de 2/3/4/5/3/2/1. Il est
+placé en première position de la rangée Louis Vuitton sur l'accueil Homme ;
+`lv-damier` n'apparaît plus dans cette rangée.
+
+La vitrine publique, les réglages publics et le brouillon admin ont été mis à
+jour ensemble. Le brouillon passe en version 236, `dirty=false`, avec 78
+produits et une seule occurrence du nouveau produit. Le catalogue de secours
+reproduit la même séparation et le même classement. Vérification production :
+les deux fiches répondent, chacune ne propose que son propre coloris, les deux
+sont en stock, les bonnes photos chargent sans erreur et aucune largeur ne
+déborde. Aucune commande existante ne référençait `lv-damier`.
