@@ -1223,3 +1223,14 @@ miniature carte 480 × 640, miniature coloris 144 × 192, quatre coins exactemen
 `7b07023` poussé sur `main` et confirmé sur Vercel ; la fiche `bb-check` répond
 HTTP 200 et le SHA-256 du fichier servi en production est exactement celui du
 nouveau fichier local.
+
+### Session du 1er septembre 2026 — corriger le marquage Burberry vert (en cours)
+
+Demande : reprendre le visuel vert généré car le marquage de la semelle ne
+correspond pas à la photo officielle. Le mot doit être noir, discret et
+imprimé dans la matière sur l'arrière de la semelle intérieure, jamais blanc
+ni traité comme un texte rapporté. État Git : `main` au commit `c21828c`,
+propre hors `design-qa.md` et `tmp/` non suivis et hors portée. Fichiers
+envisagés : visuel studio vert, miniatures dérivées, version de cache et
+journal. Risques : modifier le motif ou la forme de la paire, produire un
+marquage trop fort ou mal orthographié, laisser l'image précédente en cache.
