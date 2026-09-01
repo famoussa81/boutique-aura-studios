@@ -1193,3 +1193,14 @@ déborde. Aucune commande existante ne référençait `lv-damier`.
 Déploiement : commit `2a40e21` poussé sur `main` et confirmé sur Vercel. La
 rangée publique affiche dans l'ordre Damier Bleu, Signature LV, Monogramme
 Relief, V Croisée ; aucune image cassée ni erreur console.
+
+### Session du 1er septembre 2026 — refaire le Burberry vert (en cours)
+
+Demande : remplacer totalement le visuel studio Burberry vert par une nouvelle
+version fidèle à la vraie paire, avec le marquage authentique « BURBERRY » sur
+la semelle intérieure dans la zone du talon. Aucune ancienne version ne doit
+rester utilisée par le site. État Git : `main` au commit `5227a9e`, propre hors
+`design-qa.md` et `tmp/` non suivis et hors portée. Fichiers envisagés : visuel
+produit vert et toutes ses miniatures dérivées, références/cache si nécessaire,
+puis journal. Risques : texte de marque mal orthographié, motif tartan déformé,
+modèle ou angle modifié, ancien fichier encore servi par le cache immutable.
