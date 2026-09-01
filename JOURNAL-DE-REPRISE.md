@@ -1029,3 +1029,130 @@ un stock explicite de zéro dans la vitrine publique comme dans le brouillon.
 Les 21 combinaisons des coloris Vert, Bleu ciel et Noir restent disponibles,
 et le produit reste actif. Aucun fichier produit, prix, image ou classement
 n'a été modifié.
+
+### Session du 1er septembre 2026 — recette mobile et dashboard (terminée)
+
+Demande : tester la boutique, surtout sur mobile, et contrôler le fonctionnement
+de toutes les fonctions du dashboard. État Git : `main` ; `design-qa.md` et
+`tmp/` non suivis restent hors portée. Fichiers envisagés : journal et,
+uniquement si un défaut reproductible est trouvé, les fichiers nécessaires à
+sa correction. Portée : production aux largeurs 320/375/390 px, parcours
+catalogue–produit–panier sans commande fictive, puis les neuf onglets du
+dashboard en mobile et ordinateur. Risques : ne pas créer de commande, ne pas
+publier ni écraser les données réelles pendant les tests, distinguer un défaut
+du serveur local d'un défaut de production.
+
+Résultat : recette visuelle et fonctionnelle exécutée en production aux
+largeurs 320, 375 et 390 px sur l'accueil Homme/Femme, catalogue, marques,
+collection Burberry, fiche Burberry, pages légales et 404. Menu mobile,
+recherche, sélection de variante, panier, limite de quantité selon le stock,
+suppression du panier et validations du formulaire de commande fonctionnent ;
+aucune commande fictive n'a été créée. Aucune erreur console ni débordement
+horizontal n'a été observé sur les parcours principaux.
+
+Les cinq vues principales du dashboard et ses sous-vues Réglages, Contenu,
+Publics, Classement, Catalogue, Légal, Liste d'attente, Actualités, Avis,
+Demandes clients et Aide ont été ouvertes en copie locale isolée. Recherche,
+édition produit, création avec validation, stock par variante, classement,
+annulation, filtre et vedettes ont répondu correctement. Les validations des
+numéros WhatsApp, frais et URL Instagram ont rejeté les valeurs invalides.
+Commandes, export vide et états vides ont été contrôlés. Le portail de
+production affiche bien la barrière d'authentification ; aucune écriture
+authentifiée réelle, publication ou modification de commande n'a été lancée.
+Les 77 produits du brouillon et de la vitrine sont synchronisés, le brouillon
+235 est propre, et les RPC attendues ainsi que la fonction `client-intake`
+sont présentes.
+
+Défauts reproductibles restant à corriger :
+
+- deux références d'images publiques répondent HTTP 404 :
+  `assets/cl-rouge-white-v2.webp` dans `hg-match` et
+  `assets/cl-bleu-white-v2.webp` dans `lv-bande` ;
+- `/confidentialite` déborde horizontalement à 320 px à cause d'un tableau
+  large de 520 px, avec le grand titre rogné ; le rendu est correct à 390 px ;
+- la variante `39::Blanc et bleu` de `hg-mono` porte `{s:0,r:1}` alors
+  qu'aucune commande actuelle ne référence ce produit : réservation orpheline
+  historique à nettoyer prudemment ;
+- le bouton WhatsApp flottant mesure environ 41 × 41 px et le bouton
+  d'affichage du mot de passe du portail admin 38 × 48 px, sous la cible
+  interne de 44 × 44 px ;
+- les mentions légales de la politique de confidentialité restent signalées
+  « à compléter » ; les vraies informations du commerçant sont requises.
+
+Contrôles réseau : routes principales, `robots.txt` et `sitemap.xml` en 200,
+ancienne page `/brand` en 404, en-têtes CSP/HSTS/nosniff/X-Frame-Options
+présents. Les 11 visuels initialement lents ont finalement répondu en 200 ;
+seules les deux références ci-dessus sont réellement absentes. Prochaine
+action sûre : corriger ces quatre défauts techniques, puis refaire une recette
+ciblée. `design-qa.md` et `tmp/` n'ont pas été touchés.
+
+### Session du 1er septembre 2026 — corrections issues de la recette (intégrée à la recette finale)
+
+Demande : corriger tous les défauts relevés pendant la recette mobile et
+dashboard. État Git : `main` synchronisé avec `origin/main` ; seul le journal
+de recette est modifié, `design-qa.md` et `tmp/` restent hors portée. Fichiers
+envisagés : références produits/images concernées, styles de la page
+Confidentialité et des cibles tactiles, puis journal. Donnée distante envisagée
+: nettoyage ciblé de la réservation orpheline `hg-mono` après contrôle.
+Risques : ne pas modifier les prix, les autres stocks ou les commandes ; ne
+pas remplacer un visuel par le mauvais coloris ; vérifier en production après
+publication.
+
+État au changement de demande : les deux ressources manquantes ont été
+restaurées localement avec leurs modèles studio correspondants ; le tableau
+Confidentialité, les deux cibles tactiles et le titre à 320 px sont corrigés et
+validés localement. Les réservations historiques sans commande de `hg-mono`
+et `as-pool` ont été nettoyées dans la vitrine et le brouillon, qui reste en
+version 235, `dirty=false`, avec 77 produits. Ces changements ne sont pas
+encore publiés et sont repris dans la recette finale ci-dessous.
+
+### Session du 1er septembre 2026 — finition complète avant domaine (terminée)
+
+Demande : éliminer les micro-bugs avant la version finale, notamment le double
+appui nécessaire sur un coloris, les flashs de mauvaise page, les incohérences
+Homme/Femme et les bannières de marque inadaptées ; vérifier cartes, fiches,
+commande, message WhatsApp, dashboard et liens de pied de page. État Git :
+`main` synchronisé avec `origin/main`, avec les corrections techniques de la
+session précédente non encore commitées ; aucun changement distinct attribué
+à Claude n'est visible dans le dépôt. Fichiers envisagés : `boutique.js`, les
+gabarits ou styles uniquement si une cause reproductible l'exige, journal et
+tests temporaires hors dépôt. Risques : préserver les changements existants,
+ne créer aucune commande réelle, ne pas publier de données fictives et ne pas
+associer une bannière ou un produit au mauvais public.
+
+Résultat : le changement de coloris conserve désormais le premier toucher
+pendant l'arrivée des données Supabase et affiche immédiatement la miniature
+du coloris, puis la photo complète sans course réseau. Un test exhaustif a
+actionné une seule fois les 117 choix de coloris des 48 produits concernés,
+sans retour au coloris précédent ; un second test réel sur Burberry a conservé
+« Bleu ciel » après 2,2 secondes avec la bonne photo.
+
+La page d'entrée ne redirige plus automatiquement selon un ancien rayon, ce
+qui supprime le flash d'une page intermédiaire. La recherche, les collections,
+les bannières, le catalogue et les fiches propagent maintenant le public réel.
+Une fiche ouverte avec un mauvais paramètre corrige son URL et tous ses liens.
+Coach, Gucci, Dior, Dolce & Gabbana et Hermès ont été contrôlés dans les deux
+rayons : bannière et produits correspondent au public. Le catalogue réel
+compte 46 modèles Homme livrés sous 5 jours et 25 modèles Femme livrés sous
+10 jours ; la vue globale annonce les deux délais au lieu d'en choisir un.
+Les liens « Tout voir » et « Notre histoire » conservent aussi le bon rayon.
+
+Recette exécutée à 375 px sur toutes les pages publiques et à 1280 px sur les
+grilles principales : aucun débordement horizontal, aucune image chargée en
+erreur, aucune erreur console, cartes d'une même ligne de hauteur identique et
+logos entièrement visibles. Les pages Confidentialité, CGV, Guide des tailles
+et 404 passent également. Le parcours panier–commande a été testé en mode
+local isolé : référence, produit, pointure, coloris, prix et URL exacte de la
+photo sont présents dans le message WhatsApp ; aucune commande distante n'a
+été créée. Les vues principales du dashboard s'ouvrent sans débordement et
+« Voir ma boutique » pointe vers la production. `node --check`, la compilation
+des scripts intégrés et `git diff --check` passent.
+
+Les deux anciennes ressources 404 ont été restaurées ; le tableau mobile de
+Confidentialité et les cibles tactiles WhatsApp/mot de passe sont corrigés.
+Les réservations orphelines ciblées ont été nettoyées dans la vitrine et le
+brouillon sans modifier les commandes, prix ou autres stocks. Seule réserve
+non technique : les mentions légales exigent encore la forme juridique,
+l'adresse, le RCCM, le NIF et l'e-mail réels du commerçant ; ne pas les
+inventer. Prochaine action sûre après publication : acheter le domaine, lancer
+`configurer.mjs` avec son URL puis faire l'audit SEO final.

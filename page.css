@@ -48,7 +48,7 @@ strong{font-weight:700}
 address{font-style:normal}
 
 table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
-.table-wrap{overflow-x:auto;margin:20px 0;max-width:100%;contain:inline-size paint}
+.table-wrap{overflow-x:auto;margin:20px 0;width:100%;max-width:100%;min-width:0;contain:inline-size paint}
 .table-wrap table{margin:0;min-width:520px}
 th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
 th{background:var(--gray);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase}
@@ -76,5 +76,18 @@ tbody tr:hover{background:var(--gray)}
 @media (max-width:640px){
   .preview-bar{justify-content:space-between;text-align:left}.preview-bar span{max-width:24ch}
   main{padding:36px 18px 60px}
+  h1{font-size:clamp(1.75rem,9vw,2rem);overflow-wrap:normal;word-break:normal;hyphens:auto}
   h2{margin-top:34px}
+  .table-wrap table{min-width:0;table-layout:fixed}
+  .table-wrap th,.table-wrap td{padding:10px 7px;overflow-wrap:anywhere;word-break:normal}
+}
+@media (max-width:420px){
+  .privacy-table,.privacy-table tbody,.privacy-table tr,.privacy-table td{display:block;width:100%}
+  .privacy-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .privacy-table tr{padding:11px 0;border-bottom:1px solid var(--line)}
+  .privacy-table td{display:grid;grid-template-columns:82px minmax(0,1fr);gap:10px;padding:4px 0;border:0}
+  .privacy-table td::before{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .privacy-table td:nth-child(1)::before{content:"Donnée"}
+  .privacy-table td:nth-child(2)::before{content:"Quand"}
+  .privacy-table td:nth-child(3)::before{content:"Pourquoi"}
 }

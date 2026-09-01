@@ -66,7 +66,7 @@
     '        <div class="fcol" data-od-id="footer-col-apropos">\n' +
     '          <h2>À propos</h2>\n' +
     '          <ul>\n' +
-    '            <li><a href="index.html#a-propos">Notre histoire</a></li>\n' +
+    '            <li><a href="hommes.html#a-propos" id="footerStory">Notre histoire</a></li>\n' +
     '            <li><a href="#" id="helpPress" target="_blank" rel="noopener">Presse</a></li>\n' +
     '            <li><a href="admin.html">Espace vendeur</a></li>\n' +
     '          </ul>\n' +
@@ -856,14 +856,15 @@ window.AURA_IMG = function (img) {
     var univers = '<a href="hommes.html">Homme</a>' +
       (audiencePrete("femme") ? '<a href="femmes.html">Femme</a>' : '');
     var marquesHref = audienceLien("marques.html", audience);
+    var catalogueHref = audienceLien("catalogue.html", audience);
     var nav = $("#navLinks");
-    if (nav) nav.innerHTML = univers + '<a href="' + marquesHref + '">Marques</a><a href="catalogue.html" data-goto="tous">Catalogue</a>';
+    if (nav) nav.innerHTML = univers + '<a href="' + marquesHref + '">Marques</a><a href="' + catalogueHref + '" data-goto="tous">Catalogue</a>';
     var mob = $("#mobileMenu");
-    if (mob) mob.innerHTML = univers + '<a href="' + marquesHref + '">Marques</a><a href="catalogue.html" data-goto="tous">Tout le catalogue</a>' + links;
+    if (mob) mob.innerHTML = univers + '<a href="' + marquesHref + '">Marques</a><a href="' + catalogueHref + '" data-goto="tous">Tout le catalogue</a>' + links;
     var foot = $("#footShop");
     if (foot) foot.innerHTML = '<li><a href="hommes.html">Homme</a></li>' +
       (audiencePrete("femme") ? '<li><a href="femmes.html">Femme</a></li>' : '') +
-      '<li><a href="' + marquesHref + '">Toutes les marques</a></li><li><a href="catalogue.html" data-goto="tous">Tout voir</a></li>' +
+      '<li><a href="' + marquesHref + '">Toutes les marques</a></li><li><a href="' + catalogueHref + '" data-goto="tous">Tout voir</a></li>' +
       list.map(function(c){
         return '<li><a href="catalogue.html?cat=' + encodeURIComponent(c.key) + (audience ? '&audience=' + encodeURIComponent(audience) : '') + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a></li>';
       }).join("");
@@ -974,6 +975,8 @@ window.AURA_IMG = function (img) {
   function propagerRayon(){
     var rayon = curAudience || audienceAttribut();
     if (!rayon) return;
+    var histoire = $("#footerStory");
+    if (histoire) histoire.setAttribute("href", pageRayon(rayon) + "#a-propos");
     var liens = document.querySelectorAll('a[href*="catalogue"],a[href*="marques"]');
     for (var i = 0; i < liens.length; i++){
       var href = liens[i].getAttribute("href") || "";
@@ -1041,7 +1044,7 @@ window.AURA_IMG = function (img) {
     if (!host) return [];
     var choisies = marquesEnAvant(colls);
     host.innerHTML = choisies.map(function(c){
-      var bandCover=imageMarque(c,"homeCover","homeCoverMobile");
+      var bandCover=imageMarqueRayon(c, curAudience || audienceAttribut(), "homeCover", "homeCoverMobile");
       var tousProduits = store.products.filter(function(p){
         return p.active && p.collection === c.key && audienceProduit(p, curAudience || audienceAttribut());
       });
@@ -1249,13 +1252,15 @@ window.AURA_IMG = function (img) {
   /* Une marque présente dans les deux rayons ne peut pas réutiliser une photo
      masculine chez Femme (ou inversement). Le dashboard peut fournir une
      couverture dédiée ; sinon une vraie photo produit du rayon sert de repli. */
-  function imageMarqueRayon(c, audience){
-    if (!audience) return imageMarque(c,"pageCover","pageCoverMobile");
+  function imageMarqueRayon(c, audience, desktopKey, mobileKey){
+    desktopKey = desktopKey || "pageCover";
+    mobileKey = mobileKey || "pageCoverMobile";
+    if (!audience) return imageMarque(c,desktopKey,mobileKey);
     var mobile = false;
     try { mobile = !!(window.matchMedia && window.matchMedia("(max-width:640px)").matches); } catch(e){}
-    var mobileKey = "pageCoverMobile_" + audience;
-    var desktopKey = "pageCover_" + audience;
-    var specifique = (mobile && c[mobileKey]) || c[desktopKey] || c["cover_" + audience] || "";
+    var mobileAudienceKey = mobileKey + "_" + audience;
+    var desktopAudienceKey = desktopKey + "_" + audience;
+    var specifique = (mobile && c[mobileAudienceKey]) || c[desktopAudienceKey] || c["cover_" + audience] || "";
     if (specifique) return specifique;
     var rayons = {};
     store.products.forEach(function(p){
@@ -1269,7 +1274,7 @@ window.AURA_IMG = function (img) {
       });
       if (produit) return produit.img;
     }
-    return imageMarque(c,"pageCover","pageCoverMobile");
+    return imageMarque(c,desktopKey,mobileKey);
   }
 
   function collectionDisponibleDansRayon(key, audience){
@@ -1529,25 +1534,12 @@ window.AURA_IMG = function (img) {
 
     var rayons = ["homme", "femme"].filter(function(a){ return audiencePrete(a); });
 
-    /* Une redirection ne doit jamais surprendre. Elle est donc permise avant
-       le premier affichage, et ensuite seulement tant que le visiteur n'a
-       touché à rien : la réponse de la base arrive une à deux secondes après
-       la peinture et peut réduire le choix à une seule porte — un écran de
-       choix sans choix, que personne ne devrait avoir à franchir. */
-    if (!choixForce() && (!portesAffichees || !visiteurATouche)){
-      /* Un seul rayon ouvert : la question n'en est plus une. On entre. */
-      if (rayons.length === 1){
-        location.replace(pageRayon(rayons[0]));
-        return;
-      }
-      if (!portesAffichees){
-        var retenu = rayonMemorise();
-        if (retenu && rayons.indexOf(retenu) >= 0){
-          location.replace(pageRayon(retenu));
-          return;
-        }
-      }
-    }
+    /* Ne jamais rediriger automatiquement depuis la porte d'entrée. Au tout
+       premier rendu, le catalogue local peut ne connaître qu'un rayon avant
+       que Supabase livre le second : l'ancienne optimisation envoyait alors
+       brièvement vers Homme ou Femme, puis laissait les données corriger la
+       page. Le visiteur choisit désormais toujours explicitement, même si une
+       seule porte est temporairement ou réellement disponible. */
 
     hote.innerHTML = rayons.map(function(a){
       var page = audiencePage(a);
@@ -1686,7 +1678,16 @@ window.AURA_IMG = function (img) {
         location.replace(audienceLien("catalogue.html", curAudience || audienceValide(paramUrl("audience"))));
         return;
       }
-      openPV(prod.id);
+      var audienceReelle = prod.audience === "femme" ? "femme" : "homme";
+      if (curAudience !== audienceReelle){
+        curAudience = audienceReelle;
+        try {
+          history.replaceState(null, "", location.pathname + "?id=" + encodeURIComponent(prod.id) + "&audience=" + audienceReelle);
+        } catch(e){}
+        renderCategories();
+        propagerRayon();
+      }
+      openPV(prod.id, !!(pvProduct && pvProduct.id === prod.id));
       return;
     }
     if (typePage() === "collection"){
@@ -1819,6 +1820,12 @@ window.AURA_IMG = function (img) {
       renderChoix();
       renderAudienceExperience();
       renderToutesMarques();
+      /* Une marque peut vivre dans les deux rayons. La bannière peinte avec
+         le catalogue de secours doit être recalculée dès que les vrais
+         produits arrivent, sinon Coach, Gucci ou Hermès peuvent conserver
+         la photo générique de l'autre public jusqu'au prochain chargement. */
+      renderCollBanniere();
+      renderCategories();
       renderGrid();
       renderCart();
       if(typePage()==="produit"){
@@ -1829,7 +1836,20 @@ window.AURA_IMG = function (img) {
           location.replace(audienceLien("catalogue.html", curAudience || audienceValide(paramUrl("audience"))));
           return;
         }
-        openPV(fresh.id);
+        var audienceFraiche = fresh.audience === "femme" ? "femme" : "homme";
+        if (curAudience !== audienceFraiche){
+          curAudience = audienceFraiche;
+          try {
+            history.replaceState(null, "", location.pathname + "?id=" + encodeURIComponent(fresh.id) + "&audience=" + audienceFraiche);
+          } catch(e){}
+          renderCategories();
+          propagerRayon();
+        }
+        /* La réponse réseau peut arriver juste après le premier toucher sur
+           un coloris. Le second argument conserve ce choix pendant la
+           peinture des données fraîches au lieu de revenir au coloris par
+           défaut et d'imposer un second appui. */
+        openPV(fresh.id, true);
       }
     });
   }
@@ -2396,7 +2416,14 @@ window.AURA_IMG = function (img) {
          trente-six fois la même phrase n'aide à choisir aucune paire, et
          elle poussait la photo hors de l'écran. Une fois ici suffit. */
       var nb = list.length ? (list.length > 1 ? list.length + " modèles" : "1 modèle") : "";
-      var delai = deliveryLabel(curAudience || audienceAttribut());
+      var rayonDelai = curAudience || audienceAttribut();
+      var delai = deliveryLabel(rayonDelai);
+      if (!rayonDelai && audiencePrete("femme")){
+        var hommeDelai = deliveryDelay("homme"), femmeDelai = deliveryDelay("femme");
+        delai = hommeDelai === femmeDelai
+          ? deliveryLabel("homme")
+          : "Homme : " + hommeDelai + " · Femme : " + femmeDelai;
+      }
       total.textContent = nb && delai ? nb + " · " + delai : nb;
     }
     if (!list.length){
@@ -2658,14 +2685,26 @@ window.AURA_IMG = function (img) {
 
   /* ---------------- Fiche produit ---------------- */
   function pvKey(){ return keyOf(pvSel); }
-  function openPV(id){
+  function selectionEncoreValide(p, valeurs){
+    var axes = prodAxes(p);
+    if (!valeurs || valeurs.length !== axes.length) return false;
+    for (var i = 0; i < axes.length; i++){
+      if (axes[i].values.indexOf(valeurs[i]) < 0) return false;
+    }
+    return !!(p.variants && Object.prototype.hasOwnProperty.call(p.variants, keyOf(valeurs)));
+  }
+  function openPV(id, conserverSelection){
     var p = findProduct(id); if (!p) return;
-    pvProduct = p; pvSel = valuesOf(firstAvailableKey(p)); pvQty = 1; pvBuy = false; pvImgs = []; pvIndex = 0;
+    var ancienneSelection = conserverSelection && pvProduct && pvProduct.id === p.id ? pvSel.slice() : null;
+    var anciennePhotoChoisie = conserverSelection && pvProduct && pvProduct.id === p.id && pvPhotoChoice;
+    pvProduct = p;
+    pvSel = selectionEncoreValide(p, ancienneSelection) ? ancienneSelection : valuesOf(firstAvailableKey(p));
+    pvQty = 1; pvBuy = false; pvImgs = []; pvIndex = 0;
     /* Un coloris est coché dès l'ouverture : la photo doit le montrer. Sans
        cela, la fiche s'ouvrait sur la vue studio du produit — une paire qui
        ne correspondait à aucun coloris coché, au moment précis où la cliente
        décide. Le drapeau signifie « la photo suit la sélection ». */
-    pvPhotoChoice = !!photoDeLaSelection(p, pvSel);
+    pvPhotoChoice = anciennePhotoChoisie || !!photoDeLaSelection(p, pvSel);
     var imgs = (p.imgs && p.imgs.length) ? p.imgs : (p.img ? [p.img] : []);
     pvImgs = imgs;
     var premiere = photoDeLaSelection(p, pvSel) || imgs[0] || "";
@@ -2729,7 +2768,24 @@ window.AURA_IMG = function (img) {
     var voulue = photoDeSelection();
     var defaut = pvImgs[0] || "";
     var cible = mediaUrl(voulue || defaut);
-    if (cible && img.getAttribute("src") !== cible) img.src = cible;
+    var precedente = img.getAttribute("data-photo-target") || img.getAttribute("src") || "";
+    if (cible) img.setAttribute("data-photo-target", cible);
+    if (cible && precedente !== cible){
+      /* La miniature du coloris est déjà visible et généralement en cache.
+         Elle remplace donc immédiatement l'ancienne couleur pendant que la
+         photo 1200 × 1600 finit de charger. Un jeton sur l'image empêche une
+         réponse réseau lente d'un ancien clic d'écraser le dernier choix. */
+      var apercu = voulue ? mediaUrl(colorThumbUrl(voulue)) : "";
+      if (apercu) img.src = apercu;
+      var chargeur = new Image();
+      chargeur.onload = function(){
+        if (img.getAttribute("data-photo-target") === cible) img.src = cible;
+      };
+      chargeur.onerror = function(){
+        if (img.getAttribute("data-photo-target") === cible) img.src = cible;
+      };
+      chargeur.src = cible;
+    }
     var indexSelection = voulue ? pvImgs.indexOf(voulue) : 0;
     pvIndex = indexSelection >= 0 ? indexSelection : 0;
     majCompteurGalerie();
@@ -2752,7 +2808,11 @@ window.AURA_IMG = function (img) {
     pvIndex = (index + pvImgs.length) % pvImgs.length;
     pvPhotoChoice = false;
     var main = document.querySelector("#pvMedia .pv-main");
-    if (main) main.src = mediaUrl(pvImgs[pvIndex]);
+    if (main){
+      var cible = mediaUrl(pvImgs[pvIndex]);
+      main.setAttribute("data-photo-target", cible);
+      main.src = cible;
+    }
     $$("#pvThumbs [data-thumb]").forEach(function(b, i){ b.classList.toggle("active", i === pvIndex); });
     majCompteurGalerie();
     var zoom = $("#photoZoom");
@@ -3255,7 +3315,10 @@ window.AURA_IMG = function (img) {
   }
   function curSearch(){
     var q = $("#soInput").value.trim().toLowerCase();
-    var list = store.products.filter(function(p){ return p.active; });
+    var rayonRecherche = curAudience || audienceAttribut();
+    var list = store.products.filter(function(p){
+      return p.active && !p.archived && audienceProduit(p, rayonRecherche);
+    });
     if (q) list = list.filter(function(p){ /* La marque est ce qu'on tape en premier dans une boutique
            multi-marques : « dior » doit trouver les modèles Dior. */
         return p.name.toLowerCase().indexOf(q) >= 0 ||
@@ -3350,7 +3413,9 @@ window.AURA_IMG = function (img) {
       var valeurChoisie = sz.getAttribute("data-val");
       pvSel[axeChoisi] = valeurChoisie;
       var axeMeta = prodAxes(pvProduct)[axeChoisi];
-      if (axeMeta && pvProduct.valueImages && pvProduct.valueImages[axeMeta.name + "::" + valeurChoisie]) pvPhotoChoice = true;
+      var photoPropre = axeMeta && pvProduct.valueImages && pvProduct.valueImages[axeMeta.name + "::" + valeurChoisie];
+      var metaChoisie = axeMeta ? catAxisValue(pvProduct.cat, axeMeta.name, valeurChoisie) : null;
+      if (photoPropre || (metaChoisie && metaChoisie.img)) pvPhotoChoice = true;
       renderAxes();
       majPhotoPrincipale();
       updateStockLine();

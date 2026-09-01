@@ -502,7 +502,7 @@
         ,{ key: "tory-burch", featured: true, label: "Tory Burch", logo: "", tagline: "Double T", accent: "#B99273", cover: "assets/brand-banners/tory-burch.jpg", homeProducts: ["femme-tory-burch-double-t", "femme-tory-burch-miller-jelly"],
           desc: "Double T graphique, cuir souple et jelly translucide dans une palette lumineuse." }
       ],
-      announcement: "Livraison offerte dès 40 000 FCFA · sous 48h à Bamako",
+      announcement: "Livraison gratuite à Bamako dès 40 000 FCFA d'achat",
       instagram: "",
       tiktok: "",
       youtube: ""
