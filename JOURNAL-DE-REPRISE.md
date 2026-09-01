@@ -996,3 +996,19 @@ les réglages publics. Contrôle sur `/femmes` : Tory Burch, Gucci Interlocking
 et Hermès Chaîne d'Ancre sont rendus, aucune erreur console et aucune image
 effectivement chargée n'est cassée. Les prix et stocks restent provisoires et
 doivent être remplacés par le propriétaire depuis le dashboard.
+
+### Session du 31 août 2026 — correction Burberry vert (terminée)
+
+Demande : reprendre les motifs du dessus de la variante verte Burberry, jugés
+infidèles. État Git : `main`; `design-qa.md` et `tmp/` non suivis restent hors
+portée. Fichiers envisagés : visuel produit vert, ses miniatures carte/coloris
+et journal uniquement. Risques : altérer la forme, le tartan, le logo ou les
+autres variantes ; la référence source doit être contrôlée avant toute
+retouche et le produit, le prix et le stock doivent rester inchangés.
+
+Résultat : le visuel studio vert a été régénéré à partir de la photo source
+avec une grille vert forêt plus fidèle, des bandes gris-vert et bleu clair
+mieux espacées, tout en conservant la paire, la semelle noire, l'angle et le
+fond blanc. `burberry-check-vert-studio.webp` a été remplacé en 1200 × 1600,
+ainsi que ses miniatures carte 480 × 640 et coloris 144 × 192. Aucun champ du
+produit, prix, stock, logo ou autre variante n'a été modifié.
