@@ -1194,7 +1194,7 @@ Déploiement : commit `2a40e21` poussé sur `main` et confirmé sur Vercel. La
 rangée publique affiche dans l'ordre Damier Bleu, Signature LV, Monogramme
 Relief, V Croisée ; aucune image cassée ni erreur console.
 
-### Session du 1er septembre 2026 — refaire le Burberry vert (en cours)
+### Session du 1er septembre 2026 — refaire le Burberry vert (terminée)
 
 Demande : remplacer totalement le visuel studio Burberry vert par une nouvelle
 version fidèle à la vraie paire, avec le marquage authentique « BURBERRY » sur
@@ -1204,3 +1204,22 @@ rester utilisée par le site. État Git : `main` au commit `5227a9e`, propre hor
 produit vert et toutes ses miniatures dérivées, références/cache si nécessaire,
 puis journal. Risques : texte de marque mal orthographié, motif tartan déformé,
 modèle ou angle modifié, ancien fichier encore servi par le cache immutable.
+
+Résultat : le visuel studio vert a été recréé en paire complète 3:4, sur fond
+blanc pur, avec le tartan vert conservé et le mot « BURBERRY » posé une seule
+fois sur la zone arrière de chaque semelle intérieure. Le marquage erroné de
+la tranche a disparu. L'image principale a été normalisée en 1200 × 1600 ; les
+miniatures carte et coloris ont été régénérées depuis cette même source. Les
+deux anciens fichiers studio (`burberry-check-vert-studio.webp` et
+`burberry-check-vert-white-v2.webp`) et leurs quatre dérivés ont été écrasés,
+donc aucune copie de l'ancien rendu studio ne reste dans ces emplacements. La
+photo authentique avec emballages a été conservée comme source non utilisée.
+
+Le cache média passe à `20260901g` et les sept pages publiques chargent cette
+nouvelle version de `boutique.js`, ce qui force aussi les visiteurs déjà venus
+à récupérer le nouveau visuel. Contrôles : image principale 1200 × 1600,
+miniature carte 480 × 640, miniature coloris 144 × 192, quatre coins exactement
+`#FFFFFF`, `node --check` et `git diff --check` réussis. Déploiement : commit
+`7b07023` poussé sur `main` et confirmé sur Vercel ; la fiche `bb-check` répond
+HTTP 200 et le SHA-256 du fichier servi en production est exactement celui du
+nouveau fichier local.
