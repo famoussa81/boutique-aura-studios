@@ -1012,3 +1012,20 @@ mieux espacées, tout en conservant la paire, la semelle noire, l'angle et le
 fond blanc. `burberry-check-vert-studio.webp` a été remplacé en 1200 × 1600,
 ainsi que ses miniatures carte 480 × 640 et coloris 144 × 192. Aucun champ du
 produit, prix, stock, logo ou autre variante n'a été modifié.
+
+### Session du 1er septembre 2026 — rupture Burberry marron (terminée)
+
+Demande : marquer en rupture la variante marron du deuxième produit Burberry,
+sans rendre indisponibles les autres coloris. État Git : `main` ;
+`design-qa.md` et `tmp/` non suivis restent hors portée. Fichiers envisagés :
+journal uniquement ; modification du stock dans le brouillon puis publication.
+Risques : identifier précisément le produit et le libellé du coloris, préserver
+les réservations et laisser la sélection automatique choisir un coloris encore
+disponible.
+
+Résultat : le coloris marron/tan correspond au libellé interne `Beige` de
+`bb-check` (Claquette Vintage Check). Les sept pointures 39 à 45 ont désormais
+un stock explicite de zéro dans la vitrine publique comme dans le brouillon.
+Les 21 combinaisons des coloris Vert, Bleu ciel et Noir restent disponibles,
+et le produit reste actif. Aucun fichier produit, prix, image ou classement
+n'a été modifié.
