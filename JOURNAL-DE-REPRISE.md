@@ -1189,3 +1189,7 @@ reproduit la même séparation et le même classement. Vérification production 
 les deux fiches répondent, chacune ne propose que son propre coloris, les deux
 sont en stock, les bonnes photos chargent sans erreur et aucune largeur ne
 déborde. Aucune commande existante ne référençait `lv-damier`.
+
+Déploiement : commit `2a40e21` poussé sur `main` et confirmé sur Vercel. La
+rangée publique affiche dans l'ordre Damier Bleu, Signature LV, Monogramme
+Relief, V Croisée ; aucune image cassée ni erreur console.
