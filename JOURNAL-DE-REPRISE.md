@@ -1224,7 +1224,7 @@ miniature carte 480 × 640, miniature coloris 144 × 192, quatre coins exactemen
 HTTP 200 et le SHA-256 du fichier servi en production est exactement celui du
 nouveau fichier local.
 
-### Session du 1er septembre 2026 — corriger le marquage Burberry vert (en cours)
+### Session du 1er septembre 2026 — corriger le marquage Burberry vert (terminée)
 
 Demande : reprendre le visuel vert généré car le marquage de la semelle ne
 correspond pas à la photo officielle. Le mot doit être noir, discret et
@@ -1234,3 +1234,17 @@ propre hors `design-qa.md` et `tmp/` non suivis et hors portée. Fichiers
 envisagés : visuel studio vert, miniatures dérivées, version de cache et
 journal. Risques : modifier le motif ou la forme de la paire, produire un
 marquage trop fort ou mal orthographié, laisser l'image précédente en cache.
+
+Résultat : la photo officielle et le marquage ton sur ton du coloris beige ont
+été repris comme références. Les lettres blanches ont été supprimées ; chaque
+semelle porte désormais « BURBERRY » en noir sur noir, discret, intégré comme
+un marquage pressé dans le caoutchouc et visible principalement par son léger
+relief. La paire, son angle, son tartan vert, ses coutures et son fond blanc
+restent inchangés. Les deux fichiers studio et leurs quatre miniatures ont été
+écrasés avec cette nouvelle source. Le cache média passe à `20260901h`.
+
+Contrôles : image 1200 × 1600, carte 480 × 640, coloris 144 × 192, coins en
+`#FFFFFF`, inspection visuelle, `node --check` et `git diff --check` réussis.
+Déploiement : commit `1b0dc9c` poussé sur `main` et confirmé sur Vercel ; la
+fiche `bb-check` répond HTTP 200 et le fichier distant a exactement le même
+SHA-256 que la nouvelle image locale.
