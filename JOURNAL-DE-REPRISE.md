@@ -1156,3 +1156,9 @@ non technique : les mentions légales exigent encore la forme juridique,
 l'adresse, le RCCM, le NIF et l'e-mail réels du commerçant ; ne pas les
 inventer. Prochaine action sûre après publication : acheter le domaine, lancer
 `configurer.mjs` avec son URL puis faire l'audit SEO final.
+
+Déploiement : commit `eb92df7` poussé sur `main` et servi par Vercel. Contrôle
+production réussi sur toutes les routes principales, les deux ressources
+restaurées, la porte d'entrée, les collections Coach Homme/Femme, le coloris
+Burberry en un seul appui et le portail admin ; réponses HTTP 200, aucune
+image cassée, erreur console ou largeur débordante observée.
