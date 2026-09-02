@@ -1368,3 +1368,25 @@ carte finale. Un clic sur « Voir les 9 autres modèles Hermès » ouvre
 cartes de suite sont masquées, aucun débordement ni erreur console. Prochaine
 action sûre : recueillir l'avis visuel du propriétaire, puis conserver ou
 retoucher uniquement la couleur/le contenu de la carte finale.
+
+### Session du 2 septembre 2026 — marquage de bride Damier bleue (terminée)
+
+Demande : identifier le petit marquage visible sur la bride de la photo source
+de `lv-damier-bleu`, puis remplacer le visuel studio qui l'aurait omis. État
+Git : `main` au commit `f1dd698`, synchronisé avec `origin/main` ;
+`design-qa.md` et `tmp/` restent non suivis et hors portée. Fichiers envisagés
+si l'identification est certaine : visuel et miniatures de ce seul produit,
+versions de cache et journal. Risques : deviner un texte de marque, générer un
+logo ou changer le modèle/couleur ; le marquage doit être prouvé par une source
+authentique ou laissé inchangé.
+
+Résultat : recherche effectuée avec les instructions Agent Reach ; son binaire
+et son relais Exa (`mcporter`) sont absents de cet environnement, puis une
+recherche web de repli a été limitée à des fiches produit. La référence visuelle
+la plus proche identifie le texte de bride comme « MARQUE L.VUITTON DÉPOSÉ ».
+Il s'agit donc d'un marquage de marque, distinct du marquage de semelle.
+Conformément à la règle explicite du projet, aucune image IA n'a été générée ou
+retouchée pour recréer ce texte, aucun visuel/site/produit n'a changé et rien
+n'a été déployé. Une future correction sûre doit employer un visuel source
+authentique possédant déjà le marquage, avec l'autorisation explicite du
+propriétaire, plutôt que demander à l'IA de l'inventer.
