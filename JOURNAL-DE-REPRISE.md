@@ -1248,3 +1248,27 @@ Contrôles : image 1200 × 1600, carte 480 × 640, coloris 144 × 192, coins en
 Déploiement : commit `1b0dc9c` poussé sur `main` et confirmé sur Vercel ; la
 fiche `bb-check` répond HTTP 200 et le fichier distant a exactement le même
 SHA-256 que la nouvelle image locale.
+
+### Session du 1er septembre 2026 — mettre à jour l'application de design PC (terminée)
+
+Demande : retrouver l'application de design installée sur le PC, appelée de
+mémoire « OpenDesign », puis installer sa mise à jour officielle. Cette tâche
+ne doit modifier aucun fichier ni contenu de la boutique. État Git : `main` au
+commit `d3fee3f`, propre hors `design-qa.md` et `tmp/` non suivis et hors
+portée. Fichiers du projet envisagés : journal uniquement. Risques : nom de
+l'application approximatif, installateur non officiel, fermeture éventuelle
+de l'application pendant la mise à jour.
+
+Résultat : l'application identifiée est bien Open Design. Le lanceur local
+0.13 ouvrait encore le payload 0.15.1 malgré une tentative 0.16.0 incomplète.
+La release officielle la plus récente au moment du contrôle est la 0.21.1,
+publiée le 31 août 2026. L'installateur Windows officiel GitHub (418 933 468
+octets) a été téléchargé puis vérifié contre le SHA-256 publié
+`cd203b1c931fe1f7621929945b5aa8d2387a5c6fa5273cf66325a0b443224e7e`.
+
+La mise à niveau silencieuse s'est terminée après libération des téléchargements
+partiels temporaires créés pendant l'opération. Open Design a ensuite été
+relancé : l'exécutable installé, son `package.json` et le processus réellement
+ouvert indiquent tous la version 0.21.1 ; aucun ancien payload 0.15.1 ne tourne.
+L'installateur temporaire de 419 Mo a été supprimé. Aucun fichier de la
+boutique n'a été modifié en dehors de ce journal.
