@@ -1337,7 +1337,7 @@ limitée à cette portée : 98/100, avec un rendu cohérent et sans défaut
 observable sur les vues testées. Prochaine action sûre : recette finale des
 parcours de commande et dashboard avant achat du domaine.
 
-### Session du 2 septembre 2026 — carte « autres modèles » dans le rail (en cours)
+### Session du 2 septembre 2026 — carte « autres modèles » dans le rail (terminée)
 
 Demande : remplacer le bouton séparé « Voir les autres modèles », jugé trop
 massif, par une dernière carte visible à la fin du défilement horizontal des
@@ -1348,3 +1348,23 @@ déborder la page, créer une cinquième carte sur ordinateur, rendre le lien
 inaccessible ou casser les rails Homme/Femme. Vérification prévue : rendu et
 lien de la carte en production mobile, contrôle de non-régression ordinateur
 et absence d'erreurs console.
+
+Résultat : `renderBandes()` ajoute désormais, uniquement s'il reste des
+produits, une carte-lien après les quatre cartes de la marque. Elle annonce le
+nombre réel de modèles restants, porte un libellé accessible complet et ouvre
+la collection dans le bon rayon. L'ancienne pilule sous chaque rangée a été
+supprimée. À moins de 760 px, la carte a la même largeur que les produits,
+une flèche circulaire de 48 px et une cible entièrement cliquable ; à partir
+de 760 px elle est volontairement masquée afin de préserver la grille de
+quatre colonnes et le bandeau reste le lien de collection.
+
+Les URL de cache CSS et JavaScript ont été renouvelées dans les sept gabarits
+publics (`20260902b` / `20260902a`). Déploiement : commit `a25c246` poussé sur
+`main`, confirmé servi par Vercel. Recette production à 390 px : aucune erreur
+console ni débordement, trois cartes de suite Homme et une Femme rendues,
+l'ancien bouton absent, et le défilement horizontal atteint effectivement la
+carte finale. Un clic sur « Voir les 9 autres modèles Hermès » ouvre
+`collection?c=hermes&audience=femme`. Contrôle à 1280 px sur Homme/Femme : les
+cartes de suite sont masquées, aucun débordement ni erreur console. Prochaine
+action sûre : recueillir l'avis visuel du propriétaire, puis conserver ou
+retoucher uniquement la couleur/le contenu de la carte finale.
