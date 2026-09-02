@@ -1336,3 +1336,15 @@ les deux rayons : aucun débordement ni erreur console. Estimation visuelle
 limitée à cette portée : 98/100, avec un rendu cohérent et sans défaut
 observable sur les vues testées. Prochaine action sûre : recette finale des
 parcours de commande et dashboard avant achat du domaine.
+
+### Session du 2 septembre 2026 — carte « autres modèles » dans le rail (en cours)
+
+Demande : remplacer le bouton séparé « Voir les autres modèles », jugé trop
+massif, par une dernière carte visible à la fin du défilement horizontal des
+produits. État Git : `main` au commit `8033bd4`, synchronisé avec
+`origin/main` ; `design-qa.md` et `tmp/` restent non suivis et hors portée.
+Fichiers envisagés : `boutique.js`, `boutique.css` et journal. Risques : faire
+déborder la page, créer une cinquième carte sur ordinateur, rendre le lien
+inaccessible ou casser les rails Homme/Femme. Vérification prévue : rendu et
+lien de la carte en production mobile, contrôle de non-régression ordinateur
+et absence d'erreurs console.

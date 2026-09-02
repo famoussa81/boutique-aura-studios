@@ -192,12 +192,10 @@
   .mrow>*{scroll-snap-align:start}
   .mrow-fixe{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));
     grid-auto-columns:auto;overflow:visible}
-  .mrow-more{width:max-content;max-width:100%;min-height:44px;margin:16px 0 0 auto;
-    display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 16px;
-    border:1px solid var(--ink);border-radius:999px;font-size:12px;font-weight:800;
-    letter-spacing:.08em;text-transform:uppercase;transition:background .18s,color .18s}
-  .mrow-more:hover{background:var(--ink);color:var(--bg)}
-  .mrow-more svg{width:16px;height:16px;flex:none}
+  /* La carte de continuité est masquée sur ordinateur : le bandeau porte déjà
+     son appel à l'action. Sur téléphone elle prolonge naturellement le geste
+     de défilement, sans ajouter une pilule sous la rangée. */
+  .mrow-more-card{display:none}
   /* Les marques restantes gardent la grille de vignettes : mettre onze
      bandeaux bout à bout ferait une page interminable. */
   .marques-reste{margin-top:8px}
@@ -315,10 +313,20 @@
        la rangée redevient un défilement au doigt. */
     .mrow-fixe{grid-auto-flow:column;grid-template-columns:none;
       grid-auto-columns:168px;overflow-x:auto}
-    /* CTA isolé, centré et assez haut pour le pouce. La marge basse est portée
-       par .mband : aucune accumulation de marges à maintenir. */
-    .mrow-more{min-width:min(100%,272px);margin:20px auto 0;padding:11px 18px;
-      font-size:11px;letter-spacing:.075em}
+    /* La dernière carte est une destination, pas un bouton ajouté sous la
+       marque. Même largeur que les produits, cible intégrale et léger contraste
+       pour annoncer la suite sans voler leur rôle aux chaussures. */
+    .mrow-more-card{display:flex;grid-column:auto;align-self:stretch;min-height:100%;
+      flex-direction:column;align-items:center;justify-content:center;gap:12px;
+      padding:20px 14px;border:1px solid #dfddd8;border-radius:var(--radius);
+      background:#faf9f7;color:var(--ink);text-align:center;font-size:11px;
+      font-weight:800;letter-spacing:.07em;line-height:1.45;text-transform:uppercase;
+      transition:background .18s ease,color .18s ease,border-color .18s ease}
+    .mrow-more-card:active{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+    .mrow-more-card strong{font-size:14px}
+    .mrow-more-icon{width:48px;height:48px;display:flex;align-items:center;
+      justify-content:center;border:1px solid currentColor;border-radius:50%}
+    .mrow-more-icon svg{width:21px;height:21px}
   }
 
   .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px}

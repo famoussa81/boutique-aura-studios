@@ -1072,10 +1072,16 @@ window.AURA_IMG = function (img) {
         '</a>' +
         /* Quatre modèles ou moins tiennent sur une ligne : une barre de
            défilement qui ne défile pas donne l'impression d'un bug. */
-        '<div class="mrow mrow-fixe">' + produits.map(function(x){ return cardHTML(x, { sansMarque: true }); }).join("") + '</div>' +
-        (autres ? '<a class="mrow-more" href="' + audienceLien('collection.html?c=' + encodeURIComponent(c.key), curAudience || audienceAttribut()) + '">' +
-          '<span>Voir les ' + autres + ' autre' + (autres > 1 ? 's' : '') + ' modèle' + (autres > 1 ? 's' : '') + '</span>' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>' : '') +
+        '<div class="mrow mrow-fixe">' + produits.map(function(x){ return cardHTML(x, { sansMarque: true }); }).join("") +
+          /* La suite se découvre au même geste que les cartes : sur mobile,
+             la dernière case devient la porte de la marque. Le bandeau garde
+             son lien complet pour ordinateur et pour les lecteurs d'écran. */
+          (autres ? '<a class="mrow-more-card" href="' + audienceLien('collection.html?c=' + encodeURIComponent(c.key), curAudience || audienceAttribut()) + '"' +
+            ' aria-label="Voir les ' + autres + ' autre' + (autres > 1 ? 's' : '') + ' modèle' + (autres > 1 ? 's' : '') + ' ' + esc(c.label) + '">' +
+              '<span class="mrow-more-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>' +
+              '<span>Voir les <strong>' + autres + '</strong> autre' + (autres > 1 ? 's' : '') + '<br>modèle' + (autres > 1 ? 's' : '') + '</span>' +
+            '</a>' : '') +
+          '</div>' +
       '</div>';
     }).join("");
 
