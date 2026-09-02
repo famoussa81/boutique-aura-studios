@@ -1302,7 +1302,7 @@ rayons à 360, 375, 390 et 430 px, puis publier seulement après comparaison
 visuelle. Aucun produit, prix, stock, marque, classement ou image ne doit être
 modifié par cette passe.
 
-### Session du 2 septembre 2026 — finition visuelle mobile Homme/Femme (en cours)
+### Session du 2 septembre 2026 — finition visuelle mobile Homme/Femme (terminée)
 
 Demande : appliquer le plan de finition mobile et ne retenir le résultat que
 si le rendu public atteint un niveau premium estimable à au moins 98 %.
@@ -1314,3 +1314,25 @@ masquer une cible derrière WhatsApp, introduire un débordement, ou modifier le
 données de produits alors que la demande est uniquement visuelle. Vérifications
 prévues : rendu public Homme/Femme à 360, 375, 390 et 430 px, interactions de
 rail et CTA, console et débordement horizontal avant déploiement.
+
+Résultat : la règle mobile commune de `boutique.css` aligne désormais les
+bannières et les rails produits sur les mêmes gouttières de 16 px, tout en
+conservant le défilement horizontal des cartes. Les CTA sont centrés, font
+44 px de haut, disposent d'un espace supérieur de 20 px et chaque marque se
+termine par une pause de 48 px avant la suivante. L'ancre Marques réserve
+112 px sous la navigation mobile : le titre ne peut plus être collé sous
+l'en-tête fixe. Aucun produit, image, prix, stock, marque ou classement n'a
+été modifié.
+
+Le premier push (`e3be915`) avait bien déployé le CSS mais les pages gardaient
+une URL CSS immuable ancienne ; les sept gabarits publics portent donc la
+version `20260902a` dans le commit `d2fd16c`, poussé sur `main` et confirmé
+servi par Vercel. Recette production : Homme et Femme à 360, 375, 390 et 430
+px : cinq bandes rendues, aucun débordement document, aucune erreur console,
+rails défilables et alignés, CTA à 44 px. Une capture visuelle a confirmé les
+deux rendus ; le CTA Hermès Femme ouvre bien
+`collection?c=hermes&audience=femme`. Non-régression contrôlée à 1280 px sur
+les deux rayons : aucun débordement ni erreur console. Estimation visuelle
+limitée à cette portée : 98/100, avec un rendu cohérent et sans défaut
+observable sur les vues testées. Prochaine action sûre : recette finale des
+parcours de commande et dashboard avant achat du domaine.
