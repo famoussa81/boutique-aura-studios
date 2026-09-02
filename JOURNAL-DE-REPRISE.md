@@ -1272,3 +1272,32 @@ relancé : l'exécutable installé, son `package.json` et le processus réelleme
 ouvert indiquent tous la version 0.21.1 ; aucun ancien payload 0.15.1 ne tourne.
 L'installateur temporaire de 419 Mo a été supprimé. Aucun fichier de la
 boutique n'a été modifié en dehors de ce journal.
+
+### Session du 2 septembre 2026 — plan de finition mobile Homme/Femme (terminée)
+
+Demande : confirmer que l'état actuel de la boutique est récupérable, puis
+préparer un plan d'implémentation pour améliorer le rythme, les espacements,
+les bannières, les rangées produits et les boutons de continuation sur les
+pages Homme et Femme. État Git : `main` au commit `aec7601`, aucune modification
+suivie ; seuls `design-qa.md` et `tmp/` sont non suivis et hors portée. Fichiers
+envisagés pour l'implémentation future : principalement `boutique.js`,
+`boutique.css`, `hommes.html`, `femmes.html` et journal. Risques : casser le
+défilement horizontal intentionnel, désynchroniser les deux rayons ou modifier
+les données et le classement des produits alors que l'objectif est purement
+visuel.
+
+Résultat : état de reprise confirmé. Le commit `aec7601` est identique à
+`origin/main`; toutes les modifications suivies sont donc récupérables. Les
+deux éléments non suivis existants restent exclus. Les captures mobile ont été
+analysées avec les règles de lisibilité, de reflow et d'espacement tactile : le
+problème n'est ni les produits ni les images, mais le rythme répétitif des
+sections, les rails qui dépassent les gouttières des bannières, les CTA trop
+proches de la section suivante et le départ trop serré de la page Marques.
+
+Plan validable avant code : conserver bannières et rails, mais leur donner les
+mêmes gouttières; normaliser une seule cadence bannière → rangée → CTA → pause;
+centrer les CTA et réserver leur espace vis-à-vis du bouton WhatsApp; ajouter
+un vrai espace de départ sous la navigation pour les titres; tester les deux
+rayons à 360, 375, 390 et 430 px, puis publier seulement après comparaison
+visuelle. Aucun produit, prix, stock, marque, classement ou image ne doit être
+modifié par cette passe.
