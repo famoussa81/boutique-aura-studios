@@ -1301,3 +1301,16 @@ un vrai espace de départ sous la navigation pour les titres; tester les deux
 rayons à 360, 375, 390 et 430 px, puis publier seulement après comparaison
 visuelle. Aucun produit, prix, stock, marque, classement ou image ne doit être
 modifié par cette passe.
+
+### Session du 2 septembre 2026 — finition visuelle mobile Homme/Femme (en cours)
+
+Demande : appliquer le plan de finition mobile et ne retenir le résultat que
+si le rendu public atteint un niveau premium estimable à au moins 98 %.
+État Git : `main` au commit `5e01795`, synchronisé avec `origin/main` ; seuls
+`design-qa.md` et `tmp/` sont non suivis et strictement hors portée. Fichiers
+envisagés : `boutique.css`, éventuellement `boutique.js` si la structure le
+requiert, puis ce journal. Risques : casser le glissement horizontal voulu,
+masquer une cible derrière WhatsApp, introduire un débordement, ou modifier les
+données de produits alors que la demande est uniquement visuelle. Vérifications
+prévues : rendu public Homme/Femme à 360, 375, 390 et 430 px, interactions de
+rail et CTA, console et débordement horizontal avant déploiement.

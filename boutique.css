@@ -297,20 +297,28 @@
     .catalogue-gateway-action{position:absolute;left:22px;bottom:22px}
     .catalogue-gateway-copy strong{font-size:34px}
     .catalogue-gateway-copy>span:last-child{font-size:14px;max-width:28ch}
-    .mband{margin-bottom:38px}
+    /* Une marque forme un bloc lisible : la pause après le CTA évite que la
+       bannière suivante ait l'air de lui appartenir. */
+    .mband{margin-bottom:48px}
     .mband-top{aspect-ratio:16/9}
     .mband-in{padding:18px 18px;align-items:flex-end}
     .mband-name{font-size:24px}
     /* Le libellé « Voir les 4 modèles » passerait à la ligne : la bannière
        entière est déjà cliquable, la flèche suffit à le dire. */
     .mband-go span{display:none}
-    .mrow{grid-auto-columns:168px;gap:12px;
-      margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
+    /* La bannière, ses cartes et son CTA partagent exactement les mêmes
+       gouttières. On garde le swipe, mais plus le faux décalage vers le bord. */
+    .mrow{grid-auto-columns:168px;gap:12px;margin-top:16px;
+      margin-left:0;margin-right:0;padding-left:0;padding-right:0;
+      scroll-padding-inline:0;overscroll-behavior-inline:contain}
     /* Sur téléphone, quatre colonnes donneraient des cartes illisibles :
        la rangée redevient un défilement au doigt. */
     .mrow-fixe{grid-auto-flow:column;grid-template-columns:none;
       grid-auto-columns:168px;overflow-x:auto}
-    .mrow-more{margin-top:12px;margin-right:0;font-size:11px}
+    /* CTA isolé, centré et assez haut pour le pouce. La marge basse est portée
+       par .mband : aucune accumulation de marges à maintenir. */
+    .mrow-more{min-width:min(100%,272px);margin:20px auto 0;padding:11px 18px;
+      font-size:11px;letter-spacing:.075em}
   }
 
   .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px}
@@ -855,6 +863,9 @@
     .nav-inner{padding:10px 16px}
     .section{padding:56px 0}
     .sec-head{margin-bottom:32px}
+    /* Un lien ou un retour vers les marques ne doit jamais coller le titre
+       sous l'en-tête fixe. Cette marge n'agit qu'au défilement d'ancre. */
+    #categories{scroll-margin-top:112px}
     .pgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
     .hero{min-height:82vh}
     .hero-content{min-height:388px;padding:44px 0 52px}
