@@ -1516,7 +1516,7 @@ l'audience Femme pour `gv-paris`. Prochaine action sûre : contrôler visuelleme
 la fiche Givenchy depuis l'univers Femme si son ordre de mise en avant doit être
 ajusté.
 
-### Session du 5 septembre 2026 — visuels Givenchy Paris corrigés (en cours)
+### Session du 5 septembre 2026 — visuels Givenchy Paris corrigés (terminée)
 
 Demande : refaire les visuels des quatre coloris de la Claquette Paris à partir
 des photos originales, car les rendus actuels ont perdu la courbure ondulée du
@@ -1527,3 +1527,22 @@ Risques : déformer la semelle, altérer l'étiquette réelle, mélanger les col
 ou publier un rendu non homogène. Stratégie : utiliser les originaux comme
 références, produire quatre paires studio 3:4 cohérentes, contrôler visuellement
 chaque résultat, puis seulement remplacer et synchroniser les actifs validés.
+
+Résultat : les quatre visuels Noir, Blanc, Gris et Kaki ont été régénérés à
+partir des photos annotées puis remplacés sous leurs noms existants. La forme
+corrigée concerne le bord arrière asymétrique de la bride : il remonte vers le
+talon en une aile courbe, et non la semelle comme interprété lors du premier
+essai rejeté. Les quatre fichiers sont en WebP 1200 × 1600, sur fond blanc pur,
+avec une composition identique. Les URL publiées et celles du brouillon ont reçu
+le suffixe de cache `20260905-wave`; le dashboard est passé en version 295,
+sans changement en attente, avec la version 294 conservée comme retour arrière.
+Prix, audience, variantes et stocks n'ont pas été modifiés.
+
+Tests : contrôle visuel manuel des quatre fichiers finaux ; dimensions et coins
+`#FFFFFF` vérifiés ; `node --check catalog.js` et `git diff --check` passent.
+Le commit `3e05989` a été poussé sur `main` et les nouveaux fichiers sont servis
+par Vercel. Vérification Playwright en production à 390 px : les quatre boutons
+Noir, Blanc, Gris et Kaki changent l'image principale dès le premier clic et
+chargent chacun un visuel naturel de 1200 × 1600 ; aucune erreur console ni
+débordement horizontal détecté. Prochaine action sûre : conserver cette découpe
+de bride comme référence pour toute nouvelle photo de ce modèle.
