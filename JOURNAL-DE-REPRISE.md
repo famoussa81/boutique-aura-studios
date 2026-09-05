@@ -1546,3 +1546,49 @@ Noir, Blanc, Gris et Kaki changent l'image principale dès le premier clic et
 chargent chacun un visuel naturel de 1200 × 1600 ; aucune erreur console ni
 débordement horizontal détecté. Prochaine action sûre : conserver cette découpe
 de bride comme référence pour toute nouvelle photo de ce modèle.
+
+### Session du 5 septembre 2026 — audit optimisation et montée en charge (terminée)
+
+Demande : déterminer avec des mesures si la boutique est réellement optimisée
+et prête pour un déploiement à grande échelle. État Git : `main` au commit
+`a255e93`, synchronisé avec `origin/main` ; `design-qa.md` et `tmp/` restent non
+suivis et hors portée. Aucun changement fonctionnel prévu : audit en lecture
+seule de la production, du poids des actifs, des parcours mobile/desktop, de la
+base Supabase, de la sécurité et des mécanismes de déploiement. Risques :
+confondre un test synthétique ponctuel avec la performance réelle, ou déclarer
+la plateforme scalable sans test de charge ni métriques terrain. Stratégie :
+mesurer Lighthouse et le réseau, inventorier les limites structurelles, vérifier
+les index/conseils Supabase et distinguer clairement prêt aujourd'hui, prêt pour
+une campagne, et prêt pour une forte montée en charge.
+
+Résultat : la fondation fonctionnelle et transactionnelle est saine, mais la
+boutique n'est pas encore prête pour une forte campagne ou une montée en charge
+à grande échelle. Lighthouse production donne 70/100 sur l'accueil mobile
+(LCP 5,6 s, TBT 170 ms, 331 Kio) et 38/100 sur le catalogue Femme mobile
+(LCP 6,7 s, TBT 1 170 ms, 3 423 Kio). Le catalogue charge toutes les fiches en
+une fois, jusqu'à une limite silencieuse de 1 000 produits, et plusieurs images
+plein format sont servies comme miniatures : les suffixes de cache empêchent
+notamment la transformation des quatre images Givenchy. Le rendu du catalogue
+mobilise 19,9 s de thread principal dans la mesure synthétique. La page
+d'accueil garde une bonne stabilité visuelle (CLS 0,039) et les contrôles
+Lighthouse accessibilité, bonnes pratiques et SEO y obtiennent 100/100.
+
+Supabase est actif et sain, la base est encore minuscule (78 produits et
+16 commandes), les écritures de commande relisent les prix et réservent le
+stock atomiquement. En revanche, le projet est sur l'offre gratuite, la limite
+globale de commande est fixée à 120 par heure, les listes produits et commandes
+sont plafonnées à 1 000 sans pagination, et les tris d'historique n'ont pas
+d'index dédié sur `created_at`. La protection contre les mots de passe compromis
+est désactivée. Aucun suivi des erreurs, Web Vitals réels, alerte de commande,
+pipeline CI ou budget de performance n'est présent.
+
+Vérifications : les cinq parcours publics et `/admin` répondent ; les en-têtes
+CSP, HSTS, anti-iframe et anti-MIME sont présents ; `/admin-essai`, `/brand`,
+`.pexels-key` et `.secrets` répondent 404. Les temps HTTP ponctuels médians sont
+d'environ 478 à 527 ms, mais aucun test de charge concurrent n'a été exécuté sur
+la boutique en production. Les chiffres Lighthouse sont des mesures
+synthétiques et peuvent varier, mais leur marge confirme les blocages. Aucun
+code fonctionnel, produit, stock ou donnée client n'a été modifié. Prochaine
+action sûre : corriger d'abord les miniatures et la pagination, puis ajouter
+l'observabilité et tester la charge dans un environnement de préproduction avant
+toute grande campagne.
