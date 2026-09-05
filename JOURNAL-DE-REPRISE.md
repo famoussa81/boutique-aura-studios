@@ -3,6 +3,14 @@
 Dernière mise à jour : 30 août 2026, Coach en ligne après correction d'un
 archivage accidentel (détail plus bas).
 
+### Session du 5 septembre 2026 — correction visuelle finale Chypre (terminée)
+
+Demande : corriger la séparation encore trop prudente des coloris Chypre après contrôle mobile. La capture confirme que Rose pâle, Bicolore rose et Fuchsia ont bien quitté Homme, mais le groupe restant Rouge vif, Nude daim et Léopard paraît encore féminin. État Git initial : `b5244c7`, branche `main`; `design-qa.md` et `tmp/` restent hors portée. Données envisagées : produits publiés, brouillon dashboard et révision de retour arrière. Risques : stock perdu, ancienne fiche Homme encore active ou duplication dans le brouillon.
+
+Résultat : Rouge vif, Nude daim et Léopard ont rejoint Fuchsia, Rose pâle grainé et Bicolore rose dans une seule fiche Femme à six coloris. L'ancienne fiche `hermes-chypre-vives` est inactive et archivée ; elle ne porte plus de variantes ni de stock. Homme garde Bordeaux, Terracotta et toutes les familles neutres déjà correctement classées. Le stock total concerné reste 336. Une révision de retour arrière a été créée. Brouillon dashboard : version 298, 79 produits, nouvelle fiche unique, ancienne fiche masquée, aucun changement en attente.
+
+Tests : requêtes Supabase de cohérence passées. Chrome production mobile 390 × 844 : aucune ancienne fiche, fiche Femme ou étiquette Rouge/Nude/Léopard dans Hermès Homme ; fiche Femme présente dans Hermès Femme ; page produit à six coloris chargée sans état introuvable. Le script `supabase/trier-coloris-hermes-chypre.sql` a été réécrit pour représenter ce classement final de façon idempotente. Prochaine action sûre : rafraîchir complètement le navigateur du téléphone si un ancien écran est encore conservé.
+
 ## Protocole obligatoire pour chaque agent
 
 Au début de chaque tâche :
