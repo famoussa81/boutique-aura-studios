@@ -1772,11 +1772,6 @@ window.AURA_IMG = function (img) {
   }
 
   /* ---------------- Hydratation Supabase (catalogue + réglages) ---------------- */
-  function empreinteProduits(list){
-    return JSON.stringify((list || []).slice().sort(function(a, b){
-      return String(a.id || "").localeCompare(String(b.id || ""));
-    }));
-  }
   function hydrate(){
     if (document.documentElement.getAttribute("data-preview") === "true") return;
     /* En local, montrer exactement le catalogue du dépôt en cours d'édition.
@@ -1786,16 +1781,10 @@ window.AURA_IMG = function (img) {
     window.AURA_DB.loadSettings(function(es, s){
       if (es || !s) return;
       var defaults=SEED().settings;
-      var settingsSuivants={};
-      for(var dk in defaults)settingsSuivants[dk]=defaults[dk];
-      for (var k in s) settingsSuivants[k] = s[k];
-      var settingsChanges = JSON.stringify(store.settings) !== JSON.stringify(settingsSuivants);
-      store.settings=settingsSuivants;
+      store.settings={};
+      for(var dk in defaults)store.settings[dk]=defaults[dk];
+      for (var k in s) store.settings[k] = s[k];
       saveStore(store);
-      /* Le catalogue embarqué reflète normalement la version publiée. Le
-         repeindre avec des données identiques réinitialisait la première
-         photo après son affichage et retardait artificiellement le LCP. */
-      if (!settingsChanges) return;
       applySettings();
       reconcileCart();
       renderCount();
@@ -1814,11 +1803,8 @@ window.AURA_IMG = function (img) {
          vaut laisser la page telle quelle que de la faire fuir. */
       produitsCharges = true;
       if (ep || !rows) return;
-      var produitsSuivants = normalizeProducts(rows);
-      var produitsChanges = empreinteProduits(store.products) !== empreinteProduits(produitsSuivants);
-      store.products = produitsSuivants;
+      store.products = normalizeProducts(rows);
       saveStore(store);
-      if (!produitsChanges) return;
       if (!validerCollectionRayon()) return;
       reconcileCart();
       renderCount();
