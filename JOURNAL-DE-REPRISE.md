@@ -1445,7 +1445,7 @@ console sur les pages d'univers. `node --check catalog.js` et `git diff --check`
 passent. Le commit `05a8aca` a été poussé sur `main` et la production sert bien
 la copie de secours où ce produit porte l'audience `femme`.
 
-### Session du 5 septembre 2026 — livraison gratuite partout à Bamako (en cours)
+### Session du 5 septembre 2026 — livraison gratuite partout à Bamako (terminée)
 
 Demande : supprimer toute condition de montant pour la livraison et annoncer
 clairement que toute livraison est gratuite partout à Bamako. État Git : `main`
@@ -1458,3 +1458,25 @@ par erreur le délai ou le mode de paiement, ou afficher des frais dans le panie
 et WhatsApp malgré le nouveau message. Stratégie : forcer les frais à zéro dans
 toutes les sources, retirer la logique de seuil de l'expérience publique,
 harmoniser chaque mention utile, puis tester panier, commande et pages publiques.
+
+Résultat : la livraison est désormais forcée à 0 FCFA sans seuil dans la
+boutique, le récapitulatif, les messages WhatsApp et le recalcul des commandes
+du dashboard. La promesse « Livraison gratuite partout à Bamako » apparaît dans
+le bandeau supérieur, les accueils, les garanties, les cartes, le panier, les
+métadonnées et les CGV. Les anciens champs de frais et de seuil du dashboard ont
+été remplacés par une information fixe, tout en gardant les délais Homme/Femme.
+Les réglages publiés et le brouillon Supabase portent `deliveryFee = 0`,
+`deliveryFeeMin = 0`, `freeFrom = 0` et la même annonce ; le brouillon est passé
+en version 293, sans changement en attente, avec une révision 292 récupérable.
+Le catalogue de secours et le seed d'installation appliquent aussi cette règle.
+
+Tests : `node --check` passe sur `boutique.js`, `catalog.js` et
+`api/produit.js` ; les deux scripts intégrés à `admin.html` sont syntaxiquement
+valides ; `git diff --check` passe. Le commit `90b20a0` a été poussé sur `main`
+et servi par Vercel. Vérification Playwright réelle (plugin Browser absent,
+Chrome système utilisé) : à 390 px, ajout d'un produit disponible au panier,
+livraison « Gratuite », total égal au sous-total, note sans minimum, aucun
+débordement ni erreur console ; à 1280 px, même annonce, aucun débordement ni
+erreur ; les CGV en production annoncent la gratuité dans tous les quartiers et
+ne contiennent plus le seuil de 40 000 FCFA. Aucune commande de test n'a été
+créée : le contrôle s'est arrêté au panier.
