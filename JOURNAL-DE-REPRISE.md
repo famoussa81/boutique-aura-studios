@@ -1515,3 +1515,15 @@ d'accueil répond HTTP 200 et le `catalog.js` de production contient bien
 l'audience Femme pour `gv-paris`. Prochaine action sûre : contrôler visuellement
 la fiche Givenchy depuis l'univers Femme si son ordre de mise en avant doit être
 ajusté.
+
+### Session du 5 septembre 2026 — visuels Givenchy Paris corrigés (en cours)
+
+Demande : refaire les visuels des quatre coloris de la Claquette Paris à partir
+des photos originales, car les rendus actuels ont perdu la courbure ondulée du
+profil latéral. État Git : `main` au commit `11cc3a9`, synchronisé avec
+`origin/main` ; `design-qa.md` et `tmp/` restent non suivis et hors portée.
+Fichiers envisagés : les quatre images produit Givenchy existantes et ce journal.
+Risques : déformer la semelle, altérer l'étiquette réelle, mélanger les coloris
+ou publier un rendu non homogène. Stratégie : utiliser les originaux comme
+références, produire quatre paires studio 3:4 cohérentes, contrôler visuellement
+chaque résultat, puis seulement remplacer et synchroniser les actifs validés.
