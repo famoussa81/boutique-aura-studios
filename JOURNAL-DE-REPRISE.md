@@ -1674,7 +1674,7 @@ Résultat : `Rose pâle grainé`, `Bicolore rose` et `Fuchsia` ont été retiré
 
 Tests : requête de contrôle Supabase sans aucun coloris `rose` ou `fuchsia` dans les produits Hermès Homme ; stocks et réservations vérifiés ; `git diff --check` passe. Vérification réelle de production avec Chrome système en 390 × 844 après échec du navigateur intégré : `/hommes` ne contient ni la nouvelle fiche ni les trois libellés roses, `/femmes` contient la fiche Femme, et sa page directe charge les trois coloris sans état introuvable. Capture mobile contrôlée : image Fuchsia, prix et bouton d'ajout visibles. Les routes Homme, Femme, produit et dashboard répondent HTTP 200. Le script reproductible et idempotent est conservé dans `supabase/trier-coloris-hermes-chypre.sql`. Déploiement : commit `294bb4e` poussé sur `main`; données déjà actives en production. Prochaine action sûre : vérifier avec le commerçant si `Nude daim` et `Léopard`, laissés chez Homme car non roses, doivent aussi être proposés chez Femme.
 
-## 2026-09-05 — Nouvelles claquettes Coach (en cours)
+## 2026-09-05 — Nouvelles claquettes Coach (terminé)
 
 Demande : analyser les trois nouvelles références visuelles Coach, éviter les
 doublons, produire les variantes manquantes en photo studio sur fond blanc puis
@@ -1688,3 +1688,27 @@ ou désynchroniser `products` et `store_drafts`. Stratégie : comparer les
 photos aux produits Coach actuels, générer seulement les modèles/coloris
 réellement manquants, contrôler visuellement chaque sortie, créer une révision
 avant écriture et vérifier la production sur mobile.
+
+Résultat : la photo 2 a été reconnue comme le modèle déjà actif
+`coach-matelassee` ; aucune fiche doublon n'a été créée. Deux nouvelles fiches
+Femme ont été ajoutées : `coach-grand-c-signature` et
+`coach-petit-badge-signature`, chacune en Taupe et Ivoire, au prix de lancement
+modifiable de 30 000 FCFA. Quatre visuels 1200 × 1600 ont été générés, corrigés
+et contrôlés sur fond blanc ; le second passage du Grand C a rétabli le
+marquage doré COACH au talon. Des miniatures 480 × 640 et 144 × 192 dédiées ont
+été créées. La sélection Coach met ces deux arrivages en premier et ne pointe
+plus vers les trois fiches archivées.
+
+Synchronisation : une révision récupérable a été créée, les deux produits sont
+actifs dans `products`, présents une seule fois dans `admin_drafts`, avec
+12 variantes chacun. Le dashboard est en version 300, `dirty=false`, et les
+réglages Coach publiés correspondent au brouillon. Le fallback `catalog.js`
+contient les mêmes fiches et masque aussi les anciens Coach indisponibles.
+
+Tests : `node --check catalog.js` et `git diff --check` passent. Vercel sert les
+quatre originaux et leurs huit miniatures. Contrôle Chrome/CDP sur la production
+à 390 × 844 : collection Coach et deux fiches produit sans débordement
+horizontal, zéro image chargée cassée ; un seul clic sur Ivoire remplace bien
+l'image principale par le bon visuel pour les deux produits. Le commit
+`55b5eec` a été poussé sur `main`. Prochaine action sûre : le commerçant peut
+modifier prix et quantités depuis le dashboard avant la campagne.
