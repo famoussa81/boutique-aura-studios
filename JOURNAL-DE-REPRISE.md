@@ -1509,3 +1509,9 @@ Givenchy Homme redirige vers les marques Homme sans afficher la marque. Givenchy
 est présent dans le catalogue Femme, les marques Femme et sa page de marque
 Femme. Aucun débordement horizontal ni erreur console sur les sept parcours
 contrôlés.
+
+Déploiement : commit `b51e7f0` poussé sur `main` et servi par Vercel ; la page
+d'accueil répond HTTP 200 et le `catalog.js` de production contient bien
+l'audience Femme pour `gv-paris`. Prochaine action sûre : contrôler visuellement
+la fiche Givenchy depuis l'univers Femme si son ordre de mise en avant doit être
+ajusté.
