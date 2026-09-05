@@ -1442,4 +1442,5 @@ sources indiquent `femme` et les trois coloris sont intacts. Vérification réel
 sur la production mobile : aucun lien vers ce produit dans le catalogue homme,
 deux liens dans le catalogue femme, aucun débordement horizontal ni erreur
 console sur les pages d'univers. `node --check catalog.js` et `git diff --check`
-passent. Déploiement du correctif de secours à consigner après le push.
+passent. Le commit `05a8aca` a été poussé sur `main` et la production sert bien
+la copie de secours où ce produit porte l'audience `femme`.
