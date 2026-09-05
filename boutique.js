@@ -83,7 +83,7 @@
     '    </div>\n' +
     '  </footer>\n' +
     '  <div class="overlay" id="overlay" data-od-id="cart-overlay"></div>\n' +
-    '  <div class="m-overlay" id="errOverlay" role="alertdialog" aria-modal="true" aria-labelledby="errTitle" aria-hidden="true">\n' +
+    '  <div class="m-overlay" id="errOverlay" role="alertdialog" aria-modal="true" aria-labelledby="errTitle" aria-hidden="true" inert>\n' +
     '    <div class="modal s-modal">\n' +
     '      <div class="m-head">\n' +
     '        <h3 id="errTitle">Commande non enregistrée</h3>\n' +
@@ -98,7 +98,7 @@
     '    </div>\n' +
     '  </div>\n' +
     '\n' +
-    '  <aside class="drawer" id="cartDrawer" data-od-id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true">\n' +
+    '  <aside class="drawer" id="cartDrawer" data-od-id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true" inert>\n' +
     '    <div class="drawer-head">\n' +
     '      <h3 id="cartTitle">Mon panier</h3>\n' +
     '      <button class="icon-btn" id="cartClose" data-od-id="cart-close" aria-label="Fermer le panier">\n' +
@@ -120,7 +120,7 @@
     '    </div>\n' +
     '  </aside>\n' +
     '\n' +
-    '  <div class="m-overlay" id="pvOverlay" role="dialog" aria-modal="true" aria-label="Fiche produit" aria-hidden="true">\n' +
+    '  <div class="m-overlay" id="pvOverlay" role="dialog" aria-modal="true" aria-label="Fiche produit" aria-hidden="true" inert>\n' +
     '    <div class="modal">\n' +
     '      <div class="m-head">\n' +
     '        <h3 id="pvHeadTitre">Fiche produit</h3>\n' +
@@ -154,7 +154,7 @@
     '    </div>\n' +
     '  </div>\n' +
     '\n' +
-    '  <div class="m-overlay" id="coOverlay" role="dialog" aria-modal="true" aria-label="Finaliser la commande" aria-hidden="true">\n' +
+    '  <div class="m-overlay" id="coOverlay" role="dialog" aria-modal="true" aria-label="Finaliser la commande" aria-hidden="true" inert>\n' +
     '    <div class="modal">\n' +
     '      <div class="m-head">\n' +
     '        <h3>Finaliser la commande</h3>\n' +
@@ -210,7 +210,7 @@
     '    </div>\n' +
     '  </div>\n' +
     '\n' +
-    '  <div class="m-overlay" id="soOverlay" role="dialog" aria-modal="true" aria-label="Recherche" aria-hidden="true">\n' +
+    '  <div class="m-overlay" id="soOverlay" role="dialog" aria-modal="true" aria-label="Recherche" aria-hidden="true" inert>\n' +
     '    <div class="modal s-modal">\n' +
     '      <div class="m-head">\n' +
     '        <h3>Rechercher</h3>\n' +
@@ -225,7 +225,7 @@
     '    </div>\n' +
     '  </div>\n' +
     '\n' +
-    '  <div class="m-overlay photo-zoom" id="photoZoom" role="dialog" aria-modal="true" aria-label="Photo du produit agrandie" aria-hidden="true">\n' +
+    '  <div class="m-overlay photo-zoom" id="photoZoom" role="dialog" aria-modal="true" aria-label="Photo du produit agrandie" aria-hidden="true" inert>\n' +
     '    <div class="modal zoom-modal">\n' +
     '      <button class="icon-btn zoom-close" data-close="photoZoom" aria-label="Fermer la photo agrandie">\n' +
     '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>\n' +
@@ -3079,6 +3079,7 @@ window.AURA_IMG = function (img) {
     if (!layers.length) lastFocus = document.activeElement;
     lockScroll();
     layers.push({ el: el, close: closer });
+    el.removeAttribute("inert");
     el.setAttribute("aria-hidden", "false");
     setTimeout(function(){
       var f = focusables(el);
@@ -3087,6 +3088,7 @@ window.AURA_IMG = function (img) {
   }
   function popLayer(el){
     el.setAttribute("aria-hidden", "true");
+    el.setAttribute("inert", "");
     for (var i = layers.length - 1; i >= 0; i--) if (layers[i].el === el) layers.splice(i, 1);
     unlockScroll();
     if (!layers.length && lastFocus && typeof lastFocus.focus === "function"){
