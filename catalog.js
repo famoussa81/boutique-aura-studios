@@ -363,9 +363,9 @@
       shareImage: "https://boutique-aura-studios.vercel.app/assets/brand/tk-shoes-share.jpg",
       address: "Kalaban Coura, Bamako",
       hours: "Lun–ven 09h–22h · Sam 10h–22h · Dim fermé",
-      deliveryFee: 2500,
-      deliveryFeeMin: 2000,
-      freeFrom: 40000,
+      deliveryFee: 0,
+      deliveryFeeMin: 0,
+      freeFrom: 0,
       /* Délai de livraison annoncé. Modifiable depuis l'administration :
          il alimente à la fois les cartes produit, le bandeau de réassurance
          et les mentions du hero, pour qu'ils ne puissent jamais diverger.
@@ -405,7 +405,7 @@
           badge: "Collection 2026 · Bamako",
           kicker: "Claquettes · Mules · Sabots",
           title: "Les modèles qui comptent",
-          sub: "Des modèles originaux, en pointures 39 à 45. Commande simple par WhatsApp et livraison à Bamako.",
+          sub: "Des modèles originaux, en pointures 39 à 45. Commande simple par WhatsApp et livraison gratuite partout à Bamako.",
           cta1: "Voir les marques",
           cta2: "Tout le catalogue"
         },
@@ -427,7 +427,7 @@
           pillars: [
             { title: "Produits originaux", text: "Chaque modèle est vendu comme produit original par un revendeur multimarques indépendant." },
             { title: "Pointures complètes", text: "Du 39 au 45 sur la majorité des modèles, avec le stock réel affiché." },
-            { title: "Livraison simple", text: "Bamako sous 5 jours. Paiement à la livraison, au retrait ou par Orange Money après confirmation." }
+            { title: "Livraison gratuite", text: "Partout à Bamako, sans minimum d'achat. Paiement à la livraison, au retrait ou par Orange Money après confirmation." }
           ]
         },
         newsletter: {
@@ -506,7 +506,7 @@
         ,{ key: "tory-burch", featured: true, label: "Tory Burch", logo: "", tagline: "Double T", accent: "#B99273", cover: "assets/brand-banners/tory-burch.jpg", homeProducts: ["femme-tory-burch-double-t", "femme-tory-burch-miller-jelly"],
           desc: "Double T graphique, cuir souple et jelly translucide dans une palette lumineuse." }
       ],
-      announcement: "Livraison gratuite à Bamako dès 40 000 FCFA d'achat",
+      announcement: "Livraison gratuite partout à Bamako",
       instagram: "",
       tiktok: "",
       youtube: ""

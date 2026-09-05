@@ -140,8 +140,8 @@ Ne mettez **jamais** la clé `service_role` ici : elle contourne toutes les règ
 ## 5. Premier remplissage de la base
 
 1. Ouvrir `admin.html`, se connecter avec le compte créé à l'étape 3.
-2. Aller dans **Réglages**, renseigner le numéro WhatsApp, les frais de livraison,
-   le seuil de livraison offerte, la bannière et les liens sociaux → **Enregistrer**.
+2. Aller dans **Réglages**, renseigner le numéro WhatsApp, vérifier la livraison
+   gratuite partout à Bamako, la bannière et les liens sociaux → **Enregistrer**.
 3. Aller dans **Produits**, modifier puis enregistrer un produit : le catalogue local
    est alors envoyé en base.
 4. Vérifier dans *Table Editor* que `products` et `settings` sont remplies.

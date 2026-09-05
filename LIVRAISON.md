@@ -64,7 +64,7 @@ Trois mentions apparaissent en haut de page et sur chaque carte produit :
 | Promesse | Réglable ? |
 |---|---|
 | Paiement à la livraison | c'est le modèle, rien à faire |
-| Livraison en 24h à Bamako | **oui**, champ « Délai de livraison » |
+| Livraison gratuite partout à Bamako | **oui**, sans minimum d'achat |
 | Échange sous 48h | **oui**, champ « Délai d'échange » |
 
 Les deux délais se changent en dix secondes dans Réglages, et la modification
@@ -84,7 +84,7 @@ Connexion par nom d'utilisateur et mot de passe (Supabase Auth). Sept onglets :
 - **Tableau de bord** — chiffre d'affaires, commandes en attente, ruptures, activité sur sept jours
 - **Commandes** — recherche, filtre par statut, changement de statut qui décrémente vraiment le stock, correction du nom, du numéro et du quartier, retrait d'un article, suppression avec restitution du stock, contact WhatsApp pré-rempli, export CSV
 - **Produits** — création, édition, stock par taille, promotions, badges, envoi de photos depuis un téléphone (compressées dans le navigateur avant envoi)
-- **Réglages** — WhatsApp, nom, frais et seuil de livraison offerte, délais, bannière, réseaux sociaux, catégories
+- **Réglages** — WhatsApp, nom, livraison gratuite, délais, bannière, réseaux sociaux, catégories
 - **Newsletter** — adresses collectées, export CSV
 - **Liste d'attente** — clients à prévenir du retour d'une taille, avec message WhatsApp prêt
 - **Avis** — publication et tri des avis clients

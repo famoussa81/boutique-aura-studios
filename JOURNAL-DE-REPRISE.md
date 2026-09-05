@@ -1444,3 +1444,17 @@ deux liens dans le catalogue femme, aucun débordement horizontal ni erreur
 console sur les pages d'univers. `node --check catalog.js` et `git diff --check`
 passent. Le commit `05a8aca` a été poussé sur `main` et la production sert bien
 la copie de secours où ce produit porte l'audience `femme`.
+
+### Session du 5 septembre 2026 — livraison gratuite partout à Bamako (en cours)
+
+Demande : supprimer toute condition de montant pour la livraison et annoncer
+clairement que toute livraison est gratuite partout à Bamako. État Git : `main`
+au commit `bc8b2c2`, synchronisé avec `origin/main` ; `design-qa.md` et `tmp/`
+restent non suivis et hors portée. Fichiers envisagés : réglages et logique de
+boutique, interface d'administration, CGV et textes publics/administratifs
+concernés, plus ce journal. Données envisagées : réglages publiés et brouillon
+Supabase. Risques : laisser un ancien seuil dans une source de secours, modifier
+par erreur le délai ou le mode de paiement, ou afficher des frais dans le panier
+et WhatsApp malgré le nouveau message. Stratégie : forcer les frais à zéro dans
+toutes les sources, retirer la logique de seuil de l'expérience publique,
+harmoniser chaque mention utile, puis tester panier, commande et pages publiques.

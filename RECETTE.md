@@ -52,7 +52,7 @@ Puis ouvrir `http://localhost:8899/`.
 
 - [ ] Compteur de l'en-tête à jour, animation à l'ajout
 - [ ] Sous-total, livraison et total corrects
-- [ ] **Livraison affichée « Offerte » dès le seuil configuré atteint**
+- [ ] **Livraison affichée « Gratuite » dès le premier article, sans seuil**
 - [ ] `+` / `−` modifient la quantité ; `−` à 1 retire la ligne
 - [ ] « Retirer » supprime la ligne
 - [ ] Message « Stock disponible limité » quand on dépasse le stock
@@ -67,7 +67,7 @@ Puis ouvrir `http://localhost:8899/`.
 - [ ] Quartier vide : erreur
 - [ ] La liste de quartiers propose des suggestions
 - [ ] Commande valide : écran de confirmation avec référence unique
-- [ ] Le message WhatsApp contient les articles, le sous-total, la livraison (« Offerte » le cas échéant), le total, le client et le quartier
+- [ ] Le message WhatsApp contient les articles, le sous-total, « Livraison gratuite partout à Bamako », le total, le client et le quartier
 - [ ] Chaque article commandé conserve la marque, le modèle, la pointure, le coloris et sa référence `ART-…`, même si le nom est masqué sur la carte publique
 - [ ] « Ouvrir WhatsApp » pointe vers le bon numéro
 - [ ] « Copier le texte de la commande » copie et confirme
@@ -160,9 +160,9 @@ Puis ouvrir `http://localhost:8899/`.
 ## 12. Administration — réglages et newsletter
 
 - [ ] Numéro WhatsApp invalide refusé
-- [ ] Frais de livraison négatifs refusés
+- [ ] Livraison toujours recalculée à 0 FCFA
 - [ ] Lien social sans `https://` refusé
-- [ ] Enregistrement : effet immédiat sur la boutique (nom, bannière, frais, seuil, icônes)
+- [ ] Enregistrement : effet immédiat sur la boutique (nom, bannière, livraison gratuite, icônes)
 - [ ] Onglet Newsletter : les inscriptions apparaissent
 - [ ] Export CSV de la newsletter
 

@@ -100,8 +100,8 @@ En-tête, bannière, présentation, newsletter : sur-titre, titre, texte,
 boutons, image, et un interrupteur par bloc
 
 ### Réglages
-Numéro WhatsApp · nom de la boutique · frais de livraison · seuil de
-livraison offerte · bannière d'annonce · délai de livraison · délai
+Numéro WhatsApp · nom de la boutique · livraison gratuite partout à Bamako ·
+bannière d'annonce · délai de livraison · délai
 d'échange · Instagram · TikTok · YouTube
 
 ### Commandes

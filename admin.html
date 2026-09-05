@@ -699,13 +699,11 @@
           </div>
           <div class="grid2"><div class="field"><label for="sAddress">Adresse</label><input id="sAddress" placeholder="Quartier, Bamako" maxlength="120" /></div><div class="field"><label for="sHours">Horaires</label><input id="sHours" placeholder="Lun–Sam, 9h–19h" maxlength="80" /></div></div>
           <div class="field">
-            <label for="sFee">Frais de livraison à Bamako (FCFA)</label>
-            <input type="number" id="sFee" min="0" step="100" />
-          </div>
-          <div class="field">
-            <label for="sFree">Livraison offerte à partir de (FCFA)</label>
-            <input type="number" id="sFree" min="0" step="1000" placeholder="50000" />
-            <p class="hint">Écrivez 0 si vous n’offrez pas la livraison.</p>
+            <label>Livraison à Bamako</label>
+            <p><strong>Gratuite partout, sans minimum d'achat.</strong></p>
+            <p class="hint">Le panier, la commande et le message WhatsApp appliquent automatiquement 0 FCFA.</p>
+            <input type="hidden" id="sFee" value="0" />
+            <input type="hidden" id="sFree" value="0" />
           </div>
           <div class="field">
             <label for="sDelay">Délai de livraison annoncé</label>
@@ -725,9 +723,10 @@
             <p class="hint">Dites en une ou deux lignes ce que vous vendez et où.</p>
           </div>
           <div class="field">
-            <label for="sAnn">Message tout en haut du site</label>
-            <input type="text" id="sAnn" />
-            <p class="hint">Exemple : « Livraison offerte dès 50 000 FCFA ». Vérifiez que le montant correspond au réglage ci-dessus.</p>
+            <label>Message tout en haut du site</label>
+            <p><strong>Livraison gratuite partout à Bamako</strong></p>
+            <p class="hint">Cette promesse reste identique sur toutes les pages.</p>
+            <input type="hidden" id="sAnn" value="Livraison gratuite partout à Bamako" />
           </div>
           <details class="advanced-field settings-more">
             <summary>Réseaux sociaux et image de partage</summary>
@@ -2930,9 +2929,7 @@
 
   function recomputeTotals(o){
     o.subtotal = o.items.reduce(function(a, it){ return a + it.price * it.qty; }, 0);
-    var free = Number(store.settings.freeFrom) || 0;
-    var fee = Number(store.settings.deliveryFee) || 0;
-    o.delivery = (free > 0 && o.subtotal >= free) ? 0 : fee;
+    o.delivery = 0;
     o.total = o.subtotal + o.delivery;
   }
 
@@ -3858,11 +3855,11 @@ function applyStatus(order, ns){
     var enseigne = $("#brandAdmin");
     if (enseigne) enseigne.childNodes[0].nodeValue = nom;
     var enseigneMobile=$("#brandAdminMobile"); if(enseigneMobile) enseigneMobile.textContent=nom;
-    $("#sFee").value = s.deliveryFee != null ? s.deliveryFee : "";
-    $("#sFree").value = s.freeFrom != null ? s.freeFrom : 0;
+    $("#sFee").value = 0;
+    $("#sFree").value = 0;
     $("#sDelay").value = s.deliveryTime || "";
     $("#sExchange").value = s.exchangeTime || "";
-    $("#sAnn").value = s.announcement || "";
+    $("#sAnn").value = "Livraison gratuite partout à Bamako";
     $("#sFoot").value = s.footerText || "";
     $("#sIG").value = s.instagram || "";
     $("#sTT").value = s.tiktok || "";
@@ -3876,10 +3873,6 @@ function applyStatus(order, ns){
     e.preventDefault();
     var wa = digits($("#sWhats").value);
     if (wa.length !== 11 && wa.length !== 8){ toast("Numéro WhatsApp invalide (format 223xxxxxxxx)"); $("#sWhats").focus(); return; }
-    var fee = parseInt($("#sFee").value, 10);
-    if (isNaN(fee) || fee < 0){ toast("Frais de livraison invalides"); $("#sFee").focus(); return; }
-    var free = parseInt($("#sFree").value, 10);
-    if (isNaN(free) || free < 0){ free = 0; }
     var links = [["#sIG","Instagram"],["#sTT","TikTok"],["#sYT","YouTube"]];
     for (var i = 0; i < links.length; i++){
       if (!validUrl($(links[i][0]).value)){
@@ -3895,11 +3888,12 @@ function applyStatus(order, ns){
     store.settings.address = $("#sAddress").value.trim();
     store.settings.hours = $("#sHours").value.trim();
     store.settings.shareImage = $("#sShareImage").value.trim();
-    store.settings.deliveryFee = fee;
-    store.settings.freeFrom = free;
+    store.settings.deliveryFee = 0;
+    store.settings.deliveryFeeMin = 0;
+    store.settings.freeFrom = 0;
     store.settings.deliveryTime = $("#sDelay").value.trim();
     store.settings.exchangeTime = $("#sExchange").value.trim();
-    store.settings.announcement = $("#sAnn").value.trim();
+    store.settings.announcement = "Livraison gratuite partout à Bamako";
     store.settings.footerText = $("#sFoot").value.trim();
     store.settings.instagram = $("#sIG").value.trim();
     store.settings.tiktok = $("#sTT").value.trim();

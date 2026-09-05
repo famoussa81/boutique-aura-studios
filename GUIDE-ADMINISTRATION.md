@@ -113,7 +113,7 @@ quoi que ce soit.
 - Le **nom, le téléphone et le quartier** du client.
 - Les **articles** : quantité, marque, modèle, pointure, coloris et une
   **référence article** du type `ART-LV-SIGNATURE`.
-- Le **sous-total, les frais de livraison et le total**.
+- Le **sous-total, la livraison gratuite et le total**.
 
 ### Les cinq statuts
 
@@ -151,7 +151,7 @@ vous envoie sur WhatsApp. Vous recevez :
 • 1 × HUGO Claquette Monogramme (42 · Noir) — Réf. ART-HUGO-MONOGRAMME — 23 000 FCFA
 
 🧾 Sous-total : 23 000 FCFA
-🚚 Livraison : 1 500 FCFA
+🚚 Livraison : Gratuite partout à Bamako
 💰 Total : 24 500 FCFA
 👤 Client : Aminata Traoré (+223 76 XX XX XX)
 📍 Livraison : Bamako, Badalabougou
@@ -412,8 +412,7 @@ le bloc.** Du remplissage se repère immédiatement et abîme la confiance.
 |---|---|---|
 | **Numéro WhatsApp** | Où arrivent toutes vos commandes | Format international sans le `+` : `22376XXXXXX`. Une erreur ici et **vous ne recevez plus rien**. Testez après chaque modification. |
 | **Nom de la boutique** | Le logo, le titre de l'onglet, les messages | |
-| **Frais de livraison** | Ajoutés à chaque commande | En FCFA |
-| **Livraison offerte à partir de** | Le seuil de gratuité | `0` = jamais de livraison offerte |
+| **Livraison à Bamako** | Toujours gratuite | Aucun minimum d'achat |
 | **Bannière d'annonce** | Le bandeau noir tout en haut | Si vous y annoncez un seuil, **vérifiez qu'il correspond au champ ci-dessus** — deux chiffres différents, et le client se sent trompé |
 | **Délai de livraison** | Affiché sur chaque produit et dans le bandeau de garanties | N'annoncez que ce que vous tenez |
 | **Délai d'échange** | Idem | Vide = « Échange possible », sans délai |

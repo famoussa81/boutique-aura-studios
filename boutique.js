@@ -57,7 +57,7 @@
     '        <div class="fcol" data-od-id="footer-col-aide">\n' +
     '          <h2>Aide</h2>\n' +
     '          <ul>\n' +
-    '            <li><a href="#" id="helpDelivery" target="_blank" rel="noopener">Livraison à Bamako</a></li>\n' +
+    '            <li><a href="#" id="helpDelivery" target="_blank" rel="noopener">Livraison gratuite à Bamako</a></li>\n' +
     '            <li><a href="guide-des-tailles.html">Guide des tailles</a></li>\n' +
     '            <li><a href="#" id="helpOrder" target="_blank" rel="noopener">Suivi de commande</a></li>\n' +
     '            <li><a href="#" id="helpContact" target="_blank" rel="noopener">Contact WhatsApp</a></li>\n' +
@@ -735,23 +735,18 @@ window.AURA_IMG = function (img) {
     return i < 0;
   }
 
-  /* ---------------- Frais de livraison ---------------- */
-  /* La bannière annonce la livraison offerte au-delà d'un montant :
-     le calcul doit appliquer réellement ce seuil. */
+  /* ---------------- Livraison gratuite à Bamako ---------------- */
+  /* La boutique prend désormais en charge toute livraison à Bamako, quel que
+     soit le montant. Le calcul reste centralisé pour que panier, commande,
+     dashboard et WhatsApp ne puissent jamais diverger. */
   function deliveryFor(sub){
-    var free = Number(store.settings.freeFrom) || 0;
-    if (free > 0 && sub >= free) return 0;
-    return Number(store.settings.deliveryFee) || 0;
+    return 0;
   }
   function deliveryFeeLabel(sub){
-    var fee = deliveryFor(sub);
-    if (fee === 0) return "Offerte";
-    var min = Number(store.settings.deliveryFeeMin) || fee;
-    return min > 0 && min < fee ? fmt(min) + " à " + fmt(fee) : fmt(fee);
+    return "Gratuite";
   }
   function variableDelivery(sub){
-    var fee = deliveryFor(sub), min = Number(store.settings.deliveryFeeMin) || fee;
-    return fee > 0 && min > 0 && min < fee;
+    return false;
   }
 
   /* ---------------- Liens issus des réglages ---------------- */
@@ -926,7 +921,7 @@ window.AURA_IMG = function (img) {
   }
   function deliveryLabel(audience){
     var d = deliveryDelay(audience);
-    return d ? "Livré " + delaiPrep(d) + " " + d : "Livraison à Bamako";
+    return d ? "Livraison gratuite · " + delaiPrep(d) + " " + d : "Livraison gratuite à Bamako";
   }
 
   /* La section « univers » montre les collections quand il y en a, les
@@ -1629,18 +1624,11 @@ window.AURA_IMG = function (img) {
 
   function applySellingCopy(){
     var s = store.settings;
-    var free = Number(s.freeFrom) || 0;
     var d = deliveryDelay(curAudience || audienceAttribut());
-    var libelle = d ? "Livraison " + delaiPrep(d) + " " + d + " à Bamako" : "Livraison à Bamako";
+    var libelle = d ? "Livraison gratuite · " + delaiPrep(d) + " " + d : "Livraison gratuite à Bamako";
     var ex = (store.settings.exchangeTime || "").toString().trim();
-    /* Le bandeau est désormais rendu depuis la liste unique des garanties.
-       Le seuil de livraison offerte, lui, reste un chiffre de réglage : il
-       doit suivre le champ, pas un texte libre. */
+    /* Le bandeau est rendu depuis la liste unique des garanties. */
     renderTrustBar();
-    if (free > 0){
-      var libre = document.querySelector(".trust-grid .trust-item:nth-child(2) span");
-      if (libre) libre.textContent = "Offerte dès " + fmt(free) + " d'achat.";
-    }
     var he = $("#heroExchange"); if (he) he.textContent = ex ? "Échange sous " + ex : "Échange possible";
     var hd = $("#heroDelay"); if (hd) hd.textContent = libelle;
     var wa = $("#waFloat");
@@ -1762,16 +1750,13 @@ window.AURA_IMG = function (img) {
     if(s.hours)contact.push(String(s.hours).trim());
     if(s.legal&&s.legal.email)contact.push(String(s.legal.email).trim());
     if(fc){fc.textContent=contact.join(" · ");fc.hidden=!contact.length;}
-    var free = Number(s.freeFrom) || 0;
     var note = $("#cartDeliveryNote");
     if (note){
-      note.textContent = free > 0
-        ? "Livraison à Bamako : " + deliveryFeeLabel(0) + " selon le quartier · offerte dès " + fmt(free) + " · tarif confirmé avant l'envoi"
-        : "Livraison à Bamako : " + deliveryFeeLabel(0) + " selon le quartier · tarif confirmé avant l'envoi";
+      note.textContent = "Livraison gratuite partout à Bamako, sans minimum d'achat.";
     }
     var wa = waLink(s.whatsapp, "Bonjour " + s.shopName + " 👋");
     ["#contactBtn","#helpContact"].forEach(function(sel){ var e = $(sel); if (e) e.href = wa; });
-    var d = $("#helpDelivery"); if (d) d.href = helpLink("Bonjour " + s.shopName + ", j'aimerais connaître les modalités de livraison à Bamako.");
+    var d = $("#helpDelivery"); if (d) d.href = helpLink("Bonjour " + s.shopName + ", j'ai une question sur la livraison gratuite partout à Bamako.");
     var o = $("#helpOrder"); if (o) o.href = helpLink("Bonjour " + s.shopName + ", j'aimerais suivre ma commande.");
     var pr = $("#helpPress"); if (pr) pr.href = helpLink("Bonjour " + s.shopName + ", je vous contacte dans le cadre d'une demande presse.");
     setSocial("#socialIG", s.instagram);
@@ -2542,7 +2527,7 @@ window.AURA_IMG = function (img) {
     var e = (store.settings.exchangeTime || "").toString().trim();
     var defauts = [
       { t: "Payé à la livraison", s: "Vous essayez devant le livreur avant de payer. Rien à avancer." },
-      { t: d ? "Livraison " + delaiPrep(d) + " " + d : "Livraison à Bamako", s: "Partout dans la ville, prévenue par WhatsApp." },
+      { t: "Livraison gratuite", s: "Partout à Bamako" + (d ? " " + delaiPrep(d) + " " + d : "") + ", sans minimum d'achat." },
       { t: e ? "Échange sous " + e : "Échange possible", s: "Mauvaise pointure ? On repasse l'échanger." },
       { t: "Stock réel", s: "Le nombre affiché est celui de la boutique, pointure par pointure." }
     ];
@@ -3012,26 +2997,12 @@ window.AURA_IMG = function (img) {
       '</div>';
     }).join("") + xsellHTML();
   }
-  /* Barre de progression vers la livraison offerte. Le seuil vient des
-     reglages : c'est le levier de panier moyen le plus sûr, a condition que
-     le client voie ce qu'il lui reste a parcourir. */
+  /* Aucun palier à atteindre : la livraison est gratuite dès le premier
+     article. L'ancien composant reste masqué pour les paniers enregistrés. */
   function renderFreeShip(sub){
     var box = $("#freeShip");
     if (!box) return;
-    var free = Number(store.settings.freeFrom) || 0;
-    var fee  = Number(store.settings.deliveryFee) || 0;
-    if (free <= 0 || fee <= 0){ box.hidden = true; return; }
-    box.hidden = false;
-    var reste = free - sub;
-    if (reste <= 0){
-      box.classList.add("done");
-      $("#freeShipMsg").textContent = "Livraison offerte";
-      $("#freeShipBar").style.width = "100%";
-    } else {
-      box.classList.remove("done");
-      $("#freeShipMsg").textContent = "Plus que " + fmt(reste) + " pour la livraison offerte";
-      $("#freeShipBar").style.width = Math.max(4, Math.round(sub / free * 100)) + "%";
-    }
+    box.hidden = true;
   }
 
   /* Vente croisee : deux accessoires disponibles, hors panier. Apres avoir
@@ -3167,7 +3138,7 @@ window.AURA_IMG = function (img) {
         cart.map(function(it){
           return '<div class="co-item"><span>' + esc(it.brand ? it.brand + ' ' + it.name : it.name) + ' <small>' + esc(articleRef(it.id)) + (it.variantLabel ? ' · ' + esc(it.variantLabel) : '') + ' · ' + it.qty + ' x</small></span><strong>' + fmt(it.price * it.qty) + '</strong></div>';
         }).join("") +
-        '<div class="co-line"><span>Livraison (Bamako)</span><strong>' + deliveryFeeLabel(subtotal()) + '</strong></div>' +
+        '<div class="co-line"><span>Livraison gratuite (Bamako)</span><strong>' + deliveryFeeLabel(subtotal()) + '</strong></div>' +
         '<div class="co-total"><span>' + (variableDelivery(subtotal()) ? "Total maximum" : "Total") + '</span><strong>' + fmt(subtotal() + deliveryFor(subtotal())) + '</strong></div>' +
       '</div>';
   }
@@ -3211,7 +3182,7 @@ window.AURA_IMG = function (img) {
     });
     L.push("");
     L.push("🧾 *Sous-total :* " + fmt(o.subtotal));
-    L.push("🚚 *Livraison :* " + deliveryFeeLabel(o.subtotal) + (variableDelivery(o.subtotal) ? " selon le quartier" : ""));
+    L.push("🚚 *Livraison :* Gratuite partout à Bamako");
     L.push("💰 *" + (variableDelivery(o.subtotal) ? "Total maximum" : "Total") + " :* " + fmt(o.total));
     L.push("👤 *Client :* " + o.client + " (" + localPhone(o.phone) + ")");
     L.push("📍 *Livraison :* Bamako, " + o.quartier);

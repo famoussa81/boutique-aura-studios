@@ -143,7 +143,7 @@ module.exports = async function fiche(req, res) {
   if (produit.desc) morceaux.push(String(produit.desc).replace(/\s+/g, " ").trim());
   if (pointures.length) morceaux.push("Pointures " + pointures[0] + " à " + pointures[pointures.length - 1] + ".");
   if (coloris.length > 1) morceaux.push(coloris.length + " coloris.");
-  morceaux.push(prixTexte(prix) + ", paiement à la livraison à Bamako.");
+  morceaux.push(prixTexte(prix) + ", livraison gratuite partout à Bamako et paiement à la livraison.");
   const description = morceaux.join(" ").slice(0, 300);
 
   const titrePage = titreComplet + " — " + boutique + " Bamako";
@@ -172,11 +172,11 @@ module.exports = async function fiche(req, res) {
      rendu qu'avant, le robot voit une fiche complète. */
   const remplacements = [
     ["<title>Produit — Boutique en ligne · Bamako</title>", "<title>" + esc(titrePage) + "</title>"],
-    ['<meta name="description" content="Pointures disponibles, coloris et stock réel. Commande par WhatsApp, paiement à la livraison à Bamako." />',
+    ['<meta name="description" content="Pointures disponibles, coloris et stock réel. Livraison gratuite partout à Bamako, commande par WhatsApp et paiement à la livraison." />',
      '<meta name="description" content="' + esc(description) + '" />'],
     ['<meta property="og:title" content="Produit — Boutique en ligne · Bamako" />',
      '<meta property="og:title" content="' + esc(titrePage) + '" />'],
-    ['<meta property="og:description" content="Pointures disponibles, coloris et stock réel. Commande par WhatsApp, paiement à la livraison." />',
+    ['<meta property="og:description" content="Pointures disponibles, coloris et stock réel. Livraison gratuite partout à Bamako et commande par WhatsApp." />',
      '<meta property="og:description" content="' + esc(description) + '" />'],
     ['<meta property="og:image" content="https://boutique-aura-studios.vercel.app/api/share-image" />',
      '<meta property="og:image" content="' + esc(photo) + '" />'],
