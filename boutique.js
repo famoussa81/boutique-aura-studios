@@ -611,8 +611,9 @@ window.AURA_IMG = function (img) {
   function lazyAttrs(src){
     return 'data-src="' + esc(mediaUrl(src)) + '" loading="lazy" decoding="async"';
   }
-  function eagerAttrs(src){
-    return 'src="' + esc(mediaUrl(src)) + '" loading="eager" fetchpriority="high" decoding="async"';
+  function eagerAttrs(src, prioritaire){
+    return 'src="' + esc(mediaUrl(src)) + '" loading="eager" fetchpriority="' +
+      (prioritaire ? 'high' : 'auto') + '" decoding="async"';
   }
   /* La grille n'a pas besoin des fichiers pleine definition de la fiche.
      Les miniatures locales sont generees a part ; une photo distante ajoutee
@@ -2021,7 +2022,7 @@ window.AURA_IMG = function (img) {
     var productUrl = audienceLien('produit?id=' + encodeURIComponent(p.id), curAudience || audienceAttribut());
     return '<article class="pcard' + (out ? ' is-out' : '') + '" data-card="' + esc(p.id) + '">' +
       '<div class="pmedia">' +
-        '<img ' + (opts.eager ? eagerAttrs(cardThumbUrl(photoCarte)) : lazyAttrs(cardThumbUrl(photoCarte))) + ' alt="' + alt + '" width="600" height="800" onerror="AURA_IMG(this)" />' +
+        '<img ' + (opts.eager ? eagerAttrs(cardThumbUrl(photoCarte), opts.priority) : lazyAttrs(cardThumbUrl(photoCarte))) + ' alt="' + alt + '" width="600" height="800" onerror="AURA_IMG(this)" />' +
         /* Lien en surimpression plutot qu'un <a> autour du bloc : le bouton
            favori est un vrai bouton, et un bouton dans un lien n'est pas du
            HTML valide. Le favori passe au-dessus par son z-index. */
@@ -2372,7 +2373,7 @@ window.AURA_IMG = function (img) {
   }
 
   var gridVisibleLimit = 0;
-  function gridPageSize(){ return window.innerWidth <= 760 ? 12 : 24; }
+  function gridPageSize(){ return window.innerWidth <= 760 ? 8 : 18; }
   function renderGrid(preserveLimit){
     /* Les rangées de l'accueil contiennent les mêmes cartes que la grille :
        un cœur cliqué ou un stock consommé doit s'y voir aussi. L'accueil n'a
@@ -2435,7 +2436,7 @@ window.AURA_IMG = function (img) {
     var ordonnes = trier(list);
     var affiches = ordonnes.slice(0, gridVisibleLimit);
     var reste = Math.max(0, ordonnes.length - affiches.length);
-    g.innerHTML = affiches.map(function(p, i){ return cardHTML(p, { eager:i < 4 }); }).join("") +
+    g.innerHTML = affiches.map(function(p, i){ return cardHTML(p, { eager:i < 4, priority:i === 0 }); }).join("") +
       (reste ? '<div class="grid-more"><button type="button" data-grid-more>Voir ' +
         Math.min(reste, gridPageSize()) + ' modèle' + (Math.min(reste, gridPageSize()) > 1 ? 's' : '') +
         ' de plus</button><span>' + affiches.length + ' sur ' + ordonnes.length + '</span></div>' : '');
