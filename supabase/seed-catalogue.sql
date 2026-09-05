@@ -180,3 +180,9 @@ set data = jsonb_set(data, '{variants}', (
   from jsonb_each(data->'variants') v
 ), true)
 where id = 'bb-check';
+
+-- Givenchy est présenté exclusivement dans l'univers Femme.
+update public.products
+set data = jsonb_set(data, '{audience}', '"femme"'::jsonb, true),
+    updated_at = now()
+where lower(coalesce(data->>'collection', '')) = 'givenchy';

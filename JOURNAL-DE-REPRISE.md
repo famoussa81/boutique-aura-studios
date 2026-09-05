@@ -1480,3 +1480,32 @@ débordement ni erreur console ; à 1280 px, même annonce, aucun débordement n
 erreur ; les CGV en production annoncent la gratuité dans tous les quartiers et
 ne contiennent plus le seuil de 40 000 FCFA. Aucune commande de test n'a été
 créée : le contrôle s'est arrêté au panier.
+
+### Session du 5 septembre 2026 — Givenchy exclusivement Femme (terminée)
+
+Demande : déplacer la paire Givenchy montrée et toute la marque Givenchy de
+l'univers Homme vers l'univers Femme, sans laisser de trace publique chez les
+hommes. État Git : `main` au commit `7311b76`, synchronisé avec `origin/main` ;
+`design-qa.md` et `tmp/` restent non suivis et hors portée. Fichiers envisagés :
+catalogue de secours et journal. Données envisagées : audience de tous les
+produits Givenchy publiés et de leurs copies dans le brouillon Supabase. Risques :
+oublier un produit masqué, modifier les variantes ou conserver un bandeau de
+marque chez les hommes. Stratégie : inventorier tous les produits de la marque,
+conserver une révision de retour arrière, ne changer que leur audience dans les
+deux sources, puis vérifier catalogues, pages de marque et dashboard.
+
+Résultat : l'unique produit Givenchy (`gv-paris`, « Claquette Paris ») est
+désormais classé Femme dans les produits publiés, le brouillon du dashboard,
+le catalogue de secours et le seed d'installation. Ses quatre coloris, images,
+prix et stocks n'ont pas été modifiés. Le brouillon est passé en version 294,
+sans changement en attente, et la version 293 a été conservée comme révision de
+retour arrière. Il ne reste aucun produit Givenchy publié ou en brouillon avec
+l'audience Homme.
+
+Tests : `node --check catalog.js` et `git diff --check` passent. Vérification
+Playwright en production à 390 px avec Chrome système : Givenchy est absent de
+`/hommes`, du catalogue Homme et des marques Homme ; un ancien lien direct
+Givenchy Homme redirige vers les marques Homme sans afficher la marque. Givenchy
+est présent dans le catalogue Femme, les marques Femme et sa page de marque
+Femme. Aucun débordement horizontal ni erreur console sur les sept parcours
+contrôlés.
