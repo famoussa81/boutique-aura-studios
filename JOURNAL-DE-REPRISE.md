@@ -1648,3 +1648,10 @@ appliquées. Prochaine action sûre : activer un forfait Supabase de production
 avant une grosse campagne, puis ajouter des métriques Web Vitals terrain ; ce
 sont des décisions de compte/facturation, pas des changements à imposer depuis
 le code.
+## 2026-09-05 — Tri des coloris Hermès par audience (terminé)
+
+Demande : séparer toute la famille de sandales Hermès à découpe H selon le public : coloris masculins chez les hommes, coloris explicitement féminins (rose, fuchsia et pastels apparentés) chez les femmes. État Git initial : `7dc0069`, branche `main`; fichiers utilisateur non suivis `design-qa.md` et `tmp/` préservés. Risques contrôlés : perte de variantes ou de stock, divergence boutique/dashboard et duplication de références.
+
+Résultat : `Rose pâle grainé`, `Bicolore rose` et `Fuchsia` ont été retirés des deux fiches Chypre Homme et réunis dans la nouvelle fiche `femme-hermes-chypre-roses`. Bordeaux, Terracotta, Rouge vif, Nude daim et Léopard restent chez Homme ; les autres familles masculines Noir, Blanc, Marine, bleus, bruns, verts, kaki, taupe et camel sont inchangées. Une révision récupérable a été créée avant écriture. Le stock total des trois fiches concernées reste exactement 336, avec zéro réservation déplacée. La vitrine compte 79 produits ; le brouillon dashboard en compte aussi 79, contient la nouvelle fiche une seule fois, est en version 296 et n'a aucun changement en attente.
+
+Tests : requête de contrôle Supabase sans aucun coloris `rose` ou `fuchsia` dans les produits Hermès Homme ; stocks et réservations vérifiés ; `git diff --check` passe. Vérification réelle de production avec Chrome système en 390 × 844 après échec du navigateur intégré : `/hommes` ne contient ni la nouvelle fiche ni les trois libellés roses, `/femmes` contient la fiche Femme, et sa page directe charge les trois coloris sans état introuvable. Capture mobile contrôlée : image Fuchsia, prix et bouton d'ajout visibles. Le script reproductible et idempotent est conservé dans `supabase/trier-coloris-hermes-chypre.sql`. Prochaine action sûre : publier ce fichier de traçabilité dans Git ; aucune nouvelle écriture Supabase n'est requise.
