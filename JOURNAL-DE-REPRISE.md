@@ -1390,3 +1390,30 @@ retouchée pour recréer ce texte, aucun visuel/site/produit n'a changé et rien
 n'a été déployé. Une future correction sûre doit employer un visuel source
 authentique possédant déjà le marquage, avec l'autorisation explicite du
 propriétaire, plutôt que demander à l'IA de l'inventer.
+
+### Session du 5 septembre 2026 — retrait Sandale Oran Denim (terminée)
+
+Demande : retirer totalement de la boutique les trois chaussures Hermès montrées
+par l'utilisateur, sans les afficher comme simples ruptures de stock. État Git :
+`main` au commit `76efc18`, synchronisé avec `origin/main` ; `design-qa.md` et
+`tmp/` restent non suivis et hors portée. Identification confirmée dans Supabase :
+les trois captures sont les trois coloris du produit
+`femme-hermes-oran-denim` (« Bleu clair frangé », « Tweed frangé », « Bleu clair
+bordé cuir »). Aucun ordre ni aucune demande de réassort ne le référence, et il
+n'est présent dans aucune liste de vedettes. Fichiers envisagés : journal ;
+données envisagées : produit publié et copie du brouillon. Risques : supprimer
+un autre modèle Hermès ou désynchroniser vitrine/dashboard. Stratégie sûre :
+archiver le produit et le désactiver dans les deux sources, puis vérifier son
+absence sur les pages publiques et sa présence archivée dans l'administration.
+
+Résultat : une révision de retour arrière de la version 290 a été conservée,
+puis `femme-hermes-oran-denim` a été désactivé et archivé dans `products` ainsi
+que dans le brouillon d'administration, désormais en version 291 et sans
+changement en attente. Les trois coloris ont donc disparu ensemble, sans toucher
+aux autres produits Hermès. Vérification réelle sur la production : à 390 px et
+1280 px, `/femmes` ne contient ni le nom ni un lien vers ce produit, ne déborde
+pas horizontalement et ne produit aucune erreur console. L'ancien lien direct
+redirige vers `/catalogue?audience=femme` et n'affiche plus le produit. Aucun
+déploiement de code n'était requis : la vitrine et le dashboard lisent tous deux
+les données Supabase déjà synchronisées. Prochaine action sûre : contrôler les
+prochains retraits par identifiant précis avant toute mutation.
