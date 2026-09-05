@@ -1713,7 +1713,7 @@ l'image principale par le bon visuel pour les deux produits. Le commit
 `55b5eec` a été poussé sur `main`. Prochaine action sûre : le commerçant peut
 modifier prix et quantités depuis le dashboard avant la campagne.
 
-## 2026-09-05 — Claquette Burberry tartan sombre (en cours)
+## 2026-09-05 — Claquette Burberry tartan sombre (terminé)
 
 Demande : partir de la photographie d'une seule claquette Burberry, produire
 une paire complète sur fond blanc en vue studio et l'ajouter à la marque
@@ -1725,3 +1725,17 @@ ou le marquage embossé BURBERRY, et désynchroniser la vitrine avec le
 dashboard. Stratégie : comparer visuellement l'existant, ne créer une fiche
 que si la silhouette est distincte, préserver exactement le motif et vérifier
 le résultat en production mobile.
+
+Résultat : la photographie reçue correspond à la même silhouette que
+`bb-check`; elle a donc été ajoutée comme cinquième coloris « Bordeaux noir »
+au lieu de créer un doublon. Une paire complète 3:4 sur fond blanc et ses deux
+miniatures ont été générées puis publiées. Le script idempotent
+`supabase/ajouter-burberry-bordeaux-noir.sql` a créé une révision, ajouté le
+coloris et ses variantes 39–45 (stock initial 3), puis synchronisé le brouillon
+du dashboard en version 301, `dirty=false`. Vérifications exécutées :
+`node --check catalog.js`, `git diff --check`, asset de production HTTP 200 et
+test Chrome mobile 390 × 844 sur `/produit?id=bb-check&audience=homme` : un
+seul clic sélectionne le coloris, charge le visuel complet, zéro image cassée
+et zéro débordement horizontal. Commit applicatif `f492d34` poussé sur `main`.
+Prochaine action sûre : le commerçant peut modifier prix et stocks depuis le
+dashboard sans perdre ce coloris.
