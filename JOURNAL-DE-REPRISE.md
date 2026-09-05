@@ -1712,3 +1712,16 @@ horizontal, zéro image chargée cassée ; un seul clic sur Ivoire remplace bien
 l'image principale par le bon visuel pour les deux produits. Le commit
 `55b5eec` a été poussé sur `main`. Prochaine action sûre : le commerçant peut
 modifier prix et quantités depuis le dashboard avant la campagne.
+
+## 2026-09-05 — Claquette Burberry tartan sombre (en cours)
+
+Demande : partir de la photographie d'une seule claquette Burberry, produire
+une paire complète sur fond blanc en vue studio et l'ajouter à la marque
+Burberry. État Git initial : `e8e7bf1`, branche `main`; fichiers utilisateur
+non suivis `design-qa.md` et `tmp/` préservés. Fichiers envisagés : visuel et
+miniatures produit, `catalog.js`, script SQL reproductible et ce journal.
+Risques : dupliquer le coloris Noir du produit `bb-check`, déformer le tartan
+ou le marquage embossé BURBERRY, et désynchroniser la vitrine avec le
+dashboard. Stratégie : comparer visuellement l'existant, ne créer une fiche
+que si la silhouette est distincte, préserver exactement le motif et vérifier
+le résultat en production mobile.
