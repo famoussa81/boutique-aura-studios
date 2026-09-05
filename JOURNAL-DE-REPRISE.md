@@ -1592,7 +1592,7 @@ code fonctionnel, produit, stock ou donnée client n'a été modifié. Prochaine
 action sûre : corriger d'abord les miniatures et la pagination, puis ajouter
 l'observabilité et tester la charge dans un environnement de préproduction avant
 toute grande campagne.
-### Session du 5 septembre 2026 — préparation production et fluidité (en cours)
+### Session du 5 septembre 2026 — préparation production et fluidité (terminée)
 
 Demande : corriger de manière autonome les risques relevés par l'audit afin que
 la boutique soit fluide et fiable pour un lancement public avec une audience
@@ -1607,3 +1607,44 @@ Stratégie : corriger d'abord la cause mesurée des images plein format, rendre 
 catalogue progressif sans changer son ordre, ajouter les garde-fous de
 performance et les index sûrs, puis comparer les mesures avant/après et tester
 les parcours boutique et dashboard en production.
+
+Résultat : la grille charge maintenant huit produits sur téléphone et dix-huit
+sur ordinateur, puis propose une commande « Voir … modèles de plus ». Le filtre,
+le tri et la recherche réinitialisent proprement cette tranche. Les images ne
+commencent plus à charger 800 px avant l'écran mais 320 px avant. La détection
+des miniatures accepte désormais les URL portant un suffixe de cache : les
+visuels Givenchy ne chargent plus leurs fichiers 1200 × 1600 dans les cartes.
+Les 29 miniatures Coach qui étaient de fausses copies plein format ont été
+réduites à 480 × 640 pour les cartes et 144 × 192 pour les coloris ; leur poids
+cumulé passe de 6,31 Mo à 551 Ko, sans modifier les originaux. La première image
+visible reçoit seule la priorité réseau maximale. Les fenêtres fermées portent
+maintenant `inert`, et les filtres de catégorie utilisent le rôle ARIA correct.
+
+Base : quatre index ont été ajoutés et déployés sur les historiques triés du
+dashboard (`orders`, `subscribers`, `waitlist`, `store_revisions`). Le plafond
+global de protection des commandes passe de 120 à 600 par heure ; la limite
+plus stricte de trois commandes par numéro en trente minutes reste inchangée.
+La fonction déployée et les droits d'exécution public/authentifié ont été relus
+après migration. Les alertes « index inutilisé » émises immédiatement après la
+création sont informatives et normales sur les très petites tables actuelles.
+
+Mesures : sur le catalogue Femme mobile, Lighthouse passe de 38 à 69, le LCP
+de 6,7 s à 4,3 s, le TBT de 1 170 à 630 ms et le poids de 3 423 à 376 Kio.
+L'accueil mobile passe de 70 à 90, avec LCP 3,1 s, TBT 120 ms et CLS 0,068.
+Accessibilité, bonnes pratiques et SEO obtiennent 100/100 sur la mesure finale.
+Playwright production : douze couples route/viewport contrôlés en 390 et
+1280 px, tous HTTP 200, sans page vide, débordement horizontal, contenu visible
+à opacité nulle ni erreur console. La grille passe bien de 8 à 13 produits sur
+le catalogue actuel ; un clic unique change le coloris Givenchy, puis l'ajout
+ouvre le panier contenant le bon produit. Aucune commande réelle n'a été créée.
+
+Tentative rejetée : éviter les repeints Supabase lorsque les données semblaient
+identiques n'a pas amélioré Lighthouse au-delà du bruit de mesure (69 à 62/65)
+et ajoutait une comparaison coûteuse ; le commit a été annulé par `b99a7b2`.
+Déploiement : commits `95242d1`, `4c23c82`, `3d7c596`, `720b0aa`, `3e3b33e`
+et `da4465a` poussés sur `main`, servis par Vercel ; migrations Supabase
+`add_dashboard_history_indexes` et `raise_safe_global_order_capacity`
+appliquées. Prochaine action sûre : activer un forfait Supabase de production
+avant une grosse campagne, puis ajouter des métriques Web Vitals terrain ; ce
+sont des décisions de compte/facturation, pas des changements à imposer depuis
+le code.
