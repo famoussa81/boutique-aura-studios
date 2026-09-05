@@ -265,7 +265,7 @@
         colors: ["Bleu", "Beige", "Bleu marine", "Olive", "Noir"],
         valueImages: { "Coloris::Bleu": "assets/products/homme/coach-slide-signature-bleu-studio.jpg", "Coloris::Beige": "assets/products/homme/coach-slide-signature-beige-studio.jpg", "Coloris::Bleu marine": "assets/products/homme/coach-slide-signature-marine-studio.jpg", "Coloris::Olive": "assets/products/homme/coach-slide-signature-olive-studio.jpg", "Coloris::Noir": "assets/products/homme/coach-slide-signature-noir-studio.jpg" },
         desc: "Slide à bride en toile signature et semelle monobloc." }),
-      make({ id: "coach-sabot-boucle", name: "Sabot Boucle Signature", audience: "homme", cat: "mules", brand: "coach", price: 0,
+      make({ id: "coach-sabot-boucle", name: "Sabot Boucle Signature", audience: "femme", cat: "mules", brand: "coach", price: 0,
         sizes: ["39", "40", "41", "42", "43", "44", "45"], stock: [0, 0, 0, 0, 0, 0, 0], active: false, stockout: true,
         studio: "assets/products/homme/coach-sabot-boucle-bleu-studio.jpg", img: "assets/products/homme/coach-sabot-boucle-bleu-studio.jpg",
         imgs: ["assets/products/homme/coach-sabot-boucle-marron-studio.jpg", "assets/products/homme/coach-sabot-boucle-noir-studio.jpg"],

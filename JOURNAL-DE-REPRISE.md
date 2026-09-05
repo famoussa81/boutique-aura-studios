@@ -1417,3 +1417,29 @@ redirige vers `/catalogue?audience=femme` et n'affiche plus le produit. Aucun
 déploiement de code n'était requis : la vitrine et le dashboard lisent tous deux
 les données Supabase déjà synchronisées. Prochaine action sûre : contrôler les
 prochains retraits par identifiant précis avant toute mutation.
+
+### Session du 5 septembre 2026 — déplacement Coach hommes vers femmes (terminée)
+
+Demande : déplacer de l'univers homme vers l'univers femme le produit Coach
+montré par l'utilisateur, en conservant exactement ses coloris actuels. État
+Git : `main` au commit `b31daaa`, synchronisé avec `origin/main` ;
+`design-qa.md` et `tmp/` restent non suivis et hors portée. Fichiers envisagés :
+journal et, si présent, catalogue de secours. Données envisagées : audience du produit publié et de sa
+copie dans le brouillon d'administration. Risques : confondre ce modèle avec un
+autre sabot Coach, perdre un coloris ou désynchroniser vitrine/dashboard.
+Stratégie : identifier le produit par son nom, ses trois visuels et ses coloris,
+conserver une révision de retour arrière, modifier les deux sources dans une
+transaction puis vérifier les univers homme et femme en production.
+
+Résultat : le produit a été identifié sans ambiguïté comme
+`coach-sabot-boucle` (« Sabot Boucle Signature »), avec les coloris Noir,
+Marron et Bleu. Une révision de retour arrière de la version 291 a été conservée,
+puis son audience a été changée de `homme` à `femme` dans `products` et dans le
+brouillon d'administration, passé en version 292 sans changement en attente.
+Le catalogue de secours `catalog.js` a reçu le même classement ; aucun prix,
+stock, coloris, visuel, nom ou ordre n'a changé. Vérification Supabase : les deux
+sources indiquent `femme` et les trois coloris sont intacts. Vérification réelle
+sur la production mobile : aucun lien vers ce produit dans le catalogue homme,
+deux liens dans le catalogue femme, aucun débordement horizontal ni erreur
+console sur les pages d'univers. `node --check catalog.js` et `git diff --check`
+passent. Déploiement du correctif de secours à consigner après le push.
