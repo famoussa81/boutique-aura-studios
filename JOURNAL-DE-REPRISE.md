@@ -3,6 +3,14 @@
 Dernière mise à jour : 30 août 2026, Coach en ligne après correction d'un
 archivage accidentel (détail plus bas).
 
+### Session du 5 septembre 2026 — masquage Coach indisponibles (terminée)
+
+Demande : masquer les quatre vues Coach montrées comme indisponibles, sans supprimer leurs photos ni empêcher une réactivation ultérieure. État Git initial : `9251da2`, branche `main`; `design-qa.md` et `tmp/` restent hors portée. Données envisagées : fiches Coach publiées, brouillon dashboard et révision de retour arrière. Risque principal : confondre plusieurs vues/coloris d'une même fiche avec quatre produits distincts et masquer un modèle non montré. Identification par image, nom et coloris avant écriture.
+
+Résultat : les quatre captures correspondaient à trois fiches : `coach-badge`, `coach-signature` et `coach-mule-boucle` (les deux vues inférieures étaient deux coloris de cette dernière). Les trois fiches sont inactives et archivées, mais leurs images, variantes et stocks sont conservés pour réactivation. Une révision a été créée avant écriture. Le brouillon dashboard est synchronisé en version 299, contient les trois fiches masquées et n'a aucun changement en attente.
+
+Tests : requête Supabase confirmant les trois états publié/brouillon ; contrôle Chrome production à 390 × 844 sur la page Coach Femme, contenu chargé et zéro occurrence des trois identifiants masqués. Le script reproductible est conservé dans `supabase/masquer-coach-indisponibles.sql`. Prochaine action sûre : recevoir et intégrer les nouveaux produits annoncés.
+
 ### Session du 5 septembre 2026 — correction visuelle finale Chypre (terminée)
 
 Demande : corriger la séparation encore trop prudente des coloris Chypre après contrôle mobile. La capture confirme que Rose pâle, Bicolore rose et Fuchsia ont bien quitté Homme, mais le groupe restant Rouge vif, Nude daim et Léopard paraît encore féminin. État Git initial : `b5244c7`, branche `main`; `design-qa.md` et `tmp/` restent hors portée. Données envisagées : produits publiés, brouillon dashboard et révision de retour arrière. Risques : stock perdu, ancienne fiche Homme encore active ou duplication dans le brouillon.
