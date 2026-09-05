@@ -11,6 +11,8 @@ Résultat : Rouge vif, Nude daim et Léopard ont rejoint Fuchsia, Rose pâle gra
 
 Tests : requêtes Supabase de cohérence passées. Chrome production mobile 390 × 844 : aucune ancienne fiche, fiche Femme ou étiquette Rouge/Nude/Léopard dans Hermès Homme ; fiche Femme présente dans Hermès Femme ; page produit à six coloris chargée sans état introuvable. Le script `supabase/trier-coloris-hermes-chypre.sql` a été réécrit pour représenter ce classement final de façon idempotente. Prochaine action sûre : rafraîchir complètement le navigateur du téléphone si un ancien écran est encore conservé.
 
+Contrôle complémentaire demandé : aucun produit actuellement visible ne possède un stock disponible nul ; il n'y avait donc aucun autre article à masquer automatiquement.
+
 ## Protocole obligatoire pour chaque agent
 
 Au début de chaque tâche :
