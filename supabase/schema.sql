@@ -65,6 +65,13 @@ create table if not exists public.store_revisions (
   created_by uuid default auth.uid()
 );
 
+-- Le dashboard lit ces historiques du plus récent au plus ancien. Sans ces
+-- index, le coût augmente avec chaque commande, inscription et publication.
+create index if not exists orders_created_at_idx on public.orders(created_at desc);
+create index if not exists subscribers_created_at_idx on public.subscribers(created_at desc);
+create index if not exists waitlist_created_at_idx on public.waitlist(created_at desc);
+create index if not exists store_revisions_created_at_idx on public.store_revisions(created_at desc);
+
 -- Comptes explicitement autorisés à administrer cette boutique.  Une simple
 -- session Supabase ne suffit jamais : les commandes contiennent des données
 -- personnelles et les fonctions ci-dessous modifient le stock.
