@@ -66,6 +66,7 @@
         valueImages: valueImages,
         variants: variants,
         active: spec.active !== false,
+        archived: !!spec.archived,
         stockout: !!spec.stockout
       };
     }
@@ -234,26 +235,38 @@
       /* Catalogue Femme de démonstration. Les nombreuses teintes reçues sont
          réparties sur plusieurs fiches courtes : six coloris maximum par
          carte, tout en conservant une vraie photo pour chaque sélection. */
-      make({ id: "femme-coach-mule-boucle", name: "Mule Boucle Signature", audience: "femme", cat: "claquettes", brand: "coach", price: 42000,
+      make({ id: "coach-grand-c-signature", name: "Claquette Grand C Signature", audience: "femme", cat: "claquettes", brand: "coach", price: 30000, badge: "Nouveau",
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [2, 3, 4, 4, 3, 2],
+        studio: "assets/products/femme/coach-grand-c-taupe-studio.jpg", img: "assets/products/femme/coach-grand-c-taupe-studio.jpg",
+        imgs: ["assets/products/femme/coach-grand-c-ivoire-studio.jpg"], colors: ["Taupe", "Ivoire"],
+        valueImages: { "Coloris::Taupe": "assets/products/femme/coach-grand-c-taupe-studio.jpg", "Coloris::Ivoire": "assets/products/femme/coach-grand-c-ivoire-studio.jpg" },
+        desc: "Toile signature, grand fermoir C doré et assise souple à surpiqûres apparentes." }),
+      make({ id: "coach-petit-badge-signature", name: "Claquette Petit Badge Signature", audience: "femme", cat: "claquettes", brand: "coach", price: 30000, badge: "Nouveau",
+        sizes: ["36", "37", "38", "39", "40", "41"], stock: [2, 3, 4, 4, 3, 2],
+        studio: "assets/products/femme/coach-petit-badge-taupe-studio.jpg", img: "assets/products/femme/coach-petit-badge-taupe-studio.jpg",
+        imgs: ["assets/products/femme/coach-petit-badge-ivoire-studio.jpg"], colors: ["Taupe", "Ivoire"],
+        valueImages: { "Coloris::Taupe": "assets/products/femme/coach-petit-badge-taupe-studio.jpg", "Coloris::Ivoire": "assets/products/femme/coach-petit-badge-ivoire-studio.jpg" },
+        desc: "Toile signature sur bride large, petit badge doré et semelle fine bordée cognac." }),
+      make({ id: "femme-coach-mule-boucle", name: "Mule Boucle Signature", audience: "femme", cat: "claquettes", brand: "coach", price: 42000, active: false, archived: true,
         sizes: ["36", "37", "38", "39", "40", "41"], stock: [2, 3, 4, 4, 3, 2],
         img: "assets/products/femme/coach-mule-boucle-marron-premium.jpg",
         imgs: ["assets/products/femme/coach-mule-boucle-argent-premium.jpg", "assets/products/femme/coach-mule-boucle-ivoire-premium.jpg"],
         colors: ["Marron", "Argent", "Ivoire"],
         valueImages: { "Coloris::Marron": "assets/products/femme/coach-mule-boucle-marron-premium.jpg", "Coloris::Argent": "assets/products/femme/coach-mule-boucle-argent-premium.jpg", "Coloris::Ivoire": "assets/products/femme/coach-mule-boucle-ivoire-premium.jpg" },
         desc: "Mule ouverte à bride signature, détail métallique doré et semelle fine." }),
-      make({ id: "femme-coach-matelassee", name: "Claquette Matelassée C", audience: "femme", cat: "claquettes", brand: "coach", price: 40000,
+      make({ id: "coach-matelassee", name: "Claquette Matelassée C", audience: "femme", cat: "claquettes", brand: "coach", price: 27000,
         sizes: ["36", "37", "38", "39", "40", "41"], stock: [2, 3, 4, 4, 3, 2],
         img: "assets/products/femme/coach-matelassee-bleu-premium.jpg",
         imgs: ["assets/products/femme/coach-matelassee-ivoire-premium.jpg", "assets/products/femme/coach-matelassee-noir-premium.jpg", "assets/products/femme/coach-matelassee-marron-premium.jpg", "assets/products/femme/coach-matelassee-rose-premium.jpg"],
         colors: ["Bleu", "Ivoire", "Noir", "Marron", "Rose"],
         valueImages: { "Coloris::Bleu": "assets/products/femme/coach-matelassee-bleu-premium.jpg", "Coloris::Ivoire": "assets/products/femme/coach-matelassee-ivoire-premium.jpg", "Coloris::Noir": "assets/products/femme/coach-matelassee-noir-premium.jpg", "Coloris::Marron": "assets/products/femme/coach-matelassee-marron-premium.jpg", "Coloris::Rose": "assets/products/femme/coach-matelassee-rose-premium.jpg" },
         desc: "Bride matelassée souple, détail C métallique et semelle légère." }),
-      make({ id: "femme-coach-signature", name: "Claquette Signature Toile", audience: "femme", cat: "claquettes", brand: "coach", price: 38000,
+      make({ id: "femme-coach-signature", name: "Claquette Signature Toile", audience: "femme", cat: "claquettes", brand: "coach", price: 38000, active: false, archived: true,
         sizes: ["36", "37", "38", "39", "40", "41"], stock: [2, 3, 4, 4, 3, 2],
         img: "assets/products/femme/coach-signature-marron-premium.jpg", colors: ["Marron"],
         valueImages: { "Coloris::Marron": "assets/products/femme/coach-signature-marron-premium.jpg" },
         desc: "Claquette carrée en toile signature, semelle brun cognac et ligne épurée." }),
-      make({ id: "femme-coach-badge", name: "Claquette Badge Signature", audience: "femme", cat: "claquettes", brand: "coach", price: 36000,
+      make({ id: "femme-coach-badge", name: "Claquette Badge Signature", audience: "femme", cat: "claquettes", brand: "coach", price: 36000, active: false, archived: true,
         sizes: ["36", "37", "38", "39", "40", "41"], stock: [2, 3, 4, 4, 3, 2],
         img: "assets/products/femme/coach-badge-beige-premium.jpg", colors: ["Beige"],
         valueImages: { "Coloris::Beige": "assets/products/femme/coach-badge-beige-premium.jpg" },
@@ -501,7 +514,7 @@
           desc: "Brides croisées matelassées et palette sobre." }
         ,{ key: "giuseppe-zanotti", label: "Giuseppe Zanotti", logo: "", tagline: "Signature métallique", accent: "#777777", cover: "assets/brand-banners/giuseppe-zanotti.webp", homeProducts: ["giuseppe-signature"],
           desc: "Finition métallique et semelle noire pour une ligne habillée." }
-,{ key: "coach", featured: true, label: "Coach", logo: "assets/logos/coach.svg", tagline: "Signature C", accent: "#9A6B45", cover: "assets/brand-banners/coach.jpg", homeProducts: ["femme-coach-mule-boucle", "femme-coach-matelassee", "femme-coach-signature", "femme-coach-badge"],
+,{ key: "coach", featured: true, label: "Coach", logo: "assets/logos/coach.svg", tagline: "Signature C", accent: "#9A6B45", cover: "assets/brand-banners/coach.jpg", homeProducts: ["coach-grand-c-signature", "coach-petit-badge-signature", "coach-matelassee", "coach-sabot-boucle"],
           desc: "Toile signature, cuir souple et détails métalliques dorés. Une sélection féminine pensée pour l'été." }
         ,{ key: "tory-burch", featured: true, label: "Tory Burch", logo: "", tagline: "Double T", accent: "#B99273", cover: "assets/brand-banners/tory-burch.jpg", homeProducts: ["femme-tory-burch-double-t", "femme-tory-burch-miller-jelly"],
           desc: "Double T graphique, cuir souple et jelly translucide dans une palette lumineuse." }

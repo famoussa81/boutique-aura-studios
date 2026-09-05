@@ -1673,3 +1673,18 @@ Demande : séparer toute la famille de sandales Hermès à découpe H selon le p
 Résultat : `Rose pâle grainé`, `Bicolore rose` et `Fuchsia` ont été retirés des deux fiches Chypre Homme et réunis dans la nouvelle fiche `femme-hermes-chypre-roses`. Bordeaux, Terracotta, Rouge vif, Nude daim et Léopard restent chez Homme ; les autres familles masculines Noir, Blanc, Marine, bleus, bruns, verts, kaki, taupe et camel sont inchangées. Une révision récupérable a été créée avant écriture. Le stock total des trois fiches concernées reste exactement 336, avec zéro réservation déplacée. La vitrine compte 79 produits ; le brouillon dashboard en compte aussi 79, contient la nouvelle fiche une seule fois, est en version 296 et n'a aucun changement en attente.
 
 Tests : requête de contrôle Supabase sans aucun coloris `rose` ou `fuchsia` dans les produits Hermès Homme ; stocks et réservations vérifiés ; `git diff --check` passe. Vérification réelle de production avec Chrome système en 390 × 844 après échec du navigateur intégré : `/hommes` ne contient ni la nouvelle fiche ni les trois libellés roses, `/femmes` contient la fiche Femme, et sa page directe charge les trois coloris sans état introuvable. Capture mobile contrôlée : image Fuchsia, prix et bouton d'ajout visibles. Les routes Homme, Femme, produit et dashboard répondent HTTP 200. Le script reproductible et idempotent est conservé dans `supabase/trier-coloris-hermes-chypre.sql`. Déploiement : commit `294bb4e` poussé sur `main`; données déjà actives en production. Prochaine action sûre : vérifier avec le commerçant si `Nude daim` et `Léopard`, laissés chez Homme car non roses, doivent aussi être proposés chez Femme.
+
+## 2026-09-05 — Nouvelles claquettes Coach (en cours)
+
+Demande : analyser les trois nouvelles références visuelles Coach, éviter les
+doublons, produire les variantes manquantes en photo studio sur fond blanc puis
+les intégrer à la boutique et au brouillon du dashboard. État Git initial :
+`70fc97d`, branche `main`; fichiers utilisateur non suivis `design-qa.md` et
+`tmp/` préservés. Fichiers envisagés : nouveaux visuels sous
+`assets/products/femme/`, un script SQL reproductible sous `supabase/` et ce
+journal. Risques : créer une deuxième fiche pour la claquette matelassée déjà
+existante, déformer les monogrammes ou ferrures Coach, inventer des variantes,
+ou désynchroniser `products` et `store_drafts`. Stratégie : comparer les
+photos aux produits Coach actuels, générer seulement les modèles/coloris
+réellement manquants, contrôler visuellement chaque sortie, créer une révision
+avant écriture et vérifier la production sur mobile.
