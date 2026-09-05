@@ -1592,3 +1592,18 @@ code fonctionnel, produit, stock ou donnée client n'a été modifié. Prochaine
 action sûre : corriger d'abord les miniatures et la pagination, puis ajouter
 l'observabilité et tester la charge dans un environnement de préproduction avant
 toute grande campagne.
+### Session du 5 septembre 2026 — préparation production et fluidité (en cours)
+
+Demande : corriger de manière autonome les risques relevés par l'audit afin que
+la boutique soit fluide et fiable pour un lancement public avec une audience
+importante, sans viser artificiellement des milliers de connexions simultanées.
+État Git : `main` au commit `1147180`, synchronisé avec `origin/main` ;
+`design-qa.md` et `tmp/` restent non suivis et hors portée. Fichiers envisagés :
+`boutique.js`, `boutique.css`, `supabase-client.js`, `supabase/schema.sql`,
+configuration de tests/performance et ce journal. Risques : casser la sélection
+de coloris, masquer des produits, modifier le protocole de synchronisation du
+dashboard ou appliquer une migration incompatible avec la fonction de commande.
+Stratégie : corriger d'abord la cause mesurée des images plein format, rendre le
+catalogue progressif sans changer son ordre, ajouter les garde-fous de
+performance et les index sûrs, puis comparer les mesures avant/après et tester
+les parcours boutique et dashboard en production.

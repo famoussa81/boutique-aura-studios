@@ -419,6 +419,13 @@
     border:var(--border-w) solid var(--line);color:var(--muted);font-size:12.5px;font-weight:700}
   .cat-clear:hover{border-color:var(--ink);color:var(--ink)}
   .pgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .grid-more{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;
+    gap:8px;padding:24px 0 8px}
+  .grid-more button{min-height:48px;padding:12px 26px;border:var(--border-w) solid var(--ink);
+    border-radius:999px;background:var(--bg);color:var(--ink);font-size:13px;font-weight:800;
+    letter-spacing:.08em;text-transform:uppercase}
+  .grid-more button:hover,.grid-more button:focus-visible{background:var(--ink);color:var(--bg)}
+  .grid-more span{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
   /* Trois rangées nommées : le bouton occupe la zone « media » sur
      ordinateur (survol) et sa propre rangée sur écran tactile. */
   .pcard{position:relative;display:grid;grid-template-areas:"media" "info";
