@@ -854,7 +854,7 @@ begin
   -- créer une rafale de demandes. La limite globale borne aussi l'écriture
   -- en base en cas de robots qui inventent des numéros.
   perform public.enforce_public_rate_limit('order-phone', md5(v_phone), 3, interval '30 minutes');
-  perform public.enforce_public_rate_limit('order-global', md5('all'), 120, interval '1 hour');
+  perform public.enforce_public_rate_limit('order-global', md5('all'), 600, interval '1 hour');
   if length(v_quartier) < 2 then
     raise exception 'Quartier de livraison invalide' using errcode = '22023';
   end if;
