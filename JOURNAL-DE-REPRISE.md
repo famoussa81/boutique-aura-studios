@@ -1,5 +1,23 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
+## 2026-09-06 — Derniers arrivages Femme avant publication (en cours)
+
+Demande : transformer les deux nouvelles références photographiées en visuels
+studio sur fond blanc, intégrer chaque coloris au bon produit et à la bonne
+marque, puis compléter la marque et sa bannière si elle n'existe pas. État Git
+initial : `3514d98`, branche `main`; fichiers utilisateur non suivis
+`design-qa.md` et `tmp/` préservés. Fichiers envisagés : nouveaux visuels et
+miniatures sous `assets/products/femme/`, éventuelle bannière de marque,
+`catalog.js`, correctif SQL reproductible, données Supabase/brouillon dashboard
+et ce journal. Risques : confondre la sandale Double T avec les modèles Tory
+Burch déjà publiés, attribuer abusivement la claquette fleurie à Coach alors
+que la photo ne montre que « FASHION », déformer ferrures et proportions,
+inventer un logo de tiers, ou désynchroniser boutique et dashboard. Stratégie :
+inventorier l'existant, traiter les photos comme références autoritaires,
+générer une paire 3:4 par coloris sur fond blanc, contrôler chaque sortie,
+réutiliser Tory Burch et ne créer qu'une marque textuelle vérifiable pour le
+second produit, sans logo inventé, puis vérifier la production mobile.
+
 ## 2026-09-06 — Remplacement complet des visuels Givenchy (terminé)
 
 Demande : corriger toutes les erreurs de forme relevées sur `gv-paris`,
