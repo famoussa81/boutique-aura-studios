@@ -1740,7 +1740,7 @@ et zéro débordement horizontal. Commit applicatif `f492d34` poussé sur `main`
 Prochaine action sûre : le commerçant peut modifier prix et stocks depuis le
 dashboard sans perdre ce coloris.
 
-## 2026-09-06 — Marquage bride Louis Vuitton bleu (en cours)
+## 2026-09-06 — Marquage bride Louis Vuitton bleu (terminé)
 
 Demande : identifier l'inscription visible sur le côté de la bride dans la
 photo source de la Claquette Damier bleue, puis remplacer le visuel généré qui
@@ -1752,3 +1752,20 @@ inventer un texte illisible, altérer le damier ou le monogramme de semelle,
 et laisser le dashboard pointer vers une ancienne image en cache. Stratégie :
 agrandir la photo source, confirmer le texte par recherche publique, modifier
 uniquement ce visuel puis vérifier fiche mobile et synchronisation dashboard.
+
+Résultat : agrandissement de la photo source et recherche publique concordent
+sur l'inscription historique du Damier : « marque L. VUITTON déposée ». Le
+visuel a été régénéré en conservant paire, cadrage, semelles, monogrammes,
+damier et couture ; seul le petit marquage blanc en trois lignes a été ajouté
+sur le côté extérieur des deux brides. La version finale 1200 × 1600 et ses
+miniatures dédiées utilisent le nouveau nom
+`lv-damier-bleu-studio-v2.webp`, ce qui évite tout cache de l'ancienne image.
+Le script `supabase/remplacer-lv-damier-bleu-marquage.sql` a créé une révision,
+remplacé les références sans toucher aux variantes ni au stock, puis
+synchronisé le brouillon dashboard en version 302, `dirty=false`.
+Vérifications exécutées : inspection visuelle du WebP final,
+`node --check catalog.js`, `git diff --check`, asset Vercel HTTP 200 et fiche
+production Chrome mobile 390 × 844 : bon produit, visuel v2 chargé, zéro image
+cassée, zéro débordement horizontal. Stock disponible toujours égal à 20.
+Commit applicatif `1d63e38` poussé sur `main`. Prochaine action sûre : aucune ;
+prix et stock restent modifiables depuis le dashboard.
