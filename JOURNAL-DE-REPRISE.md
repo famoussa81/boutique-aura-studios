@@ -1800,3 +1800,35 @@ Femme ne l'affiche pas, et une URL de collection Givenchy forcée avec audience
 Femme revient à l'annuaire Femme. Zéro image cassée et zéro débordement sur les
 pages contrôlées. Commit applicatif `a001c7f` poussé sur `main`. Prochaine
 action sûre : aucune ; le produit reste entièrement administrable.
+
+## 2026-09-06 — Audit des variantes Hermès mal associées (terminé)
+
+Demande : corriger la fiche Hermès visible sur la capture, où au moins une
+miniature appartient à un autre modèle, reclasser les coloris trop féminins
+hors de l'univers Homme, puis chercher le même défaut dans tout le catalogue.
+État Git initial : `d87f77a`, branche `main`; fichiers utilisateur non suivis
+`design-qa.md` et `tmp/` préservés. Fichiers envisagés : données fallback,
+script SQL reproductible, éventuel contrôle automatisé et ce journal.
+Risques : confondre deux silhouettes proches, perdre des variantes/stocks,
+ou corriger la boutique sans le brouillon dashboard. Stratégie : inventorier
+les associations image/coloris en production, comparer visuellement les
+silhouettes, créer une révision, déplacer seulement les variantes confirmées,
+puis tester filtres Homme/Femme et fiches produit sur mobile.
+
+Résultat : `Vert olive` et `Vert sapin` ont quitté la fiche Homme
+`hermes-chypre-nature` et rejoint `femme-hermes-chypre-roses`. La miniature
+`Taupe clair`, qui montre réellement une sandale Oran, a rejoint
+`femme-hermes-oran-terres`. La fiche Homme ne conserve que `Kaki foncé` et
+`Camel`. Les 21 variantes déplacées gardent exactement stock et réservations ;
+aucune référence produit existante n'a été supprimée. L'audit visuel des
+principaux groupes atypiques n'a confirmé qu'un autre mélange : l'image HUGO
+`Relief bleu`, sans variante en stock, a été retirée de `hg-mono`.
+
+Synchronisation : une révision a été créée, la boutique et les 81 produits du
+brouillon dashboard correspondent (`mismatch_count=0`), version 304 et
+`dirty=false`. Script reproductible et réexécutable sans doublon :
+`supabase/corriger-variantes-mal-associees.sql`. Vérifications exécutées sur
+la production avec Playwright + Chrome mobile 390 × 844 : 3/3 scénarios
+passent, clic direct sur les coloris déplacés compris ; zéro erreur console,
+image cassée ou débordement horizontal sur les trois fiches. Prochaine action
+sûre : pousser le script et ce journal sur `main`.
