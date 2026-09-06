@@ -1,6 +1,6 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
-## 2026-09-06 — Blocage du défilement dans les filtres mobiles (en cours)
+## 2026-09-06 — Blocage du défilement dans les filtres mobiles (terminé)
 
 Demande : corriger le catalogue mobile qui ne défile plus normalement après
 ouverture des filtres, notamment dans la longue liste des marques montrée sur
@@ -13,6 +13,36 @@ un double défilement sur iOS. Stratégie : reproduire sur la production à la
 taille de la capture, mesurer le conteneur réellement scrollable et ses styles,
 corriger uniquement le panneau de filtres puis tester ouverture, défilement,
 sélection de marque, fermeture et retour au catalogue sur mobile et bureau.
+
+Cause : sur mobile, `.cat-tools` porte un `backdrop-filter` et contient le
+panneau en `position: fixed`. Safari et Chromium utilisent alors la barre
+sticky comme bloc de référence du descendant fixe. Mesure avant correction à
+390 × 844 : overlay limité à 390 × 105 px à `y=509`, panneau rejeté jusqu'à
+`y=-95`, tandis que `pushLayer()` fige correctement le `body`. Le panneau ne
+recevait donc pas toute la surface tactile et la page derrière ne pouvait plus
+défiler, ce qui reproduit exactement la capture.
+
+Résultat : le flou est désactivé uniquement tant que le panneau est ouvert,
+ce qui rend au `position: fixed` le viewport comme référence. La liste reçoit
+aussi `-webkit-overflow-scrolling: touch` et `touch-action: pan-y` pour le
+défilement inertiel iOS. `catalogue.html` charge la feuille versionnée
+`boutique.css?v=20260906c` afin d'éviter un ancien cache mobile. Aucun script,
+filtre ou verrou des autres modales n'a changé.
+
+Vérifications exécutées sur la production avec Playwright + Chrome : à 390 ×
+844, overlay 390 × 844 de `y=0` à `y=844`, panneau visible de `y=135` à 844,
+hauteur utile 709 px pour 964 px de contenu, `overflow-y:auto` et
+`touch-action:pan-y`. Le défilement va bien de 0 à 255 px ; une sélection de
+marque conserve cette position, le CTA reste accessible, la fermeture remet
+`data-open=false` et retire le `position:fixed` du body. À 820 × 900, le
+panneau reste volontairement intégré à la page et le body n'est jamais
+verrouillé. Dans les deux tailles : identité de page correcte, contenu non
+vide, zéro image cassée, zéro débordement horizontal, aucune erreur console et
+aucun overlay d'erreur. Les cinq routes obligatoires répondent HTTP 200.
+
+Déploiement : commit `418f4d7` poussé sur `main` et feuille `20260906c` servie
+par Vercel. Prochaine action sûre : aucune ; vérifier simplement sur l'iPhone
+ayant produit la capture après un rechargement de la page.
 
 ## 2026-09-06 — Derniers arrivages Femme avant publication (terminé)
 
