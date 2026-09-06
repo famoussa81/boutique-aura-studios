@@ -1769,3 +1769,15 @@ production Chrome mobile 390 × 844 : bon produit, visuel v2 chargé, zéro imag
 cassée, zéro débordement horizontal. Stock disponible toujours égal à 20.
 Commit applicatif `1d63e38` poussé sur `main`. Prochaine action sûre : aucune ;
 prix et stock restent modifiables depuis le dashboard.
+
+## 2026-09-06 — Givenchy exclusivement Homme (en cours)
+
+Demande : annuler le classement Femme de Givenchy et placer tous les produits
+Givenchy exclusivement chez Homme. État Git initial : `d883e30`, branche
+`main`; fichiers utilisateur non suivis `design-qa.md` et `tmp/` préservés.
+Fichiers envisagés : `catalog.js`, script SQL reproductible et ce journal.
+Risques : laisser la marque ou une fiche visible chez Femme, modifier stocks
+ou références de commande, et désynchroniser vitrine/dashboard. Stratégie :
+inventorier les produits et réglages Givenchy en production, créer une révision,
+changer uniquement l'audience, synchroniser le brouillon puis tester les deux
+catalogues et la page de marque sur mobile.
