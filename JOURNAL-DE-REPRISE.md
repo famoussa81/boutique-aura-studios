@@ -1860,7 +1860,7 @@ fiche Femme charge sans erreur console, image cassée ou débordement horizontal
 Commit `29bff95` poussé sur `main`; données visibles immédiatement en production.
 Prochaine action sûre : aucune.
 
-## 2026-09-06 — Corriger la semelle Gucci noire (en cours)
+## 2026-09-06 — Corriger la semelle Gucci noire (terminé)
 
 Demande : régénérer la photo du coloris noir Gucci montré, dont la semelle est
 moins fidèle que celle du coloris blanc. État Git initial : `2bab2d3`, branche
@@ -1870,3 +1870,18 @@ et ce journal. Risques : altérer la bride Web vert-rouge, le grain du cuir,
 l'angle studio ou associer l'image au mauvais coloris. Stratégie : identifier
 le produit et ses deux fichiers, comparer les références, générer une paire
 noire fidèle sur fond blanc, inspecter puis remplacer uniquement ce coloris.
+
+Résultat : nouvelle photo studio `gucci-stripe-noir-studio-v2.webp`, 900 ×
+1200, semelle épaisse avec bord net et crampons réguliers comme la version
+blanche. Bride noire et bandes vert-rouge-vert préservées. Image WebP limitée à
+40 Ko ; miniature carte 480 × 640 de 10 Ko ajoutée pour éviter tout repli vers
+l'image pleine taille. L'ancienne image n'est plus référencée par le produit.
+
+Synchronisation : production et dashboard utilisent la V2 pour l'image
+principale, la galerie et `Coloris::Noir`; version dashboard 306,
+`dirty=false`, zéro divergence. Stock 48 et réservations 0, inchangés.
+Vérifications exécutées : inspection visuelle originale puis WebP, `node
+--check catalog.js`, `git diff --check`, disponibilité HTTP des deux fichiers,
+Playwright + Chrome mobile 390 × 844. La fiche charge la V2 en 900 × 1200,
+sans requête 404, erreur console ni débordement horizontal. Commits `d93746c`
+et `7a9b33f` poussés sur `main`. Prochaine action sûre : aucune.
