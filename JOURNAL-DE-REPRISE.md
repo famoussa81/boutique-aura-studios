@@ -1,5 +1,26 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
+## 2026-09-06 — Diagnostic visuel Givenchy (terminé)
+
+Demande : comprendre pourquoi le propriétaire juge encore mauvaise la
+génération Givenchy, en comparant les deux photos physiques au rendu studio
+actuellement publié. État Git initial : `433a941`, branche `main`; fichiers
+utilisateur non suivis `design-qa.md` et `tmp/` préservés. Fichier envisagé :
+ce journal uniquement. Risque : confondre qualité photographique et fidélité
+du modèle, puis relancer une génération sans cible géométrique précise.
+
+Résultat : aucune modification du site ni nouvelle génération. Le rendu est
+net, mais ne reproduit pas exactement le produit : semelle trop large et
+massive, bout trop rond, cuvette latérale transformée en rebord continu, bride
+trop haute, et étiquette blanche trop grande et trop contrastée. Les vraies
+claquettes sont plus longues et fines ; leur signature est une remontée
+latérale asymétrique en vague, distincte du bord moulé générique produit par
+l'IA. Les couleurs réelles sont également plus nuancées et satinées. Prochaine
+action sûre : valider une seule image maître noire fidèle à la silhouette et
+aux proportions, puis décliner cette même géométrie en blanc, gris et kaki.
+Tests : inspection visuelle comparative exécutée ; aucun test applicatif
+nécessaire, car aucun fichier du site n'a changé.
+
 ## 2026-09-06 — Diesel camouflage fidèle à la photo physique (terminé)
 
 Demande : reprendre le coloris Camouflage noir de `diesel-relief` à partir de
