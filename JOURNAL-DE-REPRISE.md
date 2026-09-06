@@ -1859,3 +1859,14 @@ collection Femme affiche `gv-paris`, la collection Homme ne l'affiche pas, la
 fiche Femme charge sans erreur console, image cassée ou débordement horizontal.
 Commit `29bff95` poussé sur `main`; données visibles immédiatement en production.
 Prochaine action sûre : aucune.
+
+## 2026-09-06 — Corriger la semelle Gucci noire (en cours)
+
+Demande : régénérer la photo du coloris noir Gucci montré, dont la semelle est
+moins fidèle que celle du coloris blanc. État Git initial : `2bab2d3`, branche
+`main`; fichiers utilisateur non suivis `design-qa.md` et `tmp/` préservés.
+Fichiers envisagés : image produit versionnée, référence catalogue/production
+et ce journal. Risques : altérer la bride Web vert-rouge, le grain du cuir,
+l'angle studio ou associer l'image au mauvais coloris. Stratégie : identifier
+le produit et ses deux fichiers, comparer les références, générer une paire
+noire fidèle sur fond blanc, inspecter puis remplacer uniquement ce coloris.
