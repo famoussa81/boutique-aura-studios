@@ -1830,5 +1830,6 @@ brouillon dashboard correspondent (`mismatch_count=0`), version 304 et
 `supabase/corriger-variantes-mal-associees.sql`. Vérifications exécutées sur
 la production avec Playwright + Chrome mobile 390 × 844 : 3/3 scénarios
 passent, clic direct sur les coloris déplacés compris ; zéro erreur console,
-image cassée ou débordement horizontal sur les trois fiches. Prochaine action
-sûre : pousser le script et ce journal sur `main`.
+image cassée ou débordement horizontal sur les trois fiches. Commit applicatif
+`e814909` poussé sur `main`; la correction de données est visible immédiatement
+en production, sans nouveau bundle statique. Prochaine action sûre : aucune.
