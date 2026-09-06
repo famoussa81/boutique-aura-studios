@@ -1933,5 +1933,9 @@ favori, ouverture fiche et panier ; dashboard isolé sur mobile et bureau
 marques, légal, listes et aide). Aucun 404, image cassée, erreur console ou
 débordement. Fiche testée aussi à 375 × 667 et 844 × 390. Logos contrôlés à
 320, 768 et 1920 px. Mesures mobile à froid : DOM 0,86–0,99 s, chargement
-1,18–1,30 s sur les pages principales mesurées. Déploiement : à effectuer avec
-le commit applicatif de cette entrée, puis contrôle production.
+1,18–1,30 s sur les pages principales mesurées. Commit applicatif `185718c`
+poussé sur `main` et déployé par Vercel. Contrôle post-déploiement réussi sur
+la production : nouvelle feuille CSS servie, logos intacts à 320/768/1920 px,
+choix produit visible à 743 px sur un écran de 844 px et changement de coloris
+au premier clic. Prochaine action sûre : renseigner les mentions légales réelles
+avant la communication publique.
