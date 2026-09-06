@@ -1770,7 +1770,7 @@ cassée, zéro débordement horizontal. Stock disponible toujours égal à 20.
 Commit applicatif `1d63e38` poussé sur `main`. Prochaine action sûre : aucune ;
 prix et stock restent modifiables depuis le dashboard.
 
-## 2026-09-06 — Givenchy exclusivement Homme (en cours)
+## 2026-09-06 — Givenchy exclusivement Homme (terminé)
 
 Demande : annuler le classement Femme de Givenchy et placer tous les produits
 Givenchy exclusivement chez Homme. État Git initial : `d883e30`, branche
@@ -1781,3 +1781,22 @@ ou références de commande, et désynchroniser vitrine/dashboard. Stratégie :
 inventorier les produits et réglages Givenchy en production, créer une révision,
 changer uniquement l'audience, synchroniser le brouillon puis tester les deux
 catalogues et la page de marque sur mobile.
+
+Résultat : l'inventaire de production contenait une seule fiche Givenchy,
+`gv-paris`. Son audience est désormais `homme` dans `products`, le brouillon
+du dashboard et le fallback `catalog.js`. Le seed d'installation neuve a été
+corrigé pour ne plus réintroduire l'ancienne règle Femme. Le script
+`supabase/classer-givenchy-homme.sql` crée une révision puis applique cette
+règle à toute fiche Givenchy actuelle ou future déjà présente dans la base,
+sans modifier prix, variantes, stock ou identifiant.
+
+Synchronisation : 1 produit Givenchy Homme et 0 Femme dans la boutique comme
+dans le brouillon ; dashboard version 303, `dirty=false`. Stock total inchangé
+à 48, réservations inchangées à 0. Vérifications exécutées :
+`node --check catalog.js`, `git diff --check` et Chrome production mobile
+390 × 844. Le filtre Givenchy du catalogue Homme affiche `gv-paris`; le même
+filtre Femme affiche zéro carte. L'annuaire Homme affiche Givenchy, l'annuaire
+Femme ne l'affiche pas, et une URL de collection Givenchy forcée avec audience
+Femme revient à l'annuaire Femme. Zéro image cassée et zéro débordement sur les
+pages contrôlées. Commit applicatif `a001c7f` poussé sur `main`. Prochaine
+action sûre : aucune ; le produit reste entièrement administrable.
