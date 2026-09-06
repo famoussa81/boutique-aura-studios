@@ -1885,3 +1885,16 @@ Vérifications exécutées : inspection visuelle originale puis WebP, `node
 Playwright + Chrome mobile 390 × 844. La fiche charge la V2 en 900 × 1200,
 sans requête 404, erreur console ni débordement horizontal. Commits `d93746c`
 et `7a9b33f` poussés sur `main`. Prochaine action sûre : aucune.
+
+## 2026-09-06 — Rendre la fiche produit mobile immédiatement compréhensible (en cours)
+
+Demande : réduire l'effet « photo plein écran » de la fiche produit mobile afin
+que le visiteur comprenne dès le premier écran qu'il peut choisir coloris et
+pointure plus bas. État Git initial : `2224576`, branche `main`; fichiers
+utilisateur non suivis `design-qa.md` et `tmp/` préservés. Fichiers envisagés :
+`boutique.css`, éventuellement `boutique.js`, et ce journal. Risques : rogner
+les produits, provoquer un saut de mise en page, gêner le zoom/galerie ou faire
+passer les cibles tactiles sous 44 px. Stratégie : mesurer la fiche actuelle à
+390 × 844, réduire uniquement le média mobile, faire apparaître le début des
+informations/choix dans le premier écran, puis tester produit, coloris, scroll,
+images, console et débordement sur mobile et bureau.

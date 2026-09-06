@@ -1108,8 +1108,19 @@
      reste visible sans elle, et une barre inutile mange l'écran. */
   .buybar{display:none}
   @media (max-width:900px){
-    .fiche-grid{grid-template-columns:minmax(0,1fr);gap:24px}
-    .fiche{padding:20px 0 6px}
+    .fiche-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+    .fiche{padding:12px 0 6px}
+    /* La photo 3/4 occupait 571 px avec ses miniatures : les choix ne
+       commençaient qu'à 1093 px sur un écran de 844 px. Une fenêtre plus
+       basse rogne uniquement le vide studio grâce à object-fit:cover ; le
+       produit reste large, tandis que pointure et coloris entrent dans le
+       premier écran. */
+    .fiche .pv-media{min-height:0}
+    .fiche .pv-main{aspect-ratio:auto;height:clamp(300px,38svh,360px);object-fit:cover}
+    .fiche .pv-thumbs{padding:8px;gap:8px}
+    .fiche .pv-thumbs button{width:48px;height:60px}
+    .fiche .pv-info{padding-top:14px}
+    .fiche-fil{padding:4px 0}
     .fiche .pv-info h1{font-size:24px}
     .buybar{display:flex;align-items:center;gap:14px;
       position:fixed;left:0;right:0;bottom:0;z-index:60;

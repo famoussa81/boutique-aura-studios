@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap"
       media="print" onload="this.media='all';this.onload=null" />
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" /></noscript>
-<link rel="stylesheet" href="boutique.css?v=20260905p" />
+<link rel="stylesheet" href="boutique.css?v=20260906a" />
 </head>
 <body data-page="produit">
 <noscript>
@@ -56,12 +56,15 @@
           <span class="pcat" id="pvCat"></span>
           <h1 id="pvName"></h1>
           <span class="price" id="pvPrice"></span>
-          <p class="pv-desc" id="pvDesc"></p>
-          <p class="fiche-independent">Revendeur multimarques indépendant</p>
 
           <div id="pvAxes"></div>
           <span class="stock-line" id="pvStock"></span>
           <div id="pvWaitlistHost"></div>
+
+          <!-- Les choix passent avant le texte secondaire : sur téléphone,
+               la cliente comprend immédiatement que la fiche est interactive. -->
+          <p class="pv-desc" id="pvDesc"></p>
+          <p class="fiche-independent">Revendeur multimarques indépendant</p>
 
           <span class="size-label">Quantité</span>
           <div class="qty-stepper">
