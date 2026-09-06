@@ -1,5 +1,14 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
+## 2026-09-06 — Invalidation globale du cache navigateur (en cours)
+
+- **Demande :** faire en sorte que la dernière version de la boutique s'actualise partout, y compris dans le navigateur du propriétaire qui conserve encore une ancienne version.
+- **État Git initial :** branche `main`, commit `cbdaa08`, synchronisée avec `origin/main` ; éléments utilisateur non suivis `design-qa.md` et `tmp/`, à préserver.
+- **Fichiers envisagés :** `vercel.json`, pages et gabarits qui chargent les ressources partagées, éventuels rendus HTML produits par `api/`, puis ce journal.
+- **Risques connus :** politique `immutable` sur des fichiers CSS/JS dont le nom reste stable ; versions de requête différentes selon les pages ; baisse de performance si les images produit sont privées inutilement de leur cache long.
+- **Contrôle prévu :** relever les en-têtes réellement servis, corriger seulement le cache des bundles mutables, uniformiser leurs versions, déployer, puis vérifier en production les en-têtes et le filtre mobile.
+- **Statut :** en cours.
+
 ## 2026-09-06 — Blocage du défilement dans les filtres mobiles (terminé)
 
 Demande : corriger le catalogue mobile qui ne défile plus normalement après
