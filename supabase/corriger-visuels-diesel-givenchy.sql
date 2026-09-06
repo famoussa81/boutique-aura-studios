@@ -16,13 +16,13 @@ set data = replace(
             replace(
               replace(data::text,
                 'assets/products/givenchy-logo-noir-studio.webp?v=20260905-wave',
-                'assets/products/givenchy-logo-noir-studio-v2.webp'),
+                'assets/products/givenchy-logo-noir-studio-v3.webp'),
               'assets/products/givenchy-logo-blanc-studio.webp?v=20260905-wave',
-              'assets/products/givenchy-logo-blanc-studio-v2.webp'),
+              'assets/products/givenchy-logo-blanc-studio-v3.webp'),
             'assets/products/givenchy-logo-gris-studio.webp?v=20260905-wave',
-            'assets/products/givenchy-logo-gris-studio-v2.webp'),
+            'assets/products/givenchy-logo-gris-studio-v3.webp'),
           'assets/products/givenchy-logo-kaki-studio.webp?v=20260905-wave',
-          'assets/products/givenchy-logo-kaki-studio-v2.webp'),
+          'assets/products/givenchy-logo-kaki-studio-v3.webp'),
         'assets/products/diesel-camo-noir-studio.webp',
         'assets/products/diesel-camo-clair-studio-v3.webp')::jsonb,
     updated_at = now()

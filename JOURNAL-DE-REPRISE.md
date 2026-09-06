@@ -1,5 +1,21 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
+## 2026-09-06 — Remplacement complet des visuels Givenchy (en cours)
+
+Demande : corriger toutes les erreurs de forme relevées sur `gv-paris`,
+remplacer les quatre coloris partout dans la boutique et éliminer toute trace
+des anciennes générations. État Git initial : `6522894`, branche `main` en
+avance d'un commit sur `origin/main`; fichiers utilisateur non suivis
+`design-qa.md` et `tmp/` préservés. Fichiers envisagés : quatre nouveaux
+visuels produit versionnés et leurs miniatures, `catalog.js`, script SQL de
+correction, données Supabase/brouillon dashboard et ce journal. Risques :
+perdre la vague asymétrique, faire dériver les proportions entre coloris,
+altérer le texte exact « GIVENCHY / PARIS », laisser une référence V2 dans la
+base ou le cache, ou modifier accidentellement les stocks. Stratégie : créer
+une géométrie noire maître depuis les photos physiques, la contrôler, décliner
+les trois couleurs sans changer la forme, remplacer toutes les références et
+vérifier la production mobile.
+
 ## 2026-09-06 — Diagnostic visuel Givenchy (terminé)
 
 Demande : comprendre pourquoi le propriétaire juge encore mauvaise la
