@@ -1,6 +1,6 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
-## 2026-09-06 — Reclassement du produit Coach complet (en cours)
+## 2026-09-06 — Reclassement du produit Coach complet (terminé)
 
 Demande : corriger l'interprétation précédente de la capture : la fiche entière
 et tous ses coloris appartiennent à Coach et doivent être visibles uniquement
@@ -13,6 +13,25 @@ variantes, ou laisser une copie Homme. Stratégie : identifier la fiche par ses
 cinq images/coloris, créer une révision, corriger marque et audience sans
 toucher au stock, synchroniser le brouillon puis vérifier les catalogues Homme
 et Femme en production.
+
+Résultat : la capture correspond à `coach-slide-signature-noir`, déjà marquée
+Coach mais encore classée Homme. La fiche complète et ses cinq coloris (Noir,
+Beige, Bleu, Bleu marine et Olive) sont maintenant Femme. La règle a été
+appliquée à toutes les fiches Coach : 9 Coach Femme, 0 Coach Homme. Prix,
+images, identifiant et 120 unités de stock de la fiche restent inchangés. Une
+révision récupérable a été créée ; brouillon dashboard version 308,
+`dirty=false`, sans Coach Homme.
+
+Vérifications exécutées : `node --check catalog.js`, `git diff --check`,
+requête Supabase de cohérence et Playwright avec Chrome système sur production
+à 390 × 844. La fiche est absente de Homme, présente dans la collection Coach
+Femme, ouvre ses cinq coloris, sans image produit cassée, erreur console ni
+débordement horizontal. Le runtime du navigateur intégré a échoué avant le
+test (`kernel assets` introuvables), d'où le repli Playwright. Script
+reproductible : `supabase/classer-coach-femme.sql`. Commit applicatif
+`7ce291a` poussé sur `main` et déployé par Vercel. Prochaine action sûre :
+reprendre les deux remplacements visuels Diesel et Givenchy signalés juste
+avant cette précision.
 
 Dernière mise à jour : 30 août 2026, Coach en ligne après correction d'un
 archivage accidentel (détail plus bas).
