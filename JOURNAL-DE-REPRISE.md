@@ -1,13 +1,31 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
-## 2026-09-06 — Invalidation globale du cache navigateur (en cours)
+## 2026-09-06 — Invalidation globale du cache navigateur (terminé)
 
-- **Demande :** faire en sorte que la dernière version de la boutique s'actualise partout, y compris dans le navigateur du propriétaire qui conserve encore une ancienne version.
-- **État Git initial :** branche `main`, commit `cbdaa08`, synchronisée avec `origin/main` ; éléments utilisateur non suivis `design-qa.md` et `tmp/`, à préserver.
-- **Fichiers envisagés :** `vercel.json`, pages et gabarits qui chargent les ressources partagées, éventuels rendus HTML produits par `api/`, puis ce journal.
-- **Risques connus :** politique `immutable` sur des fichiers CSS/JS dont le nom reste stable ; versions de requête différentes selon les pages ; baisse de performance si les images produit sont privées inutilement de leur cache long.
-- **Contrôle prévu :** relever les en-têtes réellement servis, corriger seulement le cache des bundles mutables, uniformiser leurs versions, déployer, puis vérifier en production les en-têtes et le filtre mobile.
-- **Statut :** en cours.
+Demande : faire en sorte que la dernière version de la boutique s'actualise
+partout, y compris dans le navigateur du propriétaire. État Git initial :
+`cbdaa08` sur `main`; fichiers utilisateur non suivis `design-qa.md` et `tmp/`
+préservés.
+
+Cause confirmée en production : `boutique.css`, `boutique.js`, `catalog.js`,
+`supabase-client.js` et `admin-dashboard.css` étaient servis avec
+`Cache-Control: public, max-age=31536000, immutable` malgré leurs noms stables.
+Un navigateur déjà venu pouvait donc conserver l'ancienne interface pendant
+un an. Les règles `immutable` ont été retirées pour ces bundles mutables ; ils
+héritent désormais de `max-age=0, must-revalidate`. Les images dans `assets/`
+et `logos/` gardent leur cache long car leurs remplacements sont versionnés.
+
+Toutes les pages publiques, la fiche produit dynamique, les pages annexes,
+l'outil de finalisation et l'administration chargent maintenant la version
+commune `20260906d`. Vérifications exécutées : syntaxe Node des quatre scripts
+partagés et de `api/produit.js`, JSON Vercel, absence d'anciennes versions dans
+les HTML suivis, puis contrôle de neuf routes en production. Les trois bundles
+principaux répondent bien avec `max-age=0, must-revalidate`, `/admin` avec
+`no-store`, et le filtre du catalogue s'ouvre et défile dans le navigateur de
+contrôle. Déploiement : commit `d7bcf51` poussé sur `main` et servi par Vercel.
+Prochaine action sûre : demander au propriétaire de rouvrir ou recharger une
+fois l'onglet déjà resté ouvert ; les visites suivantes se mettront à jour
+automatiquement.
 
 ## 2026-09-06 — Blocage du défilement dans les filtres mobiles (terminé)
 
