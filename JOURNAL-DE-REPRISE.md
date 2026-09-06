@@ -1,6 +1,6 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
-## 2026-09-06 — Derniers visuels Diesel et Givenchy (en cours)
+## 2026-09-06 — Derniers visuels Diesel et Givenchy (terminé)
 
 Demande : traiter les deux derniers visuels jugés mauvais par le propriétaire :
 le coloris Camouflage noir de `diesel-relief` et les images de `gv-paris`, en
@@ -12,6 +12,33 @@ déformer silhouette, texte ou motif, conserver une ancienne référence dans le
 dashboard/cache, ou toucher aux stocks. Stratégie : inspecter les sources et
 images actives, générer à partir des références, contrôler chaque sortie puis
 remplacer toutes les références sans modifier les variantes.
+
+Résultat : cinq nouvelles images studio V2 ont été produites avec l'outil
+Image Gen intégré, puis converties en WebP 900 × 1200 avec miniatures 480 ×
+640 et 144 × 192. Les quatre Givenchy (Noir, Blanc, Gris, Kaki) reprennent la
+vague moulée montante sur le côté intérieur, le grain caoutchouc et les
+étiquettes « GIVENCHY / PARIS ». Le Diesel Camouflage noir utilise désormais
+la même silhouette Relief que le gris, avec « DIESEL / FOR SUCCESSFUL LIVING »
+en relief au lieu de l'ancienne bride générique. Les prompts ont utilisé les
+photos actuelles comme cibles, les photos physiques comme références de forme
+et l'annotation rouge comme repère de courbure.
+
+Classement corrigé après clarification : `coach-slide-signature-noir` et tous
+les Coach restent exclusivement Femme ; la véritable fiche `gv-paris` est
+revenue exclusivement chez Homme. Aucune ancienne image signalée ne reste
+référencée dans `products` ou le brouillon. Stocks inchangés : Givenchy 48,
+Diesel 48. Brouillon dashboard version 309, `dirty=false`. Le script
+`supabase/classer-givenchy-femme.sql`, devenu dangereux, a été retiré et
+remplacé par `supabase/corriger-visuels-diesel-givenchy.sql`.
+
+Vérifications exécutées : inspection visuelle des cinq sorties et des WebP,
+`node --check catalog.js`, `git diff --check`, requêtes Supabase de cohérence,
+assets Vercel HTTP 200 et Playwright/Chrome production à 390 × 844. Givenchy
+est absent de Femme et présent chez Homme ; Coach est absent de Homme et
+présent chez Femme. Un clic sur Gris Givenchy et Camouflage noir Diesel charge
+immédiatement la V2. Zéro image produit cassée, erreur console ou débordement
+horizontal. Commit applicatif `7e99cd6` poussé sur `main` et déployé. Prochaine
+action sûre : validation visuelle finale par le propriétaire sur son téléphone.
 
 ## 2026-09-06 — Reclassement du produit Coach complet (terminé)
 
