@@ -271,7 +271,7 @@
         img: "assets/products/femme/coach-badge-beige-premium.jpg", colors: ["Beige"],
         valueImages: { "Coloris::Beige": "assets/products/femme/coach-badge-beige-premium.jpg" },
         desc: "Bride large en toile beige, badge signature et assise souple." }),
-      make({ id: "coach-slide-signature-noir", name: "Slide Signature", audience: "homme", cat: "claquettes", brand: "coach", price: 0,
+      make({ id: "coach-slide-signature-noir", name: "Slide Signature", audience: "femme", cat: "claquettes", brand: "coach", price: 0,
         sizes: ["39", "40", "41", "42", "43", "44", "45"], stock: [0, 0, 0, 0, 0, 0, 0], active: false, stockout: true,
         studio: "assets/products/homme/coach-slide-signature-bleu-studio.jpg", img: "assets/products/homme/coach-slide-signature-bleu-studio.jpg",
         imgs: ["assets/products/homme/coach-slide-signature-beige-studio.jpg", "assets/products/homme/coach-slide-signature-marine-studio.jpg", "assets/products/homme/coach-slide-signature-olive-studio.jpg", "assets/products/homme/coach-slide-signature-noir-studio.jpg"],

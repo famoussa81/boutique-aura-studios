@@ -1,5 +1,19 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
+## 2026-09-06 — Reclassement du produit Coach complet (en cours)
+
+Demande : corriger l'interprétation précédente de la capture : la fiche entière
+et tous ses coloris appartiennent à Coach et doivent être visibles uniquement
+chez Femme, pas seulement le coloris gris. État Git initial : `d73aa1e`, branche
+`main`; fichiers utilisateur non suivis `design-qa.md` et `tmp/` préservés.
+Fichiers/données envisagés : catalogue fallback, script SQL reproductible,
+produits publiés, brouillon dashboard et ce journal. Risques : modifier la
+mauvaise fiche à cause d'une marque erronée dans les données, perdre stock ou
+variantes, ou laisser une copie Homme. Stratégie : identifier la fiche par ses
+cinq images/coloris, créer une révision, corriger marque et audience sans
+toucher au stock, synchroniser le brouillon puis vérifier les catalogues Homme
+et Femme en production.
+
 Dernière mise à jour : 30 août 2026, Coach en ligne après correction d'un
 archivage accidentel (détail plus bas).
 
