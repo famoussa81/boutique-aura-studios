@@ -1857,4 +1857,5 @@ réservé 0 ; dashboard version 305, `dirty=false`, zéro divergence entre ses
 catalog.js`, `git diff --check`, Playwright + Chrome mobile 390 × 844. La
 collection Femme affiche `gv-paris`, la collection Homme ne l'affiche pas, la
 fiche Femme charge sans erreur console, image cassée ou débordement horizontal.
-Prochaine action sûre : commiter puis pousser sur `main`.
+Commit `29bff95` poussé sur `main`; données visibles immédiatement en production.
+Prochaine action sûre : aucune.
