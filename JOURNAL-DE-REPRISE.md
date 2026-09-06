@@ -1886,7 +1886,7 @@ Playwright + Chrome mobile 390 × 844. La fiche charge la V2 en 900 × 1200,
 sans requête 404, erreur console ni débordement horizontal. Commits `d93746c`
 et `7a9b33f` poussés sur `main`. Prochaine action sûre : aucune.
 
-## 2026-09-06 — Rendre la fiche produit mobile immédiatement compréhensible (en cours)
+## 2026-09-06 — Fiche produit mobile et audit final du catalogue (terminé)
 
 Demande : réduire l'effet « photo plein écran » de la fiche produit mobile afin
 que le visiteur comprenne dès le premier écran qu'il peut choisir coloris et
@@ -1898,3 +1898,40 @@ passer les cibles tactiles sous 44 px. Stratégie : mesurer la fiche actuelle à
 390 × 844, réduire uniquement le média mobile, faire apparaître le début des
 informations/choix dans le premier écran, puis tester produit, coloris, scroll,
 images, console et débordement sur mobile et bureau.
+
+Extension demandée pendant la tâche : auditer avant le lancement l'ensemble
+du site et du catalogue, notamment les images intruses dans un produit, les
+visuels faibles ou incomplets, l'ordre Homme/Femme, les variantes, filtres et
+parcours d'achat. L'audit distinguera les anomalies objectives corrigibles
+sans ambiguïté des choix de stock/contenu qui exigeraient une confirmation du
+propriétaire ; aucune caractéristique produit ne sera inventée.
+
+Résultat : la fiche produit mobile ne donne plus l'impression de s'arrêter à
+la photo. À 390 × 844, le média est passé de 571 à 397 px et le début des
+choix apparaît dès le premier écran ; description et mention revendeur passent
+après les choix. Le clic sur un coloris change l'image au premier appui.
+
+Audit catalogue : les 69 produits actifs et leurs 221 images uniques ont été
+contrôlés. Aucun fichier local ou distant ne manque. Les galeries dupliquées
+de `ck-cadre` et `hg-mono` ont été nettoyées. Les anciennes variantes HUGO
+absentes de l'axe Coloris ont été supprimées et son seul coloris réellement en
+stock passe en premier, image principale comprise. Production et brouillon
+admin correspondent : version 307, `dirty=false`, 0 galerie dupliquée, 0 clé
+de variante invalide, 0 produit disponible ouvrant sur un coloris épuisé.
+Correctif reproductible : `supabase/corriger-integrite-catalogue-final.sql`.
+
+Audit visuel : chaque famille produit a été comparée sur planches de contact ;
+aucun autre intrus inter-produit confirmé. Le logo HUGO dépassait réellement
+de sa zone à 320 px et pouvait être rogné : sa hauteur mobile est maintenant
+bornée comme les autres logos. Les métadonnées Homme/Femme ne promettent plus
+des pointures fixes inexactes et le guide couvre désormais 36 à 45.
+
+Vérifications exécutées : Playwright Chrome sur production, 69/69 fiches avec
+clic du deuxième coloris, toutes les combinaisons rayon/marque, filtres, tri,
+favori, ouverture fiche et panier ; dashboard isolé sur mobile et bureau
+(navigation, produits, recherche, assistant, contenu, rayons, classement,
+marques, légal, listes et aide). Aucun 404, image cassée, erreur console ou
+débordement. Fiche testée aussi à 375 × 667 et 844 × 390. Logos contrôlés à
+320, 768 et 1920 px. Mesures mobile à froid : DOM 0,86–0,99 s, chargement
+1,18–1,30 s sur les pages principales mesurées. Déploiement : à effectuer avec
+le commit applicatif de cette entrée, puis contrôle production.
