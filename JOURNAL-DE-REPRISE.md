@@ -1,6 +1,6 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
-## 2026-09-06 — Remplacement complet des visuels Givenchy (en cours)
+## 2026-09-06 — Remplacement complet des visuels Givenchy (terminé)
 
 Demande : corriger toutes les erreurs de forme relevées sur `gv-paris`,
 remplacer les quatre coloris partout dans la boutique et éliminer toute trace
@@ -15,6 +15,31 @@ base ou le cache, ou modifier accidentellement les stocks. Stratégie : créer
 une géométrie noire maître depuis les photos physiques, la contrôler, décliner
 les trois couleurs sans changer la forme, remplacer toutes les références et
 vérifier la production mobile.
+
+Résultat : une nouvelle série V3 cohérente a été produite avec ImageGen à
+partir des photos physiques. Le maître noir corrige la silhouette trop large,
+la semelle massive, la bride haute et le rebord uniforme ; il reprend une
+forme plus longue et fine, la remontée latérale asymétrique et une étiquette
+plus contenue. Blanc cassé, gris perle froid et kaki olive ont été dérivés du
+même maître sans changer la géométrie. Les quatre images finales font 900 ×
+1200 en WebP, avec miniatures carte 480 × 640 et coloris 144 × 192.
+
+Remplacement : `catalog.js`, produit Supabase `gv-paris` et brouillon
+dashboard pointent uniquement vers les V3. Les 24 anciens fichiers Givenchy
+actifs (images et miniatures V1/V2) ont été supprimés du dépôt ; ils sont
+récupérables par Git. En production, les quatre anciennes URL V2 répondent
+404 et les quatre V3 répondent 200. Une révision Supabase a été créée ;
+brouillon version 311, `dirty=false`. Audience Homme et stock total 48
+inchangés.
+
+Vérifications exécutées : inspection visuelle des quatre PNG et des WebP,
+`node --check catalog.js`, `git diff --check`, contrôle REST sans référence
+V2 dans le produit ni le brouillon, puis Playwright/Chrome sur production à
+390 × 844. Chaque miniature charge son image V3 900 × 1200, sans erreur
+console ni débordement horizontal ; après 2,5 s et défilement, aucun élément
+visible ne reste à `opacity: 0`. Commit applicatif `7428959` poussé sur
+`main`. Prochaine action sûre : validation visuelle finale par le propriétaire
+sur son téléphone.
 
 ## 2026-09-06 — Diagnostic visuel Givenchy (terminé)
 
