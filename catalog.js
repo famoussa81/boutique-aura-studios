@@ -151,7 +151,7 @@
         colors: ["Noir", "Bordeaux noir", "Beige", "Bleu ciel", "Vert"], valueImages: { "Coloris::Noir": "assets/products/burberry-check-beige-noir-studio.webp", "Coloris::Bordeaux noir": "assets/products/burberry-check-bordeaux-noir-studio.jpg", "Coloris::Beige": "assets/products/burberry-check-beige-tan-studio.webp", "Coloris::Bleu ciel": "assets/products/burberry-check-bleu-studio.webp", "Coloris::Vert": "assets/products/burberry-check-vert-studio.webp" },
         stock: [3, 3, 3, 3, 3, 3, 3],
         desc: "Claquette à bride imprimée carreaux, déclinée en cinq associations faciles à porter." }),
-      make({ id: "gv-paris", name: "Claquette Paris", audience: "homme", brand: "givenchy", price: 40000,
+      make({ id: "gv-paris", name: "Claquette Paris", audience: "femme", brand: "givenchy", price: 40000,
         studio: "assets/products/givenchy-logo-noir-studio.webp?v=20260905-wave", img: "assets/products/givenchy-logo-noir-studio.webp?v=20260905-wave", imgs: ["assets/products/givenchy-logo-noir-studio.webp?v=20260905-wave", "assets/products/givenchy-logo-blanc-studio.webp?v=20260905-wave", "assets/products/givenchy-logo-gris-studio.webp?v=20260905-wave", "assets/products/givenchy-logo-kaki-studio.webp?v=20260905-wave"],
         colors: ["Noir", "Blanc", "Gris", "Kaki"], valueImages: { "Coloris::Noir": "assets/products/givenchy-logo-noir-studio.webp?v=20260905-wave", "Coloris::Blanc": "assets/products/givenchy-logo-blanc-studio.webp?v=20260905-wave", "Coloris::Gris": "assets/products/givenchy-logo-gris-studio.webp?v=20260905-wave", "Coloris::Kaki": "assets/products/givenchy-logo-kaki-studio.webp?v=20260905-wave" },
         desc: "Bride lisse à lettrage Paris contrasté, avec semelle légère et profil minimal." }),

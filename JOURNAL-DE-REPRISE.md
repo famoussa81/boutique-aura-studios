@@ -1833,3 +1833,28 @@ passent, clic direct sur les coloris déplacés compris ; zéro erreur console,
 image cassée ou débordement horizontal sur les trois fiches. Commit applicatif
 `e814909` poussé sur `main`; la correction de données est visible immédiatement
 en production, sans nouveau bundle statique. Prochaine action sûre : aucune.
+
+## 2026-09-06 — Reclasser Givenchy chez Femme (terminé)
+
+Demande : retirer de Homme la fiche Givenchy montrée et déplacer le produit
+complet avec ses cinq coloris vers Femme. État Git initial : `95d01b9`, branche
+`main`; fichiers utilisateur non suivis `design-qa.md` et `tmp/` préservés.
+Fichiers envisagés : fallback `catalog.js`, seed/correctif SQL reproductible et
+ce journal. Risques : modifier stock ou références, laisser une copie Homme,
+ou désynchroniser boutique et dashboard. Stratégie : inventorier la production,
+créer une révision, changer uniquement l'audience, synchroniser le brouillon,
+puis contrôler Homme/Femme et la fiche sur mobile.
+
+Résultat : la fiche complète `gv-paris` (toutes ses images, coloris et
+variantes) est maintenant exclusivement Femme. Aucun prix, stock, réservation
+ou identifiant n'a changé. Le fallback `catalog.js` et le seed ont été alignés ;
+le correctif inverse obsolète a été remplacé par
+`supabase/classer-givenchy-femme.sql`.
+
+Synchronisation : production 0 Givenchy Homme, 1 Givenchy Femme ; stock 48,
+réservé 0 ; dashboard version 305, `dirty=false`, zéro divergence entre ses
+81 produits et la boutique. Vérifications exécutées : `node --check
+catalog.js`, `git diff --check`, Playwright + Chrome mobile 390 × 844. La
+collection Femme affiche `gv-paris`, la collection Homme ne l'affiche pas, la
+fiche Femme charge sans erreur console, image cassée ou débordement horizontal.
+Prochaine action sûre : commiter puis pousser sur `main`.

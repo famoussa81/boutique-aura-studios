@@ -181,8 +181,8 @@ set data = jsonb_set(data, '{variants}', (
 ), true)
 where id = 'bb-check';
 
--- Givenchy est présenté exclusivement dans l'univers Homme.
+-- Givenchy est présenté exclusivement dans l'univers Femme.
 update public.products
-set data = jsonb_set(data, '{audience}', '"homme"'::jsonb, true),
+set data = jsonb_set(data, '{audience}', '"femme"'::jsonb, true),
     updated_at = now()
 where lower(coalesce(data->>'collection', '')) = 'givenchy';
