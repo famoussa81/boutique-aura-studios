@@ -1,5 +1,19 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
+## 2026-09-06 — Blocage du défilement dans les filtres mobiles (en cours)
+
+Demande : corriger le catalogue mobile qui ne défile plus normalement après
+ouverture des filtres, notamment dans la longue liste des marques montrée sur
+la capture iPhone. État Git initial : `d949c3f`, branche `main`; fichiers
+utilisateur non suivis `design-qa.md` et `tmp/` préservés. Fichiers envisagés :
+`boutique.css`, éventuellement `boutique.js`, et ce journal. Risques : casser
+le panneau bureau, laisser le bouton d'application masquer les dernières
+options, réactiver le défilement de la page derrière une vraie modale ou créer
+un double défilement sur iOS. Stratégie : reproduire sur la production à la
+taille de la capture, mesurer le conteneur réellement scrollable et ses styles,
+corriger uniquement le panneau de filtres puis tester ouverture, défilement,
+sélection de marque, fermeture et retour au catalogue sur mobile et bureau.
+
 ## 2026-09-06 — Derniers arrivages Femme avant publication (terminé)
 
 Demande : transformer les deux nouvelles références photographiées en visuels
