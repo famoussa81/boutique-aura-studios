@@ -1,5 +1,18 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
+## 2026-09-06 — Derniers visuels Diesel et Givenchy (en cours)
+
+Demande : traiter les deux derniers visuels jugés mauvais par le propriétaire :
+le coloris Camouflage noir de `diesel-relief` et les images de `gv-paris`, en
+respectant notamment la courbure latérale moulée montrée sur les références
+Givenchy. État Git initial : `c74c52a`, branche `main`; `design-qa.md` et
+`tmp/` restent hors portée. Fichiers envisagés : images produit versionnées,
+miniatures, `catalog.js`, script SQL de remplacement et ce journal. Risques :
+déformer silhouette, texte ou motif, conserver une ancienne référence dans le
+dashboard/cache, ou toucher aux stocks. Stratégie : inspecter les sources et
+images actives, générer à partir des références, contrôler chaque sortie puis
+remplacer toutes les références sans modifier les variantes.
+
 ## 2026-09-06 — Reclassement du produit Coach complet (terminé)
 
 Demande : corriger l'interprétation précédente de la capture : la fiche entière
