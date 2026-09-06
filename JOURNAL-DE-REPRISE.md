@@ -1,6 +1,6 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
-## 2026-09-06 — Diesel camouflage fidèle à la photo physique (en cours)
+## 2026-09-06 — Diesel camouflage fidèle à la photo physique (terminé)
 
 Demande : reprendre le coloris Camouflage noir de `diesel-relief` à partir de
 la nouvelle photo physique, car la palette, le motif et le marquage de la bride
@@ -11,6 +11,24 @@ ce journal. Risques : assombrir le camouflage clair, omettre les liserés
 métalliques ou déformer « DIESEL / FOR SUCCESSFUL LIVING ». Stratégie : traiter
 la photo physique comme référence autoritaire, produire une paire studio,
 inspecter le texte et les couleurs, puis remplacer la V2 sans toucher au stock.
+
+Résultat : la V3 reproduit le camouflage clair de la photo physique (bleu
+glacier, blanc, gris pâle et taupe), les semelles noires grainées et les deux
+liserés métalliques argentés. La bride porte maintenant en relief translucide
+« DIESEL » et « FOR SUCCESSFUL LIVING ». Un second passage Image Gen ciblé a
+été nécessaire pour rendre la petite ligne lisible. Le coloris a été renommé
+« Camouflage clair » pour ne plus contredire la photo. Image finale :
+`assets/products/diesel-camo-clair-studio-v3.webp`, 900 × 1200, avec
+miniatures carte et coloris dédiées.
+
+Synchronisation : production et brouillon dashboard utilisent la V3, aucune
+référence V2 restante, stock total inchangé à 48, dashboard version 310,
+`dirty=false`. Vérifications exécutées : inspection visuelle source/rendus/WebP,
+`node --check catalog.js`, `git diff --check`, asset Vercel HTTP 200 et
+Playwright/Chrome production mobile 390 × 844. Le coloris se sélectionne au
+premier clic, charge la V3, sans image cassée, erreur console ni débordement.
+Commit applicatif `b55d87b` poussé sur `main`. Prochaine action sûre : faire
+valider cette V3 par le propriétaire sur son téléphone.
 
 ## 2026-09-06 — Derniers visuels Diesel et Givenchy (terminé)
 
