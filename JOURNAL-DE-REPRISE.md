@@ -1739,3 +1739,16 @@ seul clic sélectionne le coloris, charge le visuel complet, zéro image cassée
 et zéro débordement horizontal. Commit applicatif `f492d34` poussé sur `main`.
 Prochaine action sûre : le commerçant peut modifier prix et stocks depuis le
 dashboard sans perdre ce coloris.
+
+## 2026-09-06 — Marquage bride Louis Vuitton bleu (en cours)
+
+Demande : identifier l'inscription visible sur le côté de la bride dans la
+photo source de la Claquette Damier bleue, puis remplacer le visuel généré qui
+l'a omise. État Git initial : `09a0df8`, branche `main`; fichiers utilisateur
+non suivis `design-qa.md` et `tmp/` préservés. Fichiers envisagés : visuel
+Louis Vuitton bleu et miniatures correspondantes, éventuel cache-busting dans
+les données produit, script SQL reproductible et ce journal. Risques :
+inventer un texte illisible, altérer le damier ou le monogramme de semelle,
+et laisser le dashboard pointer vers une ancienne image en cache. Stratégie :
+agrandir la photo source, confirmer le texte par recherche publique, modifier
+uniquement ce visuel puis vérifier fiche mobile et synchronisation dashboard.
