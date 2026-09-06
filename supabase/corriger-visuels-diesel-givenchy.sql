@@ -24,7 +24,7 @@ set data = replace(
           'assets/products/givenchy-logo-kaki-studio.webp?v=20260905-wave',
           'assets/products/givenchy-logo-kaki-studio-v2.webp'),
         'assets/products/diesel-camo-noir-studio.webp',
-        'assets/products/diesel-camo-noir-studio-v2.webp')::jsonb,
+        'assets/products/diesel-camo-clair-studio-v3.webp')::jsonb,
     updated_at = now()
 where id in ('gv-paris', 'diesel-relief');
 

@@ -1,5 +1,17 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
+## 2026-09-06 — Diesel camouflage fidèle à la photo physique (en cours)
+
+Demande : reprendre le coloris Camouflage noir de `diesel-relief` à partir de
+la nouvelle photo physique, car la palette, le motif et le marquage de la bride
+restent inexacts. État Git initial : `6dfe422`, branche `main`; fichiers
+utilisateur non suivis `design-qa.md` et `tmp/` préservés. Fichiers envisagés :
+nouvelle image Diesel versionnée et miniatures, `catalog.js`, correctif SQL et
+ce journal. Risques : assombrir le camouflage clair, omettre les liserés
+métalliques ou déformer « DIESEL / FOR SUCCESSFUL LIVING ». Stratégie : traiter
+la photo physique comme référence autoritaire, produire une paire studio,
+inspecter le texte et les couleurs, puis remplacer la V2 sans toucher au stock.
+
 ## 2026-09-06 — Derniers visuels Diesel et Givenchy (terminé)
 
 Demande : traiter les deux derniers visuels jugés mauvais par le propriétaire :
