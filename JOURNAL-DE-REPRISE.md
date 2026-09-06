@@ -1,6 +1,6 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
-## 2026-09-06 — Derniers arrivages Femme avant publication (en cours)
+## 2026-09-06 — Derniers arrivages Femme avant publication (terminé)
 
 Demande : transformer les deux nouvelles références photographiées en visuels
 studio sur fond blanc, intégrer chaque coloris au bon produit et à la bonne
@@ -17,6 +17,48 @@ inventorier l'existant, traiter les photos comme références autoritaires,
 générer une paire 3:4 par coloris sur fond blanc, contrôler chaque sortie,
 réutiliser Tory Burch et ne créer qu'une marque textuelle vérifiable pour le
 second produit, sans logo inventé, puis vérifier la production mobile.
+
+Résultat : deux nouvelles fiches Femme actives ont été publiées. `Miller
+Pavé` rejoint Tory Burch avec cinq coloris (Champagne, Argent, Turquoise,
+Lilas et Noir), prix de lancement modifiable 35 000 FCFA. `Claquette Fleurs
+Cristal` rejoint la nouvelle marque textuelle Fashion avec trois coloris
+(Noir, Rose et Ivoire), prix de lancement modifiable 25 000 FCFA. Fashion a
+une couverture dédiée, une couleur et un texte de marque ; aucun faux logo de
+tiers n'a été généré. Tory Burch met le nouvel arrivage en premier.
+
+Visuels : huit paires studio 1200 × 1600 sur fond blanc ont été générées avec
+Image Gen à partir des deux photographies physiques, puis inspectées ensemble.
+Chaque original possède une miniature carte 480 × 640 et une miniature coloris
+144 × 192. La couverture Fashion fait 1200 × 900, garde ses trois produits
+dans le tiers central utile au recadrage 16/5 et possède sa miniature 400 ×
+300. Les fichiers issus d'Image Gen ont été copiés dans le dépôt ; les prompts
+ont utilisé les photos fournies comme références autoritaires et les maîtres
+approuvés comme verrou de géométrie.
+
+Synchronisation : le correctif idempotent
+`supabase/ajouter-derniers-arrivages-femme.sql` a créé une révision, ajouté les
+deux produits et la marque, puis synchronisé le brouillon dashboard en version
+312, `dirty=false`. Les deux fiches sont présentes une seule fois et la
+comparaison boutique/brouillon retourne zéro divergence.
+
+Vérifications exécutées : inspection visuelle des huit JPEG et de la bannière,
+contrôle de toutes les dimensions et miniatures, `node --check catalog.js`,
+test des 48 combinaisons de variantes et `git diff --check`. Les cinq routes
+obligatoires répondent HTTP 200 en production. Playwright + Chrome à 390 × 844
+et 1280 × 900 a contrôlé les deux fiches et les collections Tory Burch/Fashion :
+chaque clic coloris charge le fichier attendu, aucune image cassée, aucune
+erreur console et aucun débordement horizontal. Les seuls éléments à opacité
+nulle sont les overlays fermés, le toast et le bouton WhatsApp masqué, donc pas
+du contenu de page. Une commande réelle `CMD-202609-0023` a été passée depuis
+la fiche mobile ; son message WhatsApp contenait la marque et le lien du
+coloris Noir. La commande de test a ensuite été supprimée : zéro commande de
+test restante, stock 2 et réservé 0 sur la variante contrôlée.
+
+Déploiement : commit applicatif `aca80e3` poussé sur `main` et servi par Vercel ;
+originaux, miniatures et bannière répondent HTTP 200. Prochaine action sûre :
+le commerçant confirme dans le dashboard les prix de lancement, les pointures
+et les quantités réelles avant la communication publique, puis fournit les
+mentions légales encore manquantes.
 
 ## 2026-09-06 — Remplacement complet des visuels Givenchy (terminé)
 
