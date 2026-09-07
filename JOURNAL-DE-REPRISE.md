@@ -1,5 +1,31 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
+## 2026-09-07 — Inventaire des ruptures de stock (terminé)
+
+Demande : fournir une liste numérotée de tous les articles réellement épuisés,
+car certains apparaissent en rupture alors qu'ils ne devraient pas l'être.
+État Git initial : `f551017` sur `main`, synchronisé avec `origin/main` ;
+éléments utilisateur non suivis `design-qa.md` et `tmp/` à préserver. Fichiers
+modifiés : ce journal seulement. Risques : confondre un produit totalement
+épuisé avec une seule variante indisponible, ou l'ancien champ `sizes` avec le
+modèle actuel `variants`. Contrôle prévu : lire les données de production sans
+écriture, normaliser les deux formats et séparer les ruptures totales des
+ruptures partielles.
+
+Lecture publique Supabase exécutée sur les 83 produits, sans écriture, selon la
+même règle que la boutique (`stockout = true` ou somme de `s - r` inférieure ou
+égale à zéro). Résultat visible : un seul produit actif est déclaré en rupture,
+`coach-slide-signature-noir` (Coach, « Slide Signature », Femme), mais ses 40
+variantes ont chacune 3 unités, soit 120 disponibles et aucune réservation :
+la rupture forcée est incohérente. Trois fiches non visibles portent aussi la
+rupture : `ck-ribbed` (inactive, stock réel 0),
+`femme-coach-double-bride-rose` (inactive, 12 disponibles malgré le drapeau) et
+`hermes-chypre-vives` (inactive et archivée, sans variante). Quatre produits
+actifs ne sont épuisés que sur certaines variantes : `dr-oblique`, `ea-logo`,
+`gv-paris` et `hg-mono`. Aucun stock n'a été modifié. Prochaine action sûre :
+retirer le drapeau de rupture de `coach-slide-signature-noir` si le commerçant
+confirme que ses quantités enregistrées sont réelles.
+
 ## 2026-09-06 — Invalidation globale du cache navigateur (terminé)
 
 Demande : faire en sorte que la dernière version de la boutique s'actualise
