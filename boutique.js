@@ -1627,10 +1627,9 @@ window.AURA_IMG = function (img) {
     var s = store.settings;
     var d = deliveryDelay(curAudience || audienceAttribut());
     var libelle = d ? "Livraison gratuite · " + delaiPrep(d) + " " + d : "Livraison gratuite à Bamako";
-    var ex = (store.settings.exchangeTime || "").toString().trim();
     /* Le bandeau est rendu depuis la liste unique des garanties. */
     renderTrustBar();
-    var he = $("#heroExchange"); if (he) he.textContent = ex ? "Échange sous " + ex : "Échange possible";
+    var he = $("#heroExchange"); if (he) he.textContent = "Commande WhatsApp";
     var hd = $("#heroDelay"); if (hd) hd.textContent = libelle;
     var wa = $("#waFloat");
     if (wa) wa.href = waLink(s.whatsapp, "Bonjour " + (s.shopName || "T&K SHOES") + " 👋 J'ai une question sur un article.");
@@ -2534,11 +2533,10 @@ window.AURA_IMG = function (img) {
     var c = contenu();
     var g = Array.isArray(c.garanties) ? c.garanties : [];
     var d = deliveryDelay(curAudience || audienceAttribut());
-    var e = (store.settings.exchangeTime || "").toString().trim();
     var defauts = [
       { t: "Payé à la livraison", s: "Vous essayez devant le livreur avant de payer. Rien à avancer." },
       { t: "Livraison gratuite", s: "Partout à Bamako" + (d ? " " + delaiPrep(d) + " " + d : "") + ", sans minimum d'achat." },
-      { t: e ? "Échange sous " + e : "Échange possible", s: "Mauvaise pointure ? On repasse l'échanger." },
+      { t: "Commande par WhatsApp", s: "Votre modèle et votre pointure sont confirmés avant la livraison." },
       { t: "Stock réel", s: "Le nombre affiché est celui de la boutique, pointure par pointure." }
     ];
     /* Une ligne laissée vide par le commerçant reprend sa valeur par défaut

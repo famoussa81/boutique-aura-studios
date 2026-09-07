@@ -39,6 +39,7 @@
         pointures.forEach(function (pointure, i) {
           var q = quantites[i];
           if (typeof q !== "number" || isNaN(q)) q = Number(quantites[quantites.length - 1]) || 0;
+          if (q <= 0) q = 20;
           variants[pointure + "::" + coloris] = v(q);
         });
       });
@@ -67,7 +68,7 @@
         variants: variants,
         active: spec.active !== false,
         archived: !!spec.archived,
-        stockout: !!spec.stockout
+        stockout: false
       };
     }
     return [
@@ -394,10 +395,9 @@
          et les mentions du hero, pour qu'ils ne puissent jamais diverger.
          Exemples : "5 jours", "48h", "2 à 3 jours", "1 semaine". */
       deliveryTime: "5 jours",
-      /* Délai d'échange annoncé. Comme le délai de livraison, il est écrit
-         une seule fois ici : une promesse figée dans le HTML ne peut plus
-         être ajustée quand la réalité du terrain change. */
-      exchangeTime: "24h",
+      /* Conservé vide pour compatibilité avec les anciennes données. La
+         boutique n'annonce plus de délai d'échange. */
+      exchangeTime: "",
       payments: ["Espèces à la livraison", "Espèces au retrait", "Orange Money"],
       legal: { forme: "", email: "mohamedsambakessy8@gmail.com", adresse: "Kalaban Coura, Bamako", rccm: "", nif: "" },
       /* Avis clients : rempli depuis l'administration, jamais pre-rempli.

@@ -711,9 +711,9 @@
             <p class="hint">Exemples : <b>24h</b>, <b>48h</b>, <b>2 à 3 jours</b>, <b>1 semaine</b>. Cette mention apparaît sur chaque carte produit, dans le bandeau du haut et dans l'accroche : elle est écrite une seule fois ici pour ne jamais se contredire.</p>
           </div>
           <div class="field">
-            <label for="sExchange">Délai d'échange annoncé</label>
-            <input type="text" id="sExchange" placeholder="48h" maxlength="40" />
-            <p class="hint">Laissez vide si vous ne souhaitez pas annoncer de délai — la mention devient simplement « Échange possible ». N'annoncez que ce que vous pouvez tenir : une promesse non honorée sur les premières commandes se paie en bouche-à-oreille.</p>
+            <label>Commande par WhatsApp</label>
+            <p><strong>Le modèle et la pointure sont confirmés avant la livraison.</strong></p>
+            <p class="hint">Cette information est affichée à la place d'une promesse de service supplémentaire.</p>
           </div>
 
           <h2 class="form-section-title">Textes affichés sur le site</h2>
@@ -766,7 +766,7 @@
 
 <script src="supabase.config.js"></script>
 <script src="supabase-client.js?v=20260906d"></script>
-<script src="catalog.js?v=20260906d"></script>
+<script src="catalog.js?v=20260907a"></script>
 <script>
 (function(){
   var KEY = "aura_store_v10";
@@ -3858,7 +3858,6 @@ function applyStatus(order, ns){
     $("#sFee").value = 0;
     $("#sFree").value = 0;
     $("#sDelay").value = s.deliveryTime || "";
-    $("#sExchange").value = s.exchangeTime || "";
     $("#sAnn").value = "Livraison gratuite partout à Bamako";
     $("#sFoot").value = s.footerText || "";
     $("#sIG").value = s.instagram || "";
@@ -3892,7 +3891,7 @@ function applyStatus(order, ns){
     store.settings.deliveryFeeMin = 0;
     store.settings.freeFrom = 0;
     store.settings.deliveryTime = $("#sDelay").value.trim();
-    store.settings.exchangeTime = $("#sExchange").value.trim();
+    store.settings.exchangeTime = "";
     store.settings.announcement = "Livraison gratuite partout à Bamako";
     store.settings.footerText = $("#sFoot").value.trim();
     store.settings.instagram = $("#sIG").value.trim();

@@ -1,5 +1,21 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
+## 2026-09-07 — Réapprovisionnement général et retrait de la promesse d'échange (en cours)
+
+Demande : remettre en stock toutes les pointures épuisées avec des quantités
+élevées, réactiver la Sandale Hermès Chypre Vives avec toutes ses pointures,
+et remplacer la mention « Échange sous 48 heures » puisqu'aucun échange n'est
+proposé. État Git initial : `5df3e47` sur `main`, synchronisé avec
+`origin/main` ; éléments utilisateur non suivis `design-qa.md` et `tmp/` à
+préserver. Fichiers envisagés : données `products` et `settings` dans Supabase,
+éventuellement les textes de repli du dépôt, puis ce journal. Risques : écraser
+les réservations de commandes, recréer Hermès sans ses images ou ses axes,
+laisser une autre mention d'échange visible, ou annoncer un stock supérieur au
+stock physique. Stratégie : sauvegarder les enregistrements visés, conserver
+les réservations, appliquer un stock élevé seulement aux variantes épuisées,
+reconstituer Hermès depuis ses données historiques, supprimer la promesse
+d'échange partout, puis relire la base et contrôler la vitrine en production.
+
 ## 2026-09-07 — Inventaire des ruptures de stock (terminé)
 
 Demande : fournir une liste numérotée de tous les articles réellement épuisés,
