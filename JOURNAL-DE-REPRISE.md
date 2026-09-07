@@ -1,5 +1,25 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
+## 2026-09-07 — Réactivation de Coach Sandale Double Bride (terminé)
+
+Demande : rendre également disponible le numéro 3 de la liste précédente,
+Coach « Sandale Double Bride ». État Git initial : `fa98ce1` sur `main`,
+synchronisé avec `origin/main` ; éléments utilisateur non suivis
+`design-qa.md` et `tmp/` à préserver. Fichiers envisagés : enregistrement
+Supabase `femme-coach-double-bride-rose` et ce journal. Risques : modifier la
+mauvaise fiche Coach ou écraser ses variantes existantes. Stratégie : relire
+la fiche, ne changer que `active`, `archived` et `stockout`, puis vérifier les
+pointures et son apparition dans le rayon Femme.
+
+Résultat : la fiche Coach « Sandale Double Bride » est active, non archivée et
+sans drapeau de rupture. Pour rester cohérent avec le réapprovisionnement
+général demandé juste avant, ses six variantes Rose du 36 au 41 disposent de
+20 unités chacune ; les réservations éventuelles auraient été conservées dans
+le calcul. Relecture publique Supabase réussie : 6 variantes, 120 unités
+disponibles au total. La route produit correspondante répond en production et
+porte bien le nom du modèle. Aucun fichier applicatif modifié. Prochaine action
+sûre : vérifier que les 120 unités enregistrées correspondent au stock physique.
+
 ## 2026-09-07 — Réapprovisionnement général et retrait de la promesse d'échange (terminé)
 
 Demande : remettre en stock toutes les pointures épuisées avec des quantités
