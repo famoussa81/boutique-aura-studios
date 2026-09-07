@@ -1,20 +1,41 @@
 # Journal de reprise — Boutique Aura Studios / T&K Shoes
 
-## 2026-09-07 — Réapprovisionnement général et retrait de la promesse d'échange (en cours)
+## 2026-09-07 — Réapprovisionnement général et retrait de la promesse d'échange (terminé)
 
 Demande : remettre en stock toutes les pointures épuisées avec des quantités
 élevées, réactiver la Sandale Hermès Chypre Vives avec toutes ses pointures,
 et remplacer la mention « Échange sous 48 heures » puisqu'aucun échange n'est
 proposé. État Git initial : `5df3e47` sur `main`, synchronisé avec
 `origin/main` ; éléments utilisateur non suivis `design-qa.md` et `tmp/` à
-préserver. Fichiers envisagés : données `products` et `settings` dans Supabase,
-éventuellement les textes de repli du dépôt, puis ce journal. Risques : écraser
+préserver. Fichiers modifiés : données `products` et `settings` dans Supabase,
+`boutique.js`, `catalog.js`, `admin.html`, les pages Homme/Femme, `cgv.html`,
+les versions de scripts des pages et ce journal. Risques : écraser
 les réservations de commandes, recréer Hermès sans ses images ou ses axes,
 laisser une autre mention d'échange visible, ou annoncer un stock supérieur au
 stock physique. Stratégie : sauvegarder les enregistrements visés, conserver
 les réservations, appliquer un stock élevé seulement aux variantes épuisées,
 reconstituer Hermès depuis ses données historiques, supprimer la promesse
 d'échange partout, puis relire la base et contrôler la vitrine en production.
+
+Résultat Supabase : 43 variantes existantes dont le disponible était nul ont
+reçu 20 unités disponibles chacune (`s = r + 20`, donc réservations
+préservées). Les quatre drapeaux de rupture ont été retirés. La Sandale Hermès
+Chypre Vives est active et désarchivée ; ses trois coloris Rouge vif, Nude daim
+et Léopard existent désormais du 39 au 45, avec 20 unités par combinaison, soit
+420 disponibles. Relecture publique : 83 produits, 0 variante à disponible
+nul, 0 drapeau `stockout`.
+
+La promesse d'échange a été remplacée par « Commande par WhatsApp — Votre
+modèle et votre pointure sont confirmés avant la livraison. » dans les réglages
+et les replis du site ; `exchangeTime` est vide et l'administration ne permet
+plus de réintroduire ce délai. Les CGV ne promettent plus de délai automatique.
+Vérifications exécutées : syntaxe JS, `git diff --check`, version
+`20260907a` servie en production, fiche Hermès accessible, sélection de la
+pointure 45 confirmée à 20 unités, trois coloris visibles, texte WhatsApp rendu
+sur Homme et fiche produit, et collection Hermès passée à sept modèles après
+chargement Supabase. Déploiement applicatif : commit `5c0c22b` poussé sur
+`main`. Prochaine action sûre : confirmer que 20 unités par variante correspond
+bien au stock physique avant l'ouverture officielle.
 
 ## 2026-09-07 — Inventaire des ruptures de stock (terminé)
 
