@@ -635,7 +635,10 @@ begin
     if v_old_reserved then
       if v_reserved < v_qty then raise exception 'Réservation incohérente pour %', v_item->>'id'; end if;
       v_reserved := v_reserved - v_qty;
-    elsif v_old_status <> 'CANCELLED' then
+    -- Une demande PENDING récente porte stockReserved=false : elle n'a eu
+    -- aucun impact sur le stock et ne doit donc rien restituer. Seuls les
+    -- états qui ont réellement décrémenté `s` rendent la quantité ici.
+    elsif v_old_status in ('CONFIRMED','SHIPPING','DELIVERED') then
       v_stock := v_stock + v_qty;
     end if;
     v_prod := jsonb_set(v_prod, array[v_field, v_key], jsonb_build_object('s', v_stock, 'r', v_reserved), true);
