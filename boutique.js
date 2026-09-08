@@ -3095,6 +3095,22 @@ window.AURA_IMG = function (img) {
     }
   }
 
+  /* Ramene le visiteur a la liste d'ou il vient. Le retour arriere du
+     navigateur est prefere quand la page precedente appartient au site : il
+     restitue la liste exacte — catalogue, rayon ou marque — et la position de
+     defilement, ce qu'une adresse reconstruite ne sait pas faire. Sinon, on
+     deduit une liste plausible du rayon ouvert. */
+  function retourListe(){
+    var ref = document.referrer || "";
+    if (ref && ref.indexOf(location.origin) === 0 && ref !== location.href){
+      history.back();
+      return;
+    }
+    var rayon = curAudience || audienceAttribut();
+    location.href = rayon === "femme" ? "femmes" :
+                    rayon === "homme" ? "hommes" :
+                    audienceLien("catalogue", rayon);
+  }
   function openCart(){
     renderCart();
     $("#cartDrawer").setAttribute("data-open","true");
@@ -3381,17 +3397,12 @@ window.AURA_IMG = function (img) {
     /* « Continuer mes achats » depuis une fiche produit fermait le tiroir et
        laissait le visiteur sur la paire qu'il venait d'ajouter : le bouton
        promettait la suite du catalogue et ne menait nulle part. Il ramene
-       maintenant a la liste d'ou l'on vient — le rayon ouvert s'il y en a un,
-       le catalogue sinon. Ailleurs que sur une fiche, la liste est deja a
+       maintenant a la liste d'ou l'on vient, defilement compris.
+       Ailleurs que sur une fiche, la liste est deja a
        l'ecran : fermer suffit. */
     if (t.closest("#cartContinue")){
       closeCart(); closeModal("coOverlay");
-      if (typePage() === "produit"){
-        var rayonRetour = curAudience || audienceAttribut();
-        location.href = rayonRetour === "femme" ? "femmes" :
-                        rayonRetour === "homme" ? "hommes" :
-                        audienceLien("catalogue", rayonRetour);
-      }
+      if (typePage() === "produit") retourListe();
       return;
     }
     /* Apres commande, fermer renvoyait sur la fiche du produit tout juste
@@ -3399,10 +3410,7 @@ window.AURA_IMG = function (img) {
        reprendre. Retour a la liste, comme sur toute boutique. */
     if (t.closest("#waClose")){
       closeCart(); closeModal("coOverlay");
-      var rayonFin = curAudience || audienceAttribut();
-      location.href = rayonFin === "femme" ? "femmes" :
-                      rayonFin === "homme" ? "hommes" :
-                      audienceLien("catalogue", rayonFin);
+      retourListe();
       return;
     }
     if (t.closest("[data-empty-cta]")){ closeCart(); return; }
