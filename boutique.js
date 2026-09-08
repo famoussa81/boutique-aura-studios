@@ -8,7 +8,7 @@
    pages. Ils sont injectés ici plutôt que recopiés dans chaque fichier : une
    correction se fait à un seul endroit. */
 (function construireCoque(){
-  var avant = '  <a class="skip-link" href="catalogue.html">Aller au catalogue</a>\n' +
+  var avant = '  <a class="skip-link" href="catalogue">Aller au catalogue</a>\n' +
     '  <div class="announce" data-od-id="announcement-bar" id="announce"></div>\n' +
     '\n' +
     '  <header class="nav" data-od-id="page-nav">\n' +
@@ -17,10 +17,10 @@
     '        <button class="icon-btn burger" data-od-id="nav-burger" id="navBurger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu">\n' +
     '          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>\n' +
     '        </button>\n' +
-    '        <a href="index.html?choix=1" class="logo" id="logoNav" data-od-id="brand-wordmark" aria-label="Choisir le rayon"></a>\n' +
+    '        <a href="/?choix=1" class="logo" id="logoNav" data-od-id="brand-wordmark" aria-label="Choisir le rayon"></a>\n' +
     '      </div>\n' +
     '      <nav class="nav-links" id="navLinks" aria-label="Navigation principale">\n' +
-    '        <a href="catalogue.html" data-goto="tous">Nouveautés</a>\n' +
+    '        <a href="catalogue" data-goto="tous">Nouveautés</a>\n' +
     '      </nav>\n' +
     '      <div class="nav-right">\n' +
     '        <button class="icon-btn" data-od-id="nav-search" id="navSearch" aria-label="Rechercher">\n' +
@@ -33,14 +33,14 @@
     '      </div>\n' +
     '    </div>\n' +
     '    <div class="mobile-menu" id="mobileMenu" data-od-id="nav-mobile-menu">\n' +
-    '      <a href="catalogue.html" data-goto="tous">Nouveautés</a>\n' +
+    '      <a href="catalogue" data-goto="tous">Nouveautés</a>\n' +
     '    </div>\n' +
     '  </header>';
   var apres = '  <footer class="footer" data-od-id="footer">\n' +
     '    <div class="wrap">\n' +
     '      <div class="footer-grid">\n' +
     '        <div class="footer-brand">\n' +
-    '          <a href="index.html?choix=1" class="logo" id="logoPied" style="font-size:26px" aria-label="Choisir le rayon"></a>\n' +
+    '          <a href="/?choix=1" class="logo" id="logoPied" style="font-size:26px" aria-label="Choisir le rayon"></a>\n' +
     '          <p id="piedTexte"></p>\n' +
     '          <p class="footer-independent">Revendeur multimarques indépendant.</p>\n' +
     '          <p id="footerContact" class="footer-contact" hidden></p>\n' +
@@ -58,7 +58,7 @@
     '          <h2>Aide</h2>\n' +
     '          <ul>\n' +
     '            <li><a href="#" id="helpDelivery" target="_blank" rel="noopener">Livraison gratuite à Bamako</a></li>\n' +
-    '            <li><a href="guide-des-tailles.html">Guide des tailles</a></li>\n' +
+    '            <li><a href="guide-des-tailles">Guide des tailles</a></li>\n' +
     '            <li><a href="#" id="helpOrder" target="_blank" rel="noopener">Suivi de commande</a></li>\n' +
     '            <li><a href="#" id="helpContact" target="_blank" rel="noopener">Contact WhatsApp</a></li>\n' +
     '          </ul>\n' +
@@ -66,7 +66,7 @@
     '        <div class="fcol" data-od-id="footer-col-apropos">\n' +
     '          <h2>À propos</h2>\n' +
     '          <ul>\n' +
-    '            <li><a href="hommes.html#a-propos" id="footerStory">Notre histoire</a></li>\n' +
+    '            <li><a href="hommes#a-propos" id="footerStory">Notre histoire</a></li>\n' +
     '            <li><a href="#" id="helpPress" target="_blank" rel="noopener">Presse</a></li>\n' +
     '            <li><a href="admin.html">Espace vendeur</a></li>\n' +
     '          </ul>\n' +
@@ -75,8 +75,8 @@
     '      <div class="footer-bottom">\n' +
     '        <p id="footerBrandLine">© 2026 T&amp;K SHOES. Tous droits réservés.</p>\n' +
     '        <nav>\n' +
-    '          <a href="cgv.html">CGV</a>\n' +
-    '          <a href="confidentialite.html">Confidentialité</a>\n' +
+    '          <a href="cgv">CGV</a>\n' +
+    '          <a href="confidentialite">Confidentialité</a>\n' +
     '          <a href="admin.html">Administration</a>\n' +
     '        </nav>\n' +
     '      </div>\n' +
@@ -849,20 +849,20 @@ window.AURA_IMG = function (img) {
       var href = 'catalogue.html?cat=' + encodeURIComponent(c.key) + (audience ? '&audience=' + encodeURIComponent(audience) : '');
       return '<a href="' + href + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a>';
     }).join("");
-    var univers = '<a href="hommes.html">Homme</a>' +
-      (audiencePrete("femme") ? '<a href="femmes.html">Femme</a>' : '');
-    var marquesHref = audienceLien("marques.html", audience);
-    var catalogueHref = audienceLien("catalogue.html", audience);
+    var univers = '<a href="hommes">Homme</a>' +
+      (audiencePrete("femme") ? '<a href="femmes">Femme</a>' : '');
+    var marquesHref = audienceLien("marques", audience);
+    var catalogueHref = audienceLien("catalogue", audience);
     var nav = $("#navLinks");
     if (nav) nav.innerHTML = univers + '<a href="' + marquesHref + '">Marques</a><a href="' + catalogueHref + '" data-goto="tous">Catalogue</a>';
     var mob = $("#mobileMenu");
     if (mob) mob.innerHTML = univers + '<a href="' + marquesHref + '">Marques</a><a href="' + catalogueHref + '" data-goto="tous">Tout le catalogue</a>' + links;
     var foot = $("#footShop");
-    if (foot) foot.innerHTML = '<li><a href="hommes.html">Homme</a></li>' +
-      (audiencePrete("femme") ? '<li><a href="femmes.html">Femme</a></li>' : '') +
+    if (foot) foot.innerHTML = '<li><a href="hommes">Homme</a></li>' +
+      (audiencePrete("femme") ? '<li><a href="femmes">Femme</a></li>' : '') +
       '<li><a href="' + marquesHref + '">Toutes les marques</a></li><li><a href="' + catalogueHref + '" data-goto="tous">Tout voir</a></li>' +
       list.map(function(c){
-        return '<li><a href="catalogue.html?cat=' + encodeURIComponent(c.key) + (audience ? '&audience=' + encodeURIComponent(audience) : '') + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a></li>';
+        return '<li><a href="catalogue?cat=' + encodeURIComponent(c.key) + (audience ? '&audience=' + encodeURIComponent(audience) : '') + '" data-goto="' + esc(c.key) + '">' + esc(c.label) + '</a></li>';
       }).join("");
     /* Le filtre courant peut viser une categorie supprimee entre-temps. */
     if (curFilter !== "tous" && !CATS[curFilter]) curFilter = "tous";
@@ -1173,7 +1173,7 @@ window.AURA_IMG = function (img) {
       var tout = $("#homeBrandsAll");
       if (tout){
         tout.textContent = disponibles.length ? "Voir les " + disponibles.length + " marques" : "Voir toutes les marques";
-        tout.href = audienceLien("marques.html", curAudience || audienceAttribut());
+        tout.href = audienceLien("marques", curAudience || audienceAttribut());
       }
       return;
     }
@@ -1183,7 +1183,7 @@ window.AURA_IMG = function (img) {
     grille.innerHTML = catList().map(function(c){
       var aud = curAudience || audienceAttribut();
       var cover = couvertureCategorie(c, aud);
-      return '<a href="catalogue.html?cat=' + encodeURIComponent(c.key) + (aud ? '&audience=' + encodeURIComponent(aud) : '') + '" class="cat-card" data-goto="' + esc(c.key) + '">' +
+      return '<a href="catalogue?cat=' + encodeURIComponent(c.key) + (aud ? '&audience=' + encodeURIComponent(aud) : '') + '" class="cat-card" data-goto="' + esc(c.key) + '">' +
         (cover ? '<img ' + lazyAttrs(cover) + ' alt="" width="800" height="600" onerror="AURA_IMG(this)" />' : '') +
         '<div class="cat-body">' +
           '<span class="cat-label">' + esc(c.label) + '</span>' +
@@ -1195,7 +1195,7 @@ window.AURA_IMG = function (img) {
 
   function carteMarqueHTML(c, i){
     var gridCover=imageMarque(c,"gridCover","");
-    return '<a class="brand-directory-card" href="collection.html?c=' + encodeURIComponent(c.key) + '"' +
+    return '<a class="brand-directory-card" href="collection?c=' + encodeURIComponent(c.key) + '"' +
       (c.accent ? ' style="--accent-marque:' + esc(c.accent) + '"' : '') +
       ' aria-label="Voir les modèles ' + esc(c.label) + '">' +
         (gridCover ? '<img ' + lazyAttrs(brandCardThumbUrl(gridCover)) + ' alt="" width="400" height="300" onerror="AURA_IMG(this)" />' : '') +
@@ -1248,7 +1248,7 @@ window.AURA_IMG = function (img) {
       ? "Choisissez une marque pour voir uniquement ses modèles " + audienceLabel(audience) + " disponibles."
       : "Choisissez une marque pour voir uniquement ses modèles disponibles.";
     var passerelle = document.querySelector(".catalogue-gateway");
-    if (passerelle) passerelle.href = audienceLien("catalogue.html", audience);
+    if (passerelle) passerelle.href = audienceLien("catalogue", audience);
   }
 
   /* Une marque présente dans les deux rayons ne peut pas réutiliser une photo
@@ -1289,7 +1289,7 @@ window.AURA_IMG = function (img) {
   function validerCollectionRayon(){
     if (typePage() !== "collection" || !curColl || !curAudience || !produitsCharges) return true;
     if (collectionDisponibleDansRayon(curColl, curAudience)) return true;
-    location.replace(audienceLien("marques.html", curAudience));
+    location.replace(audienceLien("marques", curAudience));
     return false;
   }
 
@@ -1501,7 +1501,7 @@ window.AURA_IMG = function (img) {
       else localStorage.removeItem(RAYON_KEY);
     } catch(e){}
   }
-  function pageRayon(audience){ return audience === "femme" ? "femmes.html" : "hommes.html"; }
+  function pageRayon(audience){ return audience === "femme" ? "femmes" : "hommes"; }
   /* `?choix=1` neutralise la mémorisation : sans cette porte de sortie, le
      visiteur serait renvoyé vers son rayon avant même de voir l'autre. */
   function choixForce(){
@@ -1609,7 +1609,7 @@ window.AURA_IMG = function (img) {
         return produits.some(function(p){ return p.cat === c.key; });
       });
       cats.innerHTML = actives.map(function(c){
-        return '<a class="audience-category" href="catalogue.html?audience=' + encodeURIComponent(audience) + '&cat=' + encodeURIComponent(c.key) + '">' +
+        return '<a class="audience-category" href="catalogue?audience=' + encodeURIComponent(audience) + '&cat=' + encodeURIComponent(c.key) + '">' +
           (c.cover ? '<img ' + lazyAttrs(c.cover) + ' alt="" width="800" height="600" onerror="AURA_IMG(this)" />' : '') +
           '<span><strong>' + esc(c.label) + '</strong><small>Découvrir</small></span></a>';
       }).join('');
@@ -1669,7 +1669,7 @@ window.AURA_IMG = function (img) {
         /* La base va répondre : elle tranchera. La page reste sur le contenu
            servi par le serveur au lieu de fuir vers le catalogue. */
         if (baseVaRepondre()) return;
-        location.replace(audienceLien("catalogue.html", curAudience || audienceValide(paramUrl("audience"))));
+        location.replace(audienceLien("catalogue", curAudience || audienceValide(paramUrl("audience"))));
         return;
       }
       var audienceReelle = prod.audience === "femme" ? "femme" : "homme";
@@ -1688,7 +1688,7 @@ window.AURA_IMG = function (img) {
       var c = curColl ? collById(curColl) : null;
       if (!c){
         if (baseVaRepondre()) return;
-        location.replace(audienceLien("catalogue.html", curAudience || audienceValide(paramUrl("audience"))));
+        location.replace(audienceLien("catalogue", curAudience || audienceValide(paramUrl("audience"))));
         return;
       }
       if (!validerCollectionRayon()) return;
@@ -1824,7 +1824,7 @@ window.AURA_IMG = function (img) {
         try{var foundId=location.search.match(/[?&]id=([^&]+)/);currentId=foundId?decodeURIComponent(foundId[1]):"";}catch(e){}
         var fresh=currentId?findProduct(currentId):null;
         if(!fresh||fresh.active===false||fresh.archived){
-          location.replace(audienceLien("catalogue.html", curAudience || audienceValide(paramUrl("audience"))));
+          location.replace(audienceLien("catalogue", curAudience || audienceValide(paramUrl("audience"))));
           return;
         }
         var audienceFraiche = fresh.audience === "femme" ? "femme" : "homme";
@@ -3377,7 +3377,34 @@ window.AURA_IMG = function (img) {
     if (close){ closeModal(close.getAttribute("data-close")); return; }
 
     if (t.closest("#overlay")){ closeCart(); return; }
-    if (t.closest("#cartClose") || t.closest("#cartContinue") || t.closest("#waClose")){ closeCart(); closeModal("coOverlay"); return; }
+    if (t.closest("#cartClose")){ closeCart(); closeModal("coOverlay"); return; }
+    /* « Continuer mes achats » depuis une fiche produit fermait le tiroir et
+       laissait le visiteur sur la paire qu'il venait d'ajouter : le bouton
+       promettait la suite du catalogue et ne menait nulle part. Il ramene
+       maintenant a la liste d'ou l'on vient — le rayon ouvert s'il y en a un,
+       le catalogue sinon. Ailleurs que sur une fiche, la liste est deja a
+       l'ecran : fermer suffit. */
+    if (t.closest("#cartContinue")){
+      closeCart(); closeModal("coOverlay");
+      if (typePage() === "produit"){
+        var rayonRetour = curAudience || audienceAttribut();
+        location.href = rayonRetour === "femme" ? "femmes" :
+                        rayonRetour === "homme" ? "hommes" :
+                        audienceLien("catalogue", rayonRetour);
+      }
+      return;
+    }
+    /* Apres commande, fermer renvoyait sur la fiche du produit tout juste
+       achete : une impasse au moment ou le client est le plus dispose a
+       reprendre. Retour a la liste, comme sur toute boutique. */
+    if (t.closest("#waClose")){
+      closeCart(); closeModal("coOverlay");
+      var rayonFin = curAudience || audienceAttribut();
+      location.href = rayonFin === "femme" ? "femmes" :
+                      rayonFin === "homme" ? "hommes" :
+                      audienceLien("catalogue", rayonFin);
+      return;
+    }
     if (t.closest("[data-empty-cta]")){ closeCart(); return; }
 
     if (t.closest("#navCart") || t.closest("[data-od-id='nav-cart']")){ openCart(); return; }
