@@ -1350,3 +1350,13 @@
   .audience-categories{grid-template-columns:1fr}.audience-category{min-height:220px}
   .audience-tabs{width:100%}.audience-tab{flex:1;padding:0 12px}
 }
+
+/* Le champ de recherche descendait de 239 px des la premiere frappe. La
+   fenetre modale est centree verticalement : chaque resultat qui
+   disparaissait la faisait retrecir, donc se recentrer, et le champ
+   partait vers le bas — sous le doigt du visiteur, en pleine saisie.
+   Mesure sur mobile 375 x 812 : haut du champ a 137 px avec neuf
+   resultats, 376 px avec zero. La fenetre de recherche est desormais
+   ancree en haut : le champ garde sa place quoi qu'affiche la liste. */
+#soOverlay{align-items:flex-start}
+#soOverlay .modal{margin-top:min(9vh,72px)}

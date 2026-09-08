@@ -2396,12 +2396,8 @@ window.AURA_IMG = function (img) {
     renderFiltres(list, visibles.length);
     list = visibles;
     if (curQuery){
-      var q = curQuery.toLowerCase();
-      list = list.filter(function(p){ /* La marque est ce qu'on tape en premier dans une boutique
-           multi-marques : « dior » doit trouver les modèles Dior. */
-        return p.name.toLowerCase().indexOf(q) >= 0 ||
-               (CATS[p.cat]||"").toLowerCase().indexOf(q) >= 0 ||
-               marqueDe(p).toLowerCase().indexOf(q) >= 0; });
+      var q = sansAccent(curQuery);
+      list = list.filter(function(p){ return correspond(p, q); });
     }
     var total = $("#catTotal");
     if (total){
@@ -3316,17 +3312,27 @@ window.AURA_IMG = function (img) {
     openModal("soOverlay");
     setTimeout(function(){ $("#soInput").focus(); }, 60);
   }
+  /* « hermes » ne trouvait rien, « hermès » trouvait neuf modeles : la
+     comparaison portait sur le texte accentue. Sur un telephone, presque
+     personne ne tape le e accent grave — les marques les mieux vendues
+     etaient donc introuvables sans que rien ne le signale. Les accents sont
+     desormais retires des deux cotes de la comparaison. */
+  function sansAccent(v){
+    v = String(v == null ? "" : v).toLowerCase();
+    return v.normalize ? v.normalize("NFD").replace(/[̀-ͯ]/g, "") : v;
+  }
+  function correspond(p, q){
+    return sansAccent(p.name).indexOf(q) >= 0 ||
+           sansAccent(CATS[p.cat] || "").indexOf(q) >= 0 ||
+           sansAccent(marqueDe(p)).indexOf(q) >= 0;
+  }
   function curSearch(){
-    var q = $("#soInput").value.trim().toLowerCase();
+    var q = sansAccent($("#soInput").value.trim());
     var rayonRecherche = curAudience || audienceAttribut();
     var list = store.products.filter(function(p){
       return p.active && !p.archived && audienceProduit(p, rayonRecherche);
     });
-    if (q) list = list.filter(function(p){ /* La marque est ce qu'on tape en premier dans une boutique
-           multi-marques : « dior » doit trouver les modèles Dior. */
-        return p.name.toLowerCase().indexOf(q) >= 0 ||
-               (CATS[p.cat]||"").toLowerCase().indexOf(q) >= 0 ||
-               marqueDe(p).toLowerCase().indexOf(q) >= 0; });
+    if (q) list = list.filter(function(p){ return correspond(p, q); });
     var total = list.length;
     list = list.slice(0, 8);
     var el = $("#soRes");
