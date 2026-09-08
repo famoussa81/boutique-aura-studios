@@ -50,6 +50,11 @@ update public.admin_drafts
          'settings', (select data from public.settings where id = 1),
          'products', (select coalesce(jsonb_agg(data order by id), '[]'::jsonb) from public.products)
        ),
+       -- Invalide les anciennes copies locales. Sans changement de version,
+       -- un navigateur qui avait gardé dirty=true peut renvoyer son vieux
+       -- brouillon dès la connexion et annuler silencieusement ce correctif.
+       version = version + 1,
+       dirty = false,
        updated_at = now();
 
 -- Contrôle : les trois compteurs doivent être à zéro.
