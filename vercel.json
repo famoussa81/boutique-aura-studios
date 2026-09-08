@@ -3,11 +3,21 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/produit", "destination": "/api/produit" },
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" }
+    {
+      "source": "/produit",
+      "destination": "/api/produit"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    }
   ],
   "redirects": [
-    { "source": "/produit.html", "destination": "/produit", "permanent": true }
+    {
+      "source": "/produit.html",
+      "destination": "/produit",
+      "permanent": true
+    }
   ],
   "headers": [
     {
@@ -35,7 +45,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://*.supabase.in; upgrade-insecure-requests"
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://www.clarity.ms; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.clarity.ms https://c.bing.com; upgrade-insecure-requests"
         },
         {
           "key": "Cache-Control",
@@ -73,13 +83,19 @@
     {
       "source": "/gabarit-produit.html",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, follow" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
       ]
     },
     {
       "source": "/gabarit-produit",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, follow" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
       ]
     },
     {
@@ -111,8 +127,14 @@
     {
       "source": "/outil-finalisation-client/(.*)",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
-        { "key": "Cache-Control", "value": "no-store" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
       ]
     }
   ]
