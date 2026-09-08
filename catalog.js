@@ -384,7 +384,7 @@
       whatsapp: "22393249365",
       shopName: "T&K SHOES",
       logo: "assets/brand/tk-shoes-nav.png",
-      shareImage: "https://boutique-aura-studios.vercel.app/assets/brand/tk-shoes-share.jpg",
+      shareImage: "https://www.tk-shoes.com/assets/brand/tk-shoes-share.jpg",
       address: "Kalaban Coura, Bamako",
       hours: "Lun–ven 09h–22h · Sam 10h–22h · Dim fermé",
       deliveryFee: 0,
